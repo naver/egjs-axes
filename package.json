@@ -1,0 +1,30 @@
+{
+  "name": "eg.movableCoord",
+  "version": "2.0.0-rc.1",
+  "main": "src/index.js",
+  "scripts": {
+    "webpack": "node node_modules/webpack/bin/webpack.js",
+    "webpack-dev-server": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "jsdoc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
+    "testee": "node node_modules/testee/bin/testee test/unit/index.html --browsers chrome"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "eg.component": "github:naver/eg.component",
+    "hammerjs": "^2.0.8"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-es2015": "^6.18.0",
+    "egjs-jsdoc-template": "*",
+    "husky": "^0.11.4",
+    "iscroll": "^5.1.3",
+    "jquery": "^1.7.0",
+    "jsdoc": "^3.4.3",
+    "qunitjs": "^1.23.1",
+    "testee": "^0.3.0",
+    "webpack": "^2.2.0-rc.2",
+    "webpack-dev-server": "^2.2.0-rc.0"
+  }
+}
