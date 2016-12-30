@@ -1,51 +1,56 @@
-MC._KEY = "__MOVABLECOORD__";
+import { window } from "./browser";
 
 /**
  * @name eg.MovableCoord.DIRECTION_NONE
  * @constant
  * @type {Number}
  */
-MC.DIRECTION_NONE = 1;
 /**
  * @name eg.MovableCoord.DIRECTION_LEFT
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_LEFT = 2;
 /**
  * @name eg.MovableCoord.DIRECTION_RIGHT
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_RIGHT = 4;
 /**
  * @name eg.MovableCoord.DIRECTION_UP
  * @constant
  * @type {Number}
-     */
-MC.DIRECTION_UP = 8;
+ */
 /**
  * @name eg.MovableCoord.DIRECTION_DOWN
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_DOWN = 16;
 /**
  * @name eg.MovableCoord.DIRECTION_HORIZONTAL
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_HORIZONTAL = 2 | 4;
 /**
  * @name eg.MovableCoord.DIRECTION_VERTICAL
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_VERTICAL = 8 | 16;
-
 /**
  * @name eg.MovableCoord.DIRECTION_ALL
  * @constant
  * @type {Number}
 */
-MC.DIRECTION_ALL = MC.DIRECTION_HORIZONTAL | MC.DIRECTION_VERTICAL;
+let direction = {
+    DIRECTION_NONE: 1,
+    DIRECTION_LEFT: 2,
+    DIRECTION_RIGHT: 4,
+    DIRECTION_UP: 8,
+    DIRECTION_DOWN: 16,
+    DIRECTION_HORIZONTAL: 2 | 4,
+    DIRECTION_VERTICAL: 8 | 16
+}
+direction.DIRECTION_ALL = direction.DIRECTION_HORIZONTAL | direction.DIRECTION_VERTICAL;
+export const DIRECTION = direction;
+export const UNIQUEKEY = "__MOVABLECOORD__";
+export const SUPPORT_TOUCH = "ontouchstart" in window;
+
