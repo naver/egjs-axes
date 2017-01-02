@@ -7,14 +7,14 @@ export default class HammerManager {
         this._hammers = {};
     }
 
-    _createHammer(el, subOptions, inputClass, handler) {
+    _createHammer(el, bindOptions, inputClass, handler) {
 		try {
 			// create Hammer
 			return this._attachHammerEvents(new HM.Manager(el, {
 					recognizers: [
 						[
 							HM.Pan, {
-								direction: subOptions.direction,
+								direction: bindOptions.direction,
 								threshold: 0
 							}
 						]
@@ -29,14 +29,14 @@ export default class HammerManager {
 						userDrag: "none"
 					},
 					inputClass: inputClass
-				}), subOptions, handler);
+				}), bindOptions, handler);
 		} catch (e) {}
 	}
 
     add(element, options, handler) {
 		let el = utils.getElement(element);
 		let keyValue = el[UNIQUEKEY];
-		let subOptions = Object.assign({
+		let bindOptions = Object.assign({
 			direction: DIRECTION.DIRECTION_ALL,
 			scale: [ 1, 1 ],
 			thresholdAngle: 45,
@@ -44,7 +44,7 @@ export default class HammerManager {
 			inputType: [ "touch", "mouse" ]
 		}, options);
 
-		let inputClass = this._convertInputType(subOptions.inputType);
+		let inputClass = this._convertInputType(bindOptions.inputType);
 		if (!inputClass) {
 			return;
 		}
@@ -57,12 +57,12 @@ export default class HammerManager {
 		this._hammers[keyValue] = {
 			hammer: this._createHammer(
 				el,
-				subOptions,
+				bindOptions,
 				inputClass,
                 handler
 			),
 			el: el,
-			options: subOptions
+			options: bindOptions
 		};
 		el[UNIQUEKEY] = keyValue;
 	}
@@ -93,7 +93,8 @@ export default class HammerManager {
     }
 
     _attachHammerEvents(hammer, options, handler) {
-		return hammer.on("hammer.input", e => {
+		return hammer
+			.on("hammer.input", e => {
 				if (e.isFirst) {
 					// apply options each
 					handler._setCurrentTarget(this.get(e.target));
@@ -102,8 +103,7 @@ export default class HammerManager {
 					// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
                     handler._end(e);
 				}
-			})
-			.on("panstart panmove", handler._move);
+			}).on("panstart panmove", e => handler._move(e)); 
 	}
 
 	_detachHammerEvents(hammer) {

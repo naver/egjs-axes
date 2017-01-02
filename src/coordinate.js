@@ -1,8 +1,8 @@
 import { DIRECTION } from "./consts";
 
-let Direction = {
+let Coordinate = {
 	// get user's direction
-	getByAngle(angle, thresholdAngle) {
+	getDirectionByAngle(angle, thresholdAngle) {
 		if (thresholdAngle < 0 || thresholdAngle > 90) {
 			return DIRECTION.DIRECTION_NONE;
 		}
@@ -25,7 +25,7 @@ let Direction = {
 		let boxRB = [ max[0] + bounce[1], max[1] + bounce[2] ];
 		let xd;
 		let yd;
-		destPos = [destPos[0], destPos[1]];
+		destPos = destPos.concat();
 		xd = destPos[0] - depaPos[0], yd = destPos[1] - depaPos[1];
 		if (!circular[3]) {
 			destPos[0] = Math.max(boxLT[0], destPos[0]);
@@ -107,4 +107,4 @@ let Direction = {
 	}
 };
 
-export { Direction };
+export default Coordinate;

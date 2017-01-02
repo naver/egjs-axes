@@ -1,4 +1,4 @@
-import { Direction } from "./direction";
+import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 
 const status = Symbol("status");
@@ -11,7 +11,6 @@ export default (superclass) => class extends superclass {
 			currentHammer: null,		// current hammer instance
 			currentOptions: null,		// current bind options
 			moveDistance: null,		// a position of the first user's action
-			// animationParam: null,	// animation information
 			prevented: false		//  check whether the animation event was prevented
 		};
     }
@@ -49,7 +48,7 @@ export default (superclass) => class extends superclass {
 		});
 
 		this[status].moveDistance = pos.concat();
-		this[status].grabOutside = Direction.isOutside(pos, min, max);
+		this[status].grabOutside = Coordinate.isOutside(pos, min, max);
 	}
 
 	// panmove event handler
@@ -57,7 +56,7 @@ export default (superclass) => class extends superclass {
 		if (!this._isInterrupting() || !this[status].moveDistance) {
 			return;
 		}
-		let pos = this.get();
+		let pos = this.get(true);
 		let min = this.options.min;
 		let max = this.options.max;
 		let bounce = this.options.bounce;
@@ -65,7 +64,7 @@ export default (superclass) => class extends superclass {
 		let currentOptions = this[status].currentOptions;
 		let direction = currentOptions.direction;
 		let scale = currentOptions.scale;
-		let userDirection = Direction.getByAngle(e.angle, currentOptions.thresholdAngle);
+		let userDirection = Coordinate.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
 		let out = [
 			margin[0] + bounce[0],
 			margin[1] + bounce[1],
@@ -73,7 +72,7 @@ export default (superclass) => class extends superclass {
 			margin[3] + bounce[3]
 		];
 		let prevent  = false;
-
+		
 		// not support offset properties in Hammerjs - start
 		let prevInput = this[status].currentHanmmer.session.prevInput;
 		if (prevInput) {
@@ -84,11 +83,11 @@ export default (superclass) => class extends superclass {
 		}
 
 		// not support offset properties in Hammerjs - end
-		if (Direction.isHorizontal(direction, userDirection)) {
+		if (Coordinate.isHorizontal(direction, userDirection)) {
 			this[status].moveDistance[0] += (e.offsetX * scale[0]);
 			prevent = true;
 		}
-		if (Direction.isVertical(direction, userDirection)) {
+		if (Coordinate.isVertical(direction, userDirection)) {
 			this[status].moveDistance[1] += (e.offsetY * scale[1]);
 			prevent = true;
 		}
@@ -96,17 +95,17 @@ export default (superclass) => class extends superclass {
 			e.srcEvent.preventDefault();
 			e.srcEvent.stopPropagation();
 		}
-
 		e.preventSystemEvent = prevent;
+
 		pos[0] = this[status].moveDistance[0];
 		pos[1] = this[status].moveDistance[1];
-		pos = Direction.getCircularPos(pos, min, max, this.options.circular);
+		pos = Coordinate.getCircularPos(pos, min, max, this.options.circular);
 
 		// from outside to inside
-		if (this[status].grabOutside && !Direction.isOutside(pos, min, max)) {
+		if (this[status].grabOutside && !Coordinate.isOutside(pos, min, max)) {
 			this[status].grabOutside = false;
 		}
-
+		
 		// when move pointer is held in outside
 		let tv;
 		let tn;
@@ -136,10 +135,8 @@ export default (superclass) => class extends superclass {
 				tv = (pos[0] - max[0]) / (out[1] * initSlope);
 				pos[0] = max[0] + this._easing(tv) * out[1];
 			}
-
 		}
-		console.log("move", pos);
-		this._triggerChange(pos, true, e);
+		this._setPosAndTriggerChange(pos, true, e);
 	}
 
 	// panend event handler
@@ -163,15 +160,15 @@ export default (superclass) => class extends superclass {
 			let vX =  Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
 
-			!(direction & DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
-			!(direction & DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
+			!(direction & Coordinate.DIRECTION_HORIZONTAL) && (vX = 0);
+			!(direction & Coordinate.DIRECTION_VERTICAL) && (vY = 0);
 
-			let offset = Direction.getNextOffsetPos([
+			let offset = Coordinate.getNextOffsetPos([
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 			], this.options.deceleration);
 			let destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
-			destPos = Direction.getPointOfIntersection(pos, destPos, 
+			destPos = Coordinate.getPointOfIntersection(pos, destPos, 
 				this.options.min, this.options.max, 
 				this.options.circular, this.options.bounce);
 			/**
