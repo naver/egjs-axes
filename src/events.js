@@ -1,27 +1,36 @@
-export default class EventManager {
-    constructor(options) {
-        this._hmOptions = null;
-        this._status = {
+import { Direction } from "./direction";
+import { DIRECTION } from "./consts";
+
+const status = Symbol("status");
+
+export default (superclass) => class extends superclass {
+    constructor() {
+		super();
+		this[status] = {
 			grabOutside: false,		// check whether user's action started on outside
-			curHammer: null,		// current hammer instance
+			currentHammer: null,		// current hammer instance
+			currentOptions: null,		// current bind options
 			moveDistance: null,		// a position of the first user's action
-			animationParam: null,	// animation information
+			// animationParam: null,	// animation information
 			prevented: false		//  check whether the animation event was prevented
 		};
     }
 
-    set(options) {
-        this._hmOptions = options;
+    _setCurrentTarget(info) {
+		this[status].currentOptions = info.options;
+		this[status].currentHanmmer = info.hammer;
     }
 
 	// panstart event handler
-	start(e) {
-		if (!this._hmOptions.interruptable && this._status.prevented) {
+	_start(e) {
+		if (!this[status].currentOptions.interruptable && this[status].prevented) {
 			return;
 		}
+		let pos = this.get();
+		let min = this.options.min;
+		let max = this.options.max;
 		this._setInterrupt(true);
-		let pos = this._pos;
-		// this._grab();
+		this._grab(min, max, this.options.circular);
 		/**
 		 * This event is fired when a user holds an element on the screen of the device.
 		 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
@@ -34,37 +43,29 @@ export default class EventManager {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-		// this.trigger("hold", {
-		// 	pos: pos.concat(),
-		// 	hammerEvent: e
-		// });
-        // 임시
-        pos = pos || [0, 0]; 
+		this.trigger("hold", {
+			pos: pos.concat(),
+			hammerEvent: e
+		});
 
-		this._status.moveDistance = pos.concat();
-		this._status.grabOutside = this._isOutside(
-			pos,
-			this.options.min,
-			this.options.max
-		);
+		this[status].moveDistance = pos.concat();
+		this[status].grabOutside = Direction.isOutside(pos, min, max);
 	}
 
 	// panmove event handler
-	move(e) {
-		if (!this._isInterrupting() || !this._status.moveDistance) {
+	_move(e) {
+		if (!this._isInterrupting() || !this[status].moveDistance) {
 			return;
 		}
-		let tv;
-		let tn;
-		let tx;
-		let pos = this._pos;
+		let pos = this.get();
 		let min = this.options.min;
 		let max = this.options.max;
 		let bounce = this.options.bounce;
 		let margin = this.options.margin;
-		let direction = this._hmOptions.direction;
-		let scale = this._hmOptions.scale;
-		let userDirection = Direction.getByAngle(e.angle, this._hmOptions.thresholdAngle);
+		let currentOptions = this[status].currentOptions;
+		let direction = currentOptions.direction;
+		let scale = currentOptions.scale;
+		let userDirection = Direction.getByAngle(e.angle, currentOptions.thresholdAngle);
 		let out = [
 			margin[0] + bounce[0],
 			margin[1] + bounce[1],
@@ -74,7 +75,7 @@ export default class EventManager {
 		let prevent  = false;
 
 		// not support offset properties in Hammerjs - start
-		let prevInput = this._status.curHammer.session.prevInput;
+		let prevInput = this[status].currentHanmmer.session.prevInput;
 		if (prevInput) {
 			e.offsetX = e.deltaX - prevInput.deltaX;
 			e.offsetY = e.deltaY - prevInput.deltaY;
@@ -84,11 +85,11 @@ export default class EventManager {
 
 		// not support offset properties in Hammerjs - end
 		if (Direction.isHorizontal(direction, userDirection)) {
-			this._status.moveDistance[0] += (e.offsetX * scale[0]);
+			this[status].moveDistance[0] += (e.offsetX * scale[0]);
 			prevent = true;
 		}
 		if (Direction.isVertical(direction, userDirection)) {
-			this._status.moveDistance[1] += (e.offsetY * scale[1]);
+			this[status].moveDistance[1] += (e.offsetY * scale[1]);
 			prevent = true;
 		}
 		if (prevent) {
@@ -97,17 +98,20 @@ export default class EventManager {
 		}
 
 		e.preventSystemEvent = prevent;
-		pos[0] = this._status.moveDistance[0];
-		pos[1] = this._status.moveDistance[1];
-		pos = this._getCircularPos(pos, min, max);
+		pos[0] = this[status].moveDistance[0];
+		pos[1] = this[status].moveDistance[1];
+		pos = Direction.getCircularPos(pos, min, max, this.options.circular);
 
 		// from outside to inside
-		if (this._status.grabOutside && !this._isOutside(pos, min, max)) {
-			this._status.grabOutside = false;
+		if (this[status].grabOutside && !Direction.isOutside(pos, min, max)) {
+			this[status].grabOutside = false;
 		}
 
 		// when move pointer is held in outside
-		if (this._status.grabOutside) {
+		let tv;
+		let tn;
+		let tx;		
+		if (this[status].grabOutside) {
 			tn = min[0] - out[3], tx = max[0] + out[1], tv = pos[0];
 			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
 			tn = min[1] - out[0], tx = max[1] + out[2], tv = pos[1];
@@ -134,14 +138,14 @@ export default class EventManager {
 			}
 
 		}
+		console.log("move", pos);
 		this._triggerChange(pos, true, e);
 	}
 
 	// panend event handler
-	end(e) {
-		let pos = this._pos;
-
-		if (!this._isInterrupting() || !this._status.moveDistance) {
+	_end(e) {
+		let pos = this.get();
+		if (!this._isInterrupting() || !this[status].moveDistance) {
 			return;
 		}
 
@@ -154,20 +158,22 @@ export default class EventManager {
 				hammerEvent: e || null
 			});
 		} else {
-			let direction = this._subOptions.direction;
-			let scale = this._subOptions.scale;
+			let direction = this[status].currentOptions.direction;
+			let scale = this[status].currentOptions.scale;
 			let vX =  Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
 
 			!(direction & DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
 
-			let offset = this._getNextOffsetPos([
+			let offset = Direction.getNextOffsetPos([
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
-			]);
+			], this.options.deceleration);
 			let destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
-			destPos = this._getPointOfIntersection(pos, destPos);
+			destPos = Direction.getPointOfIntersection(pos, destPos, 
+				this.options.min, this.options.max, 
+				this.options.circular, this.options.bounce);
 			/**
 			 * This event is fired when a user release an element on the screen of the device.
 			 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
@@ -196,32 +202,16 @@ export default class EventManager {
 				this._setInterrupt(false);
 			}
 		}
-		this._status.moveDistance = null;
-	}
-
-    // determine outside
-	_isOutside(pos, min, max) {
-		return pos[0] < min[0] || pos[1] < min[1] ||
-			pos[0] > max[0] || pos[1] > max[1];
-	}
-
-	// from outside to outside
-	_isOutToOut(pos, destPos) {
-		let min = this.options.min;
-		let max = this.options.max;
-		return (pos[0] < min[0] || pos[0] > max[0] ||
-			pos[1] < min[1] || pos[1] > max[1]) &&
-			(destPos[0] < min[0] || destPos[0] > max[0] ||
-			destPos[1] < min[1] || destPos[1] > max[1]);
+		this[status].moveDistance = null;
 	}
 
 	_isInterrupting() {
 		// when interruptable is 'true', return value is always 'true'.
-		return this._hmOptions.interruptable || this._status.prevented;
+		return this[status].currentOptions.interruptable || this[status].prevented;
 	}
 
     _setInterrupt(prevented) {
-		!this._hmOptions.interruptable &&
-		(this._status.prevented = prevented);
+		!this[status].currentOptions.interruptable &&
+		(this[status].prevented = prevented);
 	}    
 };

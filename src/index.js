@@ -8,8 +8,13 @@ import { DIRECTION } from "./consts";
 import HammerManager from "./hammerManager";
 import EventManager from "./events";
 import { Direction } from "./direction";
+import { Mixin } from "./utils";
 
-class MovableCoord extends Component {
+const pos = Symbol("pos");
+const raf = Symbol("raf");
+const hammerManager = Symbol("hammerManager");
+
+class MovableCoord extends Mixin(Component).with(EventManager) {
 	constructor(options) {
 		super();
 		Object.assign(this.options = {
@@ -24,15 +29,15 @@ class MovableCoord extends Component {
 			maximumDuration: Infinity,
 			deceleration: 0.0006
 		}, options);
-		
 		this._reviseOptions();
-		this.hammerManager = new HammerManager();
-		this._pos = this.options.min.concat();
-		this._raf = null;
+		this[hammerManager] = new HammerManager();
+		this[pos] = this.options.min.concat();
+		this[raf] = null;
+		this._status = {
+			animationParam: null
+		};
 		this._animationEnd = this._animationEnd.bind(this);	// for caching
 		this._restore = this._restore.bind(this);	// for caching
-		// this._panmove = this._panmove.bind(this);	// for caching
-		// this._panend = this._panend.bind(this);	// for caching
 	}
 
 	/**
@@ -52,7 +57,7 @@ class MovableCoord extends Component {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	bind(element, options) {
-		this.hammerManager.add(element, options, this);
+		this[hammerManager].add(element, options, this);
 		return this;
 	}
 	
@@ -64,7 +69,7 @@ class MovableCoord extends Component {
 	 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	unbind(element) {
-		this.hammerManager.remove(element);
+		this[hammerManager].remove(element);
 		return this;
 	}
 
@@ -76,128 +81,42 @@ class MovableCoord extends Component {
 	 * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
 	 */
 	getHammer(element) {
-		return this.hammerManager.getHammer(element);
+		return this[hammerManager].getHammer(element);
 	}
 
-	_grab() {
+	_grab(min, max, circular) {
 		if (this._status.animationParam) {
 			this.trigger("animationEnd");
-			let pos = this._getCircularPos(this._pos);
-			if (pos[0] !== this._pos[0] || pos[1] !== this._pos[1]) {
-				this._pos = pos;
-				this._triggerChange(this._pos, true);
+			let pos = Direction.getCircularPos(this.get(), min, max, circular);
+			if (pos[0] !== this[pos][0] || pos[1] !== this[pos][1]) {
+				this[pos] = pos;
+				this._triggerChange(this[pos], true);
 			}
 			this._status.animationParam = null;
-			this._raf && window.cancelAnimationFrame(this._raf);
-			this._raf = null;
+			this[raf] && window.cancelAnimationFrame(this[raf]);
+			this[raf] = null;
 		}
-	}
-
-	_getCircularPos(pos, min, max, circular) {
-		min = min || this.options.min;
-		max = max || this.options.max;
-		circular = circular || this.options.circular;
-
-		if (circular[0] && pos[1] < min[1]) { // up
-			pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + max[1];
-		}
-		if (circular[1] && pos[0] > max[0]) { // right
-			pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + min[0];
-		}
-		if (circular[2] && pos[1] > max[1]) { // down
-			pos[1] = (pos[1] - min[1]) % (max[1] - min[1] + 1) + min[1];
-		}
-		if (circular[3] && pos[0] < min[0]) { // left
-			pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
-		}
-		pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
-
-		return pos;
-	}
-
-	_getNextOffsetPos(speeds) {
-		let normalSpeed = Math.sqrt(
-			speeds[0] * speeds[0] + speeds[1] * speeds[1]
-		);
-		let duration = Math.abs(normalSpeed / -this.options.deceleration);
-		return [
-			speeds[0] / 2 * duration,
-			speeds[1] / 2 * duration
-		];
-	}
-
-	_getDurationFromPos(pos) {
-		let normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
-		let duration = Math.sqrt(
-			normalPos / this.options.deceleration * 2
-		);
-
-		// when duration is under 100, then value is zero
-		return duration < 100 ? 0 : duration;
-	}
-
-	_getPointOfIntersection(depaPos, destPos) {
-		let circular = this.options.circular;
-		let bounce = this.options.bounce;
-		let min = this.options.min;
-		let max = this.options.max;
-		let boxLT = [ min[0] - bounce[3], min[1] - bounce[0] ];
-		let boxRB = [ max[0] + bounce[1], max[1] + bounce[2] ];
-		let xd;
-		let yd;
-		destPos = [destPos[0], destPos[1]];
-		xd = destPos[0] - depaPos[0], yd = destPos[1] - depaPos[1];
-		if (!circular[3]) {
-			destPos[0] = Math.max(boxLT[0], destPos[0]);
-		} // left
-		if (!circular[1]) {
-			destPos[0] = Math.min(boxRB[0], destPos[0]);
-		} // right
-		destPos[1] = xd ?
-						depaPos[1] + yd / xd * (destPos[0] - depaPos[0]) :
-						destPos[1];
-
-		if (!circular[0]) {
-			destPos[1] = Math.max(boxLT[1], destPos[1]);
-		} // up
-		if (!circular[2]) {
-			destPos[1] = Math.min(boxRB[1], destPos[1]);
-		} // down
-		destPos[0] = yd ?
-						depaPos[0] + xd / yd * (destPos[1] - depaPos[1]) :
-						destPos[0];
-		return [
-			Math.min(max[0], Math.max(min[0], destPos[0])),
-			Math.min(max[1], Math.max(min[1], destPos[1]))
-		];
-	}
-
-	_isCircular(destPos) {
-		let circular = this.options.circular;
-		let min = this.options.min;
-		let max = this.options.max;
-		return (circular[0] && destPos[1] < min[1]) ||
-				(circular[1] && destPos[0] > max[0]) ||
-				(circular[2] && destPos[1] > max[1]) ||
-				(circular[3] && destPos[0] < min[0]);
 	}
 
 	_prepareParam(absPos, duration, hammerEvent) {
-		let pos = this._pos;
-		let destPos = this._getPointOfIntersection(pos, absPos);
-		destPos = this._isOutToOut(pos, destPos) ? pos : destPos;
+		let pos = this[pos];
+		let min = this.options.min; 
+		let max = this.options.max;
+		let circular = this.options.circular;
+		let maximumDuration = this.options.maximumDuration;
+		let destPos = Direction.getPointOfIntersection(pos, absPos, min, max, circular, this.options.bounce);
+		destPos = this.isOutToOut(pos, destPos, min, max) ? pos : destPos;
 		let distance = [
 			Math.abs(destPos[0] - pos[0]),
 			Math.abs(destPos[1] - pos[1])
 		];
-		duration = duration == null ? this._getDurationFromPos(distance) : duration;
-		duration = this.options.maximumDuration > duration ?
-					duration : this.options.maximumDuration;
+		duration = duration == null ? Direction.getDurationFromPos(distance, this.options.deceleration) : duration;
+		duration = maximumDuration > duration ? duration : maximumDuration;
 		return {
 			depaPos: pos.concat(),
 			destPos: destPos.concat(),
-			isBounce: this._isOutside(destPos, this.options.min, this.options.max),
-			isCircular: this._isCircular(absPos),
+			isBounce: Direction.isOutside(destPos, min, max),
+			isCircular: Direction.isCircular(absPos, min, max, circular),
 			duration: duration,
 			distance: distance,
 			hammerEvent: hammerEvent || null,
@@ -206,7 +125,7 @@ class MovableCoord extends Component {
 	}
 
 	_restore(complete, hammerEvent) {
-		let pos = this._pos;
+		let pos = this[pos];
 		let min = this.options.min;
 		let max = this.options.max;
 		this._animate(this._prepareParam([
@@ -217,10 +136,10 @@ class MovableCoord extends Component {
 
 	_animationEnd() {
 		this._status.animationParam = null;
-		this._pos = this._getCircularPos([
-			Math.round(this._pos[0]),
-			Math.round(this._pos[1])
-		]);
+		this[pos] = Direction.getCircularPos([
+			Math.round(this[pos][0]),
+			Math.round(this[pos][1])
+		], this.options.min, this.options.max, this.options.circular);
 		this._setInterrupt(false);
 		/**
 		 * This event is fired when animation ends.
@@ -276,7 +195,7 @@ class MovableCoord extends Component {
 					self._animate(param, dequeue);
 				});
 			}
-			if (this._isOutside(param.destPos, this.options.min, this.options.max)) {
+			if (Direction.isOutside(param.destPos, this.options.min, this.options.max)) {
 				queue.push(function() {
 					self._restore(dequeue, hammerEvent);
 				});
@@ -298,7 +217,7 @@ class MovableCoord extends Component {
 			(pos[i] !== param.destPos[i]) &&
 			(pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 		}
-		pos = this._getCircularPos(pos);
+		pos = Direction.getCircularPos(pos, this.options.min, this.options.max, this.options.circular);
 		this._triggerChange(pos, false);
 		return easingPer;
 	}
@@ -306,17 +225,16 @@ class MovableCoord extends Component {
 	// set up 'css' expression
 	_reviseOptions() {
 		let key;
-		let self = this;
-		(["bounce", "margin", "circular"]).forEach(function(v) {
-			key = self.options[v];
+		["bounce", "margin", "circular"].forEach( v => {
+			key = this.options[v];
 			if (key != null) {
 				if (key.constructor === Array) {
-					self.options[v] = key.length === 2 ?
+					this.options[v] = key.length === 2 ?
 						key.concat(key) : key.concat();
 				} else if (/string|number|boolean/.test(typeof key)) {
-					self.options[v] = [ key, key, key, key ];
+					this.options[v] = [ key, key, key, key ];
 				} else {
-					self.options[v] = null;
+					this.options[v] = null;
 				}
 			}
 		});
@@ -338,7 +256,7 @@ class MovableCoord extends Component {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-		this._pos = pos.concat();
+		this[pos] = pos.concat();
 		this.trigger("change", {
 			pos: pos.concat(),
 			holding: holding,
@@ -355,7 +273,7 @@ class MovableCoord extends Component {
 	 * @return {Number} pos.1 The Y coordinate <ko>y 좌표</ko>
 	 */
 	get() {
-		return this._pos.concat();
+		return this[pos].concat();
 	}
 
 	/**
@@ -368,11 +286,11 @@ class MovableCoord extends Component {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(x, y, duration) {
-		this._grab();
-		let pos = this._pos.concat();
-		let circular = this.options.circular;
 		let min = this.options.min;
 		let max = this.options.max;
+		let circular = this.options.circular;
+		this._grab(min, max, circular);
+		let pos = this.get();
 		if (x === pos[0] && y === pos[1]) {
 			return this;
 		}
@@ -396,8 +314,8 @@ class MovableCoord extends Component {
 		if (duration) {
 			this._animateTo([ x, y ], duration);
 		} else {
-			this._pos = this._getCircularPos([ x, y ]);
-			this._triggerChange(this._pos, false);
+			this[pos] = Direction.getCircularPos([ x, y ], min, max, circular);
+			this._triggerChange(this[pos], false);
 			this._setInterrupt(false);
 		}
 		return this;
@@ -414,8 +332,8 @@ class MovableCoord extends Component {
 	 */
 	setBy(x, y, duration) {
 		return this.setTo(
-			x != null ? this._pos[0] + x : this._pos[0],
-			y != null ? this._pos[1] + y : this._pos[1],
+			x != null ? this[pos][0] + x : this[pos][0],
+			y != null ? this[pos][1] + y : this[pos][1],
 			duration
 		);
 	}
@@ -434,5 +352,4 @@ class MovableCoord extends Component {
 		this.hammerManager.destroy();
 	}
 };
-Object.assign(MovableCoord.prototype, EventManager.prototype);
 export { MovableCoord };

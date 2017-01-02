@@ -1,12 +1,10 @@
 import HM from "hammerjs";
-import utils from "./utils";
+import { utils } from "./utils";
 import { DIRECTION, UNIQUEKEY, SUPPORT_TOUCH } from "./consts";
-import EventManager from "./events";
 
 export default class HammerManager {
     constructor() {
         this._hammers = {};
-        this._eventManager = new EventManager();
     }
 
     _createHammer(el, subOptions, inputClass, handler) {
@@ -52,12 +50,12 @@ export default class HammerManager {
 		}
 
 		if (keyValue) {
-			this._hammers[keyValue].inst.destroy();
+			this._hammers[keyValue].hammer.destroy();
 		} else {
 			keyValue = Math.round(Math.random() * new Date().getTime());
 		}
 		this._hammers[keyValue] = {
-			inst: this._createHammer(
+			hammer: this._createHammer(
 				el,
 				subOptions,
 				inputClass,
@@ -73,7 +71,7 @@ export default class HammerManager {
         let el = utils.getElement(element);
 		let key = el[UNIQUEKEY];
 		if (key) {
-			this._hammers[key].inst.destroy();
+			this._hammers[key].hammer.destroy();
 			delete this._hammers[key];
 			delete el[UNIQUEKEY];
 		}
@@ -81,7 +79,7 @@ export default class HammerManager {
 
     getHammer(element) {
 		let data = this.get(element);
-        return data ? data.inst : null;
+        return data ? data.hammer : null;
 	}
 
     get(element) {
@@ -98,14 +96,14 @@ export default class HammerManager {
 		return hammer.on("hammer.input", e => {
 				if (e.isFirst) {
 					// apply options each
-                    // this._eventManager.set(this.get(e.target).options);
-                    handler.start(e);
+					handler._setCurrentTarget(this.get(e.target));
+                    handler._start(e);
 				} else if (e.isFinal) {
 					// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
-                    handler.end(e);
+                    handler._end(e);
 				}
 			})
-			.on("panstart panmove", handler.move);
+			.on("panstart panmove", handler._move);
 	}
 
 	_detachHammerEvents(hammer) {
@@ -128,7 +126,7 @@ export default class HammerManager {
 
     destroy() {
 		for (let p in this._hammers) {
-			this._hammers[p].inst.destroy();
+			this._hammers[p].hammer.destroy();
 			delete this._hammers[p].el[UNIQUEKEY];
 			delete this._hammers[p];
 		}

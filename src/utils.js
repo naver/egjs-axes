@@ -13,4 +13,13 @@ var utils = {
     }
 };
 
-export default utils;
+class MixinBuilder {
+  constructor(superclass) {
+    this.superclass = superclass || class {};
+  }
+  with(...mixins) {
+    return mixins.reduce((c, m) => m(c), this.superclass);
+  }
+}
+const Mixin = (superclass) => new MixinBuilder(superclass);
+export { Mixin, utils };
