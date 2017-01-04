@@ -6,4 +6,4 @@ import MovableCoord from "./movableCoord";
 import { DIRECTION } from "./consts";
 
 Object.assign(MovableCoord, DIRECTION);
-export { MovableCoord };
+module.exports = MovableCoord;

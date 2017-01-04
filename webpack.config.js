@@ -9,8 +9,12 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, "dist"),
 		filename: "[name].js",
-		library: "eg",
-		libraryTarget: "umd"
+		library:  ["eg", "MovableCoord" ],
+		libraryTarget: "umd",
+	},
+	externals: {
+		// "eg.component": "eg.Component",
+		"hammerjs": "Hammer"
 	},
 	devServer: {
 		publicPath: "/dist/"

@@ -1,6 +1,10 @@
-import HM from "hammerjs";
 import { utils } from "./utils";
 import { DIRECTION, UNIQUEKEY, SUPPORT_TOUCH } from "./consts";
+import Hammer from "hammerjs";
+
+if (typeof Hammer === "undefined") {
+	throw new Error("The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/");
+}
 
 export default class HammerManager {
     constructor() {
@@ -10,10 +14,10 @@ export default class HammerManager {
     _createHammer(el, bindOptions, inputClass, handler) {
 		try {
 			// create Hammer
-			return this._attachHammerEvents(new HM.Manager(el, {
+			return this._attachHammerEvents(new Hammer.Manager(el, {
 					recognizers: [
 						[
-							HM.Pan, {
+							Hammer.Pan, {
 								direction: bindOptions.direction,
 								threshold: 0
 							}
@@ -121,7 +125,7 @@ export default class HammerManager {
 			}
 		});
 
-		return hasTouch && HM.TouchInput || hasMouse && HM.MouseInput || null;
+		return hasTouch && Hammer.TouchInput || hasMouse && Hammer.MouseInput || null;
 	}
 
     destroy() {

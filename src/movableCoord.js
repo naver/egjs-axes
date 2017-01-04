@@ -1,4 +1,5 @@
 import Component from "eg.component";
+import { window } from "./browser";
 import HammerManager from "./hammerManager";
 import EventHandler from "./eventHandler";
 import AnimationHandler from "./animationHandler";
@@ -8,6 +9,10 @@ import { Mixin } from "./utils";
 
 const pos = Symbol("pos");
 const hammerManager = Symbol("hammerManager");
+
+// if (!window.eg || typeof eg.Component === "undefined") {
+// 	throw new Error("The eg.Component must be loaded before eg.MovableCoord.");
+// }
 
 /**
  * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
