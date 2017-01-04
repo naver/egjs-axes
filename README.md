@@ -2,10 +2,10 @@
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
 
 
-* Usage Examples of egjs: http://codepen.io/collection/AKpkGW/
+* Usage Examples of eg.MovableCoord: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
 * API Documentation
-    - Latest: http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html
-    - Specific version: http://naver.github.io/egjs/[VERSION]/doc/eg.MovableCoord.html
+    - Latest: [http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
+    - Specific version: [http://naver.github.io/egjs/[VERSION]/doc/eg.MovableCoord.html](http://naver.github.io/egjs/[VERSION]/doc/eg.MovableCoord.html)
 
 ## Supported Browsers
 
@@ -24,17 +24,12 @@ egjs has the dependencies for the following libraries:
 |2.0.4+|
 
 
-Let egjs load after jQuery loads.
+Let eg.MovableCoord load.
 
 ```html
 ...
-<!-- Load jQuery -->
 <!-- Load egjs packaged with all dependencies (Hammer.js) -->
 <!-- Load from your local installation -->
-<script src="bower_components/egjs/dist/pkgd/eg.pkgd.min.js"></script>
-
-<!-- Or load from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/egjs/1.3.0/pkgd/eg.pkgd.min.js"></script>
 <div id="area">
 ...
 ```
