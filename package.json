@@ -4,6 +4,7 @@
   "main": "src/index.js",
   "scripts": {
     "webpack": "node node_modules/webpack/bin/webpack.js",
+	"karma": "karma start",
     "webpack-dev-server": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "jsdoc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
     "testee": "node node_modules/testee/bin/testee test/unit/index.html --browsers chrome"

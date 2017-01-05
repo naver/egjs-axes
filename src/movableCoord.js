@@ -228,6 +228,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @method eg.MovableCoord#destroy
 	 */
 	destroy() {
+		console.log("destroy", this);
 		this.off();
 		this.hammerManager.destroy();
 	}
