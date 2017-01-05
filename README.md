@@ -1,14 +1,17 @@
 # eg.MovableCoord
-A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
+A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
+You can implement a user interface by applying the logical coordinates provided. 
 
+<p data-height="470" data-theme-id="0" data-slug-hash="GJpMvW" data-default-tab="js,result" data-user="egjs" data-embed-version="2" data-pen-title="Rotate list" class="codepen">See the Pen <a href="http://codepen.io/egjs/pen/GJpMvW/">Rotate list</a> by egjs (<a href="http://codepen.io/egjs">@egjs</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-* Usage Examples of eg.MovableCoord: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
+## Documentation
 * API Documentation
     - Latest: [http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
     - Specific version: [http://naver.github.io/egjs/[VERSION]/doc/eg.MovableCoord.html](http://naver.github.io/egjs/[VERSION]/doc/eg.MovableCoord.html)
+* An advanced demo is available here: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
 
 ## Supported Browsers
-
 The following table shows browsers supported by eg.MovableCoord
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
@@ -16,25 +19,37 @@ The following table shows browsers supported by eg.MovableCoord
 |10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
 
+
 ## Dependency
-egjs has the dependencies for the following libraries:
+eg.MovableCoord has the dependencies for the following libraries:
 
-|[Hammer.JS](http://hammerjs.github.io/)|
-|----|
-|2.0.4+|
+|[eg.Component]()|[Hammer.JS](http://hammerjs.github.io/)|
+|----|----|
+|2.0.0+|2.0.4+|
 
-
-Let eg.MovableCoord load.
-
+## How to Use
+### 1. Load dependency library before eg.movableCoord.js (or eg.movableCoord.min.js) load.
 ```html
-...
-<!-- Load egjs packaged with all dependencies (Hammer.js) -->
-<!-- Load from your local installation -->
-<div id="area">
-...
+<script src="../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../node_modules/hammerjs/hammer.js"></script>
+```
+> #### How to supports IE8  
+> The hammerjs supports [IE9+](http://hammerjs.github.io/browser-support/)  
+if you want to use hammer.js in IE8, you should include `hammerjs-compatible` before using  
+For more information about hammerjs-compatible, please check following link.
+[https://github.com/naver/hammerjs-compatible](https://github.com/naver/hammerjs-compatible)
+### 2. Load eg.movableCoord.js
+```html
+<script src="../dist/eg.movableCoord.js"></script>
 ```
 
+### 3. Make a target element
+```html
+<!-- Target DOM -->
+<div id="area">
+```
 
+### 4. Use eg.MovableCoord
 ```javascript
 // create MovableCoord with option
 var instance = new eg.MovableCoord("#area", {
@@ -51,14 +66,13 @@ instance.bind(el, {
 instance.unbind(el);
 ```
 
-
 ## Bug Report
 
 If you find a bug, please report it to us using the [Issues](https://github.com/naver/eg.movableCoord/issues) page on GitHub.
 
 
 ## License
-egjs is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+eg.MovableCoord is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
 Copyright (c) 2015 NAVER Corp.
