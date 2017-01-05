@@ -2,9 +2,6 @@
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
 
-<p data-height="470" data-theme-id="0" data-slug-hash="GJpMvW" data-default-tab="js,result" data-user="egjs" data-embed-version="2" data-pen-title="Rotate list" class="codepen">See the Pen <a href="http://codepen.io/egjs/pen/GJpMvW/">Rotate list</a> by egjs (<a href="http://codepen.io/egjs">@egjs</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
-
 ## Documentation
 * API Documentation
     - Latest: [http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
@@ -36,8 +33,10 @@ eg.MovableCoord has the dependencies for the following libraries:
 > #### How to supports IE8  
 > The hammerjs supports [IE9+](http://hammerjs.github.io/browser-support/)  
 if you want to use hammer.js in IE8, you should include `hammerjs-compatible` before using  
-For more information about hammerjs-compatible, please check following link.
+For more information about hammerjs-compatible, please check following link.  
 [https://github.com/naver/hammerjs-compatible](https://github.com/naver/hammerjs-compatible)
+
+
 ### 2. Load eg.movableCoord.js
 ```html
 <script src="../dist/eg.movableCoord.js"></script>
