@@ -2,8 +2,8 @@
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
 
-<p data-height="470" data-theme-id="0" data-slug-hash="GJpMvW" data-default-tab="js,result" data-user="egjs" data-embed-version="2" data-pen-title="Rotate list" class="codepen">See the Pen <a href="http://codepen.io/egjs/pen/GJpMvW/">Rotate list</a> by egjs (<a href="http://codepen.io/egjs">@egjs</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+<iframe height='470' scrolling='no' title='Rotate list' src='//codepen.io/egjs/embed/GJpMvW/?height=265&theme-id=0&default-tab=js,result&embed-version=2' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='http://codepen.io/egjs/pen/GJpMvW/'>Rotate list</a> by egjs (<a href='http://codepen.io/egjs'>@egjs</a>) on <a href='http://codepen.io'>CodePen</a>
+
 
 ## Documentation
 * API Documentation
