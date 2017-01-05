@@ -13,7 +13,7 @@ module.exports = {
 		libraryTarget: "umd",
 	},
 	externals: {
-		// "eg.component": "eg.Component",
+		"eg.component": "eg.Component",
 		"hammerjs": "Hammer"
 	},
 	devServer: {
@@ -21,14 +21,12 @@ module.exports = {
 	},
 	devtool: "source-map",
 	module: {
-		loaders: [
-		  {
-			test: /\.js$/,
-			loader: "babel-loader",
-			query: {
-			  presets: ["es2015"]
+		rules: [
+			{
+				test: /(\.js)$/,
+				exclude: /(node_modules)/,
+				loader: 'babel-loader'
 			}
-		  }
 		]
 	},
 	plugins: [

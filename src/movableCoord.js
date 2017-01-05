@@ -7,6 +7,7 @@ import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 import { Mixin } from "./utils";
 
+
 const pos = Symbol("pos");
 const hammerManager = Symbol("hammerManager");
 
@@ -60,7 +61,7 @@ const hammerManager = Symbol("hammerManager");
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
-export default class MovableCoord extends Mixin(Component).with(EventHandler, AnimationHandler) {
+var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler, AnimationHandler) {
 	constructor(options) {
 		super();
 		Object.assign(this.options = {
@@ -231,3 +232,5 @@ export default class MovableCoord extends Mixin(Component).with(EventHandler, An
 		this.hammerManager.destroy();
 	}
 };
+Object.assign(MovableCoord, DIRECTION);
+export default MovableCoord;
