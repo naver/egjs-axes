@@ -1,13 +1,13 @@
 {
   "name": "eg.movableCoord",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-beta",
   "main": "src/index.js",
   "scripts": {
-    "webpack": "node node_modules/webpack/bin/webpack.js",
-	"karma": "karma start",
-    "webpack-dev-server": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "test": "karma start",
+    "coverage": "karma start --coverage",
     "jsdoc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
-    "testee": "node node_modules/testee/bin/testee test/unit/index.html --browsers chrome"
+    "webpack": "node node_modules/webpack/bin/webpack.js",
+    "webpack-dev-server": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js"
   },
   "license": "MIT",
   "dependencies": {
@@ -18,7 +18,7 @@
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-rewire": "^1.0.0",
-    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-es2015-native-modules": "^6.9.4",
     "chai": "^3.5.0",
     "egjs-jsdoc-template": "*",
     "hammer-simulator": "0.0.1",
@@ -34,11 +34,16 @@
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.1",
     "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.1",
     "mocha": "^3.2.0",
     "npm": "^4.0.5",
+    "phantomjs-polyfill": "0.0.2",
+    "phantomjs-polyfill-find": "github:ptim/phantomjs-polyfill-find",
+    "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "^2.1.14",
+    "sinon": "^1.17.7",
     "webpack": "^2.2.0-rc.2",
     "webpack-dev-server": "^2.2.0-rc.0"
   }

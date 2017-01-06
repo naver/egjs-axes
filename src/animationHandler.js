@@ -1,29 +1,26 @@
 import Coordinate from "./coordinate";
 import { window } from "./browser";
 
-const animate = Symbol("animate");
-const raf = Symbol("raf");
-
 export default (superclass) => class extends superclass {
     constructor() {
-        super();
-        this[animate] = null;
-        this[raf] = null;
+		super();
+        this._raf = null;
+		this._animateParam = null;
         this._animationEnd = this._animationEnd.bind(this);	// for caching
         this._restore = this._restore.bind(this);	// for caching
     }
 
     _grab(min, max, circular) {
-		if (this[animate]) {
+		if (this._animateParam) {
 			this.trigger("animationEnd");
             let orgPos = this.get();
 			let pos = Coordinate.getCircularPos(this.get(), min, max, circular);
 			if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
 				this._setPosAndTriggerChange(pos, true);
 			}
-			this[animate] = null;
-			this[raf] && window.cancelAnimationFrame(this[raf]);
-			this[raf] = null;
+			this._animateParam = null;
+			this._raf && window.cancelAnimationFrame(this._raf);
+			this._raf = null;
 		}
 	}
 
@@ -64,12 +61,13 @@ export default (superclass) => class extends superclass {
 	}
 
 	_animationEnd() {
+		this._animateParam = null;
 		let orgPos = this.get();
-        this[animate] = null;
-        this.set(Coordinate.getCircularPos([
+        let nextPos = Coordinate.getCircularPos([
 			Math.round(orgPos[0]),
 			Math.round(orgPos[1])
-        ], this.options.min, this.options.max, this.options.circular));
+        ], this.options.min, this.options.max, this.options.circular);
+        this.setTo(...nextPos);
 		this._setInterrupt(false);
 		/**
 		 * This event is fired when animation ends.
@@ -82,9 +80,9 @@ export default (superclass) => class extends superclass {
 
 	_animate(param, complete) {
 		param.startTime = new Date().getTime();
-		this[animate] = param;
+		this._animateParam = param;
 		if (param.duration) {
-			let info = this[animate];
+			let info = this._animateParam;
 			let self = this;
 			(function loop() {
 				self._raf = null;
@@ -93,7 +91,7 @@ export default (superclass) => class extends superclass {
 					complete();
 					return;
 				} // animationEnd
-                self[raf] = window.requestAnimationFrame(loop);
+                self._raf = window.requestAnimationFrame(loop);
 			})();
 		} else {
 			this._setPosAndTriggerChange(param.destPos, false);
@@ -168,7 +166,7 @@ export default (superclass) => class extends superclass {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-        this.set(position.concat());
+        this._pos = position.concat();
 		this.trigger("change", {
 			pos: position.concat(),
 			holding: holding,

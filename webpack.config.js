@@ -12,10 +12,14 @@ module.exports = {
 		library:  ["eg", "MovableCoord" ],
 		libraryTarget: "umd",
 	},
-	externals: {
-		"eg.component": "eg.Component",
+	externals: [{
+		"eg.component": {
+			commonjs: "eg.component",
+			amd: "eg.Component",
+			root: ["eg", "Component"]
+		},
 		"hammerjs": "Hammer"
-	},
+	}],
 	devServer: {
 		publicPath: "/dist/"
 	},
@@ -25,7 +29,12 @@ module.exports = {
 			{
 				test: /(\.js)$/,
 				exclude: /(node_modules)/,
-				loader: 'babel-loader'
+				loader: 'babel-loader',
+				options: {
+					"presets": [ 
+						"es2015-native-modules"
+					]
+				}
 			}
 		]
 	},

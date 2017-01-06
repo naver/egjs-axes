@@ -7,10 +7,6 @@ import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 import { Mixin } from "./utils";
 
-
-const pos = Symbol("pos");
-const hammerManager = Symbol("hammerManager");
-
 // if (!window.eg || typeof eg.Component === "undefined") {
 // 	throw new Error("The eg.Component must be loaded before eg.MovableCoord.");
 // }
@@ -77,8 +73,8 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 			deceleration: 0.0006
 		}, options);
 		this._reviseOptions();
-		this[hammerManager] = new HammerManager();
-		this[pos] = this.options.min.concat();
+		this._hammerManager = new HammerManager();
+		this._pos = this.options.min.concat();
 	}
 
 	/**
@@ -98,7 +94,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	bind(element, options) {
-		this[hammerManager].add(element, options, this);
+		this._hammerManager.add(element, options, this);
 		return this;
 	}
 	
@@ -110,7 +106,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
 	 */
 	unbind(element) {
-		this[hammerManager].remove(element);
+		this._hammerManager.remove(element);
 		return this;
 	}
 
@@ -122,7 +118,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
 	 */
 	getHammer(element) {
-		return this[hammerManager].getHammer(element);
+		return this._hammerManager.getHammer(element);
 	}
 
 	// set up 'css' expression
@@ -152,12 +148,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @return {Number} pos.1 The Y coordinate <ko>y 좌표</ko>
 	 */
 	get() {
-		return this[pos].concat();
-	}
-
-	// @todo jsdoc
-	set(position) {
-		this[pos] = position.concat();
+		return this._pos.concat();
 	}
 
 	/**
@@ -169,7 +160,7 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
-	setTo(x, y, duration) {
+	setTo(x, y, duration = 0) {
 		let min = this.options.min;
 		let max = this.options.max;
 		let circular = this.options.circular;
@@ -198,8 +189,8 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 		if (duration) {
 			this._animateTo([ x, y ], duration);
 		} else {
-			this[pos] = Direction.getCircularPos([ x, y ], min, max, circular);
-			this._setPosAndTriggerChange(this[pos], false);
+			this._pos = Coordinate.getCircularPos([ x, y ], min, max, circular);
+			this._setPosAndTriggerChange(this._pos, false);
 			this._setInterrupt(false);
 		}
 		return this;
@@ -214,10 +205,10 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
-	setBy(x, y, duration) {
+	setBy(x, y, duration = 0) {
 		return this.setTo(
-			x != null ? this[pos][0] + x : this[pos][0],
-			y != null ? this[pos][1] + y : this[pos][1],
+			x != null ? this._pos[0] + x : this._pos[0],
+			y != null ? this._pos[1] + y : this._pos[1],
 			duration
 		);
 	}
@@ -228,9 +219,8 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	 * @method eg.MovableCoord#destroy
 	 */
 	destroy() {
-		console.log("destroy", this);
 		this.off();
-		this.hammerManager.destroy();
+		this._hammerManager.destroy();
 	}
 };
 Object.assign(MovableCoord, DIRECTION);

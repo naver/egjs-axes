@@ -5,15 +5,19 @@ module.exports = function(config) {
   var karmaConfig = {
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'chai', 'sinon'],
 
     // list of files / patterns to load in the browser
     files: [
+      './node_modules/phantomjs-polyfill/bind-polyfill.js',
+      './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+      './node_modules/phantomjs-polyfill-find/find-polyfill.js',
       './test/**/*.spec.js'
     ],
 
     plugins: [
       'karma-chai',
+      'karma-sinon',
       'karma-mocha',
       'karma-sourcemap-loader',
       'karma-webpack',
@@ -28,7 +32,7 @@ module.exports = function(config) {
     ],
 
     webpack: {
-      devtool: 'inline-source-map',
+      devtool: 'source-map',
       module: {
         rules: [
           {
@@ -36,7 +40,7 @@ module.exports = function(config) {
             exclude: /(node_modules)/,
             loader: 'babel-loader',
             options: {
-              // plugins: ['rewire']
+              plugins: ['rewire']
             }
           }
         ]
@@ -46,7 +50,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './test/**/*.spec.js': ['webpack']
+      './test/**/*.spec.js': config.coverage ? ['webpack'] : ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -62,7 +66,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
@@ -71,9 +75,9 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [],
 
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    webpackMiddleware: {
+        noInfo: true
+    },
 
     // Concurrency level
     // how many browser should be started simultaneous
@@ -87,21 +91,20 @@ module.exports = function(config) {
         dir: 'coverage'
     };
     karmaConfig.browsers.push("PhantomJS");
-    //  {
-    //     test: /(\.js)$/,
-    //     exclude: /(test\/unit|node_modules)/,
-    //     enforce: "pre",
-    //     loader: 'isparta-loader',
-    //     options: {
-    //       embedSource: true,
-    //       noAutoWrap: true,
-    //       babel: {
-    //           // plugins: ['rewire']
-    //       }
-    //     }
-    //   },
+    karmaConfig.webpack.module.rules.push(
+      {
+        test: /(\.js)$/,
+        exclude: /(test|node_modules)/,
+        enforce: "pre",
+        loader: 'isparta-loader'
+      }
+    );
+    // Continuous Integration mode
+    // if true, Karma captures browsers, runs the tests and exits
+    karmaConfig.singleRun = true;
   } else {
     karmaConfig.browsers.push("Chrome");
+    karmaConfig.singleRun = false;
   }
 
   config.set(karmaConfig);

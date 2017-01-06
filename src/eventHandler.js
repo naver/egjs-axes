@@ -1,12 +1,10 @@
 import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 
-const status = Symbol("status");
-
 export default (superclass) => class extends superclass {
     constructor() {
 		super();
-		this[status] = {
+		this._status = {
 			grabOutside: false,		// check whether user's action started on outside
 			currentHammer: null,		// current hammer instance
 			currentOptions: null,		// current bind options
@@ -16,13 +14,13 @@ export default (superclass) => class extends superclass {
     }
 
     _setCurrentTarget(info) {
-		this[status].currentOptions = info.options;
-		this[status].currentHanmmer = info.hammer;
+		this._status.currentOptions = info.options;
+		this._status.currentHanmmer = info.hammer;
     }
 
 	// panstart event handler
 	_start(e) {
-		if (!this[status].currentOptions.interruptable && this[status].prevented) {
+		if (!this._status.currentOptions.interruptable && this._status.prevented) {
 			return;
 		}
 		let pos = this.get();
@@ -47,13 +45,13 @@ export default (superclass) => class extends superclass {
 			hammerEvent: e
 		});
 
-		this[status].moveDistance = pos.concat();
-		this[status].grabOutside = Coordinate.isOutside(pos, min, max);
+		this._status.moveDistance = pos.concat();
+		this._status.grabOutside = Coordinate.isOutside(pos, min, max);
 	}
 
 	// panmove event handler
 	_move(e) {
-		if (!this._isInterrupting() || !this[status].moveDistance) {
+		if (!this._isInterrupting() || !this._status.moveDistance) {
 			return;
 		}
 		let pos = this.get(true);
@@ -61,7 +59,7 @@ export default (superclass) => class extends superclass {
 		let max = this.options.max;
 		let bounce = this.options.bounce;
 		let margin = this.options.margin;
-		let currentOptions = this[status].currentOptions;
+		let currentOptions = this._status.currentOptions;
 		let direction = currentOptions.direction;
 		let scale = currentOptions.scale;
 		let userDirection = Coordinate.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
@@ -74,7 +72,7 @@ export default (superclass) => class extends superclass {
 		let prevent  = false;
 		
 		// not support offset properties in Hammerjs - start
-		let prevInput = this[status].currentHanmmer.session.prevInput;
+		let prevInput = this._status.currentHanmmer.session.prevInput;
 		if (prevInput) {
 			e.offsetX = e.deltaX - prevInput.deltaX;
 			e.offsetY = e.deltaY - prevInput.deltaY;
@@ -84,11 +82,11 @@ export default (superclass) => class extends superclass {
 
 		// not support offset properties in Hammerjs - end
 		if (Coordinate.isHorizontal(direction, userDirection)) {
-			this[status].moveDistance[0] += (e.offsetX * scale[0]);
+			this._status.moveDistance[0] += (e.offsetX * scale[0]);
 			prevent = true;
 		}
 		if (Coordinate.isVertical(direction, userDirection)) {
-			this[status].moveDistance[1] += (e.offsetY * scale[1]);
+			this._status.moveDistance[1] += (e.offsetY * scale[1]);
 			prevent = true;
 		}
 		if (prevent) {
@@ -97,20 +95,20 @@ export default (superclass) => class extends superclass {
 		}
 		e.preventSystemEvent = prevent;
 
-		pos[0] = this[status].moveDistance[0];
-		pos[1] = this[status].moveDistance[1];
+		pos[0] = this._status.moveDistance[0];
+		pos[1] = this._status.moveDistance[1];
 		pos = Coordinate.getCircularPos(pos, min, max, this.options.circular);
 
 		// from outside to inside
-		if (this[status].grabOutside && !Coordinate.isOutside(pos, min, max)) {
-			this[status].grabOutside = false;
+		if (this._status.grabOutside && !Coordinate.isOutside(pos, min, max)) {
+			this._status.grabOutside = false;
 		}
 		
 		// when move pointer is held in outside
 		let tv;
 		let tn;
 		let tx;		
-		if (this[status].grabOutside) {
+		if (this._status.grabOutside) {
 			tn = min[0] - out[3], tx = max[0] + out[1], tv = pos[0];
 			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
 			tn = min[1] - out[0], tx = max[1] + out[2], tv = pos[1];
@@ -142,7 +140,7 @@ export default (superclass) => class extends superclass {
 	// panend event handler
 	_end(e) {
 		let pos = this.get();
-		if (!this._isInterrupting() || !this[status].moveDistance) {
+		if (!this._isInterrupting() || !this._status.moveDistance) {
 			return;
 		}
 
@@ -155,8 +153,8 @@ export default (superclass) => class extends superclass {
 				hammerEvent: e || null
 			});
 		} else {
-			let direction = this[status].currentOptions.direction;
-			let scale = this[status].currentOptions.scale;
+			let direction = this._status.currentOptions.direction;
+			let scale = this._status.currentOptions.scale;
 			let vX =  Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
 
@@ -199,16 +197,16 @@ export default (superclass) => class extends superclass {
 				this._setInterrupt(false);
 			}
 		}
-		this[status].moveDistance = null;
+		this._status.moveDistance = null;
 	}
 
 	_isInterrupting() {
 		// when interruptable is 'true', return value is always 'true'.
-		return this[status].currentOptions.interruptable || this[status].prevented;
+		return this._status.currentOptions.interruptable || this._status.prevented;
 	}
 
     _setInterrupt(prevented) {
-		!this[status].currentOptions.interruptable &&
-		(this[status].prevented = prevented);
+		!this._status.currentOptions.interruptable &&
+		(this._status.prevented = prevented);
 	}    
 };
