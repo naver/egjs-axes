@@ -7,7 +7,7 @@ export default (superclass) => class extends superclass {
 		this._status = {
 			grabOutside: false,		// check whether user's action started on outside
 			currentHammer: null,		// current hammer instance
-			currentOptions: null,		// current bind options
+			currentOptions: {},		// current bind options
 			moveDistance: null,		// a position of the first user's action
 			prevented: false		//  check whether the animation event was prevented
 		};
