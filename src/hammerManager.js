@@ -39,7 +39,7 @@ export default class HammerManager {
 
     add(element, options, handler) {
 		let el = utils.getElement(element);
-		let keyValue = el[UNIQUEKEY];
+		let keyValue = el.getAttribute(UNIQUEKEY);
 		let bindOptions = Object.assign({
 			direction: DIRECTION.DIRECTION_ALL,
 			scale: [ 1, 1 ],
@@ -68,16 +68,16 @@ export default class HammerManager {
 			el: el,
 			options: bindOptions
 		};
-		el[UNIQUEKEY] = keyValue;
+		el.setAttribute(UNIQUEKEY, keyValue);
 	}
 
     remove(element) {
         let el = utils.getElement(element);
-		let key = el[UNIQUEKEY];
+		let key = el.getAttribute(UNIQUEKEY);
 		if (key) {
 			this._hammers[key].hammer.destroy();
 			delete this._hammers[key];
-			delete el[UNIQUEKEY];
+			el.removeAttribute(UNIQUEKEY);
 		}
     }
 
@@ -88,7 +88,7 @@ export default class HammerManager {
 
     get(element) {
         let el = utils.getElement(element);
-		let key = el[UNIQUEKEY];
+		let key = el.getAttribute(UNIQUEKEY);
 		if (key && this._hammers[key]) {
 			return this._hammers[key];
 		} else {
@@ -101,7 +101,7 @@ export default class HammerManager {
 			.on("hammer.input", e => {
 				if (e.isFirst) {
 					// apply options each
-					handler._setCurrentTarget(this.get(e.target));
+					handler._setCurrentTarget(hammer, options);
                     handler._start(e);
 				} else if (e.isFinal) {
 					// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
@@ -130,7 +130,7 @@ export default class HammerManager {
     destroy() {
 		for (let p in this._hammers) {
 			this._hammers[p].hammer.destroy();
-			delete this._hammers[p].el[UNIQUEKEY];
+			delete this._hammers[p].el.getAttribute(UNIQUEKEY);
 			delete this._hammers[p];
 		}
 	}

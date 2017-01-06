@@ -1,40 +1,6 @@
 /**
  * Copyright (c) NAVER Corp.
  */
-
-var TRANSFORM = (function() {
-  var cssPrefixes = [ "Webkit", "Moz", "O", "ms" ];
-  var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
-  for (var i = 0, len = cssPrefixes.length ; i < len ; i++) {
-    if (cssPrefixes[i] + "Transition" in bodyStyle) {
-       return cssPrefixes[i] + "Transition";
-    }
-  }
-})();
-
-function setCardOnHand(card) {
-  var distance = getCardDistance(card, hand);
-
-  var cardTilt = distance.tilt;
-  var cardDistance = distance.distance;
-
-  var cardOffset = cardDistance - CARD_OFFSET - HAND_RADIUS;
-
-  if(handRotMin === null) {
-    handRotMin = cardTilt;
-  } else if(cardTilt < handRotMin) {
-    handRotMin = cardTilt;
-  }
-  if(handRotMax === null) {
-    handRotMax = cardTilt;
-  } else if(cardTilt > handRotMax) {
-    handRotMax = cardTilt;
-  }
-  card.style[TRANSFORM] = "rotateZ(" + cardTilt + "deg) translateY("+cardOffset+"px)";
-  card.setAttribute("data-cardOffset", cardOffset);
-}
-
-
 var movableDot = document.getElementById("area");
 var hand = document.querySelector(".hand");
 var cards = [].slice.apply(document.querySelectorAll(".handcard"));
@@ -60,14 +26,14 @@ var movalbeCoord = new eg.MovableCoord({
     "change" : function(evt) {
         var pos = evt.pos;
         movableDot.style["bottom"] = -1.4 * pos[1] + "px";
-        movableDot.style[TRANSFORM] = "translateX(" + pos[0]*2.3 + "px)";
-        hand.style[TRANSFORM] = "rotateZ(" + pos[0] + "deg)";
+        movableDot.style["transform"] = "translateX(" + (pos[0] * 2.3) + "px)";
+        hand.style["transform"] = "rotateZ(" + pos[0] + "deg)";
 
-      cards.forEach(function(card) {
-        var cardDistance = getCardDistance(card, hand).distance;
+      cards.forEach(function(v) {
+        var cardDistance = getCardDistance(v, hand).distance;
         var cardOffset = pos[1];
-        var currentRotateZ = card.style[TRANSFORM].split("translateY")[0];
-        card.style[TRANSFORM] = currentRotateZ + "translateY("+(card.getAttribute("data-cardOffset") + pos[1]) +"px)";
+        var currentRotateZ = v.style["transform"].split("translateY")[0];
+        v.style["transform"] = currentRotateZ + "translateY("+(parseFloat(v.getAttribute("data-cardOffset")) + pos[1]) +"px)";
       });
     }
 });
@@ -96,4 +62,26 @@ function getCardDistance(card, hand) {
 
 function radToDeg (rad) {
   return rad / Math.PI * 180;
+}
+
+function setCardOnHand(card) {
+  var distance = getCardDistance(card, hand);
+
+  var cardTilt = distance.tilt;
+  var cardDistance = distance.distance;
+
+  var cardOffset = cardDistance - CARD_OFFSET - HAND_RADIUS;
+  
+  if(handRotMin === null) {
+    handRotMin = cardTilt;
+  } else if(cardTilt < handRotMin) {
+    handRotMin = cardTilt;
+  }
+  if(handRotMax === null) {
+    handRotMax = cardTilt;
+  } else if(cardTilt > handRotMax) {
+    handRotMax = cardTilt;
+  }
+  card.style["transform"] = "rotateZ(" + cardTilt + "deg) translateY("+cardOffset+"px)";
+  card.setAttribute("data-cardOffset", cardOffset);
 }

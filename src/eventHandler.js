@@ -13,9 +13,9 @@ export default (superclass) => class extends superclass {
 		};
     }
 
-    _setCurrentTarget(info) {
-		this._status.currentOptions = info.options;
-		this._status.currentHanmmer = info.hammer;
+    _setCurrentTarget(hammer, options) {
+		this._status.currentOptions = options;
+		this._status.currentHanmmer = hammer;
     }
 
 	// panstart event handler
