@@ -23,7 +23,6 @@
     "egjs-jsdoc-template": "*",
     "hammer-simulator": "0.0.1",
     "husky": "^0.11.4",
-    "i": "^0.3.5",
     "isparta-loader": "^2.0.0",
     "jquery": "^1.7.0",
     "jsdoc": "^3.4.3",

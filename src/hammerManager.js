@@ -48,7 +48,7 @@ export default class HammerManager {
 			inputType: [ "touch", "mouse" ]
 		}, options);
 
-		let inputClass = this._convertInputType(bindOptions.inputType);
+		let inputClass = this.convertInputType(bindOptions.inputType);
 		if (!inputClass) {
 			return;
 		}
@@ -114,10 +114,9 @@ export default class HammerManager {
 		hammer.off("hammer.input panstart panmove panend");
 	}
 
-    _convertInputType(inputType = []) {
+    convertInputType(inputType = []) {
 		let hasTouch = false;
 		let hasMouse = false;
-		// inputType = inputType || [];
 		inputType.forEach( v => {
 			switch (v) {
 				case "mouse" : hasMouse = true; break;
