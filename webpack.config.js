@@ -15,6 +15,7 @@ module.exports = {
 	externals: [{
 		"eg.component": {
 			commonjs: "eg.component",
+			commonjs2: "eg.component",
 			amd: "eg.Component",
 			root: ["eg", "Component"]
 		},
