@@ -20,7 +20,6 @@ export default (superclass) => class extends superclass {
 
 	// panstart event handler
 	_start(e) {
-		console.log("start...");
 		if (!this._status.currentOptions.interruptable && this._status.prevented) {
 			return;
 		}
@@ -158,9 +157,8 @@ export default (superclass) => class extends superclass {
 			let scale = this._status.currentOptions.scale;
 			let vX =  Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
-
-			!(direction & Coordinate.DIRECTION_HORIZONTAL) && (vX = 0);
-			!(direction & Coordinate.DIRECTION_VERTICAL) && (vY = 0);
+			!(direction & DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
+			!(direction & DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
 
 			let offset = Coordinate.getNextOffsetPos([
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
@@ -191,7 +189,6 @@ export default (superclass) => class extends superclass {
 				destPos: destPos,
 				hammerEvent: e || null
 			});
-
 			if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
 				this._animateTo(destPos, null, e || null);
 			} else {

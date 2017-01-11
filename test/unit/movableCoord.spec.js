@@ -1,9 +1,5 @@
 import MovableCoord from '../../src/movableCoord.js';
 
-Simulator.setType('touch');
-Simulator.events.touch.fakeSupport();
-		  
-
 describe("MovableCoord init Test", function() {
     beforeEach(() => {
 		  this.inst = null;
@@ -79,284 +75,213 @@ describe("MovableCoord init Test", function() {
 });
  
 
-// describe("MovableCoord Event Test", function() {
-//     this.timeout(10000);
-//     beforeEach(() => {
-//       this.inst = new MovableCoord( {
-//         min : [ 0, 0 ],
-//         max : [ 200, 400 ],
-//         bounce : 100,
-//         margin : 0,
-//         circular : false
-//       });
-//       var el = sandbox();
-//       var html = `<div id="area" 
-//         style="position:relative; border:5px solid #444; width:200px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>
-//         <div id="hmove" style="position:relative; border:5px solid #888; background-color:yellowgreen;width:200px; height:80px;"></div>
-//         <div id="vmove" style="position:relative; border:5px solid #888; background-color:skyblue;width:80px; height:400px; left:210px; top:-500px;"></div>`;
-//       el.innerHTML = html;
-//       this.el = el;
+describe("MovableCoord Event Test", function() {
+    this.timeout(10000);
+    beforeEach(() => {
+      this.inst = new MovableCoord( {
+        min : [ 0, 0 ],
+        max : [ 300, 400 ],
+        bounce : 100,
+        margin : 0,
+        circular : false
+      });
+      var el = sandbox();
+      var html = `<div id="area" 
+        style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>
+        <div id="hmove" style="position:relative; border:5px solid #888; background-color:yellowgreen;width:300px; height:80px;"></div>
+        <div id="vmove" style="position:relative; border:5px solid #888; background-color:skyblue;width:80px; height:400px; left:310px; top:-500px;"></div>`;
+      el.innerHTML = html;
+      this.el = el;
 
-//     });
-//     afterEach(() => {
-//       if(this.inst) {
-//         this.inst.destroy();
-//         this.inst = null;
-//       }
-//       // cleanup();
-//     });
+    });
+    afterEach(() => {
+      if(this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
     
-//     it("should check slow movement test (no-velocity)", (done) => {
-//       // Given
-//       var firedHold =0;
-//       var firedRelease = 0;
-//       var firedAnimationEnd = 0;
+    it("should check slow movement test (no-velocity)", (done) => {
+      // Given
+      var holdHandler = sinon.spy();
+      var changeHandler = sinon.spy();
+      var releaseHandler = sinon.spy();
+      var animationStartHandler = sinon.spy();
+      var animationEndHandler = sinon.spy();
 
+      this.inst.on( {
+        "hold": holdHandler,
+        "change": changeHandler,
+        "release": releaseHandler,
+        "animationStart" : animationStartHandler,
+        "animationEnd" : animationEndHandler
+      });
+      this.inst.bind(this.el);
 
-//       var holdHandler = sinon.spy();
-//       var changeHandler = sinon.spy();
-//       var releaseHandler = sinon.spy();
-//       var animationStartHandler = sinon.spy();
-//       var animationEndHandler = sinon.spy();
+      // When
+      Simulator.gestures.pan(this.el, {
+        pos: [30, 30],
+        deltaX: 10,
+        deltaY: 10,
+        duration: 3000,
+        easing: "linear"
+      }, function() {
+        // Then
+        var holdEvent = holdHandler.getCall(0).args[0];
+        expect(holdHandler.calledOnce).to.be.true;
+        expect(holdEvent.pos).to.deep.equal([0,0]);
+        expect(holdEvent.hammerEvent.isFirst).to.be.true;
+        expect(changeHandler.called).to.be.true;
+        for(var i=0, len = changeHandler.callCount; i <len; i++) {
+          expect(changeHandler.getCall(i).args[0].holding).to.be.true;
+        }
+        expect(releaseHandler.calledOnce).to.be.true;
+        expect(animationStartHandler.called).to.be.false;
+        expect(animationEndHandler.called).to.be.false;
+        done();
+      });
+    });
 
-//       this.inst.on( {
-//         "hold" : function(e) {
-//           firedHold++;
-//           // assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-//           // assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-//           // assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-//           console.log("hold");
-//         },
-//         "change" : function(e) {
-//           // assert.equal(e.holding, true, "holding value is 'true' before animationStart event");
-//           // assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-//           console.log("change");
-//         },
-//         "release" : function(e) {
-//           firedRelease++;
-//           console.log("release");
-//           // ok(true, "fire 'release' event");
-//           // assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-//         }
-//         // "hold" : holdHandler,
-//         // "animationStart" : animationStartHandler,
-//         // "animationEnd" : animationEndHandler
-//       });
-//       this.inst.bind(this.el);
+    it("should check slow movement test (no-velocity), release outside", (done) => {
+      // Given
+      var holdHandler = sinon.spy();
+      var releaseHandler = sinon.spy();
+      var animationStartHandler = sinon.spy();
+      var animationEndHandler = sinon.spy();
 
-//       // When
-//       Simulator.gestures.pan(this.el, {
-//         pos: [30, 30],
-//         deltaX: 10,
-//         deltaY: 10,
-//         duration: 3000,
-//         easing: "linear"
-//       }, function() {
-//         // Then
-//         // for test custom event
-//         setTimeout(function() {
-//           console.log(holdHandler.calledOnce)
-//           // expect(holdHandler.calledOnce).to.be.true;
-//           console.log(holdHandler.getCall(0));
-          
-          
-//           // expect(releaseHandler.calledOnce).to.be.true;
-//           expect(animationStartHandler.called).to.be.false;
-//           expect(animationEndHandler.called).to.be.false;
-//           done();
-//         },1000);
-//       });
-//     });
-// });
+      this.inst.on( {
+        "hold": holdHandler,
+        "change": function(e) {
+          if(animationStartHandler.called) {
+            expect(e.holding).to.be.false;
+          } else {
+            expect(e.holding).to.be.true;
+          }
+        },
+        "release": releaseHandler,
+        "animationStart" : animationStartHandler,
+        "animationEnd" : animationEndHandler
+      });
+      this.inst.bind(this.el);
 
-// QUnit.test("slow movement test (no-velocity)", function(assert) {
-// 	var done = assert.async();
+      // When
+      Simulator.gestures.pan(this.el, {
+        pos: [30, 30],
+        deltaX: -50,
+        deltaY: 10,
+        duration: 3000,
+        easing: "linear"
+      }, function() {
+        // Then
+        // for test animation event
+        setTimeout(function() {
+          var holdEvent = holdHandler.getCall(0).args[0];
+          expect(holdHandler.calledOnce).to.be.true;
+          expect(holdEvent.pos).to.deep.equal([0,0]);
+          expect(holdEvent.hammerEvent.isFirst).to.be.true;
+          expect(releaseHandler.calledOnce).to.be.true;
+          expect(animationStartHandler.calledOnce).to.be.true;
+          expect(animationEndHandler.calledOnce).to.be.true;
+          done();
+        }, 1000);
+      });
+    });
 
-// });
+    it("should check fast movement test (velocity)", (done) => {
+      // Given
+      var holdHandler = sinon.spy();
+      var releaseHandler = sinon.spy();
+      var animationStartHandler = sinon.spy();
+      var animationEndHandler = sinon.spy();
 
-// QUnit.test("slow movement test (no-velocity), release outside", function(assert) {
-// 	var done = assert.async();
-// 	//Given
-// 	var el = $("#area").get(0);
-// 	var firedHold =0;
-// 	var firedRelease = 0;
-// 	var firedAnimationEnd = 0;
-// 	var firedAnimationStart = 0;
+      this.inst.on( {
+        "hold": holdHandler,
+        "change": function(e) {
+          if(animationStartHandler.called) {
+            expect(e.holding).to.be.false;
+          } else {
+            expect(e.holding).to.be.true;
+          }
+        },
+        "release": releaseHandler,
+        "animationStart" : animationStartHandler,
+        "animationEnd" : animationEndHandler
+      });
+      this.inst.bind(this.el);
 
-// 	this.inst.on( {
-// 		"hold" : function(e) {
-// 			firedHold++;
-// 			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-// 			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"change" : function(e) {
-// 			if(firedAnimationStart === 0) {
-// 				assert.equal(e.holding, true, "holding value is 'true' before animationStart event");
-// 			} else {
-// 				assert.equal(e.holding, false, "holding value is 'false' after animationStart event");
-// 			}
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"release" : function(e) {
-// 			firedRelease++;
-// 			ok(true, "fire 'release' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationStart" : function(e) {
-// 			firedAnimationStart++;
-// 			ok(true, "must fired 'animationStart' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationEnd" : function(e) {
-// 			firedAnimationEnd++;
-// 			ok(true, "fire 'animationEnd' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		}
-// 	});
-// 	this.inst.bind(el);
+      // When
+      Simulator.gestures.pan(this.el, {
+        pos: [0, 0],
+        deltaX: 100,
+        deltaY: 100,
+        duration: 500,
+        easing: "linear"
+      }, function() {
+        // Then
+        // for test animation event
+        setTimeout(function() {
+          var holdEvent = holdHandler.getCall(0).args[0];
+          expect(holdHandler.calledOnce).to.be.true;
+          expect(holdEvent.pos).to.deep.equal([0,0]);
+          expect(holdEvent.hammerEvent.isFirst).to.be.true;
+          expect(releaseHandler.calledOnce).to.be.true;
+          expect(animationStartHandler.calledOnce).to.be.true;
+          expect(animationEndHandler.calledOnce).to.be.true;
+          done();
+        }, 2000);
+      });
+    });    
 
-// 	// When
-// 	Simulator.gestures.pan(el, {
-// 		pos: [0, 0],
-//             deltaX: 350,
-//             deltaY: 10,
-//             duration: 1000,
-//             easing: "linear"
-// 	}, function() {
-// 		// Then
-// 		// for test custom event
-// 		setTimeout(function() {
-// 			assert.equal(firedHold, 1, "fired 'hold' event");
-// 			assert.equal(firedRelease, 1,"fired 'release' event");
-// 			assert.equal(firedAnimationStart, 1, "fired 'animationStrt' event");
-// 			assert.equal(firedAnimationEnd, 1, "fired 'animationEnd' event");
-// 			done();
-// 		},1000);
-//     	});
-// });
+    it("should check movement test when stop method was called in 'animationStart' event", (done) => {
+      // Given
+      var timer = null;
+      var holdHandler = sinon.spy();
+      var releaseHandler = sinon.spy();
+      var animationStartHandler = sinon.spy(function(e) {
+            e.stop();
+            timer = setTimeout(function() {
+              timer = null;
+              e.done();
+            }, e.duration);
+          });
+      var animationEndHandler = sinon.spy();
 
-// QUnit.test("fast movement test (velocity)", function(assert) {
-// 	var done = assert.async();
-// 	//Given
-// 	var el = $("#area").get(0);
-// 	var firedHold = 0;
-// 	var firedRelease = 0;
-// 	var firedAnimationStart = 0;
-// 	var firedAnimationEnd = 0;
+      this.inst.on( {
+        "hold": holdHandler,
+        "change": function(e) {
+          if(animationStartHandler.called) {
+            expect(e.holding).to.be.false;
+          } else {
+            expect(e.holding).to.be.true;
+          }
+        },
+        "release": releaseHandler,
+        "animationStart" : animationStartHandler,
+        "animationEnd" : animationEndHandler
+      });
+      this.inst.bind(this.el);
 
-// 	this.inst.on( {
-// 		"hold" : function(e) {
-// 			firedHold++;
-// 			assert.deepEqual(e.pos, [ 0, 0 ], "fire 'hold' event");
-// 			assert.equal(e.hammerEvent.isFirst, true, "'hold' event is first event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"change" : function(e) {
-// 			if(firedAnimationStart) {
-// 				assert.equal(e.holding, false, "holding value was 'false' before animationStart event");
-// 			} else {
-// 				assert.equal(e.holding, true, "holding value was 'true' after animationStart event");
-// 			}
-// 			assert.equal(this._pos[0], e.pos[0], "event x-pos must equal x-pos of the object");
-// 			assert.equal(this._pos[1], e.pos[1], "event y-pos must equal y-pos of the object");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"release" : function(e) {
-// 			firedRelease++;
-// 			ok(true, "fire 'release' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationStart" : function(e) {
-// 			firedAnimationStart++;
-// 			ok(true, "fire 'animationStart' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationEnd" : function(e) {
-// 			firedAnimationEnd++;
-// 			ok(true, "fire 'animationEnd' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		}
-// 	});
-// 	this.inst.bind(el);
-
-// 	// When
-// 	Simulator.gestures.pan(el, {
-// 		pos: [0, 0],
-//             deltaX: 100,
-//             deltaY: 100,
-//             duration: 1000,
-//             easing: "linear"
-// 	}, function() {
-// 		// Then
-// 		// for test custom event
-// 		setTimeout(function() {
-// 			assert.equal(firedHold, 1,"fired 'hold' event");
-// 			assert.equal(firedRelease,1,"fired 'release' event");
-// 			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
-// 			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-// 			done();
-// 		},1000);
-//     	});
-// });
-
-// QUnit.test("movement test when stop method was called in 'animationStart' event", function(assert) {
-// 	var done = assert.async();
-// 	//Given
-// 	var el = $("#area").get(0);
-// 	var timer = null;
-// 	var firedRelease = 0;
-// 	var firedAnimationStart = 0;
-// 	var firedAnimationEnd = 0;
-
-// 	this.inst.on( {
-// 		"change" : function(e) {
-// 			if(firedAnimationStart) {
-// 				assert.equal(e.holding, false, "holding value was 'false' before animationStart event");
-// 			} else {
-// 				assert.equal(e.holding, true, "holding value was 'true' after animationStart event");
-// 			}
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"release" : function(e) {
-// 			firedRelease++;
-// 			ok(true, "fire 'release' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationStart" : function(e) {
-// 			firedAnimationStart++;
-// 			e.stop();
-// 			timer = setTimeout(function() {
-// 				timer = null;
-// 				e.done();
-// 			}, e.duration);
-// 			ok(true, "fire 'animationStart' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		},
-// 		"animationEnd" : function(e) {
-// 			firedAnimationEnd++;
-// 			ok(true, "fire 'animationEnd' event");
-// 			assert.equal(this._isInterrupting(), true, "_isInterrupting is 'true'");
-// 		}
-// 	});
-// 	this.inst.bind(el);
-
-// 	// When
-// 	Simulator.gestures.pan(el, {
-// 		pos: [0, 0],
-//             deltaX: 100,
-//             deltaY: 100,
-//             duration: 1000,
-//             easing: "linear"
-// 	}, function() {
-// 		// Then
-// 		// for test custom event
-// 		setTimeout(function() {
-// 			assert.equal(firedRelease,1,"fired 'release' event");
-// 			assert.equal(firedAnimationStart, 1,"fired 'animationStart' event");
-// 			assert.equal(firedAnimationEnd, 1,"fired 'animationEnd' event");
-// 			done();
-// 		},1000);
-//     	});
-// });
-
+      // When
+      Simulator.gestures.pan(this.el, {
+        pos: [30, 30],
+        deltaX: 100,
+        deltaY: 100,
+        duration: 500,
+        easing: "linear"
+      }, function() {
+        // Then
+        // for test animation event
+        setTimeout(function() {
+          var holdEvent = holdHandler.getCall(0).args[0];
+          expect(holdHandler.calledOnce).to.be.true;
+          expect(holdEvent.pos).to.deep.equal([0,0]);
+          expect(holdEvent.hammerEvent.isFirst).to.be.true;
+          expect(releaseHandler.calledOnce).to.be.true;
+          expect(animationStartHandler.calledOnce).to.be.true;
+          expect(animationEndHandler.calledOnce).to.be.true;
+          done();
+        }, 1000);
+      });
+    }); 
+});

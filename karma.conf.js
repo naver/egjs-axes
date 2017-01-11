@@ -12,8 +12,9 @@ module.exports = function(config) {
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       './node_modules/phantomjs-polyfill-find/find-polyfill.js',
-      './node_modules/hammer-simulator/index.js',
       './node_modules/lite-fixture/index.js',
+      './node_modules/hammer-simulator/index.js',
+      './test/hammer-simulator.run.js',
       './test/**/*.spec.js'
     ],
 
@@ -26,12 +27,7 @@ module.exports = function(config) {
       'karma-mocha-reporter',
       'karma-coverage',
       'karma-phantomjs-launcher',
-      'karma-chrome-launcher',
-      {
-        'hammer-simulator': ['factory', function() {
-          console.log("run");
-        }]
-      }
+      'karma-chrome-launcher'
     ],
 
     // list of files to exclude

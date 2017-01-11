@@ -24,8 +24,8 @@ describe("HammerManager bind/unbind Test", function() {
       this.inst.add(el);
 
       // Then
-      expect(before).to.be.null;
-      expect(el.getAttribute(UNIQUEKEY)).to.not.null;
+      expect(before).to.not.exist;
+      expect(el.getAttribute(UNIQUEKEY)).to.exist;
       expect(beforeHammerCount + 1).to.be.equal(Object.keys(this.inst._hammers).length);
     });
 
@@ -55,7 +55,7 @@ describe("HammerManager bind/unbind Test", function() {
       this.inst.destroy();
 
       // Then
-      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(el.getAttribute(UNIQUEKEY)).to.not.exist;
       expect(Object.keys(this.inst._hammers).length).to.be.equal(0);
       this.inst = null;
     });
@@ -71,9 +71,9 @@ describe("HammerManager bind/unbind Test", function() {
       this.inst.remove(el);
 
       // Then
-      expect(before).to.not.null;
+      expect(before).to.exist;
       expect(before).to.not.equal(el.getAttribute(UNIQUEKEY));
-      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(el.getAttribute(UNIQUEKEY)).to.not.exist;
       expect(beforeHammerCount-1).to.be.equal(Object.keys(this.inst._hammers).length);
     });
 });
@@ -155,8 +155,8 @@ describe("HammerManager inputType Test", function() {
       });
 
       // Then
-      expect(before).to.be.null;
-      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(before).to.not.exist;
+      expect(el.getAttribute(UNIQUEKEY)).to.not.exist;
       expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
     });
 
@@ -175,8 +175,8 @@ describe("HammerManager inputType Test", function() {
       this.inst.remove(el);
 
       // Then
-      expect(before).to.be.null;
-      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(before).to.not.exist;
+      expect(el.getAttribute(UNIQUEKEY)).to.not.exist;
       expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
     });
 });
@@ -209,6 +209,6 @@ describe("HammerManager getHammer Test", function() {
 
       // Then
       expect(Object.keys(this.inst._hammers).length).to.be.equal(0);
-      expect(this.inst.getHammer(el)).to.be.null;
+      expect(this.inst.getHammer(el)).to.not.exist;
     });
 });

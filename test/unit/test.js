@@ -2,7 +2,8 @@
 * Copyright (c) 2015 NAVER Corp.
 * egjs projects are licensed under the MIT license
 */
-QUnit.config.reorder = false;
+
+
 
 QUnit.module("movableCoord methods Test", {
 	beforeEach : function() {
