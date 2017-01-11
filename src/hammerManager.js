@@ -114,9 +114,10 @@ export default class HammerManager {
 		hammer.off("hammer.input panstart panmove panend");
 	}
 
-    convertInputType(inputType = []) {
+    convertInputType(inputType) {
 		let hasTouch = false;
 		let hasMouse = false;
+		inputType = inputType || [];
 		inputType.forEach( v => {
 			switch (v) {
 				case "mouse" : hasMouse = true; break;
@@ -130,7 +131,7 @@ export default class HammerManager {
     destroy() {
 		for (let p in this._hammers) {
 			this._hammers[p].hammer.destroy();
-			delete this._hammers[p].el.getAttribute(UNIQUEKEY);
+			this._hammers[p].el.removeAttribute(UNIQUEKEY);
 			delete this._hammers[p];
 		}
 	}

@@ -1,253 +1,214 @@
 import HammerManager from '../../src/hammerManager.js';
+import Hammer from "hammerjs";
+import { UNIQUEKEY, DIRECTION } from '../../src/consts.js';
 
-describe("HammerManager Test", function() {
+describe("HammerManager bind/unbind Test", function() {
     beforeEach(() => {
-		  this.inst = null;
+      this.inst = new HammerManager();;
     });
     afterEach(() => {
-      if(this.inst) {
+      if (this.inst) {
         this.inst.destroy();
         this.inst = null;
       }
+      cleanup();
     });
     
-    it("should check a initialization empty value", () => {
-        // Given
-        // When
-        // Then
+    it("should check a element when adding", () => {
+      // Given
+      var el = sandbox();
+      var before = el.getAttribute(UNIQUEKEY);
+      var beforeHammerCount = Object.keys(this.inst._hammers).length;
+
+      // When
+      this.inst.add(el);
+
+      // Then
+      expect(before).to.be.null;
+      expect(el.getAttribute(UNIQUEKEY)).to.not.null;
+      expect(beforeHammerCount + 1).to.be.equal(Object.keys(this.inst._hammers).length);
+    });
+
+    it("should check one element case of double adding", () => {
+      // Given
+      var el = sandbox();
+      this.inst.add(el);
+      var beforeHammerCount = Object.keys(this.inst._hammers).length;
+      var before = el.getAttribute(UNIQUEKEY);
+      var beforeHammerObject = this.inst.getHammer(el);
+      
+      // When
+      this.inst.add(el);
+
+      // Then
+      expect(before).to.be.equal(el.getAttribute(UNIQUEKEY));
+      expect(beforeHammerObject).to.not.deep.equal(this.inst.getHammer(el));
+      expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
+    });
+
+    it("should check one element after calling destroy", () => {
+      // Given
+      var el = sandbox();
+      this.inst.add(el);
+
+      // When
+      this.inst.destroy();
+
+      // Then
+      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(Object.keys(this.inst._hammers).length).to.be.equal(0);
+      this.inst = null;
+    });
+
+    it("should check a element when removing", () => {
+      // Given
+      var el = sandbox();
+      this.inst.add(el);
+      var before = el.getAttribute(UNIQUEKEY);
+      var beforeHammerCount = Object.keys(this.inst._hammers).length;
+
+      // When
+      this.inst.remove(el);
+
+      // Then
+      expect(before).to.not.null;
+      expect(before).to.not.equal(el.getAttribute(UNIQUEKEY));
+      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(beforeHammerCount-1).to.be.equal(Object.keys(this.inst._hammers).length);
     });
 });
 
+describe("HammerManager inputType Test", function() {
+    beforeEach(() => {
+      this.inst = new HammerManager();;
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      HammerManager.__ResetDependency__("SUPPORT_TOUCH");
+      cleanup();
+    });
 
-// QUnit.module("movableCoord bind/unbind/getHammer Test", {
-// 	beforeEach : function() {
-// 		this.inst = new eg.MovableCoord( {
-// 			min : [ 0, 0 ],
-// 			max : [ 300, 400 ],
-// 			bounce : 100,
-// 			margin : 0,
-// 			circular : false
-// 		});
-// 	},
-// 	afterEach : function() {
-// 		if (this.inst) {
-// 			this.inst.destroy();
-// 			this.inst = null;
-// 		}
-// 	}
-// });
+    it("should check convertInputType when supporting touch", () => {
+      // Given
+      HammerManager.__Rewire__("SUPPORT_TOUCH", true);
 
-// QUnit.test("bind", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	var before = el[eg.MovableCoord._KEY];
-// 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
+      // When
+      var inputType = [ "touch", "mouse" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
 
-// 	// When
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
+      // When
+      inputType = [ "touch" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
 
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
-// 	assert.notEqual(key, undefined, "key data value is something after call bind method" );
-// 	assert.equal(beforeHammerCount+1, Object.keys(this.inst._hammers).length, "added hammer instance after call bind method" );
-// });
+      // When
+      inputType = [ "mouse" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
-// QUnit.test("bind with inputType", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	var before = el[eg.MovableCoord._KEY];
-// 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-
-// 	// When
-// 	var returnVal = this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL,
-// 		inputType : null
-// 	});
-
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(returnVal, this.inst, "return instance" );
-// 	assert.equal(before, undefined, "key data value is 'undefined'' before call bind method" );
-// 	assert.equal(key, undefined, "key data value is 'undefined' after call bind method" );
-// 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
-// });
-
-// QUnit.test("unbind", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
-// 	var before = el[eg.MovableCoord._KEY];
-// 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-
-// 	// When
-// 	var returnVal = this.inst.unbind(el);
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(returnVal, this.inst, "return instance" );
-// 	assert.notEqual(before, key, "key data value was changed after call 'unbind' method" );
-// 	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
-// 	assert.equal(beforeHammerCount-1, Object.keys(this.inst._hammers).length, "removed hammer instance after call bind method" );
-// });
-
-// QUnit.test("unbind with inputType", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL,
-// 		inputType : []
-// 	});
-// 	var before = el[eg.MovableCoord._KEY];
-// 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-
-// 	// When
-// 	this.inst.unbind(el);
-
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(before, undefined, "key data value is 'undefined'' after call 'unbind' method" );
-// 	assert.equal(key, undefined, "key data value is 'undefined'' after call bind method" );
-// 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "nothing" );
-// });
-
-// QUnit.test("one element, double bind", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
-// 	var beforeHammerCount = Object.keys(this.inst._hammers).length;
-// 	var before = el[eg.MovableCoord._KEY];
-// 	var beforeHammerObject = this.inst._hammers[before];
-
-// 	// When
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_HORIZONTAL
-// 	});
-
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(before, key, "key data value is same" );
-// 	assert.notDeepEqual(beforeHammerObject.inst, this.inst._hammers[key].inst, "recreate hammer instance" );
-// 	assert.equal(beforeHammerCount, Object.keys(this.inst._hammers).length, "hammer instance count is same" );
-// });
+      // When
+      inputType = [ ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.null;
+    });
 
 
-// QUnit.test("bind, after calling destroy", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
+    it("should check convertInputType when not supporting touch", () => {
+      // Given
+      HammerManager.__Rewire__("SUPPORT_TOUCH", false);
 
-// 	// When
-// 	this.inst.destroy();
+      // When
+      var inputType = [ "touch", "mouse" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
-// 	// Then
-// 	var key = el[eg.MovableCoord._KEY];
-// 	assert.equal(key, undefined, "key is undefined" );
-// 	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
-// 	this.inst = null;
-// });
+      // When
+      inputType = [ "touch" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.null;
 
+      // When
+      inputType = [ "mouse" ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
-// QUnit.test("getHammer", function(assert) {
-// 	// Given
-// 	var el = document.getElementById("area");
+      // When
+      inputType = [ ];
+      // Then
+      expect(this.inst.convertInputType(inputType)).to.be.null;
+    });    
 
-// 	// When
-// 	this.inst.bind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
+    it("should check a element when adding with inputType", () => {
+      // Given
+      var el = sandbox();
+      var beforeHammerCount = Object.keys(this.inst._hammers).length;
+      var before = el.getAttribute(UNIQUEKEY);
+      
+      // When
+      this.inst.add(el, {
+        direction : DIRECTION.DIRECTION_ALL,
+        inputType : null
+      });
 
-// 	// Then
-// 	assert.equal(Object.keys(this.inst._hammers).length, 1, "hammer instance count is 1" );
-// 	assert.equal(this.inst.getHammer(el), this.inst._hammers[Object.keys(this.inst._hammers)[0]].inst, "hammer instance is equal" );
+      // Then
+      expect(before).to.be.null;
+      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
+    });
 
-// 	// When
-// 	this.inst.unbind(el, {
-// 		direction : eg.MovableCoord.DIRECTION_ALL
-// 	});
+    it("should check a element when removing with inputType", () => {
+      // Given
+      var el = sandbox();
+      this.inst.add(el, {
+        direction : DIRECTION.DIRECTION_ALL,
+        inputType : []
+      });
+      
+      var before = el.getAttribute(UNIQUEKEY);
+      var beforeHammerCount = Object.keys(this.inst._hammers).length;
+      
+      // When
+      this.inst.remove(el);
 
-// 	// Then
-// 	assert.equal(Object.keys(this.inst._hammers).length, 0, "hammer instance count is zero" );
-// 	assert.equal(this.inst.getHammer(el), null, "hammer instance is equal" );
-// });
+      // Then
+      expect(before).to.be.null;
+      expect(el.getAttribute(UNIQUEKEY)).to.be.null;
+      expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
+    });
+});
 
+describe("HammerManager getHammer Test", function() {
+    beforeEach(() => {
+      this.inst = new HammerManager();;
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
 
+    it("should check getHammer", () => {
+      // Given
+      var el = sandbox();
 
-// QUnit.test("_convertInputType (support touch)", function(assert) {
-// 	// Given
-// 	var globalWithToucnSupport = {
-// 		"ontouchstart": {}
-// 	};
-// 	var method = eg.invoke("movableCoord", [eg, globalWithToucnSupport, Hammer]);
-// 	var inst = new method.MovableCoord( {
-// 		min : [ 0, 0 ],
-// 		max : [ 300, 400 ],
-// 		bounce : 100,
-// 		margin : 0,
-// 		circular : false
-// 	});
-// 	var supportTouch = true;
-// 	var notSupportTouch = false;
+      // When
+      this.inst.add(el);
 
-// 	// When
-// 	var inputType = [ "touch", "mouse" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+      // Then
+      expect(Object.keys(this.inst._hammers).length).to.be.equal(1);
+      expect(this.inst.getHammer(el)).to.deep.equal(this.inst._hammers[Object.keys(this.inst._hammers)[0]].hammer);
 
-// 	// When
-// 	inputType = [ "touch" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), Hammer.TouchInput, "check TouchInput");
+      // When
+      this.inst.remove(el);
 
-// 	// When
-// 	inputType = [ "mouse" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput");
-
-// 	// When
-// 	inputType = [ ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), null, "type is null");
-// });
-
-// QUnit.test("_convertInputType (not support touch)", function(assert) {
-// 	// Given
-// 	var globalWithoutToucnSupport = {};
-// 	var method = eg.invoke("movableCoord", [eg, globalWithoutToucnSupport, Hammer]);
-// 	var inst = new method.MovableCoord( {
-// 		min : [ 0, 0 ],
-// 		max : [ 300, 400 ],
-// 		bounce : 100,
-// 		margin : 0,
-// 		circular : false
-// 	});
-// 	var supportTouch = true;
-// 	var notSupportTouch = false;
-
-// 	// When
-// 	var inputType = [ "touch", "mouse" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check TouchInput(not supporting touch)");
-
-// 	// When
-// 	inputType = [ "touch" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), null, "check TouchInput(not supporting touch)");
-
-// 	// When
-// 	inputType = [ "mouse" ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), Hammer.MouseInput, "check MouseInput(not supporting touch)");
-
-// 	// When
-// 	inputType = [ ];
-// 	// Then
-// 	assert.equal(inst._convertInputType(inputType), null, "type is null(not supporting touch)");
-// });
+      // Then
+      expect(Object.keys(this.inst._hammers).length).to.be.equal(0);
+      expect(this.inst.getHammer(el)).to.be.null;
+    });
+});

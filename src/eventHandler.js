@@ -20,6 +20,7 @@ export default (superclass) => class extends superclass {
 
 	// panstart event handler
 	_start(e) {
+		console.log("start...");
 		if (!this._status.currentOptions.interruptable && this._status.prevented) {
 			return;
 		}

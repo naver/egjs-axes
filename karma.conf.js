@@ -12,6 +12,8 @@ module.exports = function(config) {
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
       './node_modules/phantomjs-polyfill-find/find-polyfill.js',
+      './node_modules/hammer-simulator/index.js',
+      './node_modules/lite-fixture/index.js',
       './test/**/*.spec.js'
     ],
 
@@ -24,7 +26,12 @@ module.exports = function(config) {
       'karma-mocha-reporter',
       'karma-coverage',
       'karma-phantomjs-launcher',
-      'karma-chrome-launcher'
+      'karma-chrome-launcher',
+      {
+        'hammer-simulator': ['factory', function() {
+          console.log("run");
+        }]
+      }
     ],
 
     // list of files to exclude
@@ -81,7 +88,10 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
+
+    captureTimeout: 60000,
+    browserDisconnectTimeout: 10000
   };
 
   if(config.coverage) {
