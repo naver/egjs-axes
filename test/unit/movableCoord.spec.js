@@ -316,9 +316,7 @@ describe("MovableCoord Event Test", function() {
       });
       var el = sandbox();
       var html = `<div id="area" 
-        style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>
-        <div id="hmove" style="position:relative; border:5px solid #888; background-color:yellowgreen;width:300px; height:80px;"></div>
-        <div id="vmove" style="position:relative; border:5px solid #888; background-color:skyblue;width:80px; height:400px; left:310px; top:-500px;"></div>`;
+        style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
       el.innerHTML = html;
       this.el = el;
     });
