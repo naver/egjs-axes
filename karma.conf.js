@@ -15,7 +15,7 @@ module.exports = function(config) {
       './node_modules/lite-fixture/index.js',
       './node_modules/hammer-simulator/index.js',
       './test/hammer-simulator.run.js',
-      './test/**/*.spec.js'
+      './test/unit/movableCoord.spec.js'
     ],
 
     plugins: [
@@ -86,8 +86,7 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
 
-    captureTimeout: 60000,
-    browserDisconnectTimeout: 10000
+    captureTimeout: 60000
   };
 
   if(config.coverage) {

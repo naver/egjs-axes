@@ -36,7 +36,7 @@
     "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.1",
-    "lite-fixture": "^1.0.0",
+    "lite-fixture": "^1.0.1",
     "mocha": "^3.2.0",
     "npm": "^4.0.5",
     "phantomjs-polyfill": "0.0.2",
