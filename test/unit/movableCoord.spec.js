@@ -234,6 +234,9 @@ describe("MovableCoord method Test when inputType is []", function() {
 
 describe("MovableCoord setTo method Test with Animation", function() {
     beforeEach(() => {
+      this.animationStartHandler = sinon.spy();
+      this.animationEndHandler = sinon.spy();
+      this.changeHandler = sinon.spy();
 		  this.inst = new MovableCoord( {
         min : [ 0, 0 ],
         max : [ 300, 400 ],
@@ -242,17 +245,63 @@ describe("MovableCoord setTo method Test with Animation", function() {
         circular : false,
         maximumDuration : 200
       });
+      this.inst.on({
+        "change": this.changeHandler,
+        "animationStart" : this.animationStartHandler,
+        "animationEnd" : this.animationEndHandler,
+      });
     });
     afterEach(() => {
       if(this.inst) {
         this.inst.destroy();
         this.inst = null;
       }
+      this.animationStartHandler.reset();
+      this.animationEndHandler.reset();
+      this.changeHandler.reset();
     });
 
-    it("should check event flow when maximumDuration(200ms) is bigger than a duration of setTo", () => {
+    it("should check event flow when maximumDuration(200ms) is bigger than a duration of setTo", (done) => {
+      // Given
+      // When
+      this.inst.setTo(200, 200, 100);
       
+      // Then
+      setTimeout(() => {
+        expect(this.animationStartHandler.calledOnce).to.be.true;      
+        expect(this.changeHandler.called).to.be.true;      
+        expect(this.animationEndHandler.calledOnce).to.be.true;      
+        done();
+      }, 150);
     });
+
+    it("should check event flow when a duration of setTo is bigger than maximumDuration(200ms)", (done) => {
+      // Given
+      // When
+      this.inst.setTo(200, 200, 3000);
+
+      // Then
+      setTimeout(() => {
+        expect(this.animationEndHandler.called).to.be.false;
+      }, 100);
+      setTimeout(() => {
+        expect(this.animationStartHandler.calledOnce).to.be.true;      
+        expect(this.changeHandler.called).to.be.true;      
+        expect(this.animationEndHandler.calledOnce).to.be.true;
+        done();      
+      }, 250);   
+    });
+
+    it("should check event flow when a duration of setTo is '0'", () => {
+      // Given
+      // When
+      this.inst.setTo(200, 200, 0);
+
+      // Then
+      expect(this.animationStartHandler.called).to.be.false;      
+      expect(this.changeHandler.called).to.be.true;      
+      expect(this.animationEndHandler.called).to.be.false;
+    });    
 });
 
 describe("MovableCoord Event Test", function() {

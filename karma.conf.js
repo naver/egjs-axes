@@ -15,7 +15,7 @@ module.exports = function(config) {
       './node_modules/lite-fixture/index.js',
       './node_modules/hammer-simulator/index.js',
       './test/hammer-simulator.run.js',
-      './test/unit/movableCoord.spec.js'
+      './test/**/*.spec.js'
     ],
 
     plugins: [
