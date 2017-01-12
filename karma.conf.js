@@ -18,17 +18,17 @@ module.exports = function(config) {
       './test/**/*.spec.js'
     ],
 
-    plugins: [
-      'karma-chai',
-      'karma-sinon',
-      'karma-mocha',
-      'karma-sourcemap-loader',
-      'karma-webpack',
-      'karma-mocha-reporter',
-      'karma-coverage',
-      'karma-phantomjs-launcher',
-      'karma-chrome-launcher'
-    ],
+    // plugins: [
+    //   'karma-chai',
+    //   'karma-sinon',
+    //   'karma-mocha',
+    //   'karma-sourcemap-loader',
+    //   'karma-webpack',
+    //   'karma-mocha-reporter',
+    //   'karma-coverage',
+    //   'karma-phantomjs-launcher',
+    //   'karma-chrome-launcher'
+    // ],
 
     // list of files to exclude
     exclude: [
