@@ -152,68 +152,6 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	}
 
 	/**
-	 * Moves an element to specific coordinates.
-	 * @ko 좌표를 이동한다.
-	 * @method eg.MovableCoord#setTo
-	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-	 * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
-	 */
-	setTo(x, y, duration = 0) {
-		let min = this.options.min;
-		let max = this.options.max;
-		let circular = this.options.circular;
-		this._grab(min, max, circular);
-		let pos = this.get();
-		if (x === pos[0] && y === pos[1]) {
-			return this;
-		}
-		this._setInterrupt(true);
-		if (x !== pos[0]) {
-			if (!circular[3]) {
-				x = Math.max(min[0], x);
-			}
-			if (!circular[1]) {
-				x = Math.min(max[0], x);
-			}
-		}
-		if (y !== pos[1]) {
-			if (!circular[0]) {
-				y = Math.max(min[1], y);
-			}
-			if (!circular[2]) {
-				y = Math.min(max[1], y);
-			}
-		}
-		if (duration) {
-			this._animateTo([ x, y ], duration);
-		} else {
-			this._pos = Coordinate.getCircularPos([ x, y ], min, max, circular);
-			this._setPosAndTriggerChange(this._pos, false);
-			this._setInterrupt(false);
-		}
-		return this;
-	}
-
-	/**
-	 * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
-	 * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
-	 * @method eg.MovableCoord#setBy
-	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-	 * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
-	 */
-	setBy(x, y, duration = 0) {
-		return this.setTo(
-			x != null ? this._pos[0] + x : this._pos[0],
-			y != null ? this._pos[1] + y : this._pos[1],
-			duration
-		);
-	}
-
-	/**
 	 * Destroys elements, properties, and events used in a module.
 	 * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 	 * @method eg.MovableCoord#destroy

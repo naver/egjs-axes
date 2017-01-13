@@ -15,7 +15,7 @@ module.exports = function(config) {
       './node_modules/lite-fixture/index.js',
       './node_modules/hammer-simulator/index.js',
       './test/hammer-simulator.run.js',
-      './test/**/*.spec.js'
+      './test/unit/eventHandler.spec.js'
     ],
 
     // plugins: [
@@ -108,6 +108,7 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     karmaConfig.singleRun = true;
   } else {
+    // karmaConfig.browsers.push("PhantomJS");
     karmaConfig.browsers.push("Chrome");
     karmaConfig.singleRun = false;
   }
