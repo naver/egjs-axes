@@ -1,6 +1,6 @@
 import MovableCoord from '../../src/movableCoord.js';
 
-describe("setTo/setBy method Test", function() {
+describe("AnimationHandler setTo/setBy method Test", function() {
   beforeEach(() => {
     this.changeHandler = sinon.spy();
     this.inst = new MovableCoord( {
@@ -75,7 +75,7 @@ describe("setTo/setBy method Test", function() {
 });
 
 
-describe("MovableCoord setTo/setBy Test when inputType is []", function() {
+describe("AnimationHandler setTo/setBy Test when inputType is []", function() {
   beforeEach(() => {
     this.changeHandler = sinon.spy();
     this.inst = new MovableCoord( {
@@ -150,7 +150,7 @@ describe("MovableCoord setTo/setBy Test when inputType is []", function() {
   });          
 });
 
-describe("setTo method Test with Animation", function() {
+describe("AnimationHandler setTo method Test with Animation", function() {
     beforeEach(() => {
       this.animationStartHandler = sinon.spy();
       this.animationEndHandler = sinon.spy();

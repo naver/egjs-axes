@@ -40,7 +40,6 @@
     "mocha": "^3.2.0",
     "npm": "^4.0.5",
     "phantomjs-polyfill": "0.0.2",
-    "phantomjs-polyfill-find": "github:ptim/phantomjs-polyfill-find",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "^2.1.14",
     "sinon": "^1.17.7",

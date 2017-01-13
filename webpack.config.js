@@ -16,7 +16,7 @@ module.exports = {
 		"eg.component": {
 			commonjs: "eg.component",
 			commonjs2: "eg.component",
-			amd: "eg.Component",
+			amd: "eg.component",
 			root: ["eg", "Component"]
 		},
 		"hammerjs": "Hammer"

@@ -11,24 +11,11 @@ module.exports = function(config) {
     files: [
       './node_modules/phantomjs-polyfill/bind-polyfill.js',
       './node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
-      './node_modules/phantomjs-polyfill-find/find-polyfill.js',
       './node_modules/lite-fixture/index.js',
       './node_modules/hammer-simulator/index.js',
       './test/hammer-simulator.run.js',
-      './test/unit/eventHandler.spec.js'
+      './test/**/**.spec.js'
     ],
-
-    // plugins: [
-    //   'karma-chai',
-    //   'karma-sinon',
-    //   'karma-mocha',
-    //   'karma-sourcemap-loader',
-    //   'karma-webpack',
-    //   'karma-mocha-reporter',
-    //   'karma-coverage',
-    //   'karma-phantomjs-launcher',
-    //   'karma-chrome-launcher'
-    // ],
 
     // list of files to exclude
     exclude: [
@@ -78,8 +65,8 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [],
 
-    webpackMiddleware: {
-        noInfo: true
+    webpackServer: {
+      noInfo: true
     },
 
     // Concurrency level
@@ -101,7 +88,12 @@ module.exports = function(config) {
         test: /(\.js)$/,
         exclude: /(test|node_modules)/,
         enforce: "pre",
-        loader: 'isparta-loader'
+        loader: 'isparta-loader',
+        options: {
+          babel: {
+            plugins: 'rewire'
+          }
+        }
       }
     );
     // Continuous Integration mode

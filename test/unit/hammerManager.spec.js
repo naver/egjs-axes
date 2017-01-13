@@ -1,4 +1,4 @@
-import HammerManager from '../../src/hammerManager.js';
+import HammerManager, { __RewireAPI__ as HammerManagerRewireApi } from '../../src/hammerManager.js';
 import Hammer from "hammerjs";
 import { UNIQUEKEY, DIRECTION } from '../../src/consts.js';
 
@@ -87,13 +87,13 @@ describe("HammerManager inputType Test", function() {
         this.inst.destroy();
         this.inst = null;
       }
-      HammerManager.__ResetDependency__("SUPPORT_TOUCH");
+      HammerManagerRewireApi.__ResetDependency__("SUPPORT_TOUCH");
       cleanup();
     });
 
     it("should check convertInputType when supporting touch", () => {
       // Given
-      HammerManager.__Rewire__("SUPPORT_TOUCH", true);
+      HammerManagerRewireApi.__Rewire__("SUPPORT_TOUCH", true);
 
       // When
       var inputType = [ "touch", "mouse" ];
@@ -119,7 +119,7 @@ describe("HammerManager inputType Test", function() {
 
     it("should check convertInputType when not supporting touch", () => {
       // Given
-      HammerManager.__Rewire__("SUPPORT_TOUCH", false);
+      HammerManagerRewireApi.__Rewire__("SUPPORT_TOUCH", false);
 
       // When
       var inputType = [ "touch", "mouse" ];

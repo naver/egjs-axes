@@ -1,6 +1,6 @@
 import MovableCoord from '../../src/movableCoord.js';
 
-describe("Interruptable:false Test", function() {
+describe("EventHandler interruptable:false Test", function() {
     this.timeout(10000);
     beforeEach(() => {
         this.preventedFn = function() {
@@ -140,5 +140,41 @@ describe("Interruptable:false Test", function() {
         // Then
         expect(this.inst._status.prevented).to.be.false;
         expect(changeHandler.calledTwice).to.be.true;
+    });
+
+    it("should check interrupt test after tap gesture", (done) => {
+        // Given
+        var holdHandler = sinon.spy(this.preventedFn);
+        var changeHandler = sinon.spy();
+        var releaseHandler = sinon.spy(this.notPreventedFn);
+        var animationStartHandler = sinon.spy();       
+        var animationEndHandler = sinon.spy();       
+
+        this.inst.on({
+            "hold": holdHandler,
+            "change": changeHandler,
+            "release": releaseHandler,
+            "animationStart": animationStartHandler,
+            "animationEnd": animationEndHandler
+        });
+        this.inst.bind(this.el, {
+            interruptable : false
+        });
+
+        // When
+        Simulator.gestures.tap(this.el, {
+            pos: [50, 50]
+        }, function() {
+            // Then
+            // for test custom event
+            setTimeout(function() {
+                expect(holdHandler.calledOnce).to.be.true;
+                expect(releaseHandler.calledOnce).to.be.true;
+                expect(changeHandler.called).to.be.false;
+                expect(animationStartHandler.called).to.be.false;
+                expect(animationEndHandler.called).to.be.false;
+                done();
+            }, 100);
+        });
     });
 });

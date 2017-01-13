@@ -133,5 +133,6 @@ export default class HammerManager {
 			this._hammers[p].el.removeAttribute(UNIQUEKEY);
 			delete this._hammers[p];
 		}
+		this._hammers = {};
 	}
 };
