@@ -1,6 +1,7 @@
-import HammerManager, { __RewireAPI__ as HammerManagerRewireApi } from '../../src/hammerManager.js';
 import Hammer from "hammerjs";
 import { UNIQUEKEY, DIRECTION } from '../../src/consts.js';
+import HammerManager from '../../src/hammerManager.js';
+import HammerManagerInjector from "inject-loader!../../src/hammerManager";
 
 describe("HammerManager bind/unbind Test", function() {
     beforeEach(() => {
@@ -79,21 +80,26 @@ describe("HammerManager bind/unbind Test", function() {
 });
 
 describe("HammerManager inputType Test", function() {
+  describe("HammerManager SUPPORT_TOUCH mocking", function() {
     beforeEach(() => {
-      this.inst = new HammerManager();;
+      this.inst = null;
     });
     afterEach(() => {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
       }
-      HammerManagerRewireApi.__ResetDependency__("SUPPORT_TOUCH");
       cleanup();
     });
-
     it("should check convertInputType when supporting touch", () => {
       // Given
-      HammerManagerRewireApi.__Rewire__("SUPPORT_TOUCH", true);
+      var MockHammerManager = HammerManagerInjector({
+        "./consts": {
+          SUPPORT_TOUCH : true
+        }
+      }).default;
+
+      this.inst = new MockHammerManager();
 
       // When
       var inputType = [ "touch", "mouse" ];
@@ -119,7 +125,13 @@ describe("HammerManager inputType Test", function() {
 
     it("should check convertInputType when not supporting touch", () => {
       // Given
-      HammerManagerRewireApi.__Rewire__("SUPPORT_TOUCH", false);
+      var MockHammerManager = HammerManagerInjector({
+        "./consts": {
+          SUPPORT_TOUCH : false
+        }
+      }).default;
+
+      this.inst = new MockHammerManager();
 
       // When
       var inputType = [ "touch", "mouse" ];
@@ -141,7 +153,19 @@ describe("HammerManager inputType Test", function() {
       // Then
       expect(this.inst.convertInputType(inputType)).to.be.null;
     });    
+  });
 
+  describe("HammerManager inputType test with element", function() {
+    beforeEach(() => {
+      this.inst = new HammerManager();;
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
     it("should check a element when adding with inputType", () => {
       // Given
       var el = sandbox();
@@ -179,6 +203,7 @@ describe("HammerManager inputType Test", function() {
       expect(el.getAttribute(UNIQUEKEY)).to.not.exist;
       expect(beforeHammerCount).to.be.equal(Object.keys(this.inst._hammers).length);
     });
+  });
 });
 
 describe("HammerManager getHammer Test", function() {

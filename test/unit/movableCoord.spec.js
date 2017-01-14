@@ -104,7 +104,6 @@ describe("MovableCoord methods Test", function() {
 });
 
 describe("MovableCoord Event Test", function() {
-    this.timeout(10000);
     beforeEach(() => {
       this.inst = new MovableCoord( {
         min : [ 0, 0 ],
@@ -312,7 +311,6 @@ describe("MovableCoord Event Test", function() {
 });
 
 describe("MovableCoord Direction Test", function() {
-    this.timeout(10000);
     beforeEach(() => {
       this.inst = new MovableCoord( {
         min : [ 0, 0 ],

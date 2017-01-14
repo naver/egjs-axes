@@ -1,7 +1,6 @@
 import MovableCoord from '../../src/movableCoord.js';
 
 describe("EventHandler interruptable:false Test", function() {
-    this.timeout(10000);
     beforeEach(() => {
         this.preventedFn = function() {
             expect(this._status.prevented).to.be.true;

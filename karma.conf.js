@@ -14,8 +14,14 @@ module.exports = function(config) {
       './node_modules/lite-fixture/index.js',
       './node_modules/hammer-simulator/index.js',
       './test/hammer-simulator.run.js',
-      './test/**/**.spec.js'
+      './test/**/*.spec.js'
     ],
+
+    client: {
+      mocha: {
+        opts: './mocha.opts' 
+      }
+    },
 
     // list of files to exclude
     exclude: [
@@ -28,10 +34,7 @@ module.exports = function(config) {
           {
             test: /(\.js)$/,
             exclude: /(node_modules)/,
-            loader: 'babel-loader',
-            options: {
-              plugins: ['rewire']
-            }
+            loader: 'babel-loader'
           }
         ]
       }
@@ -88,12 +91,7 @@ module.exports = function(config) {
         test: /(\.js)$/,
         exclude: /(test|node_modules)/,
         enforce: "pre",
-        loader: 'isparta-loader',
-        options: {
-          babel: {
-            plugins: 'rewire'
-          }
-        }
+        loader: 'isparta-loader'
       }
     );
     // Continuous Integration mode

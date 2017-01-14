@@ -17,12 +17,12 @@
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
-    "babel-plugin-rewire": "^1.0.0",
     "babel-preset-es2015-native-modules": "^6.9.4",
     "chai": "^3.5.0",
     "egjs-jsdoc-template": "*",
     "hammer-simulator": "0.0.1",
     "husky": "^0.11.4",
+    "inject-loader": "^3.0.0-beta3",
     "isparta-loader": "^2.0.0",
     "jquery": "^1.7.0",
     "jsdoc": "^3.4.3",
