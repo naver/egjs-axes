@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>demo::eg.MovableCoord</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+#content {
+  position:absolute;
+  left:10px; top:90px;
+}
+
+.block {
+  position:absolute;
+  width:100px; height:100px;
+  border:1px solid #888;
+  border-width:1px 0 0 1px;
+  box-shadow:1px 1px 0px #888;
+  background-color:#bdf;
+  box-sizing:border-box;
+}
+
+#viewporttop {
+  position:absolute;
+  left:10px; top:90px;
+  width:101px; 
+  height:0px;
+  border-top:5px solid #888;
+}
+
+#viewportbottom {
+  position:absolute;
+  left:10px; top:186px;
+  width:101px; 
+  height:0px;
+  border-top:5px solid #888;
+}
+
+#viewportleft {
+  position:absolute;
+  left:5px; top:90px;
+  width:0px; 
+  height:101px;
+  border-left:5px solid #888;
+}
+
+#viewportright {
+  position:absolute;
+  left:111px; top:90px;
+  width:0px; 
+  height:101px;
+  border-right:5px solid #888;
+}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
+<script src="../../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../../node_modules/hammerjs/hammer.js"></script>
+<script src="../../dist/eg.movableCoord.js"></script>
+</head>
+<body>
+<div id="content">
+    <div class="block" style="left:0px; top: 0px;"></div>
+    <div class="block" style="left:0px; top: 100px;"></div>
+    <div class="block" style="left:0px; top: 200px;"></div>
+    <div class="block" style="left:100px; top: 200px;"></div>
+    <div class="block" style="left:200px; top: 200px;"></div>
+    <div class="block" style="left:0px; top: 300px;"></div>
+    <div class="block" style="left:0px; top: 400px;"></div>
+    <div class="block" style="left:100px; top: 400px;"></div>
+    <div class="block" style="left:200px; top: 400px;"></div>
+    <div class="block" style="left:300px; top: 400px;"></div>
+    <div class="block" style="left:0px; top: 500px;"></div>
+</div>
+<div id="viewporttop"></div>
+<div id="viewportbottom"></div>
+<div id="viewportleft"></div>
+<div id="viewportright"></div>
+<script src="js/road.js"></script>
+</body>
+</html>
