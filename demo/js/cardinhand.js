@@ -26,14 +26,14 @@ var movalbeCoord = new eg.MovableCoord({
     "change" : function(evt) {
         var pos = evt.pos;
         movableDot.style["bottom"] = -1.4 * pos[1] + "px";
-        movableDot.style["transform"] = "translateX(" + (pos[0] * 2.3) + "px)";
-        hand.style["transform"] = "rotateZ(" + pos[0] + "deg)";
+        movableDot.style[TRANSFORM] = "translateX(" + (pos[0] * 2.3) + "px)";
+        hand.style[TRANSFORM] = "rotateZ(" + pos[0] + "deg)";
 
       cards.forEach(function(v) {
         var cardDistance = getCardDistance(v, hand).distance;
         var cardOffset = pos[1];
-        var currentRotateZ = v.style["transform"].split("translateY")[0];
-        v.style["transform"] = currentRotateZ + "translateY("+(parseFloat(v.getAttribute("data-cardOffset")) + pos[1]) +"px)";
+        var currentRotateZ = v.style[TRANSFORM].split("translateY")[0];
+        v.style[TRANSFORM] = currentRotateZ + "translateY("+(parseFloat(v.getAttribute("data-cardOffset")) + pos[1]) +"px)";
       });
     }
 });
@@ -82,6 +82,6 @@ function setCardOnHand(card) {
   } else if(cardTilt > handRotMax) {
     handRotMax = cardTilt;
   }
-  card.style["transform"] = "rotateZ(" + cardTilt + "deg) translateY("+cardOffset+"px)";
+  card.style[TRANSFORM] = "rotateZ(" + cardTilt + "deg) translateY("+cardOffset+"px)";
   card.setAttribute("data-cardOffset", cardOffset);
 }

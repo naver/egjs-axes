@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>demo::eg.MovableCoord</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+<style>
+#area {
+  width:300px;
+  height:400px;
+  border:10px solid #888;
+  overflow:hidden;
+}
+
+#lists {
+  position:relative;
+  list-style:none;
+  margin:0;
+  padding:0;
+  width:300px;
+}
+
+#lists li {
+  position:absolute;
+  margin:0;
+  padding:0;
+  width:300px;
+  height:400px;
+  font-size:1.75em;
+  -webkit-transform:translate3d(0,0,0);
+}
+</style>
+<script src="../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../node_modules/hammerjs/hammer.js"></script>
+<script src="../dist/eg.movableCoord.js"></script>
+</head>
+<body>
+<div id="area">
+	<ul id="lists">
+		<li style="background-color:yellow;">
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+			PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1 PANEL 1
+		</li>
+		<li style="background-color:yellowgreen;">
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+			PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2 PANEL 2
+		</li>
+		<li style="background-color:violet;">
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+			PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3 PANEL 3
+		</li>
+		<li style="background-color:skyblue;">
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+			PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4 PANEL 4
+		</li>
+		<li style="background-color:orange;">
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+			PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5 PANEL 5
+		</li>
+	</ul>
+</div>
+<script src="./js/util.js"></script>
+<script src="./js/cover.js"></script>
+</body>
+</html>

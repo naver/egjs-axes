@@ -10,10 +10,6 @@ document.getElementById("clear").addEventListener("click", function(e) {
     log.innerHTML = "";
 });
 
-var supportTransform = (function() {
-    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
-    return "transform" in bodyStyle || "webkitTransform" in bodyStyle || "msTransform" in bodyStyle || "mozTransform" in bodyStyle;
-})();
 var dot = document.getElementById("dot"),
   inst = new eg.MovableCoord({
     min : [ 0, 0 ],
