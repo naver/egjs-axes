@@ -27,15 +27,17 @@ module.exports = {
 	devtool: "source-map",
 	module: {
 		rules: [
+			// {
+			// 	test: /(\.js)$/,
+			// 	loader: "eslint-loader",
+			// 	include: path.resolve(process.cwd(), 'src'),
+			// 	exclude: /(node_modules)/,
+			// 	enforce: "pre"
+			// },
 			{
 				test: /(\.js)$/,
 				exclude: /(node_modules)/,
-				loader: 'babel-loader',
-				options: {
-					"presets": [ 
-						"es2015-native-modules"
-					]
-				}
+				loader: 'babel-loader'
 			}
 		]
 	},

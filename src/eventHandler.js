@@ -1,8 +1,8 @@
 import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 
-export default (superclass) => class extends superclass {
-    constructor() {
+export default superclass => class extends superclass {
+	constructor() {
 		super();
 		this._status = {
 			grabOutside: false,		// check whether user's action started on outside
@@ -11,21 +11,21 @@ export default (superclass) => class extends superclass {
 			moveDistance: null,		// a position of the first user's action
 			prevented: false		//  check whether the animation event was prevented
 		};
-    }
+	}
 
-    _setCurrentTarget(hammer, options) {
+	_setCurrentTarget(hammer, options) {
 		this._status.currentOptions = options;
 		this._status.currentHanmmer = hammer;
-    }
+	}
 
 	// panstart event handler
 	_start(e) {
 		if (!this._status.currentOptions.interruptable && this._status.prevented) {
 			return;
 		}
-		let pos = this.get();
-		let min = this.options.min;
-		let max = this.options.max;
+		const pos = this.get();
+		const min = this.options.min;
+		const max = this.options.max;
 		this._setInterrupt(true);
 		this._grab(min, max, this.options.circular);
 		/**
@@ -55,24 +55,24 @@ export default (superclass) => class extends superclass {
 			return;
 		}
 		let pos = this.get(true);
-		let min = this.options.min;
-		let max = this.options.max;
-		let bounce = this.options.bounce;
-		let margin = this.options.margin;
-		let currentOptions = this._status.currentOptions;
-		let direction = currentOptions.direction;
-		let scale = currentOptions.scale;
-		let userDirection = Coordinate.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
-		let out = [
+		const min = this.options.min;
+		const max = this.options.max;
+		const bounce = this.options.bounce;
+		const margin = this.options.margin;
+		const currentOptions = this._status.currentOptions;
+		const direction = currentOptions.direction;
+		const scale = currentOptions.scale;
+		const userDirection = Coordinate.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
+		const out = [
 			margin[0] + bounce[0],
 			margin[1] + bounce[1],
 			margin[2] + bounce[2],
 			margin[3] + bounce[3]
 		];
-		let prevent  = false;
-		
+		let prevent = false;
+
 		// not support offset properties in Hammerjs - start
-		let prevInput = this._status.currentHanmmer.session.prevInput;
+		const prevInput = this._status.currentHanmmer.session.prevInput;
 		if (prevInput) {
 			e.offsetX = e.deltaX - prevInput.deltaX;
 			e.offsetY = e.deltaY - prevInput.deltaY;
@@ -103,11 +103,11 @@ export default (superclass) => class extends superclass {
 		if (this._status.grabOutside && !Coordinate.isOutside(pos, min, max)) {
 			this._status.grabOutside = false;
 		}
-		
+
 		// when move pointer is held in outside
 		let tv;
 		let tn;
-		let tx;		
+		let tx;
 		if (this._status.grabOutside) {
 			tn = min[0] - out[3], tx = max[0] + out[1], tv = pos[0];
 			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
@@ -117,7 +117,7 @@ export default (superclass) => class extends superclass {
 
 			// when start pointer is held in inside
 			// get a initialization slope value to prevent smooth animation.
-			let initSlope = this._easing(0.00001) / 0.00001;
+			const initSlope = this._easing(0.00001) / 0.00001;
 
 			if (pos[1] < min[1]) { // up
 				tv = (min[1] - pos[1]) / (out[0] * initSlope);
@@ -139,7 +139,7 @@ export default (superclass) => class extends superclass {
 
 	// panend event handler
 	_end(e) {
-		let pos = this.get();
+		const pos = this.get();
 		if (!this._isInterrupting() || !this._status.moveDistance) {
 			return;
 		}
@@ -153,20 +153,20 @@ export default (superclass) => class extends superclass {
 				hammerEvent: e || null
 			});
 		} else {
-			let direction = this._status.currentOptions.direction;
-			let scale = this._status.currentOptions.scale;
-			let vX =  Math.abs(e.velocityX);
+			const direction = this._status.currentOptions.direction;
+			const scale = this._status.currentOptions.scale;
+			let vX = Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
 			!(direction & DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
 
-			let offset = Coordinate.getNextOffsetPos([
+			const offset = Coordinate.getNextOffsetPos([
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 			], this.options.deceleration);
 			let destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
-			destPos = Coordinate.getPointOfIntersection(pos, destPos, 
-				this.options.min, this.options.max, 
+			destPos = Coordinate.getPointOfIntersection(pos, destPos,
+				this.options.min, this.options.max,
 				this.options.circular, this.options.bounce);
 			/**
 			 * This event is fired when a user release an element on the screen of the device.
@@ -186,7 +186,7 @@ export default (superclass) => class extends superclass {
 			 */
 			this.trigger("release", {
 				depaPos: pos.concat(),
-				destPos: destPos,
+				destPos,
 				hammerEvent: e || null
 			});
 			if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
@@ -203,8 +203,8 @@ export default (superclass) => class extends superclass {
 		return this._status.currentOptions.interruptable || this._status.prevented;
 	}
 
-    _setInterrupt(prevented) {
+	_setInterrupt(prevented) {
 		!this._status.currentOptions.interruptable &&
 		(this._status.prevented = prevented);
-	}    
+	}
 };

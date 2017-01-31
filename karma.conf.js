@@ -75,9 +75,11 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
-
+    singleRun: false,
     captureTimeout: 60000
   };
+  
+  karmaConfig.browsers.push(config.chrome ? "Chrome" : "PhantomJS");
 
   if(config.coverage) {
     karmaConfig.reporters.push("coverage");
@@ -85,7 +87,6 @@ module.exports = function(config) {
         type: 'html',
         dir: 'coverage'
     };
-    karmaConfig.browsers.push("PhantomJS");
     karmaConfig.webpack.module.rules.push(
       {
         test: /(\.js)$/,
@@ -97,10 +98,6 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     karmaConfig.singleRun = true;
-  } else {
-    // karmaConfig.browsers.push("PhantomJS");
-    karmaConfig.browsers.push("Chrome");
-    karmaConfig.singleRun = false;
   }
 
   config.set(karmaConfig);

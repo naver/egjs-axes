@@ -1,6 +1,6 @@
 import { DIRECTION } from "./consts";
 
-let Coordinate = {
+const Coordinate = {
 	// get user's direction
 	getDirectionByAngle(angle, thresholdAngle) {
 		if (thresholdAngle < 0 || thresholdAngle > 90) {
@@ -21,8 +21,8 @@ let Coordinate = {
 			userDirection & DIRECTION.DIRECTION_VERTICAL);
 	},
 	getPointOfIntersection(depaPos, destPos, min, max, circular, bounce) {
-		let boxLT = [ min[0] - bounce[3], min[1] - bounce[0] ];
-		let boxRB = [ max[0] + bounce[1], max[1] + bounce[2] ];
+		const boxLT = [ min[0] - bounce[3], min[1] - bounce[0] ];
+		const boxRB = [ max[0] + bounce[1], max[1] + bounce[2] ];
 		let xd;
 		let yd;
 		destPos = destPos.concat();
@@ -51,7 +51,7 @@ let Coordinate = {
 			Math.min(max[1], Math.max(min[1], destPos[1]))
 		];
 	},
-    // determine outside
+	// determine outside
 	isOutside(pos, min, max) {
 		return pos[0] < min[0] || pos[1] < min[1] ||
 			pos[0] > max[0] || pos[1] > max[1];
@@ -64,18 +64,18 @@ let Coordinate = {
 			destPos[1] < min[1] || destPos[1] > max[1]);
 	},
 	getNextOffsetPos(speeds, deceleration) {
-		let normalSpeed = Math.sqrt(
+		const normalSpeed = Math.sqrt(
 			speeds[0] * speeds[0] + speeds[1] * speeds[1]
 		);
-		let duration = Math.abs(normalSpeed / -deceleration);
+		const duration = Math.abs(normalSpeed / -deceleration);
 		return [
 			speeds[0] / 2 * duration,
 			speeds[1] / 2 * duration
 		];
 	},
 	getDurationFromPos(pos, deceleration) {
-		let normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
-		let duration = Math.sqrt(
+		const normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
+		const duration = Math.sqrt(
 			normalPos / deceleration * 2
 		);
 

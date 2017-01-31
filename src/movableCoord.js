@@ -1,15 +1,9 @@
 import Component from "eg.component";
-import { window } from "./browser";
 import HammerManager from "./hammerManager";
 import EventHandler from "./eventHandler";
 import AnimationHandler from "./animationHandler";
-import Coordinate from "./coordinate";
 import { DIRECTION } from "./consts";
 import { Mixin } from "./utils";
-
-// if (!window.eg || typeof eg.Component === "undefined") {
-// 	throw new Error("The eg.Component must be loaded before eg.MovableCoord.");
-// }
 
 /**
  * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
@@ -48,7 +42,7 @@ import { Mixin } from "./utils";
  * @param {Number} [options.maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
  * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
  * @see HammerJS {@link http://hammerjs.github.io}
- * @see •	Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.MovableCoord 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
+ * @see • Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.MovableCoord 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
  *
  * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
  *
@@ -57,14 +51,15 @@ import { Mixin } from "./utils";
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
-var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler, AnimationHandler) {
+const MovableCoord = class MovableCoord
+extends Mixin(Component).with(EventHandler, AnimationHandler) {
 	constructor(options) {
 		super();
 		Object.assign(this.options = {
 			min: [0, 0],
 			max: [100, 100],
 			bounce: [10, 10, 10, 10],
-			margin: [0,0,0,0],
+			margin: [0, 0, 0, 0],
 			circular: [false, false, false, false],
 			easing: function easeOutCubic(x) {
 				return 1 - Math.pow(1 - x, 3);
@@ -97,7 +92,6 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 		this._hammerManager.add(element, options, this);
 		return this;
 	}
-	
 	/**
 	 * Detaches an element using the eg.MovableCoord module.
 	 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
@@ -124,7 +118,8 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 	// set up 'css' expression
 	_reviseOptions() {
 		let key;
-		["bounce", "margin", "circular"].forEach( v => {
+
+		["bounce", "margin", "circular"].forEach(v => {
 			key = this.options[v];
 			if (key != null) {
 				if (key.constructor === Array) {
@@ -161,5 +156,6 @@ var MovableCoord = class MovableCoord extends Mixin(Component).with(EventHandler
 		this._hammerManager.destroy();
 	}
 };
+
 Object.assign(MovableCoord, DIRECTION);
 export default MovableCoord;

@@ -1,20 +1,22 @@
 import Coordinate from "./coordinate";
 import { window } from "./browser";
 
-export default (superclass) => class extends superclass {
-    constructor() {
+export default superclass => class extends superclass {
+	constructor() {
 		super();
-        this._raf = null;
+		this._raf = null;
 		this._animateParam = null;
-        this._animationEnd = this._animationEnd.bind(this);	// for caching
-        this._restore = this._restore.bind(this);	// for caching
-    }
+		this._animationEnd = this._animationEnd.bind(this);	// for caching
+		this._restore = this._restore.bind(this);	// for caching
+	}
 
-    _grab(min, max, circular) {
+	_grab(min, max, circular) {
 		if (this._animateParam) {
 			this.trigger("animationEnd");
-            let orgPos = this.get();
-			let pos = Coordinate.getCircularPos(this.get(), min, max, circular);
+			const orgPos = this.get();
+
+			const pos = Coordinate.getCircularPos(this.get(), min, max, circular);
+
 			if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
 				this._setPosAndTriggerChange(pos, true);
 			}
@@ -25,14 +27,14 @@ export default (superclass) => class extends superclass {
 	}
 
 	_prepareParam(absPos, duration, hammerEvent) {
-		let pos = this.get();
-		let min = this.options.min; 
-		let max = this.options.max;
-		let circular = this.options.circular;
-		let maximumDuration = this.options.maximumDuration;
+		const pos = this.get();
+		const min = this.options.min;
+		const max = this.options.max;
+		const circular = this.options.circular;
+		const maximumDuration = this.options.maximumDuration;
 		let destPos = Coordinate.getPointOfIntersection(pos, absPos, min, max, circular, this.options.bounce);
 		destPos = Coordinate.isOutToOut(pos, destPos, min, max) ? pos : destPos;
-		let distance = [
+		const distance = [
 			Math.abs(destPos[0] - pos[0]),
 			Math.abs(destPos[1] - pos[1])
 		];
@@ -43,17 +45,18 @@ export default (superclass) => class extends superclass {
 			destPos: destPos.concat(),
 			isBounce: Coordinate.isOutside(destPos, min, max),
 			isCircular: Coordinate.isCircular(absPos, min, max, circular),
-			duration: duration,
-			distance: distance,
+			duration,
+			distance,
 			hammerEvent: hammerEvent || null,
 			done: this._animationEnd
 		};
 	}
 
 	_restore(complete, hammerEvent) {
-		let pos = this.get();
-		let min = this.options.min;
-		let max = this.options.max;
+		const pos = this.get();
+		const min = this.options.min;
+		const max = this.options.max;
+
 		this._animate(this._prepareParam([
 			Math.min(max[0], Math.max(min[0], pos[0])),
 			Math.min(max[1], Math.max(min[1], pos[1]))
@@ -62,12 +65,13 @@ export default (superclass) => class extends superclass {
 
 	_animationEnd() {
 		this._animateParam = null;
-		let orgPos = this.get();
-        let nextPos = Coordinate.getCircularPos([
+		const orgPos = this.get();
+		const nextPos = Coordinate.getCircularPos([
 			Math.round(orgPos[0]),
 			Math.round(orgPos[1])
-        ], this.options.min, this.options.max, this.options.circular);
-        this.setTo(...nextPos);
+		], this.options.min, this.options.max, this.options.circular);
+
+		this.setTo(...nextPos);
 		this._setInterrupt(false);
 		/**
 		 * This event is fired when animation ends.
@@ -82,8 +86,9 @@ export default (superclass) => class extends superclass {
 		param.startTime = new Date().getTime();
 		this._animateParam = param;
 		if (param.duration) {
-			let info = this._animateParam;
-			let self = this;
+			const info = this._animateParam;
+			const self = this;
+
 			(function loop() {
 				self._raf = null;
 				if (self._frame(info) >= 1) {
@@ -91,7 +96,7 @@ export default (superclass) => class extends superclass {
 					complete();
 					return;
 				} // animationEnd
-                self._raf = window.requestAnimationFrame(loop);
+				self._raf = window.requestAnimationFrame(loop);
 			})();
 		} else {
 			this._setPosAndTriggerChange(param.destPos, false);
@@ -100,8 +105,8 @@ export default (superclass) => class extends superclass {
 	}
 
 	_animateTo(absPos, duration, hammerEvent) {
-		let param = this._prepareParam(absPos, duration, hammerEvent);
-		let retTrigger = this.trigger("animationStart", param);
+		const param = this._prepareParam(absPos, duration, hammerEvent);
+		const retTrigger = this.trigger("animationStart", param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (param.isCircular && !retTrigger) {
@@ -111,25 +116,25 @@ export default (superclass) => class extends superclass {
 		}
 
 		if (retTrigger) {
-			let self = this;
-			let queue = [];
-			let dequeue = function() {
-				let task = queue.shift();
+			// const self = this;
+			const queue = [];
+			const dequeue = function() {
+				const task = queue.shift();
 				task && task.call(this);
 			};
 			if (param.depaPos[0] !== param.destPos[0] ||
 				param.depaPos[1] !== param.destPos[1]) {
-				queue.push(function() {
-					self._animate(param, dequeue);
+				queue.push(() => {
+					this._animate(param, dequeue);
 				});
 			}
 			if (Coordinate.isOutside(param.destPos, this.options.min, this.options.max)) {
-				queue.push(function() {
-					self._restore(dequeue, hammerEvent);
+				queue.push(() => {
+					this._restore(dequeue, hammerEvent);
 				});
 			}
-			queue.push(function() {
-				self._animationEnd();
+			queue.push(() => {
+				this._animationEnd();
 			});
 			dequeue();
 		}
@@ -137,11 +142,11 @@ export default (superclass) => class extends superclass {
 
 	// animation frame (0~1)
 	_frame(param) {
-		let curTime = new Date() - param.startTime;
-		let easingPer = this._easing(curTime / param.duration);
+		const curTime = new Date() - param.startTime;
+		const easingPer = this._easing(curTime / param.duration);
 		let pos = [ param.depaPos[0], param.depaPos[1] ];
 
-		for (let i = 0; i < 2 ; i++) {
+		for (let i = 0; i < 2; i++) {
 			(pos[i] !== param.destPos[i]) &&
 			(pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 		}
@@ -150,7 +155,7 @@ export default (superclass) => class extends superclass {
 		return easingPer;
 	}
 
-    // trigger 'change' event
+	// trigger 'change' event
 	_setPosAndTriggerChange(position, holding, e) {
 		/**
 		 * This event is fired when coordinate changes.
@@ -166,15 +171,15 @@ export default (superclass) => class extends superclass {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-        this._pos = position.concat();
+		this._pos = position.concat();
 		this.trigger("change", {
 			pos: position.concat(),
-			holding: holding,
+			holding,
 			hammerEvent: e || null
 		});
 	}
 
-    _easing(p) {
+	_easing(p) {
 		return p > 1 ? 1 : this.options.easing(p);
 	}
 
@@ -188,9 +193,9 @@ export default (superclass) => class extends superclass {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(x, y, duration = 0) {
-		let min = this.options.min;
-		let max = this.options.max;
-		let circular = this.options.circular;
+		const min = this.options.min;
+		const max = this.options.max;
+		const circular = this.options.circular;
 		this._grab(min, max, circular);
 		let pos = this.get();
 		if (x === pos[0] && y === pos[1]) {

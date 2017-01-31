@@ -40,16 +40,18 @@ import { window } from "./browser";
  * @constant
  * @type {Number}
 */
-let direction = {
-    DIRECTION_NONE: 1,
-    DIRECTION_LEFT: 2,
-    DIRECTION_RIGHT: 4,
-    DIRECTION_UP: 8,
-    DIRECTION_DOWN: 16,
-    DIRECTION_HORIZONTAL: 2 | 4,
-    DIRECTION_VERTICAL: 8 | 16
-}
-direction.DIRECTION_ALL = direction.DIRECTION_HORIZONTAL | direction.DIRECTION_VERTICAL;
+const direction = {
+	DIRECTION_NONE: 1,
+	DIRECTION_LEFT: 2,
+	DIRECTION_RIGHT: 4,
+	DIRECTION_UP: 8,
+	DIRECTION_DOWN: 16,
+	DIRECTION_HORIZONTAL: 2 | 4,
+	DIRECTION_VERTICAL: 8 | 16
+};
+
+direction.DIRECTION_ALL = direction.DIRECTION_HORIZONTAL |
+	direction.DIRECTION_VERTICAL;
 export const DIRECTION = direction;
 export const UNIQUEKEY = "__MOVABLECOORD__";
 export const SUPPORT_TOUCH = "ontouchstart" in window;
