@@ -1,10 +1,10 @@
 var webpack = require("webpack");
+var CleanWebpackPlugin = require("clean-webpack-plugin");
 var path = require("path");
 
-module.exports = {
+var config = {
 	entry: {
-		"eg.movableCoord": "./src/index.js",
-		"eg.movableCoord.min": "./src/index.js"
+		"eg.movableCoord": "./src/index.js"
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),
@@ -37,14 +37,33 @@ module.exports = {
 			{
 				test: /(\.js)$/,
 				exclude: /(node_modules)/,
-				loader: 'babel-loader'
+				loader: "babel-loader"
 			}
 		]
 	},
 	plugins: [
+		new CleanWebpackPlugin(['dist'], {
+			root: path.resolve(__dirname),
+			verbose: true, 
+			dry: false
+		}),
 		new webpack.optimize.UglifyJsPlugin({
-		  include: /\.min\.js$/,
-		  minimize: true
-		})
+			include: /\.min\.js$/,
+			minimize: true
+		}),
+		new webpack.BannerPlugin([
+			"베너테스트"
+		].join(""))
 	]
+};
+
+module.exports = function(env) {
+	env = env || {};
+	if(env.mode === "production") {
+		for(var p in config.entry) {
+			config.entry[p + ".min"] = config.entry[p];
+		}
+	}
+
+	return config;
 };
