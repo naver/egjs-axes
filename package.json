@@ -8,9 +8,9 @@
     "build:prod": "webpack --env.mode production --config webpack.config.js && webpack --env.mode pkgd --config webpack.config.js",
     "test": "karma start",
     "test:chrome": "karma start --chrome",
-    "coverage": "karma start --coverage",
-    "jsdoc": "jsdoc -c jsdoc.json",
     "lint": "eslint src",
+    "jsdoc": "jsdoc -c jsdoc.json",
+    "coverage": "karma start --coverage",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
   },
