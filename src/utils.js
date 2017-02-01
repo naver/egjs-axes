@@ -1,10 +1,10 @@
-import { window, document } from "./browser";
+import {window, document} from "./browser";
 
 const utils = {
 	getElement(el) {
 		if (typeof el === "string") {
 			return document.querySelector(el);
-		} else if( window.jQuery && (el instanceof jQuery) && el.length > 0) {
+		} else if (window.jQuery && (el instanceof jQuery) && el.length > 0) {
 			// if you were using jQuery
 			return el[0];
 		} else {
@@ -24,4 +24,4 @@ class MixinBuilder {
 
 const Mixin = superclass => new MixinBuilder(superclass);
 
-export { Mixin, utils };
+export {Mixin, utils};

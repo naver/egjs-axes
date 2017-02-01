@@ -1,4 +1,4 @@
-import { window } from "./browser";
+import {window} from "./browser";
 
 /**
  * @name eg.MovableCoord.DIRECTION_NONE

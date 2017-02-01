@@ -1,4 +1,4 @@
-import { DIRECTION } from "./consts";
+import {DIRECTION} from "./consts";
 
 const Coordinate = {
 	// get user's direction
@@ -21,20 +21,18 @@ const Coordinate = {
 			userDirection & DIRECTION.DIRECTION_VERTICAL);
 	},
 	getPointOfIntersection(depaPos, destPos, min, max, circular, bounce) {
-		const boxLT = [ min[0] - bounce[3], min[1] - bounce[0] ];
-		const boxRB = [ max[0] + bounce[1], max[1] + bounce[2] ];
-		let xd;
-		let yd;
+		const boxLT = [min[0] - bounce[3], min[1] - bounce[0]];
+		const boxRB = [max[0] + bounce[1], max[1] + bounce[2]];
 		destPos = destPos.concat();
-		xd = destPos[0] - depaPos[0], yd = destPos[1] - depaPos[1];
+		const xd = destPos[0] - depaPos[0];
+		const yd = destPos[1] - depaPos[1];
 		if (!circular[3]) {
 			destPos[0] = Math.max(boxLT[0], destPos[0]);
 		} // left
 		if (!circular[1]) {
 			destPos[0] = Math.min(boxRB[0], destPos[0]);
 		} // right
-		destPos[1] = xd ?
-						depaPos[1] + yd / xd * (destPos[0] - depaPos[0]) :
+		destPos[1] = xd ? depaPos[1] + yd / xd * (destPos[0] - depaPos[0]) :
 						destPos[1];
 
 		if (!circular[0]) {
@@ -43,8 +41,7 @@ const Coordinate = {
 		if (!circular[2]) {
 			destPos[1] = Math.min(boxRB[1], destPos[1]);
 		} // down
-		destPos[0] = yd ?
-						depaPos[0] + xd / yd * (destPos[1] - depaPos[1]) :
+		destPos[0] = yd ? depaPos[0] + xd / yd * (destPos[1] - depaPos[1]) :
 						destPos[0];
 		return [
 			Math.min(max[0], Math.max(min[0], destPos[0])),
@@ -101,8 +98,8 @@ const Coordinate = {
 		if (circular[3] && pos[0] < min[0]) { // left
 			pos[0] = (pos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 		}
-		pos[0] = +pos[0].toFixed(5), pos[1] = +pos[1].toFixed(5);
-
+		pos[0] = +pos[0].toFixed(5);
+		pos[1] = +pos[1].toFixed(5);
 		return pos;
 	}
 };

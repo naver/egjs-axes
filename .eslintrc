@@ -4,21 +4,47 @@
     "extends": "airbnb-base",
     "env": {
         "browser": true,
-        "node": true
+        "jquery": true,
+        "node": true,
+        "amd": true
     },
     "globals": {
         "eg": true,
-        "jQuery": true
+        "Hammer": true,
+        "JSON": true
     },
     "rules": {
-        // this option sets a specific tab width for your code
-        // http://eslint.org/docs/rules/indent
-        "indent": ["error", "tab", {
-            "SwitchCase": 1
-        }],
+        // override property
+        "newline-after-var": "off",
+        "no-else-return": "off",
+        "no-nested-ternary": "off",
+        "guard-for-in": "off",
+        "no-cond-assign": "off",
+        "wrap-iife": "off",
+        "no-plusplus": "off",
         "no-tabs": "off",
-        "no-trailing-spaces": ["error", { "skipBlankLines": true }],
         "no-restricted-properties": "off",
+        "no-param-reassign": "off",
+        "no-mixed-operators": "off",
+        "no-bitwise": "off",
+        "default-case": "off",
+        "no-unused-expressions": "off",
+        "class-methods-use-this": "off",
+        "no-unused-vars": [ "error", { "args": "none" } ],
+        "eqeqeq": [ "error",  "always", {"null": "ignore"}],
+        "no-restricted-syntax": ["error", "WithStatement"],
+        "space-before-function-paren": ["error", {
+            "anonymous": "ignore",
+            "named": "ignore",
+            "asyncArrow": "always"
+        }],
+        "func-names": ["error", "as-needed"],
+        "indent": ["error",
+            "tab",
+            {
+                "SwitchCase": 1
+            }
+        ],
         "comma-dangle": ["error", {
             "arrays": "never",
             "objects": "never",
@@ -27,21 +53,15 @@
             "functions": "ignore"
         }],
         "arrow-parens": ["error", "as-needed", { "requireForBlockBody": false }], // 확인이 필요.
-        "no-unused-expressions": "off",
-        "no-param-reassign": "off",
-        "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
-        "no-empty": "off",
-        "no-mixed-operators": "off",
-        "no-bitwise": "off",
-        "default-case": "off",
-        "class-methods-use-this": "off",
-        "no-sequences": "off",
+        "no-empty": [ "error", { "allowEmptyCatch": true } ],  // 확인이 필요.
 
-        // ES6 확인해야할것
+        // "no-trailing-spaces": ["error", { "skipBlankLines": true }],
+        // "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
+
+        /* ES6 확인해야할것 */
         // Expected property shorthand. (object-shorthand)
         // Use 'const' instead. (prefer-const)
-        // "newline-after-var": ["error", "always"] 적용 검토
-        // "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+        
 
 
         // https://oss.navercorp.com/engineering/coding-convention
@@ -62,12 +82,15 @@
             "ignoreComments": true,
             "ignoreTrailingComments": true,
             "ignoreRegExpLiterals": true,
-            "ignoreTemplateLiterals": true
-        }],
+            "ignoreTemplateLiterals": true,
+            "ignoreStrings": true,
+            "ignoreUrls": true
+        }], 
         
         // 3.2 줄 바꿈 
         "operator-linebreak": ["error", "after"],
         "comma-style": ["error", "last"],
+        // "comma-style": ["error", "first"],
         
         // @todo 3.3. 긴 문자의 경우 줄바꿈시 escape 문자 금지(\)
         // @todo 3.4. 개행 전에
@@ -78,8 +101,8 @@
         "padded-blocks": ["error", "never"],
         
         // 5.2. 함수 선언 간, 변수 선언 후 빈 줄 사용 준수
-        "newline-after-var": ["error", "always"],
-        "one-var": [2, "never"],
+        // "newline-after-var": ["error", "always"],
+        "one-var": ["error", "never"],
 
         // @todo 5.3. 명령문, 제어문간 빈 줄 사용 준수
 
@@ -120,7 +143,9 @@
             "afterColon": true 
         }],
         
-        // @todo 7.8. 괄호 안에 공백을 삽입하지 않는다.(disallowSpacesInsideArrayBrackets, disallowSpacesInsideObjectBrackets, disallowSpacesInsideParentheses)
+        // 7.8. 괄호 안에 공백을 삽입하지 않는다.(disallowSpacesInsideArrayBrackets, disallowSpacesInsideObjectBrackets, disallowSpacesInsideParentheses)
+        "array-bracket-spacing": [ "error", "never"],
+        "object-curly-spacing": [ "error", "never"],
 
         // 7.9. 특정 키워드의 경우 뒤에 공백을 삽입한다. 
         "keyword-spacing": ["error", { 
@@ -145,6 +170,7 @@
         
         // @todo 8.6.2. 외부에서 접근할 수 없다면, 변수에 _을 사용하지 않는다.
         "no-underscore-dangle": "off",
+        // "no-underscore-dangle": ["error", { "allowAfterThis": true, "allowAfterSuper": true }],
 
         // @todo 8.6.3. 오브젝트에 속성으로 접근할 때는 .(점)을 사용한다.
         // @todo 8.7.1. 상수. 대문자 사용 준수

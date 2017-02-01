@@ -1,5 +1,5 @@
 import Coordinate from "./coordinate";
-import { DIRECTION } from "./consts";
+import {DIRECTION} from "./consts";
 
 export default superclass => class extends superclass {
 	constructor() {
@@ -62,7 +62,8 @@ export default superclass => class extends superclass {
 		const currentOptions = this._status.currentOptions;
 		const direction = currentOptions.direction;
 		const scale = currentOptions.scale;
-		const userDirection = Coordinate.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
+		const userDirection = Coordinate.getDirectionByAngle(
+			e.angle, currentOptions.thresholdAngle);
 		const out = [
 			margin[0] + bounce[0],
 			margin[1] + bounce[1],
@@ -109,12 +110,15 @@ export default superclass => class extends superclass {
 		let tn;
 		let tx;
 		if (this._status.grabOutside) {
-			tn = min[0] - out[3], tx = max[0] + out[1], tv = pos[0];
+			tn = min[0] - out[3];
+			tx = max[0] + out[1];
+			tv = pos[0];
 			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
-			tn = min[1] - out[0], tx = max[1] + out[2], tv = pos[1];
+			tn = min[1] - out[0];
+			tx = max[1] + out[2];
+			tv = pos[1];
 			pos[1] = tv > tx ? tx : (tv < tn ? tn : tv);
 		} else {
-
 			// when start pointer is held in inside
 			// get a initialization slope value to prevent smooth animation.
 			const initSlope = this._easing(0.00001) / 0.00001;
@@ -145,7 +149,7 @@ export default superclass => class extends superclass {
 		}
 
 		// Abort the animating post process when "tap" occurs
-		if (e.distance === 0 /*e.type === "tap"*/) {
+		if (e.distance === 0 /* e.type === "tap" */) {
 			this._setInterrupt(false);
 			this.trigger("release", {
 				depaPos: pos.concat(),
@@ -164,7 +168,7 @@ export default superclass => class extends superclass {
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 			], this.options.deceleration);
-			let destPos = [ pos[0] + offset[0], pos[1] + offset[1] ];
+			let destPos = [pos[0] + offset[0], pos[1] + offset[1]];
 			destPos = Coordinate.getPointOfIntersection(pos, destPos,
 				this.options.min, this.options.max,
 				this.options.circular, this.options.bounce);

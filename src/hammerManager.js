@@ -1,6 +1,6 @@
 import Hammer from "hammerjs";
-import { utils } from "./utils";
-import { DIRECTION, UNIQUEKEY, SUPPORT_TOUCH } from "./consts";
+import {utils} from "./utils";
+import {DIRECTION, UNIQUEKEY, SUPPORT_TOUCH} from "./consts";
 
 if (typeof Hammer === "undefined") {
 	throw new Error(`The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/`);
@@ -44,10 +44,10 @@ export default class HammerManager {
 		let keyValue = el.getAttribute(UNIQUEKEY);
 		const bindOptions = Object.assign({
 			direction: DIRECTION.DIRECTION_ALL,
-			scale: [ 1, 1 ],
+			scale: [1, 1],
 			thresholdAngle: 45,
 			interruptable: true,
-			inputType: [ "touch", "mouse" ]
+			inputType: ["touch", "mouse"]
 		}, options);
 		const inputClass = this.convertInputType(bindOptions.inputType);
 		if (!inputClass) {
@@ -108,7 +108,7 @@ export default class HammerManager {
 					// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
 					handler._end(e);
 				}
-			}).on("panstart panmove", e => handler._move(e)); 
+			}).on("panstart panmove", e => handler._move(e));
 	}
 
 	_detachHammerEvents(hammer) {
@@ -130,11 +130,11 @@ export default class HammerManager {
 	}
 
 	destroy() {
-		for (let p in this._hammers) {
+		for (const p in this._hammers) {
 			this._hammers[p].hammer.destroy();
 			this._hammers[p].el.removeAttribute(UNIQUEKEY);
 			delete this._hammers[p];
 		}
 		this._hammers = {};
 	}
-};
+}

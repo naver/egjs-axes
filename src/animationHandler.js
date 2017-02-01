@@ -1,5 +1,5 @@
 import Coordinate from "./coordinate";
-import { window } from "./browser";
+import {window} from "./browser";
 
 export default superclass => class extends superclass {
 	constructor() {
@@ -32,13 +32,15 @@ export default superclass => class extends superclass {
 		const max = this.options.max;
 		const circular = this.options.circular;
 		const maximumDuration = this.options.maximumDuration;
-		let destPos = Coordinate.getPointOfIntersection(pos, absPos, min, max, circular, this.options.bounce);
+		let destPos = Coordinate.getPointOfIntersection(
+			pos, absPos, min, max, circular, this.options.bounce);
 		destPos = Coordinate.isOutToOut(pos, destPos, min, max) ? pos : destPos;
 		const distance = [
 			Math.abs(destPos[0] - pos[0]),
 			Math.abs(destPos[1] - pos[1])
 		];
-		duration = duration == null ? Coordinate.getDurationFromPos(distance, this.options.deceleration) : duration;
+		duration = duration == null ? Coordinate.getDurationFromPos(
+			distance, this.options.deceleration) : duration;
 		duration = maximumDuration > duration ? duration : maximumDuration;
 		return {
 			depaPos: pos.concat(),
@@ -87,17 +89,15 @@ export default superclass => class extends superclass {
 		this._animateParam = param;
 		if (param.duration) {
 			const info = this._animateParam;
-			const self = this;
-
 			(function loop() {
-				self._raf = null;
-				if (self._frame(info) >= 1) {
+				this._raf = null;
+				if (this._frame(info) >= 1) {
 					// deferred.resolve();
 					complete();
 					return;
 				} // animationEnd
-				self._raf = window.requestAnimationFrame(loop);
-			})();
+				this._raf = window.requestAnimationFrame(loop);
+			}.bind(this))();
 		} else {
 			this._setPosAndTriggerChange(param.destPos, false);
 			complete();
@@ -128,7 +128,8 @@ export default superclass => class extends superclass {
 					this._animate(param, dequeue);
 				});
 			}
-			if (Coordinate.isOutside(param.destPos, this.options.min, this.options.max)) {
+			if (Coordinate.isOutside(
+				param.destPos, this.options.min, this.options.max)) {
 				queue.push(() => {
 					this._restore(dequeue, hammerEvent);
 				});
@@ -144,13 +145,14 @@ export default superclass => class extends superclass {
 	_frame(param) {
 		const curTime = new Date() - param.startTime;
 		const easingPer = this._easing(curTime / param.duration);
-		let pos = [ param.depaPos[0], param.depaPos[1] ];
+		let pos = [param.depaPos[0], param.depaPos[1]];
 
 		for (let i = 0; i < 2; i++) {
 			(pos[i] !== param.destPos[i]) &&
 			(pos[i] += (param.destPos[i] - pos[i]) * easingPer);
 		}
-		pos = Coordinate.getCircularPos(pos, this.options.min, this.options.max, this.options.circular);
+		pos = Coordinate.getCircularPos(
+			pos, this.options.min, this.options.max, this.options.circular);
 		this._setPosAndTriggerChange(pos, false);
 		return easingPer;
 	}
@@ -197,7 +199,7 @@ export default superclass => class extends superclass {
 		const max = this.options.max;
 		const circular = this.options.circular;
 		this._grab(min, max, circular);
-		let pos = this.get();
+		const pos = this.get();
 		if (x === pos[0] && y === pos[1]) {
 			return this;
 		}
@@ -219,9 +221,9 @@ export default superclass => class extends superclass {
 			}
 		}
 		if (duration) {
-			this._animateTo([ x, y ], duration);
+			this._animateTo([x, y], duration);
 		} else {
-			this._pos = Coordinate.getCircularPos([ x, y ], min, max, circular);
+			this._pos = Coordinate.getCircularPos([x, y], min, max, circular);
 			this._setPosAndTriggerChange(this._pos, false);
 			this._setInterrupt(false);
 		}
@@ -243,5 +245,5 @@ export default superclass => class extends superclass {
 			y != null ? this._pos[1] + y : this._pos[1],
 			duration
 		);
-	}	
+	}
 };

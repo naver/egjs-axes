@@ -40,13 +40,6 @@ module.exports = function(env) {
 			}), new webpack.BannerPlugin(banner.pkgd)
 		);
 	} else {
-		// config.module.rules.push({
-		// 	test: /(\.js)$/,
-		// 	loader: "eslint-loader",
-		// 	include: path.resolve(process.cwd(), "src"),
-		// 	exclude: /(node_modules)/,
-		// 	enforce: "pre"
-		// });
 		config.plugins.push(
 			new CleanWebpackPlugin(["dist"], {
 				root: path.resolve(__dirname),
