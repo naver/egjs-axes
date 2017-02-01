@@ -158,4 +158,5 @@ extends Mixin(Component).with(EventHandler, AnimationHandler) {
 };
 
 Object.assign(MovableCoord, DIRECTION);
+MovableCoord.VERSION = "#__VERSION__#";
 export default MovableCoord;
