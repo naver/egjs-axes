@@ -29,13 +29,6 @@ module.exports = {
 		rules: [
 			{
 				test: /(\.js)$/,
-				loader: "eslint-loader",
-				include: path.resolve(process.cwd(), "src"),
-				exclude: /(node_modules)/,
-				enforce: "pre"
-			},
-			{
-				test: /(\.js)$/,
 				exclude: /(node_modules)/,
 				loader: "babel-loader"
 			},

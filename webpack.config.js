@@ -11,6 +11,16 @@ module.exports = function(env) {
 		config.externals = [];
 	}
 	
+	if(!/server/.test(env.mode)) {
+		config.module.rules.push({
+			test: /(\.js)$/,
+			loader: "eslint-loader",
+			include: path.resolve(process.cwd(), "src"),
+			exclude: /(node_modules)/,
+			enforce: "pre"
+		});
+	}
+
 	if(env.mode === "production") {
 		for(var p in config.entry) {
 			config.entry[p + ".min"] = config.entry[p];
