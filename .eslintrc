@@ -38,7 +38,7 @@
             "named": "ignore",
             "asyncArrow": "always"
         }],
-        "func-names": ["error", "as-needed"],
+        "func-names": "off",
         "indent": ["error",
             "tab",
             {
@@ -54,12 +54,15 @@
         }],
         "arrow-parens": ["error", "as-needed", { "requireForBlockBody": false }], // 확인이 필요.
         "no-empty": [ "error", { "allowEmptyCatch": true } ],  // 확인이 필요.
+        "consistent-return": "off",
+        "no-continue": "off",
+        "quote-props": "off",
+        "no-lonely-if": "off",
 
         // "no-trailing-spaces": ["error", { "skipBlankLines": true }],
-        // "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
 
         /* ES6 확인해야할것 */
-        // Expected property shorthand. (object-shorthand)
+        // Expected property shorthand. (object-shorthand) 
         // Use 'const' instead. (prefer-const)
         
 
