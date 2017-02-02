@@ -11,7 +11,7 @@
     "lint": "eslint src",
     "jsdoc": "jsdoc -c jsdoc.json",
     "coverage": "karma start --coverage",
-    "precommit": "npm run lint",
+    "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
   },
   "author": {
