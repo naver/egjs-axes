@@ -58,6 +58,8 @@
         "no-continue": "off",
         "quote-props": "off",
         "no-lonely-if": "off",
+        "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
+
 
         // "no-trailing-spaces": ["error", { "skipBlankLines": true }],
 

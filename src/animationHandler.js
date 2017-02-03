@@ -89,15 +89,16 @@ export default superclass => class extends superclass {
 		this._animateParam = param;
 		if (param.duration) {
 			const info = this._animateParam;
+			const self = this;
 			(function loop() {
-				this._raf = null;
-				if (this._frame(info) >= 1) {
+				self._raf = null;
+				if (self._frame(info) >= 1) {
 					// deferred.resolve();
 					complete();
 					return;
 				} // animationEnd
-				this._raf = window.requestAnimationFrame(loop);
-			}.bind(this))();
+				self._raf = window.requestAnimationFrame(loop);
+			})();
 		} else {
 			this._setPosAndTriggerChange(param.destPos, false);
 			complete();
@@ -116,7 +117,6 @@ export default superclass => class extends superclass {
 		}
 
 		if (retTrigger) {
-			// const self = this;
 			const queue = [];
 			const dequeue = function() {
 				const task = queue.shift();
@@ -124,19 +124,13 @@ export default superclass => class extends superclass {
 			};
 			if (param.depaPos[0] !== param.destPos[0] ||
 				param.depaPos[1] !== param.destPos[1]) {
-				queue.push(() => {
-					this._animate(param, dequeue);
-				});
+				queue.push(() => this._animate(param, dequeue));
 			}
 			if (Coordinate.isOutside(
 				param.destPos, this.options.min, this.options.max)) {
-				queue.push(() => {
-					this._restore(dequeue, hammerEvent);
-				});
+				queue.push(() => this._restore(dequeue, hammerEvent));
 			}
-			queue.push(() => {
-				this._animationEnd();
-			});
+			queue.push(() => this._animationEnd());
 			dequeue();
 		}
 	}
