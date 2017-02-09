@@ -8,7 +8,10 @@ var path = require("path");
 module.exports = function(env) {
 	env = env || {};
 
-	if (!/server/.test(env.mode)) {
+	if (env.mode === "production") {
+		for (var p in config.entry) {
+			config.entry[p + ".min"] = config.entry[p];
+		}
 		config.module.rules.push({
 			test: /(\.js)$/,
 			loader: "eslint-loader",
@@ -16,12 +19,6 @@ module.exports = function(env) {
 			exclude: /(node_modules)/,
 			enforce: "pre"
 		});
-	}
-
-	if (env.mode === "production") {
-		for (var p in config.entry) {
-			config.entry[p + ".min"] = config.entry[p];
-		}
 		config.plugins.push(
 			new CleanWebpackPlugin(["dist"], {
 				root: path.resolve(__dirname),
