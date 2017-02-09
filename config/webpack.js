@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, "../dist"),
 		filename: "[name].js",
-		library:  ["eg", "MovableCoord" ],
+		library: ["eg", "MovableCoord"],
 		libraryTarget: "umd",
 	},
 	externals: [{

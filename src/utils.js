@@ -4,9 +4,9 @@ const utils = {
 	getElement(el) {
 		if (typeof el === "string") {
 			return document.querySelector(el);
-		} else if (window.jQuery && (el instanceof jQuery) && el.length > 0) {
+		} else if (window.jQuery && (el instanceof jQuery)) {
 			// if you were using jQuery
-			return el[0];
+			return el.length > 0 ? el[0] : null;
 		} else {
 			return el;
 		}
