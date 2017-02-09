@@ -25,9 +25,9 @@ eg.MovableCoord has the dependencies for the following libraries:
 |2.0.0+|2.0.4+|
 
 ## How to Use
-### 1. Load dependency library before eg.movableCoord.js (or eg.movableCoord.min.js) load.
+### 1. Load dependency library before movablecoord.js (or movablecoord.min.js) load.
 ```html
-<script src="../node_modules/eg.component/dist/eg.component.js"></script>
+<script src="../node_modules/@egjs/component/dist/component.js"></script>
 <script src="../node_modules/hammerjs/hammer.js"></script>
 ```
 > #### How to supports IE8  
@@ -37,9 +37,9 @@ For more information about hammerjs-compatible, please check following link.
 [https://github.com/naver/hammerjs-compatible](https://github.com/naver/hammerjs-compatible)
 
 
-### 2. Load eg.movableCoord.js
+### 2. Load movablecoord.js
 ```html
-<script src="../dist/eg.movableCoord.js"></script>
+<script src="../dist/movablecoord.js"></script>
 ```
 
 ### 3. Make a target element
@@ -67,7 +67,7 @@ instance.unbind(el);
 
 ## Bug Report
 
-If you find a bug, please report it to us using the [Issues](https://github.com/naver/eg.movableCoord/issues) page on GitHub.
+If you find a bug, please report it to us using the [Issues](https://github.com/naver/egjs-movablecoord/issues) page on GitHub.
 
 
 ## License

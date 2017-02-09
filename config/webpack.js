@@ -4,7 +4,7 @@ var StringReplacePlugin = require("string-replace-webpack-plugin");
 
 module.exports = {
 	entry: {
-		"eg.movableCoord": "./src/index.js"
+		"movablecoord": "./src/index.js"
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),
