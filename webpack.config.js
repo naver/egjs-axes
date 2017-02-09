@@ -44,7 +44,10 @@ module.exports = function(env) {
 			}), new webpack.BannerPlugin(banner.pkgd)
 		);
 		config.externals = [];
-	} else {
+	} else if (env.mode === "server") {
+		config.devServer = {
+			publicPath: "/dist/"
+		};
 		config.plugins.push(new WriteFilePlugin());
 	}
 	return config;

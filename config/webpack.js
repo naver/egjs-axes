@@ -10,7 +10,7 @@ module.exports = {
 		path: path.resolve(__dirname, "../dist"),
 		filename: "[name].js",
 		library: ["eg", "MovableCoord"],
-		libraryTarget: "umd",
+		libraryTarget: "umd"
 	},
 	externals: [{
 		"eg.component": {
@@ -21,9 +21,6 @@ module.exports = {
 		},
 		"hammerjs": "Hammer"
 	}],
-	devServer: {
-		publicPath: "/dist/"
-	},
 	devtool: "source-map",
 	module: {
 		rules: [
@@ -43,7 +40,7 @@ module.exports = {
 					]
 				}
 			},
-			{ 
+			{
 				test: /(\.js)$/,
 				loader: StringReplacePlugin.replace({
 					replacements: [
@@ -53,9 +50,10 @@ module.exports = {
 								return pkg.version;
 							}
 						}
-					]})
+					]}
+				)
             }
 		]
 	},
-	plugins: [ new StringReplacePlugin() ]
+	plugins: [new StringReplacePlugin()]
 };
