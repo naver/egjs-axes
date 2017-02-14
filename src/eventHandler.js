@@ -26,6 +26,7 @@ export default superclass => class extends superclass {
 		const pos = this.get();
 		const min = this.options.min;
 		const max = this.options.max;
+
 		this._setInterrupt(true);
 		this._grab(min, max, this.options.circular);
 		/**
@@ -74,6 +75,8 @@ export default superclass => class extends superclass {
 
 		// not support offset properties in Hammerjs - start
 		const prevInput = this._status.currentHanmmer.session.prevInput;
+
+		/* eslint-disable no-param-reassign */
 		if (prevInput) {
 			e.offsetX = e.deltaX - prevInput.deltaX;
 			e.offsetY = e.deltaY - prevInput.deltaY;
@@ -95,6 +98,7 @@ export default superclass => class extends superclass {
 			e.srcEvent.stopPropagation();
 		}
 		e.preventSystemEvent = prevent;
+		/* eslint-enable no-param-reassign */
 
 		pos[0] = this._status.moveDistance[0];
 		pos[1] = this._status.moveDistance[1];
@@ -109,6 +113,7 @@ export default superclass => class extends superclass {
 		let tv;
 		let tn;
 		let tx;
+
 		if (this._status.grabOutside) {
 			tn = min[0] - out[3];
 			tx = max[0] + out[1];
@@ -144,6 +149,7 @@ export default superclass => class extends superclass {
 	// panend event handler
 	_end(e) {
 		const pos = this.get();
+
 		if (!this._isInterrupting() || !this._status.moveDistance) {
 			return;
 		}
@@ -161,6 +167,7 @@ export default superclass => class extends superclass {
 			const scale = this._status.currentOptions.scale;
 			let vX = Math.abs(e.velocityX);
 			let vY = Math.abs(e.velocityY);
+
 			!(direction & DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
 			!(direction & DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
 
@@ -169,6 +176,7 @@ export default superclass => class extends superclass {
 				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
 			], this.options.deceleration);
 			let destPos = [pos[0] + offset[0], pos[1] + offset[1]];
+
 			destPos = Coordinate.getPointOfIntersection(pos, destPos,
 				this.options.min, this.options.max,
 				this.options.circular, this.options.bounce);

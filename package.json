@@ -30,7 +30,7 @@
     "clean-webpack-plugin": "^0.1.15",
     "egjs-jsdoc-template": "*",
     "eslint": "^3.14.1",
-    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-config-naver": "0.0.10-beta",
     "eslint-loader": "^1.6.1",
     "eslint-plugin-import": "^2.2.0",
     "hammer-simulator": "0.0.1",

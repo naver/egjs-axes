@@ -34,20 +34,23 @@ export default superclass => class extends superclass {
 		const maximumDuration = this.options.maximumDuration;
 		let destPos = Coordinate.getPointOfIntersection(
 			pos, absPos, min, max, circular, this.options.bounce);
+
 		destPos = Coordinate.isOutToOut(pos, destPos, min, max) ? pos : destPos;
+
 		const distance = [
 			Math.abs(destPos[0] - pos[0]),
 			Math.abs(destPos[1] - pos[1])
 		];
-		duration = duration == null ? Coordinate.getDurationFromPos(
+		let newDuration = duration == null ? Coordinate.getDurationFromPos(
 			distance, this.options.deceleration) : duration;
-		duration = maximumDuration > duration ? duration : maximumDuration;
+
+		newDuration = maximumDuration > newDuration ? newDuration : maximumDuration;
 		return {
 			depaPos: pos.concat(),
 			destPos: destPos.concat(),
 			isBounce: Coordinate.isOutside(destPos, min, max),
 			isCircular: Coordinate.isCircular(absPos, min, max, circular),
-			duration,
+			duration: newDuration,
 			distance,
 			hammerEvent: hammerEvent || null,
 			done: this._animationEnd
@@ -85,12 +88,14 @@ export default superclass => class extends superclass {
 	}
 
 	_animate(param, complete) {
-		param.startTime = new Date().getTime();
-		this._animateParam = param;
+		this._animateParam = Object.assign({}, param);
+		this._animateParam.startTime = new Date().getTime();
 		if (param.duration) {
 			const info = this._animateParam;
 			const self = this;
+
 			(function loop() {
+				/* eslint-disable no-underscore-dangle */
 				self._raf = null;
 				if (self._frame(info) >= 1) {
 					// deferred.resolve();
@@ -98,6 +103,7 @@ export default superclass => class extends superclass {
 					return;
 				} // animationEnd
 				self._raf = window.requestAnimationFrame(loop);
+				/* eslint-enable no-underscore-dangle */
 			})();
 		} else {
 			this._setPosAndTriggerChange(param.destPos, false);
@@ -120,8 +126,10 @@ export default superclass => class extends superclass {
 			const queue = [];
 			const dequeue = function() {
 				const task = queue.shift();
+
 				task && task.call(this);
 			};
+
 			if (param.depaPos[0] !== param.destPos[0] ||
 				param.depaPos[1] !== param.destPos[1]) {
 				queue.push(() => this._animate(param, dequeue));
@@ -189,35 +197,40 @@ export default superclass => class extends superclass {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(x, y, duration = 0) {
+		let toX;
+		let toY;
 		const min = this.options.min;
 		const max = this.options.max;
 		const circular = this.options.circular;
+
 		this._grab(min, max, circular);
 		const pos = this.get();
+
 		if (x === pos[0] && y === pos[1]) {
 			return this;
 		}
+
 		this._setInterrupt(true);
 		if (x !== pos[0]) {
 			if (!circular[3]) {
-				x = Math.max(min[0], x);
+				toX = Math.max(min[0], x);
 			}
 			if (!circular[1]) {
-				x = Math.min(max[0], x);
+				toX = Math.min(max[0], x);
 			}
 		}
 		if (y !== pos[1]) {
 			if (!circular[0]) {
-				y = Math.max(min[1], y);
+				toY = Math.max(min[1], y);
 			}
 			if (!circular[2]) {
-				y = Math.min(max[1], y);
+				toY = Math.min(max[1], y);
 			}
 		}
 		if (duration) {
-			this._animateTo([x, y], duration);
+			this._animateTo([toX, toY], duration);
 		} else {
-			this._pos = Coordinate.getCircularPos([x, y], min, max, circular);
+			this._pos = Coordinate.getCircularPos([toX, toY], min, max, circular);
 			this._setPosAndTriggerChange(this._pos, false);
 			this._setInterrupt(false);
 		}

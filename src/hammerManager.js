@@ -50,6 +50,7 @@ export default class HammerManager {
 			inputType: ["touch", "mouse"]
 		}, options);
 		const inputClass = this.convertInputType(bindOptions.inputType);
+
 		if (!inputClass) {
 			return;
 		}
@@ -75,6 +76,7 @@ export default class HammerManager {
 	remove(element) {
 		const el = utils.getElement(element);
 		const key = el.getAttribute(UNIQUEKEY);
+
 		if (key) {
 			this._hammers[key].hammer.destroy();
 			delete this._hammers[key];
@@ -84,12 +86,14 @@ export default class HammerManager {
 
 	getHammer(element) {
 		const data = this.get(element);
+
 		return data ? data.hammer : null;
 	}
 
 	get(element) {
 		const el = utils.getElement(element);
 		const key = el.getAttribute(UNIQUEKEY);
+
 		if (key && this._hammers[key]) {
 			return this._hammers[key];
 		} else {
@@ -98,6 +102,7 @@ export default class HammerManager {
 	}
 
 	_attachHammerEvents(hammer, options, handler) {
+		/* eslint-disable no-underscore-dangle */
 		return hammer
 			.on("hammer.input", e => {
 				if (e.isFirst) {
@@ -109,16 +114,17 @@ export default class HammerManager {
 					handler._end(e);
 				}
 			}).on("panstart panmove", e => handler._move(e));
+		/* eslint-enable no-underscore-dangle */
 	}
 
 	_detachHammerEvents(hammer) {
 		hammer.off("hammer.input panstart panmove panend");
 	}
 
-	convertInputType(inputType) {
+	convertInputType(inputType = []) {
 		let hasTouch = false;
 		let hasMouse = false;
-		inputType = inputType || [];
+
 		inputType.forEach(v => {
 			switch (v) {
 				case "mouse" : hasMouse = true; break;
