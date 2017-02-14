@@ -197,8 +197,8 @@ export default superclass => class extends superclass {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(x, y, duration = 0) {
-		let toX;
-		let toY;
+		let toX = x;
+		let toY = y;
 		const min = this.options.min;
 		const max = this.options.max;
 		const circular = this.options.circular;
@@ -213,18 +213,18 @@ export default superclass => class extends superclass {
 		this._setInterrupt(true);
 		if (x !== pos[0]) {
 			if (!circular[3]) {
-				toX = Math.max(min[0], x);
+				toX = Math.max(min[0], toX);
 			}
 			if (!circular[1]) {
-				toX = Math.min(max[0], x);
+				toX = Math.min(max[0], toX);
 			}
 		}
 		if (y !== pos[1]) {
 			if (!circular[0]) {
-				toY = Math.max(min[1], y);
+				toY = Math.max(min[1], toY);
 			}
 			if (!circular[2]) {
-				toY = Math.min(max[1], y);
+				toY = Math.min(max[1], toY);
 			}
 		}
 		if (duration) {

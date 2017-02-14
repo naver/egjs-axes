@@ -1,4 +1,4 @@
-import Component from "eg.component";
+import Component from "@egjs/component";
 import HammerManager from "./hammerManager";
 import EventHandler from "./eventHandler";
 import AnimationHandler from "./animationHandler";

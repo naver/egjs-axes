@@ -104,8 +104,9 @@ const Coordinate = {
 		if (circular[3] && toPos[0] < min[0]) { // left
 			toPos[0] = (toPos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
 		}
-		toPos[0] = +pos[0].toFixed(5);
-		toPos[1] = +pos[1].toFixed(5);
+
+		toPos[0] = +toPos[0].toFixed(5);
+		toPos[1] = +toPos[1].toFixed(5);
 		return toPos;
 	}
 };

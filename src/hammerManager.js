@@ -124,8 +124,9 @@ export default class HammerManager {
 	convertInputType(inputType = []) {
 		let hasTouch = false;
 		let hasMouse = false;
+		const inputs = inputType || [];
 
-		inputType.forEach(v => {
+		inputs.forEach(v => {
 			switch (v) {
 				case "mouse" : hasMouse = true; break;
 				case "touch" : hasTouch = SUPPORT_TOUCH;
