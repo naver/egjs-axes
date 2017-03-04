@@ -21,7 +21,7 @@ module.exports = {
 		},
 		"hammerjs": "Hammer"
 	}],
-	devtool: "source-map",
+	devtool: "inline-source-map",
 	module: {
 		rules: [
 			{
