@@ -97,7 +97,7 @@ describe("HammerManager inputType Test", function() {
         "./consts": {
           SUPPORT_TOUCH : true
         }
-      }).default;
+      });
 
       this.inst = new MockHammerManager();
 
@@ -129,7 +129,7 @@ describe("HammerManager inputType Test", function() {
         "./consts": {
           SUPPORT_TOUCH : false
         }
-      }).default;
+      });
 
       this.inst = new MockHammerManager();
 
