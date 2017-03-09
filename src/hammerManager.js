@@ -92,7 +92,7 @@ export default class HammerManager {
 
 	get(element) {
 		const el = utils.getElement(element);
-		const key = el.getAttribute(UNIQUEKEY);
+		const key = el ? el.getAttribute(UNIQUEKEY) : null;
 
 		if (key && this._hammers[key]) {
 			return this._hammers[key];
@@ -102,16 +102,18 @@ export default class HammerManager {
 	}
 
 	_attachHammerEvents(hammer, options, handler) {
+		const enable = hammer.get("pan").options.enable;
+
 		/* eslint-disable no-underscore-dangle */
 		return hammer
 			.on("hammer.input", e => {
 				if (e.isFirst) {
 					// apply options each
 					handler._setCurrentTarget(hammer, options);
-					handler._start(e);
+					enable && handler._start(e);
 				} else if (e.isFinal) {
 					// substitute .on("panend tap", this._panend); Because it(tap, panend) cannot catch vertical(horizontal) movement on HORIZONTAL(VERTICAL) mode.
-					handler._end(e);
+					enable && handler._end(e);
 				}
 			}).on("panstart panmove", e => handler._move(e));
 		/* eslint-enable no-underscore-dangle */
@@ -134,6 +136,23 @@ export default class HammerManager {
 		});
 
 		return hasTouch && Hammer.TouchInput || hasMouse && Hammer.MouseInput || null;
+	}
+
+	inputControl(isEnable, element) {
+		const option = {
+			enable: isEnable
+		};
+
+		if (element) {
+			const hammer = this.getHammer(element);
+
+			hammer && hammer.get("pan").set(option);
+		} else { // for multi
+			for (const p in this._hammers) {
+				this._hammers[p].hammer.get("pan").set(option);
+			}
+		}
+		return this;
 	}
 
 	destroy() {

@@ -157,7 +157,7 @@ describe("HammerManager inputType Test", function() {
 
   describe("HammerManager inputType test with element", function() {
     beforeEach(() => {
-      this.inst = new HammerManager();;
+      this.inst = new HammerManager();
     });
     afterEach(() => {
       if (this.inst) {
@@ -208,7 +208,7 @@ describe("HammerManager inputType Test", function() {
 
 describe("HammerManager getHammer Test", function() {
     beforeEach(() => {
-      this.inst = new HammerManager();;
+      this.inst = new HammerManager();
     });
     afterEach(() => {
       if (this.inst) {
@@ -235,5 +235,85 @@ describe("HammerManager getHammer Test", function() {
       // Then
       expect(Object.keys(this.inst._hammers).length).to.be.equal(0);
       expect(this.inst.getHammer(el)).to.not.exist;
+    });
+});
+
+
+describe("HammerManager inputControl Test", function() {
+    beforeEach(() => {
+      this.inst = new HammerManager();
+      this.el = sandbox("area");
+      this.hEl = sandbox("hmove");
+      this.vEl = sandbox("vmove");
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+
+    it("should check disableInput", () => {
+      // Given
+      this.inst.add(this.el);
+
+      // When
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.true;
+      this.inst.inputControl(false, this.el);
+      
+      // Then
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.false;
+    });
+
+    it("should check enableInput", () => {
+      // Given
+      this.inst.add(this.el);
+      this.inst.inputControl(false, this.el);
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.false;
+
+      // When
+      this.inst.inputControl(true, this.el);
+      
+      // Then
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.true;
+    });
+
+    it("should check disableInput (multi)", () => {
+      // Given
+      this.inst.add(this.el);
+      this.inst.add(this.hEl);
+      this.inst.add(this.vEl);
+      
+      // When
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.true;
+      expect(this.inst.getHammer(this.hEl).get("pan").options.enable).to.be.true;
+      expect(this.inst.getHammer(this.vEl).get("pan").options.enable).to.be.true;
+      this.inst.inputControl(false);
+      
+      // Then
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.false;
+      expect(this.inst.getHammer(this.hEl).get("pan").options.enable).to.be.false;
+      expect(this.inst.getHammer(this.vEl).get("pan").options.enable).to.be.false;
+    });
+
+    it("should check enableInput (multi)", () => {
+      // Given
+      this.inst.add(this.el);
+      this.inst.add(this.hEl);
+      this.inst.add(this.vEl);
+      this.inst.inputControl(false);
+      
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.false;
+      expect(this.inst.getHammer(this.hEl).get("pan").options.enable).to.be.false;
+      expect(this.inst.getHammer(this.vEl).get("pan").options.enable).to.be.false;
+      
+      // When
+      this.inst.inputControl(true);
+      
+      // Then
+      expect(this.inst.getHammer(this.el).get("pan").options.enable).to.be.true;
+      expect(this.inst.getHammer(this.hEl).get("pan").options.enable).to.be.true;
+      expect(this.inst.getHammer(this.vEl).get("pan").options.enable).to.be.true;
     });
 });
