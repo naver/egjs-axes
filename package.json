@@ -1,7 +1,7 @@
 {
   "name": "@egjs/movablecoord",
   "version": "2.0.0-beta",
-  "main": "src/index.js",
+  "main": "dist/movablecoord.js",
   "scripts": {
     "start": "webpack-dev-server --env.mode server",
     "build": "webpack --env.mode production --config webpack.config.js && webpack --env.mode pkgd --config webpack.config.js",
