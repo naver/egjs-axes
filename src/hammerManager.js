@@ -132,10 +132,11 @@ export default class HammerManager {
 			switch (v) {
 				case "mouse" : hasMouse = true; break;
 				case "touch" : hasTouch = SUPPORT_TOUCH;
+				// no default
 			}
 		});
-
-		return hasTouch && Hammer.TouchInput || hasMouse && Hammer.MouseInput || null;
+		return (hasTouch && Hammer.TouchInput) ||
+			(hasMouse && Hammer.MouseInput) || null;
 	}
 
 	inputControl(isEnable, element) {

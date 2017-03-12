@@ -81,7 +81,8 @@ export default superclass => class extends superclass {
 			e.offsetX = e.deltaX - prevInput.deltaX;
 			e.offsetY = e.deltaY - prevInput.deltaY;
 		} else {
-			e.offsetX = e.offsetY = 0;
+			e.offsetX = 0;
+			e.offsetY = 0;
 		}
 
 		// not support offset properties in Hammerjs - end
@@ -118,11 +119,13 @@ export default superclass => class extends superclass {
 			tn = min[0] - out[3];
 			tx = max[0] + out[1];
 			tv = pos[0];
+			/* eslint-disable no-nested-ternary */
 			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
 			tn = min[1] - out[0];
 			tx = max[1] + out[2];
 			tv = pos[1];
 			pos[1] = tv > tx ? tx : (tv < tn ? tn : tv);
+			/* eslint-enable no-nested-ternary */
 		} else {
 			// when start pointer is held in inside
 			// get a initialization slope value to prevent smooth animation.
