@@ -14,7 +14,7 @@ module.exports = {
 		libraryTarget: "umd"
 	},
 	externals: [{
-		"eg.component": {
+		"@egjs/component": {
 			commonjs: "eg.component",
 			commonjs2: "eg.component",
 			amd: "eg.component",
