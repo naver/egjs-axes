@@ -15,9 +15,9 @@ module.exports = {
 	},
 	externals: [{
 		"@egjs/component": {
-			commonjs: "eg.component",
-			commonjs2: "eg.component",
-			amd: "eg.component",
+			commonjs: "@egjs/component",
+			commonjs2: "@egjs/component",
+			amd: "@egjs/component",
 			root: ["eg", "Component"]
 		},
 		"hammerjs": {
