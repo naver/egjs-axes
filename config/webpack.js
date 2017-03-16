@@ -20,7 +20,12 @@ module.exports = {
 			amd: "eg.component",
 			root: ["eg", "Component"]
 		},
-		"hammerjs": "Hammer"
+		"hammerjs": {
+			commonjs: "hammerjs",
+			commonjs2: "hammerjs",
+			amd: "hammerjs",
+			root: "Hammer"
+		}
 	}],
 	devtool: "inline-source-map",
 	module: {
