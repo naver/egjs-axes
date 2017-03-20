@@ -39,7 +39,7 @@ export default superclass => class extends superclass {
 
 		const distance = [
 			Math.abs(destPos[0] - pos[0]),
-			Math.abs(destPos[1] - pos[1])
+			Math.abs(destPos[1] - pos[1]),
 		];
 		let newDuration = duration == null ? Coordinate.getDurationFromPos(
 			distance, this.options.deceleration) : duration;
@@ -53,7 +53,7 @@ export default superclass => class extends superclass {
 			duration: newDuration,
 			distance,
 			hammerEvent: hammerEvent || null,
-			done: this._animationEnd
+			done: this._animationEnd,
 		};
 	}
 
@@ -64,7 +64,7 @@ export default superclass => class extends superclass {
 
 		this._animate(this._prepareParam([
 			Math.min(max[0], Math.max(min[0], pos[0])),
-			Math.min(max[1], Math.max(min[1], pos[1]))
+			Math.min(max[1], Math.max(min[1], pos[1])),
 		], null, hammerEvent), complete);
 	}
 
@@ -73,7 +73,7 @@ export default superclass => class extends superclass {
 		const orgPos = this.get();
 		const nextPos = Coordinate.getCircularPos([
 			Math.round(orgPos[0]),
-			Math.round(orgPos[1])
+			Math.round(orgPos[1]),
 		], this.options.min, this.options.max, this.options.circular);
 
 		this.setTo(...nextPos);
@@ -118,7 +118,7 @@ export default superclass => class extends superclass {
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (param.isCircular && !retTrigger) {
 			throw new Error(
-				"You can't stop the 'animation' event when 'circular' is true."
+				"You can't stop the 'animation' event when 'circular' is true.",
 			);
 		}
 
@@ -179,7 +179,7 @@ export default superclass => class extends superclass {
 		this.trigger("change", {
 			pos: position.concat(),
 			holding,
-			hammerEvent: e || null
+			hammerEvent: e || null,
 		});
 	}
 
@@ -250,7 +250,7 @@ export default superclass => class extends superclass {
 		return this.setTo(
 			x != null ? this._pos[0] + x : this._pos[0],
 			y != null ? this._pos[1] + y : this._pos[1],
-			duration
+			duration,
 		);
 	}
 };

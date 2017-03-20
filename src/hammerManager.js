@@ -19,9 +19,9 @@ export default class HammerManager {
 					[
 						Hammer.Pan, {
 							direction: bindOptions.direction,
-							threshold: 0
-						}
-					]
+							threshold: 0,
+						},
+					],
 				],
 
 				// css properties were removed due to usablility issue
@@ -30,9 +30,9 @@ export default class HammerManager {
 					userSelect: "none",
 					touchSelect: "none",
 					touchCallout: "none",
-					userDrag: "none"
+					userDrag: "none",
 				},
-				inputClass
+				inputClass,
 			}), bindOptions, handler);
 		} catch (e) {
 			return null;
@@ -85,7 +85,7 @@ export default class HammerManager {
 			scale: [1, 1],
 			thresholdAngle: 45,
 			interruptable: true,
-			inputType: ["touch", "mouse"]
+			inputType: ["touch", "mouse"],
 		}, options);
 		const inputClass = this.convertInputType(bindOptions.inputType);
 
@@ -103,10 +103,10 @@ export default class HammerManager {
 				el,
 				bindOptions,
 				inputClass,
-				handler
+				handler,
 			),
 			el,
-			options: bindOptions
+			options: bindOptions,
 		};
 		el.setAttribute(UNIQUEKEY, keyValue);
 	}
@@ -144,7 +144,7 @@ export default class HammerManager {
 
 	inputControl(isEnable, element) {
 		const option = {
-			enable: isEnable
+			enable: isEnable,
 		};
 
 		if (element) {

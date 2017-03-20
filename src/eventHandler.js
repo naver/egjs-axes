@@ -9,7 +9,7 @@ export default superclass => class extends superclass {
 			currentHammer: null,		// current hammer instance
 			currentOptions: {},		// current bind options
 			moveDistance: null,		// a position of the first user's action
-			prevented: false		//  check whether the animation event was prevented
+			prevented: false,		//  check whether the animation event was prevented
 		};
 	}
 
@@ -43,7 +43,7 @@ export default superclass => class extends superclass {
 		 */
 		this.trigger("hold", {
 			pos: pos.concat(),
-			hammerEvent: e
+			hammerEvent: e,
 		});
 
 		this._status.moveDistance = pos.concat();
@@ -69,7 +69,7 @@ export default superclass => class extends superclass {
 			margin[0] + bounce[0],
 			margin[1] + bounce[1],
 			margin[2] + bounce[2],
-			margin[3] + bounce[3]
+			margin[3] + bounce[3],
 		];
 		let prevent = false;
 
@@ -163,7 +163,7 @@ export default superclass => class extends superclass {
 			this.trigger("release", {
 				depaPos: pos.concat(),
 				destPos: pos.concat(),
-				hammerEvent: e || null
+				hammerEvent: e || null,
 			});
 		} else {
 			const direction = this._status.currentOptions.direction;
@@ -176,7 +176,7 @@ export default superclass => class extends superclass {
 
 			const offset = Coordinate.getNextOffsetPos([
 				vX * (e.deltaX < 0 ? -1 : 1) * scale[0],
-				vY * (e.deltaY < 0 ? -1 : 1) * scale[1]
+				vY * (e.deltaY < 0 ? -1 : 1) * scale[1],
 			], this.options.deceleration);
 			let destPos = [pos[0] + offset[0], pos[1] + offset[1]];
 
@@ -202,7 +202,7 @@ export default superclass => class extends superclass {
 			this.trigger("release", {
 				depaPos: pos.concat(),
 				destPos,
-				hammerEvent: e || null
+				hammerEvent: e || null,
 			});
 			if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
 				this._animateTo(destPos, null, e || null);

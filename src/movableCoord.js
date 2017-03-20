@@ -65,7 +65,7 @@ extends Mixin(Component).with(EventHandler, AnimationHandler) {
 				return 1 - Math.pow(1 - x, 3);
 			},
 			maximumDuration: Infinity,
-			deceleration: 0.0006
+			deceleration: 0.0006,
 		}, options);
 		this._reviseOptions();
 		this._hammerManager = new HammerManager();

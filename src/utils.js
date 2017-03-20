@@ -10,7 +10,7 @@ const utils = {
 		} else {
 			return el;
 		}
-	}
+	},
 };
 
 class MixinBuilder {

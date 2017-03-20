@@ -48,7 +48,7 @@ const Coordinate = {
 						toDestPos[0];
 		return [
 			Math.min(max[0], Math.max(min[0], toDestPos[0])),
-			Math.min(max[1], Math.max(min[1], toDestPos[1]))
+			Math.min(max[1], Math.max(min[1], toDestPos[1])),
 		];
 	},
 	// determine outside
@@ -65,19 +65,19 @@ const Coordinate = {
 	},
 	getNextOffsetPos(speeds, deceleration) {
 		const normalSpeed = Math.sqrt(
-			speeds[0] * speeds[0] + speeds[1] * speeds[1]
+			speeds[0] * speeds[0] + speeds[1] * speeds[1],
 		);
 		const duration = Math.abs(normalSpeed / -deceleration);
 
 		return [
 			speeds[0] / 2 * duration,
-			speeds[1] / 2 * duration
+			speeds[1] / 2 * duration,
 		];
 	},
 	getDurationFromPos(pos, deceleration) {
 		const normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
 		const duration = Math.sqrt(
-			normalPos / deceleration * 2
+			normalPos / deceleration * 2,
 		);
 
 		// when duration is under 100, then value is zero
@@ -108,7 +108,7 @@ const Coordinate = {
 		toPos[0] = +toPos[0].toFixed(5);
 		toPos[1] = +toPos[1].toFixed(5);
 		return toPos;
-	}
+	},
 };
 
 export default Coordinate;
