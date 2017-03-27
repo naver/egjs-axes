@@ -87,7 +87,7 @@ export default class HammerManager {
 			interruptable: true,
 			inputType: ["touch", "mouse"],
 		}, options);
-		const inputClass = this.convertInputType(bindOptions.inputType);
+		const inputClass = HammerManager.convertInputType(bindOptions.inputType);
 
 		if (!inputClass) {
 			return;

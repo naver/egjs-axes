@@ -99,27 +99,25 @@ describe("HammerManager inputType Test", function() {
         }
       });
 
-      this.inst = new MockHammerManager();
-
       // When
       var inputType = [ "touch", "mouse" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
+      expect(MockHammerManager.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
 
       // When
       inputType = [ "touch" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
+      expect(MockHammerManager.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
 
       // When
       inputType = [ "mouse" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockHammerManager.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
       // When
       inputType = [ ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.null;
+      expect(MockHammerManager.convertInputType(inputType)).to.be.null;
     });
 
 
@@ -131,27 +129,25 @@ describe("HammerManager inputType Test", function() {
         }
       });
 
-      this.inst = new MockHammerManager();
-
       // When
       var inputType = [ "touch", "mouse" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockHammerManager.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
       // When
       inputType = [ "touch" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.null;
+      expect(MockHammerManager.convertInputType(inputType)).to.be.null;
 
       // When
       inputType = [ "mouse" ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockHammerManager.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
 
       // When
       inputType = [ ];
       // Then
-      expect(this.inst.convertInputType(inputType)).to.be.null;
+      expect(MockHammerManager.convertInputType(inputType)).to.be.null;
     });    
   });
 
