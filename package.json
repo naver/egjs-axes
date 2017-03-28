@@ -4,7 +4,7 @@
   "main": "dist/movablecoord.js",
   "scripts": {
     "start": "webpack-dev-server --open",
-    "build": "webpack --env production --config webpack.config.js && webpack --env packaged --config webpack.config.js",
+    "build": "webpack --env production && webpack --env packaged",
     "test": "karma start",
     "test:chrome": "karma start --chrome",
     "lint": "eslint src",

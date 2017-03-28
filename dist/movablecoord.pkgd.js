@@ -243,22 +243,23 @@ var Coordinate = {
 	},
 	getCircularPos: function getCircularPos(pos, min, max, circular) {
 		var toPos = pos.concat();
+		var length = [max[0] - min[0], max[1] - min[1]];
 
 		if (circular[0] && toPos[1] < min[1]) {
 			// up
-			toPos[1] = (toPos[1] - min[1]) % (max[1] - min[1] + 1) + max[1];
+			toPos[1] = (toPos[1] - min[1]) % length[1] + max[1];
 		}
 		if (circular[1] && toPos[0] > max[0]) {
 			// right
-			toPos[0] = (toPos[0] - min[0]) % (max[0] - min[0] + 1) + min[0];
+			toPos[0] = (toPos[0] - max[0]) % length[0] + min[0];
 		}
 		if (circular[2] && toPos[1] > max[1]) {
 			// down
-			toPos[1] = (toPos[1] - min[1]) % (max[1] - min[1] + 1) + min[1];
+			toPos[1] = (toPos[1] - max[1]) % length[1] + min[1];
 		}
 		if (circular[3] && toPos[0] < min[0]) {
 			// left
-			toPos[0] = (toPos[0] - min[0]) % (max[0] - min[0] + 1) + max[0];
+			toPos[0] = (toPos[0] - min[0]) % length[0] + max[0];
 		}
 
 		toPos[0] = +toPos[0].toFixed(5);
