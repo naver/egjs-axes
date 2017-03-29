@@ -1,5 +1,5 @@
 import Hammer from "hammerjs";
-import {utils} from "./utils";
+import {$} from "./utils";
 import {DIRECTION, UNIQUEKEY, SUPPORT_TOUCH} from "./consts";
 
 if (typeof Hammer === "undefined") {
@@ -78,7 +78,7 @@ export default class HammerManager {
 	}
 
 	add(element, options, handler) {
-		const el = utils.getElement(element);
+		const el = $(element);
 		let keyValue = el.getAttribute(UNIQUEKEY);
 		const bindOptions = Object.assign({
 			direction: DIRECTION.DIRECTION_ALL,
@@ -112,7 +112,7 @@ export default class HammerManager {
 	}
 
 	remove(element) {
-		const el = utils.getElement(element);
+		const el = $(element);
 		const key = el.getAttribute(UNIQUEKEY);
 
 		if (key) {
@@ -132,7 +132,7 @@ export default class HammerManager {
 	}
 
 	get(element) {
-		const el = utils.getElement(element);
+		const el = $(element);
 		const key = el ? el.getAttribute(UNIQUEKEY) : null;
 
 		if (key && this._hammers[key]) {

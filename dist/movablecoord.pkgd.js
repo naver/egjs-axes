@@ -279,24 +279,54 @@ module.exports = exports["default"];
 
 
 exports.__esModule = true;
-exports.utils = exports.Mixin = undefined;
+exports.$ = exports.Mixin = undefined;
 
 var _browser = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var utils = {
-	getElement: function getElement(el) {
-		if (typeof el === "string") {
-			return _browser.document.querySelector(el);
-		} else if (_browser.window.jQuery && el instanceof jQuery) {
-			// if you were using jQuery
-			return el.length > 0 ? el[0] : null;
+/**
+ * Select or create element
+ * @param {String|HTMLElement|jQuery} param
+ *  when string given is as HTML tag, then create element
+ *  otherwise it returns selected elements
+ * @param {Boolean} multi
+ * @returns {HTMLElement}
+ */
+function $(param) {
+	var multi = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+	var el = void 0;
+
+	if (typeof param === "string") {
+		// String (HTML, Selector)
+		// check if string is HTML tag format
+		var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+
+		// creating element
+		if (match) {
+			// HTML
+			var dummy = _browser.document.createElement("div");
+
+			dummy.innerHTML = param;
+			el = Array.prototype.slice.call(dummy.childNodes);
 		} else {
-			return el;
+			// Selector
+			el = Array.prototype.slice.call(_browser.document.querySelectorAll(param));
 		}
+		if (!multi) {
+			el = el.length > 1 ? el[0] : undefined;
+		}
+	} else if (param.nodeName && param.nodeType === 1) {
+		// HTMLElement
+		el = param;
+	} else if (_browser.window.jQuery && param instanceof jQuery) {
+		// jQuery
+		el = multi ? param.toArray() : param.get(0);
 	}
-};
+
+	return el;
+}
 
 var MixinBuilder = function () {
 	function MixinBuilder(superclass) {
@@ -329,7 +359,7 @@ var Mixin = function Mixin(superclass) {
 };
 
 exports.Mixin = Mixin;
-exports.utils = utils;
+exports.$ = $;
 
 /***/ }),
 /* 4 */
@@ -1215,7 +1245,7 @@ var HammerManager = function () {
 	};
 
 	HammerManager.prototype.add = function add(element, options, handler) {
-		var el = _utils.utils.getElement(element);
+		var el = (0, _utils.$)(element);
 		var keyValue = el.getAttribute(_consts.UNIQUEKEY);
 		var bindOptions = Object.assign({
 			direction: _consts.DIRECTION.DIRECTION_ALL,
@@ -1244,7 +1274,7 @@ var HammerManager = function () {
 	};
 
 	HammerManager.prototype.remove = function remove(element) {
-		var el = _utils.utils.getElement(element);
+		var el = (0, _utils.$)(element);
 		var key = el.getAttribute(_consts.UNIQUEKEY);
 
 		if (key) {
@@ -1264,7 +1294,7 @@ var HammerManager = function () {
 	};
 
 	HammerManager.prototype.get = function get(element) {
-		var el = _utils.utils.getElement(element);
+		var el = (0, _utils.$)(element);
 		var key = el ? el.getAttribute(_consts.UNIQUEKEY) : null;
 
 		if (key && this._hammers[key]) {
