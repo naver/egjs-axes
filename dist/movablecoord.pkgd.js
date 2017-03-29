@@ -315,7 +315,7 @@ function $(param) {
 			el = Array.prototype.slice.call(_browser.document.querySelectorAll(param));
 		}
 		if (!multi) {
-			el = el.length > 1 ? el[0] : undefined;
+			el = el.length >= 1 ? el[0] : undefined;
 		}
 	} else if (param.nodeName && param.nodeType === 1) {
 		// HTMLElement
@@ -1470,7 +1470,6 @@ var Component = exports.Component = function () {
 		this._eventHandler = {};
 		this._options = {};
 	}
-
 	/**
   * Sets options in a component or returns them.
   * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
@@ -1601,6 +1600,8 @@ var Component = exports.Component = function () {
 	}, {
 		key: "once",
 		value: function once(eventName, handlerToAttach) {
+			var _this = this;
+
 			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
 				var eventHash = eventName;
 				var i = void 0;
@@ -1609,15 +1610,17 @@ var Component = exports.Component = function () {
 				}
 				return this;
 			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-				var self = this;
-				this.on(eventName, function listener() {
-					for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-						arg[_key3] = arguments[_key3];
-					}
+				(function () {
+					var self = _this;
+					_this.on(eventName, function listener() {
+						for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+							arg[_key3] = arguments[_key3];
+						}
 
-					handlerToAttach.apply(self, arg);
-					self.off(eventName, listener);
-				});
+						handlerToAttach.apply(self, arg);
+						self.off(eventName, listener);
+					});
+				})();
 			}
 
 			return this;
@@ -1760,7 +1763,6 @@ module.exports = _component.Component;
 /******/ ]);
 });
 //# sourceMappingURL=component.js.map
-
 
 /***/ }),
 /* 10 */
