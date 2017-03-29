@@ -25,7 +25,7 @@ function $(param, multi = false) {
 			el = Array.prototype.slice.call(document.querySelectorAll(param));
 		}
 		if (!multi) {
-			el = el.length > 1 ? el[0] : undefined;
+			el = el.length >= 1 ? el[0] : undefined;
 		}
 	} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
 		el = param;
