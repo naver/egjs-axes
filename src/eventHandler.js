@@ -32,8 +32,7 @@ export default superclass => class extends superclass {
 		/**
 		 * This event is fired when a user holds an element on the screen of the device.
 		 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-		 * @name eg.MovableCoord#hold
-		 * @event
+		 * @event eg.MovableCoord#hold
 		 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 		 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
 		 * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
@@ -186,8 +185,7 @@ export default superclass => class extends superclass {
 			/**
 			 * This event is fired when a user release an element on the screen of the device.
 			 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-			 * @name eg.MovableCoord#release
-			 * @event
+			 * @event eg.MovableCoord#release
 			 *
 			 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 			 * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>

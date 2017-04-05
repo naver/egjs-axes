@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/animationHandler.js | egjs::movableCoord - API</title>
+    
+    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. " />
+    
+        <meta name="keywords" content="jQuery, UI Component, egjs, movableCoord" />
+        <meta name="keyword" content="jQuery, UI Component, egjs, movableCoord" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"egjs","disqus":"egjs","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::movableCoord - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. ","keyword":"jQuery, UI Component, egjs, movableCoord"},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs/latest/doc/"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">egjs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.MovableCoord">
+    <span class="title">
+        <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_ALL"><a href="eg.MovableCoord.html#.DIRECTION_ALL">DIRECTION_ALL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_DOWN"><a href="eg.MovableCoord.html#.DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_HORIZONTAL"><a href="eg.MovableCoord.html#.DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_LEFT"><a href="eg.MovableCoord.html#.DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_NONE"><a href="eg.MovableCoord.html#.DIRECTION_NONE">DIRECTION_NONE</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_RIGHT"><a href="eg.MovableCoord.html#.DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_UP"><a href="eg.MovableCoord.html#.DIRECTION_UP">DIRECTION_UP</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_VERTICAL"><a href="eg.MovableCoord.html#.DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+    
+        <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.MovableCoord#disableInput"><a href="eg.MovableCoord.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.MovableCoord#enableInput"><a href="eg.MovableCoord.html#enableInput">enableInput</a></li>
+    
+        <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+    
+        <li data-name="eg.MovableCoord#getHammer"><a href="eg.MovableCoord.html#getHammer">getHammer</a></li>
+    
+        <li data-name="eg.MovableCoord#hasOn"><a href="eg.MovableCoord.html#hasOn">hasOn</a></li>
+    
+        <li data-name="eg.MovableCoord#off"><a href="eg.MovableCoord.html#off">off</a></li>
+    
+        <li data-name="eg.MovableCoord#on"><a href="eg.MovableCoord.html#on">on</a></li>
+    
+        <li data-name="eg.MovableCoord#once"><a href="eg.MovableCoord.html#once">once</a></li>
+    
+        <li data-name="eg.MovableCoord#option"><a href="eg.MovableCoord.html#option">option</a></li>
+    
+        <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+    
+        <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+    
+        <li data-name="eg.MovableCoord#trigger"><a href="eg.MovableCoord.html#trigger">trigger</a></li>
+    
+        <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
+    
+        <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
+    
+        <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
+    
+        <li data-name="eg.MovableCoord#event:release"><a href="eg.MovableCoord.html#event:release">release</a></li>
+    
+    </ul>
+
+    
+
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_animationHandler.js.html">Source: src/animationHandler.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Coordinate from "./coordinate";
+import {window} from "./browser";
+
+export default superclass => class extends superclass {
+	constructor() {
+		super();
+		this._raf = null;
+		this._animateParam = null;
+		this._animationEnd = this._animationEnd.bind(this);	// for caching
+		this._restore = this._restore.bind(this);	// for caching
+	}
+
+	_grab(min, max, circular) {
+		if (this._animateParam) {
+			this.trigger("animationEnd");
+			const orgPos = this.get();
+
+			const pos = Coordinate.getCircularPos(this.get(), min, max, circular);
+
+			if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
+				this._setPosAndTriggerChange(pos, true);
+			}
+			this._animateParam = null;
+			this._raf &amp;&amp; window.cancelAnimationFrame(this._raf);
+			this._raf = null;
+		}
+	}
+
+	_prepareParam(absPos, duration, hammerEvent) {
+		const pos = this.get();
+		const min = this.options.min;
+		const max = this.options.max;
+		const circular = this.options.circular;
+		const maximumDuration = this.options.maximumDuration;
+		let destPos = Coordinate.getPointOfIntersection(
+			pos, absPos, min, max, circular, this.options.bounce);
+
+		destPos = Coordinate.isOutToOut(pos, destPos, min, max) ? pos : destPos;
+
+		const distance = [
+			Math.abs(destPos[0] - pos[0]),
+			Math.abs(destPos[1] - pos[1]),
+		];
+		let newDuration = duration == null ? Coordinate.getDurationFromPos(
+			distance, this.options.deceleration) : duration;
+
+		newDuration = maximumDuration > newDuration ? newDuration : maximumDuration;
+		return {
+			depaPos: pos.concat(),
+			destPos: destPos.concat(),
+			isBounce: Coordinate.isOutside(destPos, min, max),
+			isCircular: Coordinate.isCircular(absPos, min, max, circular),
+			duration: newDuration,
+			distance,
+			hammerEvent: hammerEvent || null,
+			done: this._animationEnd,
+		};
+	}
+
+	_restore(complete, hammerEvent) {
+		const pos = this.get();
+		const min = this.options.min;
+		const max = this.options.max;
+
+		this._animate(this._prepareParam([
+			Math.min(max[0], Math.max(min[0], pos[0])),
+			Math.min(max[1], Math.max(min[1], pos[1])),
+		], null, hammerEvent), complete);
+	}
+
+	_animationEnd() {
+		this._animateParam = null;
+		const orgPos = this.get();
+		const nextPos = Coordinate.getCircularPos([
+			Math.round(orgPos[0]),
+			Math.round(orgPos[1]),
+		], this.options.min, this.options.max, this.options.circular);
+
+		this.setTo(...nextPos);
+		this._setInterrupt(false);
+		/**
+		 * This event is fired when animation ends.
+		 * @ko 에니메이션이 끝났을 때 발생한다.
+		 * @name eg.MovableCoord#animationEnd
+		 * @event
+		 */
+		this.trigger("animationEnd");
+	}
+
+	_animate(param, complete) {
+		this._animateParam = Object.assign({}, param);
+		this._animateParam.startTime = new Date().getTime();
+		if (param.duration) {
+			const info = this._animateParam;
+			const self = this;
+
+			(function loop() {
+				/* eslint-disable no-underscore-dangle */
+				self._raf = null;
+				if (self._frame(info) >= 1) {
+					// deferred.resolve();
+					complete();
+					return;
+				} // animationEnd
+				self._raf = window.requestAnimationFrame(loop);
+				/* eslint-enable no-underscore-dangle */
+			})();
+		} else {
+			this._setPosAndTriggerChange(param.destPos, false);
+			complete();
+		}
+	}
+
+	_animateTo(absPos, duration, hammerEvent) {
+		const param = this._prepareParam(absPos, duration, hammerEvent);
+		const retTrigger = this.trigger("animationStart", param);
+
+		// You can't stop the 'animationStart' event when 'circular' is true.
+		if (param.isCircular &amp;&amp; !retTrigger) {
+			throw new Error(
+				"You can't stop the 'animation' event when 'circular' is true."
+			);
+		}
+
+		if (retTrigger) {
+			const queue = [];
+			const dequeue = function() {
+				const task = queue.shift();
+
+				task &amp;&amp; task.call(this);
+			};
+
+			if (param.depaPos[0] !== param.destPos[0] ||
+				param.depaPos[1] !== param.destPos[1]) {
+				queue.push(() => this._animate(param, dequeue));
+			}
+			if (Coordinate.isOutside(
+				param.destPos, this.options.min, this.options.max)) {
+				queue.push(() => this._restore(dequeue, hammerEvent));
+			}
+			queue.push(() => this._animationEnd());
+			dequeue();
+		}
+	}
+
+	// animation frame (0~1)
+	_frame(param) {
+		const curTime = new Date() - param.startTime;
+		const easingPer = this._easing(curTime / param.duration);
+		let pos = [param.depaPos[0], param.depaPos[1]];
+
+		for (let i = 0; i &lt; 2; i++) {
+			(pos[i] !== param.destPos[i]) &amp;&amp;
+			(pos[i] += (param.destPos[i] - pos[i]) * easingPer);
+		}
+		pos = Coordinate.getCircularPos(
+			pos, this.options.min, this.options.max, this.options.circular);
+		this._setPosAndTriggerChange(pos, false);
+		return easingPer;
+	}
+
+	// trigger 'change' event
+	_setPosAndTriggerChange(position, holding, e) {
+		/**
+		 * This event is fired when coordinate changes.
+		 * @ko 좌표가 변경됐을 때 발생하는 이벤트
+		 * @name eg.MovableCoord#change
+		 * @event
+		 *
+		 * @param {Object} param The object of data to be sent when the event is fired &lt;ko>이벤트가 발생할 때 전달되는 데이터 객체&lt;/ko>
+		 * @param {Array} param.position departure coordinate  &lt;ko>좌표&lt;/ko>
+		 * @param {Number} param.position.0 The X coordinate &lt;ko>x 좌표&lt;/ko>
+		 * @param {Number} param.pos.1 The Y coordinate &lt;ko>y 좌표&lt;/ko>
+		 * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.&lt;ko>사용자가 기기의 화면을 누르고 있는지 여부&lt;/ko>
+		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.&lt;ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.&lt;/ko>
+		 *
+		 */
+		this._pos = position.concat();
+		this.trigger("change", {
+			pos: position.concat(),
+			holding,
+			hammerEvent: e || null,
+		});
+	}
+
+	_easing(p) {
+		return p > 1 ? 1 : this.options.easing(p);
+	}
+
+	/**
+	 * Moves an element to specific coordinates.
+	 * @ko 좌표를 이동한다.
+	 * @method eg.MovableCoord#setTo
+	 * @param {Number} x The X coordinate to move to &lt;ko>이동할 x좌표&lt;/ko>
+	 * @param {Number} y The Y coordinate to move to  &lt;ko>이동할 y좌표&lt;/ko>
+	 * @param {Number} [duration=0] Duration of the animation (unit: ms) &lt;ko>애니메이션 진행 시간(단위: ms)&lt;/ko>
+	 * @return {eg.MovableCoord} An instance of a module itself &lt;ko>자신의 인스턴스&lt;/ko>
+	 */
+	setTo(x, y, duration = 0) {
+		let toX = x;
+		let toY = y;
+		const min = this.options.min;
+		const max = this.options.max;
+		const circular = this.options.circular;
+
+		this._grab(min, max, circular);
+		const pos = this.get();
+
+		if (x === pos[0] &amp;&amp; y === pos[1]) {
+			return this;
+		}
+
+		this._setInterrupt(true);
+		if (x !== pos[0]) {
+			if (!circular[3]) {
+				toX = Math.max(min[0], toX);
+			}
+			if (!circular[1]) {
+				toX = Math.min(max[0], toX);
+			}
+		}
+		if (y !== pos[1]) {
+			if (!circular[0]) {
+				toY = Math.max(min[1], toY);
+			}
+			if (!circular[2]) {
+				toY = Math.min(max[1], toY);
+			}
+		}
+		if (duration) {
+			this._animateTo([toX, toY], duration);
+		} else {
+			this._pos = Coordinate.getCircularPos([toX, toY], min, max, circular);
+			this._setPosAndTriggerChange(this._pos, false);
+			this._setInterrupt(false);
+		}
+		return this;
+	}
+
+	/**
+	 * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
+	 * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
+	 * @method eg.MovableCoord#setBy
+	 * @param {Number} x The X coordinate to move to &lt;ko>이동할 x좌표&lt;/ko>
+	 * @param {Number} y The Y coordinate to move to &lt;ko>이동할 y좌표&lt;/ko>
+	 * @param {Number} [duration=0] Duration of the animation (unit: ms) &lt;ko>애니메이션 진행 시간(단위: ms)&lt;/ko>
+	 * @return {eg.MovableCoord} An instance of a module itself &lt;ko>자신의 인스턴스&lt;/ko>
+	 */
+	setBy(x, y, duration = 0) {
+		return this.setTo(
+			x != null ? this._pos[0] + x : this._pos[0],
+			y != null ? this._pos[1] + y : this._pos[1],
+			duration
+		);
+	}
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Apr 05 2017 21:45:53 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

@@ -118,7 +118,7 @@ export default superclass => class extends superclass {
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (param.isCircular && !retTrigger) {
 			throw new Error(
-				"You can't stop the 'animation' event when 'circular' is true.",
+				"You can't stop the 'animation' event when 'circular' is true."
 			);
 		}
 
@@ -250,7 +250,7 @@ export default superclass => class extends superclass {
 		return this.setTo(
 			x != null ? this._pos[0] + x : this._pos[0],
 			y != null ? this._pos[1] + y : this._pos[1],
-			duration,
+			duration
 		);
 	}
 };

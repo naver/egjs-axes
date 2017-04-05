@@ -1,4 +1,4 @@
-# eg.MovableCoord
+# egjs-movableCoord
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
 
@@ -71,7 +71,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 
 ## License
-eg.MovableCoord is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+egjs-movableCoord is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
 Copyright (c) 2015 NAVER Corp.

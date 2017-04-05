@@ -65,7 +65,7 @@ const Coordinate = {
 	},
 	getNextOffsetPos(speeds, deceleration) {
 		const normalSpeed = Math.sqrt(
-			speeds[0] * speeds[0] + speeds[1] * speeds[1],
+			speeds[0] * speeds[0] + speeds[1] * speeds[1]
 		);
 		const duration = Math.abs(normalSpeed / -deceleration);
 
@@ -77,7 +77,7 @@ const Coordinate = {
 	getDurationFromPos(pos, deceleration) {
 		const normalPos = Math.sqrt(pos[0] * pos[0] + pos[1] * pos[1]);
 		const duration = Math.sqrt(
-			normalPos / deceleration * 2,
+			normalPos / deceleration * 2
 		);
 
 		// when duration is under 100, then value is zero

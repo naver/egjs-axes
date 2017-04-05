@@ -1,13 +1,5 @@
 import {window, document} from "./browser";
 
-/**
- * Select or create element
- * @param {String|HTMLElement|jQuery} param
- *  when string given is as HTML tag, then create element
- *  otherwise it returns selected elements
- * @param {Boolean} multi
- * @returns {HTMLElement}
- */
 function $(param, multi = false) {
 	let el;
 
