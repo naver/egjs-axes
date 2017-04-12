@@ -1,5 +1,5 @@
 import Component from "@egjs/component";
-import HammerManager from "./hammerManager";
+import HammerManager from "./HammerManager";
 import EventHandler from "./eventHandler";
 import AnimationHandler from "./animationHandler";
 import {DIRECTION} from "./consts";

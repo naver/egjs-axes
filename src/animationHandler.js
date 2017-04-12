@@ -1,4 +1,4 @@
-import Coordinate from "./coordinate";
+import Coordinate from "./Coordinate";
 import {window} from "./browser";
 
 export default superclass => class extends superclass {

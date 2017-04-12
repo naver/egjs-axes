@@ -1,7 +1,7 @@
 import Hammer from "hammerjs";
 import { UNIQUEKEY, DIRECTION } from '../../src/consts.js';
-import HammerManager from '../../src/hammerManager.js';
-import HammerManagerInjector from "inject-loader!../../src/hammerManager";
+import HammerManager from '../../src/HammerManager.js';
+import HammerManagerInjector from "inject-loader!../../src/HammerManager";
 
 describe("HammerManager bind/unbind Test", function() {
     beforeEach(() => {

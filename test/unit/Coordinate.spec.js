@@ -1,4 +1,4 @@
-import Coordinate from '../../src/coordinate.js';
+import Coordinate from '../../src/Coordinate.js';
 import { DIRECTION } from '../../src/consts.js';
 
 describe("Coordinate getDirectionByAngle", function() {
