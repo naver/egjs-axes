@@ -1,4 +1,4 @@
-import MovableCoord from '../../src/movableCoord.js';
+import MovableCoord from '../../src/MovableCoord.js';
 
 describe("AnimationHandler setTo/setBy method Test", function() {
   beforeEach(() => {

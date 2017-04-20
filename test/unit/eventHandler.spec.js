@@ -1,4 +1,4 @@
-import MovableCoord from '../../src/movableCoord.js';
+import MovableCoord from '../../src/MovableCoord.js';
 
 describe("EventHandler interruptable:false Test", function() {
     beforeEach(() => {

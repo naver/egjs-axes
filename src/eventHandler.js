@@ -1,4 +1,4 @@
-import Coordinate from "./coordinate";
+import Coordinate from "./Coordinate";
 import {DIRECTION} from "./consts";
 
 export default superclass => class extends superclass {

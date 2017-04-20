@@ -1,9 +1,9 @@
 import Component from "@egjs/component";
-import HammerManager from "./hammerManager";
+import HammerManager from "./HammerManager";
 import EventHandler from "./eventHandler";
 import AnimationHandler from "./animationHandler";
 import {DIRECTION} from "./consts";
-import {Mixin} from "./utils";
+import {Mixin, extend} from "./utils";
 
 /**
  * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
@@ -49,7 +49,7 @@ extends Mixin(Component).with(EventHandler, AnimationHandler) {
 	 **/
 	constructor(options) {
 		super();
-		Object.assign(this.options = {
+		extend(this.options = {
 			min: [0, 0],
 			max: [100, 100],
 			bounce: [10, 10, 10, 10],
@@ -169,5 +169,5 @@ extends Mixin(Component).with(EventHandler, AnimationHandler) {
 	}
 };
 
-Object.assign(MovableCoord, DIRECTION);
+extend(MovableCoord, DIRECTION);
 export default MovableCoord;

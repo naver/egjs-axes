@@ -1,4 +1,4 @@
-import MovableCoord from '../../src/movableCoord.js';
+import MovableCoord from '../../src/MovableCoord.js';
 import { DIRECTION } from '../../src/consts.js';
 
 describe("MovableCoord init Test", function() {
