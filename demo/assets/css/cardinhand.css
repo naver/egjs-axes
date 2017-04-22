@@ -1,17 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>demo::eg.MovableCoord</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
-<style>
+/* YOUR CSS CODE HERE */
 .bg-primary {
     background-color: #ffce00;
 }
+#showcase {
+    margin-bottom: 20px;
+}
+
 #showcase h3 {
     color: #8c532e;
     font-size: 32px;
     font-weight: 600;
+    width:100%;
 }
 #showcase p {
     color: #8c532e;
@@ -47,30 +46,3 @@ p {
 .handcard { display: inline-block; width: 130px; height: 190px; margin-left: -30px; background-color: #8c532e; border-radius: 5px; padding: 25px 15px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); position: relative; border-radius: 5px; font-size: 0px; }
 
 .handcard img { margin-top: 12px; width: 90px; user-drag: none; user-select: none; -moz-user-select: none; -webkit-user-drag: none; -webkit-user-select: none; -ms-user-select: none; }
-
-</style>
-<script src="../node_modules/@egjs/component/dist/component.js"></script>
-<script src="../node_modules/hammerjs/hammer.js"></script>
-<script src="../dist/movablecoord.js"></script>
-</head>
-<body class="bg-primary" id="showcase">
-<div class="col-md-4 col-lg-4 showcase-item">
-  <div class="showcase-content">
-    <div id="movableCoordWrapper">
-      <div class="hand">
-        <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-          <div class="handcard" style=""><img class="logo_mono" src="./image/logo_mono.svg"></div>
-      </div>
-    </div>
-    <div id="area" class="movableDot"></div>
-  </div>
-</div>
-<script src="./js/util.js"></script>
-<script src="./js/cardinhand.js"></script>
-</body>
-</html>

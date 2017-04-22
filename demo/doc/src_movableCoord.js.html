@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: src/movableCoord.js | egjs::movableCoord - API</title>
+    
+    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. " />
+    
+        <meta name="keywords" content="jQuery, UI Component, egjs, movableCoord" />
+        <meta name="keyword" content="jQuery, UI Component, egjs, movableCoord" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="http://naver.github.io/egjs/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"egjs","disqus":"egjs","googleAnalytics":"","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::movableCoord - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. ","keyword":"jQuery, UI Component, egjs, movableCoord"},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs/latest/doc/"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="http://naver.github.io/egjs/">egjs</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+        
+            
+
+<li class="item" data-name="eg.MovableCoord">
+    <span class="title">
+        <a href="eg.MovableCoord.html">eg.MovableCoord</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    <span class="subtitle">Members</span>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_ALL"><a href="eg.MovableCoord.html#.DIRECTION_ALL">DIRECTION_ALL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_DOWN"><a href="eg.MovableCoord.html#.DIRECTION_DOWN">DIRECTION_DOWN</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_HORIZONTAL"><a href="eg.MovableCoord.html#.DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_LEFT"><a href="eg.MovableCoord.html#.DIRECTION_LEFT">DIRECTION_LEFT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_NONE"><a href="eg.MovableCoord.html#.DIRECTION_NONE">DIRECTION_NONE</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_RIGHT"><a href="eg.MovableCoord.html#.DIRECTION_RIGHT">DIRECTION_RIGHT</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_UP"><a href="eg.MovableCoord.html#.DIRECTION_UP">DIRECTION_UP</a></li>
+    
+        <li data-name="eg.MovableCoord.DIRECTION_VERTICAL"><a href="eg.MovableCoord.html#.DIRECTION_VERTICAL">DIRECTION_VERTICAL</a></li>
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.MovableCoord#bind"><a href="eg.MovableCoord.html#bind">bind</a></li>
+    
+        <li data-name="eg.MovableCoord#destroy"><a href="eg.MovableCoord.html#destroy">destroy</a></li>
+    
+        <li data-name="eg.MovableCoord#disableInput"><a href="eg.MovableCoord.html#disableInput">disableInput</a></li>
+    
+        <li data-name="eg.MovableCoord#enableInput"><a href="eg.MovableCoord.html#enableInput">enableInput</a></li>
+    
+        <li data-name="eg.MovableCoord#get"><a href="eg.MovableCoord.html#get">get</a></li>
+    
+        <li data-name="eg.MovableCoord#getHammer"><a href="eg.MovableCoord.html#getHammer">getHammer</a></li>
+    
+        <li data-name="eg.MovableCoord#hasOn"><a href="eg.MovableCoord.html#hasOn">hasOn</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#off"><a href="eg.MovableCoord.html#off">off</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#on"><a href="eg.MovableCoord.html#on">on</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#once"><a href="eg.MovableCoord.html#once">once</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#option"><a href="eg.MovableCoord.html#option">option</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#setBy"><a href="eg.MovableCoord.html#setBy">setBy</a></li>
+    
+        <li data-name="eg.MovableCoord#setTo"><a href="eg.MovableCoord.html#setTo">setTo</a></li>
+    
+        <li data-name="eg.MovableCoord#trigger"><a href="eg.MovableCoord.html#trigger">trigger</a> <img src="img/i.png" width="14" title="inherited" alt="inherited"></li>
+    
+        <li data-name="eg.MovableCoord#unbind"><a href="eg.MovableCoord.html#unbind">unbind</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    <span class="subtitle">Events</span>
+    
+        <li data-name="eg.MovableCoord#event:animationEnd"><a href="eg.MovableCoord.html#event:animationEnd">animationEnd</a></li>
+    
+        <li data-name="eg.MovableCoord#event:change"><a href="eg.MovableCoord.html#event:change">change</a></li>
+    
+        <li data-name="eg.MovableCoord#event:hold"><a href="eg.MovableCoord.html#event:hold">hold</a></li>
+    
+        <li data-name="eg.MovableCoord#event:release"><a href="eg.MovableCoord.html#event:release">release</a></li>
+    
+    </ul>
+
+    
+    <span class="title" style="margin-top:10px"><a href="index.html">readme</a></span>
+
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="src_movableCoord.js.html">Source: src/movableCoord.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Component from "@egjs/component";
+import HammerManager from "./hammerManager";
+import EventHandler from "./eventHandler";
+import AnimationHandler from "./animationHandler";
+import {DIRECTION} from "./consts";
+import {Mixin} from "./utils";
+
+/**
+ * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
+ * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다. eg.MovableCoord 모듈의 자세한 작동 방식은 데모를 참고한다.
+ * @alias eg.MovableCoord
+ * @extends eg.Component
+ *
+ * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
+ * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ */
+const MovableCoord = class MovableCoord
+extends Mixin(Component).with(EventHandler, AnimationHandler) {
+	/**
+	 * @param {Object} options The option object of the eg.MovableCoord module&lt;ko>eg.MovableCoord 모듈의 옵션 객체&lt;/ko>
+	 * @param {Array} options.min The minimum value of X and Y coordinates &lt;ko>좌표계의 최솟값&lt;/ko>
+	 * @param {Number} [options.min.0=0] The X coordinate of the minimum &lt;ko>최소 x좌표&lt;/ko>
+	 * @param {Number} [options.min.1=0] The Y coordinate of the minimum &lt;ko>최소 y좌표&lt;/ko>
+	 *
+	 * @param {Array} options.max The maximum value of X and Y coordinates &lt;ko>좌표계의 최댓값&lt;/ko>
+	 * @param {Number} [options.max.0=100] The X coordinate of the maximum&lt;ko>최대 x좌표&lt;/ko>
+	 * @param {Number} [options.max.1=100] The Y coordinate of the maximum&lt;ko>최대 y좌표&lt;/ko>
+	 *
+	 * @param {Array} options.bounce The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area&lt;ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다&lt;/ko>
+	 * @param {Boolean} [options.bounce.0=10] The size of top area &lt;ko>위쪽 바운스 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.bounce.1=10] The size of right area &lt;ko>오른쪽 바운스 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.bounce.2=10] The size of bottom area &lt;ko>아래쪽 바운스 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.bounce.3=10] The size of left area &lt;ko>왼쪽 바운스 영역의 크기&lt;/ko>
+	 *
+	 * @param {Array} options.margin The size of accessible space outside the coordinate area. If an element is dragged outside the coordinate area and then dropped, the coordinates of the element are returned back into the coordinate area. The size of margins that can be exceeded &lt;ko>−	좌표 영역을 넘어 이동할 수 있는 바깥 영역의 크기. 사용자가 좌표를 바깥 영역까지 끌었다가 놓으면 좌표가 좌표 영역 안으로 들어온다.&lt;/ko>
+	 * @param {Boolean} [options.margin.0=0] The size of top margin &lt;ko>위쪽 바깥 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.margin.1=0] The size of right margin &lt;ko>오른쪽 바깥 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.margin.2=0] The size of bottom margin &lt;ko>아래쪽 바깥 영역의 크기&lt;/ko>
+	 * @param {Boolean} [options.margin.3=0] The size of left margin &lt;ko>왼쪽 바깥 영역의 크기&lt;/ko>
+	 * @param {Array} options.circular Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.&lt;ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다&lt;/ko>
+	 * @param {Boolean} [options.circular.0=false] Indicates whether to circulate to top &lt;ko>위로 순환 여부&lt;/ko>
+	 * @param {Boolean} [options.circular.1=false] Indicates whether to circulate to right &lt;ko>오른쪽으로 순환 여부&lt;/ko>
+	 * @param {Boolean} [options.circular.2=false] Indicates whether to circulate to bottom  &lt;ko>아래로 순환 여부&lt;/ko>
+	 * @param {Boolean} [options.circular.3=false] Indicates whether to circulate to left  &lt;ko>왼쪽으로 순환 여부&lt;/ko>
+	 *
+	 * @param {Function} [options.easing=easing.easeOutCubic] The easing function to apply to an animation. If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) &lt;ko>애니메이션에 적용할 easing 함수. 다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@link https://jqueryui.com/easing})를 사용한다&lt;/ko>
+	 * @param {Number} [options.maximumDuration=Infinity] Maximum duration of the animation &lt;ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간&lt;/ko>
+	 * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. &lt;ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다&lt;/ko>
+	 **/
+	constructor(options) {
+		super();
+		Object.assign(this.options = {
+			min: [0, 0],
+			max: [100, 100],
+			bounce: [10, 10, 10, 10],
+			margin: [0, 0, 0, 0],
+			circular: [false, false, false, false],
+			easing: function easeOutCubic(x) {
+				return 1 - Math.pow(1 - x, 3);
+			},
+			maximumDuration: Infinity,
+			deceleration: 0.0006,
+		}, options);
+		this._reviseOptions();
+		this._hammerManager = new HammerManager();
+		this._pos = this.options.min.concat();
+	}
+
+	/**
+	 * Registers an element to use the eg.MovableCoord module.
+	 * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
+	 * @param {HTMLElement|String|jQuery} element An element to use the eg.MovableCoord module&lt;ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트&lt;/ko>
+	 * @param {Object} options The option object of the bind() method &lt;ko>bind() 메서드의 옵션 객체&lt;/ko>
+	 * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move&lt;br>- eg.MovableCoord.DIRECTION_ALL: All directions available.&lt;br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.&lt;br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only&lt;ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.&lt;br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.&lt;br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.&lt;br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.&lt;/ko>
+	 * @param {Array} options.scale Coordinate scale that a user can move&lt;ko>사용자의 동작으로 이동하는 좌표의 배율&lt;/ko>
+	 * @param {Number} [options.scale.0=1] X-axis scale &lt;ko>x축 배율&lt;/ko>
+	 * @param {Number} [options.scale.1=1] Y-axis scale &lt;ko>y축 배율&lt;/ko>
+	 * @param {Number} [options.thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) &lt;ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)&lt;/ko>
+	 * @param {Number} [options.interruptable=true] Indicates whether an animation is interruptible.&lt;br>- true: It can be paused or stopped by user action or the API.&lt;br>- false: It cannot be paused or stopped by user action or the API while it is running.&lt;ko>진행 중인 애니메이션 중지 가능 여부.&lt;br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.&lt;br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다&lt;/ko>
+	 * @param {Array} [options.inputType] Types of input devices. (default: ["touch", "mouse"])&lt;br>- touch: Touch screen&lt;br>- mouse: Mouse &lt;ko>입력 장치 종류.(기본값: ["touch", "mouse"])&lt;br>- touch: 터치 입력 장치&lt;br>- mouse: 마우스&lt;/ko>
+	 *
+	 * @return {eg.MovableCoord} An instance of a module itself &lt;ko>모듈 자신의 인스턴스&lt;/ko>
+	 */
+	bind(element, options) {
+		this._hammerManager.add(element, options, this);
+		return this;
+	}
+	/**
+	 * Detaches an element using the eg.MovableCoord module.
+	 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
+	 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is detached&lt;ko>eg.MovableCoord 모듈을 해제할 엘리먼트&lt;/ko>
+	 * @return {eg.MovableCoord} An instance of a module itself&lt;ko>모듈 자신의 인스턴스&lt;/ko>
+	 */
+	unbind(element) {
+		this._hammerManager.remove(element);
+		return this;
+	}
+
+	/**
+	 * get a hammer instance from elements using the eg.MovableCoord module.
+	 * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트에서 hammer 객체를 얻는다
+	 * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using&lt;ko>eg.MovableCoord 모듈을 사용하는 엘리먼트&lt;/ko>
+	 * @return {external:Hammer|null} An instance of Hammer.JS&lt;ko>Hammer.JS의 인스턴스&lt;/ko>
+	 */
+	getHammer(element) {
+		return this._hammerManager.getHammer(element);
+	}
+
+	/**
+	 * Enables input devices
+	 * @ko 입력 장치를 사용할 수 있게 한다
+	 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)&lt;ko>eg.MovableCoord 모듈을 	사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)&lt;/ko>
+	 * @return {eg.MovableCoord} An instance of a module itself &lt;ko>자신의 인스턴스&lt;/ko>
+	*/
+	enableInput(element) {
+		return this._hammerManager.inputControl(true, element);
+	}
+
+	/**
+	 * Disables input devices
+	 * @ko 입력 장치를 사용할 수 없게 한다.
+	 * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)&lt;&lt;ko>eg.MovableCoord 모듈을 	사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)&lt;/ko>
+	 * @return {eg.MovableCoord} An instance of a module itself &lt;ko>자신의 인스턴스&lt;/ko>
+	 */
+	disableInput(element) {
+		return this._hammerManager.inputControl(false, element);
+	}
+
+	/**
+	 * set up 'css' expression
+	 * @private
+	 */
+	_reviseOptions() {
+		let key;
+
+		["bounce", "margin", "circular"].forEach(v => {
+			key = this.options[v];
+			if (key != null) {
+				if (key.constructor === Array) {
+					this.options[v] = key.length === 2 ?
+						key.concat(key) : key.concat();
+				} else if (/string|number|boolean/.test(typeof key)) {
+					this.options[v] = [key, key, key, key];
+				} else {
+					this.options[v] = null;
+				}
+			}
+		});
+	}
+
+	/**
+	 * Returns the current position of the logical coordinates.
+	 * @ko 논리적 좌표의 현재 위치를 반환한다
+	 * @return {Array} pos &lt;ko>좌표&lt;/ko>
+	 * @return {Number} pos.0 The X coordinate &lt;ko>x 좌표&lt;/ko>
+	 * @return {Number} pos.1 The Y coordinate &lt;ko>y 좌표&lt;/ko>
+	 */
+	get() {
+		return this._pos.concat();
+	}
+
+	/**
+	 * Destroys elements, properties, and events used in a module.
+	 * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+	 */
+	destroy() {
+		this.off();
+		this._hammerManager.destroy();
+	}
+};
+
+Object.assign(MovableCoord, DIRECTION);
+export default MovableCoord;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Apr 11 2017 18:00:15 GMT+0900 (KST)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
