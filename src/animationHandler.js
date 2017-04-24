@@ -1,6 +1,5 @@
 import Coordinate from "./Coordinate";
 import {window} from "./browser";
-import {extend} from "./utils";
 
 export default superclass => class extends superclass {
 	constructor() {
@@ -89,7 +88,7 @@ export default superclass => class extends superclass {
 	}
 
 	_animate(param, complete) {
-		this._animateParam = extend({}, param);
+		this._animateParam = Object.assign({}, param);
 		this._animateParam.startTime = new Date().getTime();
 		if (param.duration) {
 			const info = this._animateParam;

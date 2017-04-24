@@ -1,5 +1,5 @@
 import Hammer from "hammerjs";
-import {$, extend} from "./utils";
+import {$} from "./utils";
 import {DIRECTION, UNIQUEKEY, SUPPORT_TOUCH} from "./consts";
 
 /**
@@ -88,7 +88,7 @@ export default class HammerManager {
 	add(element, options, handler) {
 		const el = $(element);
 		let keyValue = el.getAttribute(UNIQUEKEY);
-		const bindOptions = extend({
+		const bindOptions = Object.assign({
 			direction: DIRECTION.DIRECTION_ALL,
 			scale: [1, 1],
 			thresholdAngle: 45,
