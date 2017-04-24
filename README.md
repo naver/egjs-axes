@@ -1,4 +1,4 @@
-# egjs-movableCoord
+# egjs-movablecoord
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
 
@@ -9,60 +9,71 @@ You can implement a user interface by applying the logical coordinates provided.
 * An advanced demo is available here: [http://codepen.io/collection/AKpkGW/](http://codepen.io/collection/AKpkGW/)
 
 ## Supported Browsers
-The following table shows browsers supported by eg.MovableCoord
+The following table shows browsers supported by egjs-movablecoord
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
 |10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
 
-
 ## Dependency
-eg.MovableCoord has the dependencies for the following libraries:
+egjs-movablecoord has the dependencies for the following libraries:
 
 |[eg.Component]()|[Hammer.JS](http://hammerjs.github.io/)|
 |----|----|
 |2.0.0+|2.0.4+|
 
 ## How to Use
-### 1. Load dependency library before movablecoord.js (or movablecoord.min.js) load.
+### 1. Make a target element
 ```html
-<script src="../node_modules/@egjs/component/dist/component.js"></script>
-<script src="../node_modules/hammerjs/hammer.js"></script>
+<!-- Target DOM -->
+<div id="area">
 ```
-> #### How to supports IE8  
+
+### 2. Load/import library 
+#### ES5
+```html
+<script src="../node_modules/@egjs/movablecoord/dist/movablecoord.pkgd.min.js"></script>
+<!--<script src="../node_modules/hammerjs/hammer.js"></script>-->
+<!--[if lte IE 8]><script src="../node_modules/dist/hammerjs.compatible.min.js"></script> <![endif]-->
+<!--script src="../node_modules/@egjs/component/dist/component.min.js"></script>
+<script src="../node_modules/@egjs/movablecoord/dist/movablecoord.min.js"></script>-->
+```
+
+#### ES6+
+```js
+// import "hammerjs-compatible"; // for IE8
+import MovableCoord from "@egjs/movablecoord";
+```
+
+#### How to supports IE8  
+
 > The hammerjs supports [IE9+](http://hammerjs.github.io/browser-support/)  
 if you want to use hammer.js in IE8, you should include `hammerjs-compatible` before using  
 For more information about hammerjs-compatible, please check following link.  
 [https://github.com/naver/hammerjs-compatible](https://github.com/naver/hammerjs-compatible)
 
 
-### 2. Load movablecoord.js
-```html
-<script src="../dist/movablecoord.js"></script>
-```
-
-### 3. Make a target element
-```html
-<!-- Target DOM -->
-<div id="area">
-```
-
-### 4. Use eg.MovableCoord
+### 3. Use egjs-movablecoord
+#### ES5
 ```javascript
-// create MovableCoord with option
+// create eg.MovableCoord with option
 var instance = new eg.MovableCoord("#area", {
-  max : [ 300, 400 ]
-});
-
-// call bind method
-instance.bind(el, {
+  max : [300, 400]
+}).bind(el, {
   direction : eg.MovableCoord.DIRECTION_ALL,
   scale: [1, 1.5]
 });
-
-// call unbind method
-instance.unbind(el);
+```
+#### ES6+
+```js
+// create MovableCoord with option
+const instance = new MovableCoord("#area", {
+  max : [300, 400]
+}).bind(el, {
+  direction : MovableCoord.DIRECTION_ALL,
+  scale: [1, 1.5]
+});
 ```
 
 ## Bug Report
@@ -74,7 +85,7 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 egjs-movableCoord is released under the [MIT license](http://naver.github.io/egjs/license.txt).
 
 ```
-Copyright (c) 2015 NAVER Corp.
+Copyright (c) 2017 NAVER Corp.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
