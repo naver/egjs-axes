@@ -28,15 +28,6 @@ function $(param, multi = false) {
 	return el;
 }
 
-function extend(target = {}, source) {
-	let p;
-
-	for (p in source) {
-		target[p] = source[p];
-	}
-	return target;
-}
-
 class MixinBuilder {
 	constructor(superclass) {
 		this.superclass = superclass || class {};
@@ -48,4 +39,4 @@ class MixinBuilder {
 
 const Mixin = superclass => new MixinBuilder(superclass);
 
-export {Mixin, $, extend};
+export {Mixin, $};
