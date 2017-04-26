@@ -21,9 +21,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -285,14 +285,6 @@ var _browser = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * Select or create element
- * @param {String|HTMLElement|jQuery} param
- *  when string given is as HTML tag, then create element
- *  otherwise it returns selected elements
- * @param {Boolean} multi
- * @returns {HTMLElement}
- */
 function $(param) {
 	var multi = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -372,19 +364,21 @@ exports.__esModule = true;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _component = __webpack_require__(9);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _hammerManager = __webpack_require__(7);
+var _HammerManager = __webpack_require__(5);
 
-var _hammerManager2 = _interopRequireDefault(_hammerManager);
+var _HammerManager2 = _interopRequireDefault(_HammerManager);
 
-var _eventHandler = __webpack_require__(6);
+var _eventHandler = __webpack_require__(7);
 
 var _eventHandler2 = _interopRequireDefault(_eventHandler);
 
-var _animationHandler = __webpack_require__(5);
+var _animationHandler = __webpack_require__(6);
 
 var _animationHandler2 = _interopRequireDefault(_animationHandler);
 
@@ -403,58 +397,52 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions. You can implement a user interface by applying the logical coordinates provided. For more information on the eg.MovableCoord module, see demos.
  * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다. eg.MovableCoord 모듈의 자세한 작동 방식은 데모를 참고한다.
- * @class
- * @name eg.MovableCoord
+ * @alias eg.MovableCoord
  * @extends eg.Component
  *
- * @param {Object} options The option object of the eg.MovableCoord module<ko>eg.MovableCoord 모듈의 옵션 객체</ko>
- * @param {Array} options.min The minimum value of X and Y coordinates <ko>좌표계의 최솟값</ko>
- * @param {Number} [options.min.0=0] The X coordinate of the minimum <ko>최소 x좌표</ko>
- * @param {Number} [options.min.1=0] The Y coordinate of the minimum <ko>최소 y좌표</ko>
- *
- * @param {Array} options.max The maximum value of X and Y coordinates <ko>좌표계의 최댓값</ko>
- * @param {Number} [options.max.0=100] The X coordinate of the maximum<ko>최대 x좌표</ko>
- * @param {Number} [options.max.1=100] The Y coordinate of the maximum<ko>최대 y좌표</ko>
- *
- * @param {Array} options.bounce The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
- * @param {Boolean} [options.bounce.0=10] The size of top area <ko>위쪽 바운스 영역의 크기</ko>
- * @param {Boolean} [options.bounce.1=10] The size of right area <ko>오른쪽 바운스 영역의 크기</ko>
- * @param {Boolean} [options.bounce.2=10] The size of bottom area <ko>아래쪽 바운스 영역의 크기</ko>
- * @param {Boolean} [options.bounce.3=10] The size of left area <ko>왼쪽 바운스 영역의 크기</ko>
- *
- * @param {Array} options.margin The size of accessible space outside the coordinate area. If an element is dragged outside the coordinate area and then dropped, the coordinates of the element are returned back into the coordinate area. The size of margins that can be exceeded <ko>−	좌표 영역을 넘어 이동할 수 있는 바깥 영역의 크기. 사용자가 좌표를 바깥 영역까지 끌었다가 놓으면 좌표가 좌표 영역 안으로 들어온다.</ko>
- * @param {Boolean} [options.margin.0=0] The size of top margin <ko>위쪽 바깥 영역의 크기</ko>
- * @param {Boolean} [options.margin.1=0] The size of right margin <ko>오른쪽 바깥 영역의 크기</ko>
- * @param {Boolean} [options.margin.2=0] The size of bottom margin <ko>아래쪽 바깥 영역의 크기</ko>
- * @param {Boolean} [options.margin.3=0] The size of left margin <ko>왼쪽 바깥 영역의 크기</ko>
- * @param {Array} options.circular Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
- * @param {Boolean} [options.circular.0=false] Indicates whether to circulate to top <ko>위로 순환 여부</ko>
- * @param {Boolean} [options.circular.1=false] Indicates whether to circulate to right <ko>오른쪽으로 순환 여부</ko>
- * @param {Boolean} [options.circular.2=false] Indicates whether to circulate to bottom  <ko>아래로 순환 여부</ko>
- * @param {Boolean} [options.circular.3=false] Indicates whether to circulate to left  <ko>왼쪽으로 순환 여부</ko>
- *
- * @param {Function} [options.easing=easing.easeOutCubic] The easing function to apply to an animation <ko>애니메이션에 적용할 easing 함수</ko>
- * @param {Number} [options.maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
- * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
- * @see HammerJS {@link http://hammerjs.github.io}
- * @see • Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.MovableCoord 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
- *
  * @codepen {"id":"jPPqeR", "ko":"MovableCoord Cube 예제", "en":"MovableCoord Cube example", "collectionId":"AKpkGW", "height": 403}
- *
- * @see Easing Functions Cheat Sheet {@link http://easings.net/}
- * @see If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) <ko>다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@lin https://jqueryui.com/easing})를 사용한다</ko>
- *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
 var MovableCoord = function (_Mixin$with) {
 	_inherits(MovableCoord, _Mixin$with);
 
+	/**
+  * @param {Object} options The option object of the eg.MovableCoord module<ko>eg.MovableCoord 모듈의 옵션 객체</ko>
+  * @param {Array} options.min The minimum value of X and Y coordinates <ko>좌표계의 최솟값</ko>
+  * @param {Number} [options.min.0=0] The X coordinate of the minimum <ko>최소 x좌표</ko>
+  * @param {Number} [options.min.1=0] The Y coordinate of the minimum <ko>최소 y좌표</ko>
+  *
+  * @param {Array} options.max The maximum value of X and Y coordinates <ko>좌표계의 최댓값</ko>
+  * @param {Number} [options.max.0=100] The X coordinate of the maximum<ko>최대 x좌표</ko>
+  * @param {Number} [options.max.1=100] The Y coordinate of the maximum<ko>최대 y좌표</ko>
+  *
+  * @param {Array} options.bounce The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
+  * @param {Boolean} [options.bounce.0=10] The size of top area <ko>위쪽 바운스 영역의 크기</ko>
+  * @param {Boolean} [options.bounce.1=10] The size of right area <ko>오른쪽 바운스 영역의 크기</ko>
+  * @param {Boolean} [options.bounce.2=10] The size of bottom area <ko>아래쪽 바운스 영역의 크기</ko>
+  * @param {Boolean} [options.bounce.3=10] The size of left area <ko>왼쪽 바운스 영역의 크기</ko>
+  *
+  * @param {Array} options.margin The size of accessible space outside the coordinate area. If an element is dragged outside the coordinate area and then dropped, the coordinates of the element are returned back into the coordinate area. The size of margins that can be exceeded <ko>−	좌표 영역을 넘어 이동할 수 있는 바깥 영역의 크기. 사용자가 좌표를 바깥 영역까지 끌었다가 놓으면 좌표가 좌표 영역 안으로 들어온다.</ko>
+  * @param {Boolean} [options.margin.0=0] The size of top margin <ko>위쪽 바깥 영역의 크기</ko>
+  * @param {Boolean} [options.margin.1=0] The size of right margin <ko>오른쪽 바깥 영역의 크기</ko>
+  * @param {Boolean} [options.margin.2=0] The size of bottom margin <ko>아래쪽 바깥 영역의 크기</ko>
+  * @param {Boolean} [options.margin.3=0] The size of left margin <ko>왼쪽 바깥 영역의 크기</ko>
+  * @param {Array} options.circular Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
+  * @param {Boolean} [options.circular.0=false] Indicates whether to circulate to top <ko>위로 순환 여부</ko>
+  * @param {Boolean} [options.circular.1=false] Indicates whether to circulate to right <ko>오른쪽으로 순환 여부</ko>
+  * @param {Boolean} [options.circular.2=false] Indicates whether to circulate to bottom  <ko>아래로 순환 여부</ko>
+  * @param {Boolean} [options.circular.3=false] Indicates whether to circulate to left  <ko>왼쪽으로 순환 여부</ko>
+  *
+  * @param {Function} [options.easing=easing.easeOutCubic] The easing function to apply to an animation. If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) <ko>애니메이션에 적용할 easing 함수. 다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@link https://jqueryui.com/easing})를 사용한다</ko>
+  * @param {Number} [options.maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
+  * @param {Number} [options.deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
+  **/
 	function MovableCoord(options) {
 		_classCallCheck(this, MovableCoord);
 
 		var _this = _possibleConstructorReturn(this, _Mixin$with.call(this));
 
-		Object.assign(_this.options = {
+		_extends(_this.options = {
 			min: [0, 0],
 			max: [100, 100],
 			bounce: [10, 10, 10, 10],
@@ -467,7 +455,7 @@ var MovableCoord = function (_Mixin$with) {
 			deceleration: 0.0006
 		}, options);
 		_this._reviseOptions();
-		_this._hammerManager = new _hammerManager2.default();
+		_this._hammerManager = new _HammerManager2.default();
 		_this._pos = _this.options.min.concat();
 		return _this;
 	}
@@ -475,7 +463,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Registers an element to use the eg.MovableCoord module.
   * @ko eg.MovableCoord 모듈을 사용할 엘리먼트를 등록한다
-  * @method eg.MovableCoord#bind
   * @param {HTMLElement|String|jQuery} element An element to use the eg.MovableCoord module<ko>−	eg.MovableCoord 모듈을 사용할 엘리먼트</ko>
   * @param {Object} options The option object of the bind() method <ko>bind() 메서드의 옵션 객체</ko>
   * @param {Number} [options.direction=eg.MovableCoord.DIRECTION_ALL] Coordinate direction that a user can move<br>- eg.MovableCoord.DIRECTION_ALL: All directions available.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: Horizontal direction only.<br>- eg.MovableCoord.DIRECTION_VERTICAL: Vertical direction only<ko>사용자의 동작으로 움직일 수 있는 좌표의 방향.<br>- eg.MovableCoord.DIRECTION_ALL: 모든 방향으로 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_HORIZONTAL: 가로 방향으로만 움직일 수 있다.<br>- eg.MovableCoord.DIRECTION_VERTICAL: 세로 방향으로만 움직일 수 있다.</ko>
@@ -497,7 +484,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Detaches an element using the eg.MovableCoord module.
   * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트를 해제한다
-  * @method eg.MovableCoord#unbind
   * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is detached<ko>eg.MovableCoord 모듈을 해제할 엘리먼트</ko>
   * @return {eg.MovableCoord} An instance of a module itself<ko>모듈 자신의 인스턴스</ko>
   */
@@ -511,9 +497,8 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * get a hammer instance from elements using the eg.MovableCoord module.
   * @ko eg.MovableCoord 모듈을 사용하는 엘리먼트에서 hammer 객체를 얻는다
-  * @method eg.MovableCoord#getHammer
   * @param {HTMLElement|String|jQuery} element An element from which the eg.MovableCoord module is using<ko>eg.MovableCoord 모듈을 사용하는 엘리먼트</ko>
-  * @return {Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
+  * @return {external:Hammer|null} An instance of Hammer.JS<ko>Hammer.JS의 인스턴스</ko>
   */
 
 
@@ -524,7 +509,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Enables input devices
   * @ko 입력 장치를 사용할 수 있게 한다
-  * @method eg.MovableCoord#enableInput
   * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<ko>eg.MovableCoord 모듈을 	사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
  */
@@ -537,7 +521,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Disables input devices
   * @ko 입력 장치를 사용할 수 없게 한다.
-  * @method eg.MovableCoord#disableInput
   * @param {HTMLElement|String|jQuery} [element] An element from which the eg.MovableCoord module is using (if the element parameter is not present, it applies to all binded elements)<<ko>eg.MovableCoord 모듈을 	사용하는 엘리먼트 (element 파라미터가 존재하지 않을 경우, 바인드된 모든 엘리먼트에 적용된다)</ko>
   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
   */
@@ -547,7 +530,10 @@ var MovableCoord = function (_Mixin$with) {
 		return this._hammerManager.inputControl(false, element);
 	};
 
-	// set up 'css' expression
+	/**
+  * set up 'css' expression
+  * @private
+  */
 
 
 	MovableCoord.prototype._reviseOptions = function _reviseOptions() {
@@ -572,7 +558,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Returns the current position of the logical coordinates.
   * @ko 논리적 좌표의 현재 위치를 반환한다
-  * @method eg.MovableCoord#get
   * @return {Array} pos <ko>좌표</ko>
   * @return {Number} pos.0 The X coordinate <ko>x 좌표</ko>
   * @return {Number} pos.1 The Y coordinate <ko>y 좌표</ko>
@@ -586,7 +571,6 @@ var MovableCoord = function (_Mixin$with) {
 	/**
   * Destroys elements, properties, and events used in a module.
   * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-  * @method eg.MovableCoord#destroy
   */
 
 
@@ -598,8 +582,7 @@ var MovableCoord = function (_Mixin$with) {
 	return MovableCoord;
 }((0, _utils.Mixin)(_component2.default).with(_eventHandler2.default, _animationHandler2.default));
 
-Object.assign(MovableCoord, _consts.DIRECTION);
-MovableCoord.VERSION = "2.0.0-beta";
+_extends(MovableCoord, _consts.DIRECTION);
 exports.default = MovableCoord;
 module.exports = exports["default"];
 
@@ -612,548 +595,7 @@ module.exports = exports["default"];
 
 exports.__esModule = true;
 
-var _coordinate = __webpack_require__(2);
-
-var _coordinate2 = _interopRequireDefault(_coordinate);
-
-var _browser = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-exports.default = function (superclass) {
-	return function (_superclass) {
-		_inherits(_class, _superclass);
-
-		function _class() {
-			_classCallCheck(this, _class);
-
-			var _this = _possibleConstructorReturn(this, _superclass.call(this));
-
-			_this._raf = null;
-			_this._animateParam = null;
-			_this._animationEnd = _this._animationEnd.bind(_this); // for caching
-			_this._restore = _this._restore.bind(_this); // for caching
-			return _this;
-		}
-
-		_class.prototype._grab = function _grab(min, max, circular) {
-			if (this._animateParam) {
-				this.trigger("animationEnd");
-				var orgPos = this.get();
-
-				var pos = _coordinate2.default.getCircularPos(this.get(), min, max, circular);
-
-				if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
-					this._setPosAndTriggerChange(pos, true);
-				}
-				this._animateParam = null;
-				this._raf && _browser.window.cancelAnimationFrame(this._raf);
-				this._raf = null;
-			}
-		};
-
-		_class.prototype._prepareParam = function _prepareParam(absPos, duration, hammerEvent) {
-			var pos = this.get();
-			var min = this.options.min;
-			var max = this.options.max;
-			var circular = this.options.circular;
-			var maximumDuration = this.options.maximumDuration;
-			var destPos = _coordinate2.default.getPointOfIntersection(pos, absPos, min, max, circular, this.options.bounce);
-
-			destPos = _coordinate2.default.isOutToOut(pos, destPos, min, max) ? pos : destPos;
-
-			var distance = [Math.abs(destPos[0] - pos[0]), Math.abs(destPos[1] - pos[1])];
-			var newDuration = duration == null ? _coordinate2.default.getDurationFromPos(distance, this.options.deceleration) : duration;
-
-			newDuration = maximumDuration > newDuration ? newDuration : maximumDuration;
-			return {
-				depaPos: pos.concat(),
-				destPos: destPos.concat(),
-				isBounce: _coordinate2.default.isOutside(destPos, min, max),
-				isCircular: _coordinate2.default.isCircular(absPos, min, max, circular),
-				duration: newDuration,
-				distance: distance,
-				hammerEvent: hammerEvent || null,
-				done: this._animationEnd
-			};
-		};
-
-		_class.prototype._restore = function _restore(complete, hammerEvent) {
-			var pos = this.get();
-			var min = this.options.min;
-			var max = this.options.max;
-
-			this._animate(this._prepareParam([Math.min(max[0], Math.max(min[0], pos[0])), Math.min(max[1], Math.max(min[1], pos[1]))], null, hammerEvent), complete);
-		};
-
-		_class.prototype._animationEnd = function _animationEnd() {
-			this._animateParam = null;
-			var orgPos = this.get();
-			var nextPos = _coordinate2.default.getCircularPos([Math.round(orgPos[0]), Math.round(orgPos[1])], this.options.min, this.options.max, this.options.circular);
-
-			this.setTo.apply(this, nextPos);
-			this._setInterrupt(false);
-			/**
-    * This event is fired when animation ends.
-    * @ko 에니메이션이 끝났을 때 발생한다.
-    * @name eg.MovableCoord#animationEnd
-    * @event
-    */
-			this.trigger("animationEnd");
-		};
-
-		_class.prototype._animate = function _animate(param, complete) {
-			this._animateParam = Object.assign({}, param);
-			this._animateParam.startTime = new Date().getTime();
-			if (param.duration) {
-				var info = this._animateParam;
-				var self = this;
-
-				(function loop() {
-					/* eslint-disable no-underscore-dangle */
-					self._raf = null;
-					if (self._frame(info) >= 1) {
-						// deferred.resolve();
-						complete();
-						return;
-					} // animationEnd
-					self._raf = _browser.window.requestAnimationFrame(loop);
-					/* eslint-enable no-underscore-dangle */
-				})();
-			} else {
-				this._setPosAndTriggerChange(param.destPos, false);
-				complete();
-			}
-		};
-
-		_class.prototype._animateTo = function _animateTo(absPos, duration, hammerEvent) {
-			var _this2 = this;
-
-			var param = this._prepareParam(absPos, duration, hammerEvent);
-			var retTrigger = this.trigger("animationStart", param);
-
-			// You can't stop the 'animationStart' event when 'circular' is true.
-			if (param.isCircular && !retTrigger) {
-				throw new Error("You can't stop the 'animation' event when 'circular' is true.");
-			}
-
-			if (retTrigger) {
-				var queue = [];
-				var dequeue = function dequeue() {
-					var task = queue.shift();
-
-					task && task.call(this);
-				};
-
-				if (param.depaPos[0] !== param.destPos[0] || param.depaPos[1] !== param.destPos[1]) {
-					queue.push(function () {
-						return _this2._animate(param, dequeue);
-					});
-				}
-				if (_coordinate2.default.isOutside(param.destPos, this.options.min, this.options.max)) {
-					queue.push(function () {
-						return _this2._restore(dequeue, hammerEvent);
-					});
-				}
-				queue.push(function () {
-					return _this2._animationEnd();
-				});
-				dequeue();
-			}
-		};
-
-		// animation frame (0~1)
-
-
-		_class.prototype._frame = function _frame(param) {
-			var curTime = new Date() - param.startTime;
-			var easingPer = this._easing(curTime / param.duration);
-			var pos = [param.depaPos[0], param.depaPos[1]];
-
-			for (var i = 0; i < 2; i++) {
-				pos[i] !== param.destPos[i] && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
-			}
-			pos = _coordinate2.default.getCircularPos(pos, this.options.min, this.options.max, this.options.circular);
-			this._setPosAndTriggerChange(pos, false);
-			return easingPer;
-		};
-
-		// trigger 'change' event
-
-
-		_class.prototype._setPosAndTriggerChange = function _setPosAndTriggerChange(position, holding, e) {
-			/**
-    * This event is fired when coordinate changes.
-    * @ko 좌표가 변경됐을 때 발생하는 이벤트
-    * @name eg.MovableCoord#change
-    * @event
-    *
-    * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-    * @param {Array} param.position departure coordinate  <ko>좌표</ko>
-    * @param {Number} param.position.0 The X coordinate <ko>x 좌표</ko>
-    * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
-    * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
-    * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
-    *
-    */
-			this._pos = position.concat();
-			this.trigger("change", {
-				pos: position.concat(),
-				holding: holding,
-				hammerEvent: e || null
-			});
-		};
-
-		_class.prototype._easing = function _easing(p) {
-			return p > 1 ? 1 : this.options.easing(p);
-		};
-
-		/**
-   * Moves an element to specific coordinates.
-   * @ko 좌표를 이동한다.
-   * @method eg.MovableCoord#setTo
-   * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-   * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
-   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
-   */
-
-
-		_class.prototype.setTo = function setTo(x, y) {
-			var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-			var toX = x;
-			var toY = y;
-			var min = this.options.min;
-			var max = this.options.max;
-			var circular = this.options.circular;
-
-			this._grab(min, max, circular);
-			var pos = this.get();
-
-			if (x === pos[0] && y === pos[1]) {
-				return this;
-			}
-
-			this._setInterrupt(true);
-			if (x !== pos[0]) {
-				if (!circular[3]) {
-					toX = Math.max(min[0], toX);
-				}
-				if (!circular[1]) {
-					toX = Math.min(max[0], toX);
-				}
-			}
-			if (y !== pos[1]) {
-				if (!circular[0]) {
-					toY = Math.max(min[1], toY);
-				}
-				if (!circular[2]) {
-					toY = Math.min(max[1], toY);
-				}
-			}
-			if (duration) {
-				this._animateTo([toX, toY], duration);
-			} else {
-				this._pos = _coordinate2.default.getCircularPos([toX, toY], min, max, circular);
-				this._setPosAndTriggerChange(this._pos, false);
-				this._setInterrupt(false);
-			}
-			return this;
-		};
-
-		/**
-   * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
-   * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
-   * @method eg.MovableCoord#setBy
-   * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-   * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
-   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
-   */
-
-
-		_class.prototype.setBy = function setBy(x, y) {
-			var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-			return this.setTo(x != null ? this._pos[0] + x : this._pos[0], y != null ? this._pos[1] + y : this._pos[1], duration);
-		};
-
-		return _class;
-	}(superclass);
-};
-
-module.exports = exports["default"];
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _coordinate = __webpack_require__(2);
-
-var _coordinate2 = _interopRequireDefault(_coordinate);
-
-var _consts = __webpack_require__(0);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-exports.default = function (superclass) {
-	return function (_superclass) {
-		_inherits(_class, _superclass);
-
-		function _class() {
-			_classCallCheck(this, _class);
-
-			var _this = _possibleConstructorReturn(this, _superclass.call(this));
-
-			_this._status = {
-				grabOutside: false, // check whether user's action started on outside
-				currentHammer: null, // current hammer instance
-				currentOptions: {}, // current bind options
-				moveDistance: null, // a position of the first user's action
-				prevented: false };
-			return _this;
-		}
-
-		_class.prototype._setCurrentTarget = function _setCurrentTarget(hammer, options) {
-			this._status.currentOptions = options;
-			this._status.currentHanmmer = hammer;
-		};
-
-		// panstart event handler
-
-
-		_class.prototype._start = function _start(e) {
-			if (!this._status.currentOptions.interruptable && this._status.prevented) {
-				return;
-			}
-			var pos = this.get();
-			var min = this.options.min;
-			var max = this.options.max;
-
-			this._setInterrupt(true);
-			this._grab(min, max, this.options.circular);
-			/**
-    * This event is fired when a user holds an element on the screen of the device.
-    * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-    * @name eg.MovableCoord#hold
-    * @event
-    * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-    * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
-    * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
-    * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
-    * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
-    *
-    */
-			this.trigger("hold", {
-				pos: pos.concat(),
-				hammerEvent: e
-			});
-
-			this._status.moveDistance = pos.concat();
-			this._status.grabOutside = _coordinate2.default.isOutside(pos, min, max);
-		};
-
-		// panmove event handler
-
-
-		_class.prototype._move = function _move(e) {
-			if (!this._isInterrupting() || !this._status.moveDistance) {
-				return;
-			}
-			var pos = this.get(true);
-			var min = this.options.min;
-			var max = this.options.max;
-			var bounce = this.options.bounce;
-			var margin = this.options.margin;
-			var currentOptions = this._status.currentOptions;
-			var direction = currentOptions.direction;
-			var scale = currentOptions.scale;
-			var userDirection = _coordinate2.default.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
-			var out = [margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3]];
-			var prevent = false;
-
-			// not support offset properties in Hammerjs - start
-			var prevInput = this._status.currentHanmmer.session.prevInput;
-
-			/* eslint-disable no-param-reassign */
-			if (prevInput) {
-				e.offsetX = e.deltaX - prevInput.deltaX;
-				e.offsetY = e.deltaY - prevInput.deltaY;
-			} else {
-				e.offsetX = 0;
-				e.offsetY = 0;
-			}
-
-			// not support offset properties in Hammerjs - end
-			if (_coordinate2.default.isHorizontal(direction, userDirection)) {
-				this._status.moveDistance[0] += e.offsetX * scale[0];
-				prevent = true;
-			}
-			if (_coordinate2.default.isVertical(direction, userDirection)) {
-				this._status.moveDistance[1] += e.offsetY * scale[1];
-				prevent = true;
-			}
-			if (prevent) {
-				e.srcEvent.preventDefault();
-				e.srcEvent.stopPropagation();
-			}
-			e.preventSystemEvent = prevent;
-			/* eslint-enable no-param-reassign */
-
-			pos[0] = this._status.moveDistance[0];
-			pos[1] = this._status.moveDistance[1];
-			pos = _coordinate2.default.getCircularPos(pos, min, max, this.options.circular);
-
-			// from outside to inside
-			if (this._status.grabOutside && !_coordinate2.default.isOutside(pos, min, max)) {
-				this._status.grabOutside = false;
-			}
-
-			// when move pointer is held in outside
-			var tv = void 0;
-			var tn = void 0;
-			var tx = void 0;
-
-			if (this._status.grabOutside) {
-				tn = min[0] - out[3];
-				tx = max[0] + out[1];
-				tv = pos[0];
-				/* eslint-disable no-nested-ternary */
-				pos[0] = tv > tx ? tx : tv < tn ? tn : tv;
-				tn = min[1] - out[0];
-				tx = max[1] + out[2];
-				tv = pos[1];
-				pos[1] = tv > tx ? tx : tv < tn ? tn : tv;
-				/* eslint-enable no-nested-ternary */
-			} else {
-				// when start pointer is held in inside
-				// get a initialization slope value to prevent smooth animation.
-				var initSlope = this._easing(0.00001) / 0.00001;
-
-				if (pos[1] < min[1]) {
-					// up
-					tv = (min[1] - pos[1]) / (out[0] * initSlope);
-					pos[1] = min[1] - this._easing(tv) * out[0];
-				} else if (pos[1] > max[1]) {
-					// down
-					tv = (pos[1] - max[1]) / (out[2] * initSlope);
-					pos[1] = max[1] + this._easing(tv) * out[2];
-				}
-				if (pos[0] < min[0]) {
-					// left
-					tv = (min[0] - pos[0]) / (out[3] * initSlope);
-					pos[0] = min[0] - this._easing(tv) * out[3];
-				} else if (pos[0] > max[0]) {
-					// right
-					tv = (pos[0] - max[0]) / (out[1] * initSlope);
-					pos[0] = max[0] + this._easing(tv) * out[1];
-				}
-			}
-			this._setPosAndTriggerChange(pos, true, e);
-		};
-
-		// panend event handler
-
-
-		_class.prototype._end = function _end(e) {
-			var pos = this.get();
-
-			if (!this._isInterrupting() || !this._status.moveDistance) {
-				return;
-			}
-
-			// Abort the animating post process when "tap" occurs
-			if (e.distance === 0 /* e.type === "tap" */) {
-					this._setInterrupt(false);
-					this.trigger("release", {
-						depaPos: pos.concat(),
-						destPos: pos.concat(),
-						hammerEvent: e || null
-					});
-				} else {
-				var direction = this._status.currentOptions.direction;
-				var scale = this._status.currentOptions.scale;
-				var vX = Math.abs(e.velocityX);
-				var vY = Math.abs(e.velocityY);
-
-				!(direction & _consts.DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
-				!(direction & _consts.DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
-
-				var offset = _coordinate2.default.getNextOffsetPos([vX * (e.deltaX < 0 ? -1 : 1) * scale[0], vY * (e.deltaY < 0 ? -1 : 1) * scale[1]], this.options.deceleration);
-				var destPos = [pos[0] + offset[0], pos[1] + offset[1]];
-
-				destPos = _coordinate2.default.getPointOfIntersection(pos, destPos, this.options.min, this.options.max, this.options.circular, this.options.bounce);
-				/**
-     * This event is fired when a user release an element on the screen of the device.
-     * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-     * @name eg.MovableCoord#release
-     * @event
-     *
-     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-     * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
-     * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
-     * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
-     * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
-     * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
-     * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
-     * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
-     *
-     */
-				this.trigger("release", {
-					depaPos: pos.concat(),
-					destPos: destPos,
-					hammerEvent: e || null
-				});
-				if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
-					this._animateTo(destPos, null, e || null);
-				} else {
-					this._setInterrupt(false);
-				}
-			}
-			this._status.moveDistance = null;
-		};
-
-		_class.prototype._isInterrupting = function _isInterrupting() {
-			// when interruptable is 'true', return value is always 'true'.
-			return this._status.currentOptions.interruptable || this._status.prevented;
-		};
-
-		_class.prototype._setInterrupt = function _setInterrupt(prevented) {
-			!this._status.currentOptions.interruptable && (this._status.prevented = prevented);
-		};
-
-		return _class;
-	}(superclass);
-};
-
-module.exports = exports["default"];
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _hammerjs = __webpack_require__(10);
 
@@ -1167,6 +609,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Hammer helps you add support for touch gestures to your page
+ *
+ * @external Hammer
+ * @see {@link http://hammerjs.github.io|Hammer.JS}
+ * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
+ * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS
+ */
 if (typeof _hammerjs2.default === "undefined") {
 	throw new Error("The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/");
 }
@@ -1247,7 +697,7 @@ var HammerManager = function () {
 	HammerManager.prototype.add = function add(element, options, handler) {
 		var el = (0, _utils.$)(element);
 		var keyValue = el.getAttribute(_consts.UNIQUEKEY);
-		var bindOptions = Object.assign({
+		var bindOptions = _extends({
 			direction: _consts.DIRECTION.DIRECTION_ALL,
 			scale: [1, 1],
 			thresholdAngle: 45,
@@ -1336,19 +786,563 @@ exports.default = HammerManager;
 module.exports = exports["default"];
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _Coordinate = __webpack_require__(2);
+
+var _Coordinate2 = _interopRequireDefault(_Coordinate);
+
+var _browser = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+exports.default = function (superclass) {
+	return function (_superclass) {
+		_inherits(_class, _superclass);
+
+		function _class() {
+			_classCallCheck(this, _class);
+
+			var _this = _possibleConstructorReturn(this, _superclass.call(this));
+
+			_this._raf = null;
+			_this._animateParam = null;
+			_this._animationEnd = _this._animationEnd.bind(_this); // for caching
+			_this._restore = _this._restore.bind(_this); // for caching
+			return _this;
+		}
+
+		_class.prototype._grab = function _grab(min, max, circular) {
+			if (this._animateParam) {
+				this.trigger("animationEnd");
+				var orgPos = this.get();
+
+				var pos = _Coordinate2.default.getCircularPos(this.get(), min, max, circular);
+
+				if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
+					this._setPosAndTriggerChange(pos, true);
+				}
+				this._animateParam = null;
+				this._raf && _browser.window.cancelAnimationFrame(this._raf);
+				this._raf = null;
+			}
+		};
+
+		_class.prototype._prepareParam = function _prepareParam(absPos, duration, hammerEvent) {
+			var pos = this.get();
+			var min = this.options.min;
+			var max = this.options.max;
+			var circular = this.options.circular;
+			var maximumDuration = this.options.maximumDuration;
+			var destPos = _Coordinate2.default.getPointOfIntersection(pos, absPos, min, max, circular, this.options.bounce);
+
+			destPos = _Coordinate2.default.isOutToOut(pos, destPos, min, max) ? pos : destPos;
+
+			var distance = [Math.abs(destPos[0] - pos[0]), Math.abs(destPos[1] - pos[1])];
+			var newDuration = duration == null ? _Coordinate2.default.getDurationFromPos(distance, this.options.deceleration) : duration;
+
+			newDuration = maximumDuration > newDuration ? newDuration : maximumDuration;
+			return {
+				depaPos: pos.concat(),
+				destPos: destPos.concat(),
+				isBounce: _Coordinate2.default.isOutside(destPos, min, max),
+				isCircular: _Coordinate2.default.isCircular(absPos, min, max, circular),
+				duration: newDuration,
+				distance: distance,
+				hammerEvent: hammerEvent || null,
+				done: this._animationEnd
+			};
+		};
+
+		_class.prototype._restore = function _restore(complete, hammerEvent) {
+			var pos = this.get();
+			var min = this.options.min;
+			var max = this.options.max;
+
+			this._animate(this._prepareParam([Math.min(max[0], Math.max(min[0], pos[0])), Math.min(max[1], Math.max(min[1], pos[1]))], null, hammerEvent), complete);
+		};
+
+		_class.prototype._animationEnd = function _animationEnd() {
+			this._animateParam = null;
+			var orgPos = this.get();
+			var nextPos = _Coordinate2.default.getCircularPos([Math.round(orgPos[0]), Math.round(orgPos[1])], this.options.min, this.options.max, this.options.circular);
+
+			this.setTo.apply(this, nextPos);
+			this._setInterrupt(false);
+			/**
+    * This event is fired when animation ends.
+    * @ko 에니메이션이 끝났을 때 발생한다.
+    * @name eg.MovableCoord#animationEnd
+    * @event
+    */
+			this.trigger("animationEnd");
+		};
+
+		_class.prototype._animate = function _animate(param, complete) {
+			this._animateParam = _extends({}, param);
+			this._animateParam.startTime = new Date().getTime();
+			if (param.duration) {
+				var info = this._animateParam;
+				var self = this;
+
+				(function loop() {
+					/* eslint-disable no-underscore-dangle */
+					self._raf = null;
+					if (self._frame(info) >= 1) {
+						// deferred.resolve();
+						complete();
+						return;
+					} // animationEnd
+					self._raf = _browser.window.requestAnimationFrame(loop);
+					/* eslint-enable no-underscore-dangle */
+				})();
+			} else {
+				this._setPosAndTriggerChange(param.destPos, false);
+				complete();
+			}
+		};
+
+		_class.prototype._animateTo = function _animateTo(absPos, duration, hammerEvent) {
+			var _this2 = this;
+
+			var param = this._prepareParam(absPos, duration, hammerEvent);
+			var retTrigger = this.trigger("animationStart", param);
+
+			// You can't stop the 'animationStart' event when 'circular' is true.
+			if (param.isCircular && !retTrigger) {
+				throw new Error("You can't stop the 'animation' event when 'circular' is true.");
+			}
+
+			if (retTrigger) {
+				var queue = [];
+				var dequeue = function dequeue() {
+					var task = queue.shift();
+
+					task && task.call(this);
+				};
+
+				if (param.depaPos[0] !== param.destPos[0] || param.depaPos[1] !== param.destPos[1]) {
+					queue.push(function () {
+						return _this2._animate(param, dequeue);
+					});
+				}
+				if (_Coordinate2.default.isOutside(param.destPos, this.options.min, this.options.max)) {
+					queue.push(function () {
+						return _this2._restore(dequeue, hammerEvent);
+					});
+				}
+				queue.push(function () {
+					return _this2._animationEnd();
+				});
+				dequeue();
+			}
+		};
+
+		// animation frame (0~1)
+
+
+		_class.prototype._frame = function _frame(param) {
+			var curTime = new Date() - param.startTime;
+			var easingPer = this._easing(curTime / param.duration);
+			var pos = [param.depaPos[0], param.depaPos[1]];
+
+			for (var i = 0; i < 2; i++) {
+				pos[i] !== param.destPos[i] && (pos[i] += (param.destPos[i] - pos[i]) * easingPer);
+			}
+			pos = _Coordinate2.default.getCircularPos(pos, this.options.min, this.options.max, this.options.circular);
+			this._setPosAndTriggerChange(pos, false);
+			return easingPer;
+		};
+
+		// trigger 'change' event
+
+
+		_class.prototype._setPosAndTriggerChange = function _setPosAndTriggerChange(position, holding, e) {
+			/**
+    * This event is fired when coordinate changes.
+    * @ko 좌표가 변경됐을 때 발생하는 이벤트
+    * @name eg.MovableCoord#change
+    * @event
+    *
+    * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+    * @param {Array} param.position departure coordinate  <ko>좌표</ko>
+    * @param {Number} param.position.0 The X coordinate <ko>x 좌표</ko>
+    * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
+    * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
+    * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+    *
+    */
+			this._pos = position.concat();
+			this.trigger("change", {
+				pos: position.concat(),
+				holding: holding,
+				hammerEvent: e || null
+			});
+		};
+
+		_class.prototype._easing = function _easing(p) {
+			return p > 1 ? 1 : this.options.easing(p);
+		};
+
+		/**
+   * Moves an element to specific coordinates.
+   * @ko 좌표를 이동한다.
+   * @method eg.MovableCoord#setTo
+   * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+   * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
+   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+   */
+
+
+		_class.prototype.setTo = function setTo(x, y) {
+			var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+			var toX = x;
+			var toY = y;
+			var min = this.options.min;
+			var max = this.options.max;
+			var circular = this.options.circular;
+
+			this._grab(min, max, circular);
+			var pos = this.get();
+
+			if (x === pos[0] && y === pos[1]) {
+				return this;
+			}
+
+			this._setInterrupt(true);
+			if (x !== pos[0]) {
+				if (!circular[3]) {
+					toX = Math.max(min[0], toX);
+				}
+				if (!circular[1]) {
+					toX = Math.min(max[0], toX);
+				}
+			}
+			if (y !== pos[1]) {
+				if (!circular[0]) {
+					toY = Math.max(min[1], toY);
+				}
+				if (!circular[2]) {
+					toY = Math.min(max[1], toY);
+				}
+			}
+			if (duration) {
+				this._animateTo([toX, toY], duration);
+			} else {
+				this._pos = _Coordinate2.default.getCircularPos([toX, toY], min, max, circular);
+				this._setPosAndTriggerChange(this._pos, false);
+				this._setInterrupt(false);
+			}
+			return this;
+		};
+
+		/**
+   * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
+   * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
+   * @method eg.MovableCoord#setBy
+   * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+   * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
+   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+   * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+   */
+
+
+		_class.prototype.setBy = function setBy(x, y) {
+			var duration = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+			return this.setTo(x != null ? this._pos[0] + x : this._pos[0], y != null ? this._pos[1] + y : this._pos[1], duration);
+		};
+
+		return _class;
+	}(superclass);
+};
+
+module.exports = exports["default"];
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _Coordinate = __webpack_require__(2);
+
+var _Coordinate2 = _interopRequireDefault(_Coordinate);
+
+var _consts = __webpack_require__(0);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+exports.default = function (superclass) {
+	return function (_superclass) {
+		_inherits(_class, _superclass);
+
+		function _class() {
+			_classCallCheck(this, _class);
+
+			var _this = _possibleConstructorReturn(this, _superclass.call(this));
+
+			_this._status = {
+				grabOutside: false, // check whether user's action started on outside
+				currentHammer: null, // current hammer instance
+				currentOptions: {}, // current bind options
+				moveDistance: null, // a position of the first user's action
+				prevented: false };
+			return _this;
+		}
+
+		_class.prototype._setCurrentTarget = function _setCurrentTarget(hammer, options) {
+			this._status.currentOptions = options;
+			this._status.currentHanmmer = hammer;
+		};
+
+		// panstart event handler
+
+
+		_class.prototype._start = function _start(e) {
+			if (!this._status.currentOptions.interruptable && this._status.prevented) {
+				return;
+			}
+			var pos = this.get();
+			var min = this.options.min;
+			var max = this.options.max;
+
+			this._setInterrupt(true);
+			this._grab(min, max, this.options.circular);
+			/**
+    * This event is fired when a user holds an element on the screen of the device.
+    * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+    * @event eg.MovableCoord#hold
+    * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+    * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
+    * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
+    * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
+    * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+    *
+    */
+			this.trigger("hold", {
+				pos: pos.concat(),
+				hammerEvent: e
+			});
+
+			this._status.moveDistance = pos.concat();
+			this._status.grabOutside = _Coordinate2.default.isOutside(pos, min, max);
+		};
+
+		// panmove event handler
+
+
+		_class.prototype._move = function _move(e) {
+			if (!this._isInterrupting() || !this._status.moveDistance) {
+				return;
+			}
+			var pos = this.get(true);
+			var min = this.options.min;
+			var max = this.options.max;
+			var bounce = this.options.bounce;
+			var margin = this.options.margin;
+			var currentOptions = this._status.currentOptions;
+			var direction = currentOptions.direction;
+			var scale = currentOptions.scale;
+			var userDirection = _Coordinate2.default.getDirectionByAngle(e.angle, currentOptions.thresholdAngle);
+			var out = [margin[0] + bounce[0], margin[1] + bounce[1], margin[2] + bounce[2], margin[3] + bounce[3]];
+			var prevent = false;
+
+			// not support offset properties in Hammerjs - start
+			var prevInput = this._status.currentHanmmer.session.prevInput;
+
+			/* eslint-disable no-param-reassign */
+			if (prevInput) {
+				e.offsetX = e.deltaX - prevInput.deltaX;
+				e.offsetY = e.deltaY - prevInput.deltaY;
+			} else {
+				e.offsetX = 0;
+				e.offsetY = 0;
+			}
+
+			// not support offset properties in Hammerjs - end
+			if (_Coordinate2.default.isHorizontal(direction, userDirection)) {
+				this._status.moveDistance[0] += e.offsetX * scale[0];
+				prevent = true;
+			}
+			if (_Coordinate2.default.isVertical(direction, userDirection)) {
+				this._status.moveDistance[1] += e.offsetY * scale[1];
+				prevent = true;
+			}
+			if (prevent) {
+				e.srcEvent.preventDefault();
+				e.srcEvent.stopPropagation();
+			}
+			e.preventSystemEvent = prevent;
+			/* eslint-enable no-param-reassign */
+
+			pos[0] = this._status.moveDistance[0];
+			pos[1] = this._status.moveDistance[1];
+			pos = _Coordinate2.default.getCircularPos(pos, min, max, this.options.circular);
+
+			// from outside to inside
+			if (this._status.grabOutside && !_Coordinate2.default.isOutside(pos, min, max)) {
+				this._status.grabOutside = false;
+			}
+
+			// when move pointer is held in outside
+			var tv = void 0;
+			var tn = void 0;
+			var tx = void 0;
+
+			if (this._status.grabOutside) {
+				tn = min[0] - out[3];
+				tx = max[0] + out[1];
+				tv = pos[0];
+				/* eslint-disable no-nested-ternary */
+				pos[0] = tv > tx ? tx : tv < tn ? tn : tv;
+				tn = min[1] - out[0];
+				tx = max[1] + out[2];
+				tv = pos[1];
+				pos[1] = tv > tx ? tx : tv < tn ? tn : tv;
+				/* eslint-enable no-nested-ternary */
+			} else {
+				// when start pointer is held in inside
+				// get a initialization slope value to prevent smooth animation.
+				var initSlope = this._easing(0.00001) / 0.00001;
+
+				if (pos[1] < min[1]) {
+					// up
+					tv = (min[1] - pos[1]) / (out[0] * initSlope);
+					pos[1] = min[1] - this._easing(tv) * out[0];
+				} else if (pos[1] > max[1]) {
+					// down
+					tv = (pos[1] - max[1]) / (out[2] * initSlope);
+					pos[1] = max[1] + this._easing(tv) * out[2];
+				}
+				if (pos[0] < min[0]) {
+					// left
+					tv = (min[0] - pos[0]) / (out[3] * initSlope);
+					pos[0] = min[0] - this._easing(tv) * out[3];
+				} else if (pos[0] > max[0]) {
+					// right
+					tv = (pos[0] - max[0]) / (out[1] * initSlope);
+					pos[0] = max[0] + this._easing(tv) * out[1];
+				}
+			}
+			this._setPosAndTriggerChange(pos, true, e);
+		};
+
+		// panend event handler
+
+
+		_class.prototype._end = function _end(e) {
+			var pos = this.get();
+
+			if (!this._isInterrupting() || !this._status.moveDistance) {
+				return;
+			}
+
+			// Abort the animating post process when "tap" occurs
+			if (e.distance === 0 /* e.type === "tap" */) {
+					this._setInterrupt(false);
+					this.trigger("release", {
+						depaPos: pos.concat(),
+						destPos: pos.concat(),
+						hammerEvent: e || null
+					});
+				} else {
+				var direction = this._status.currentOptions.direction;
+				var scale = this._status.currentOptions.scale;
+				var vX = Math.abs(e.velocityX);
+				var vY = Math.abs(e.velocityY);
+
+				!(direction & _consts.DIRECTION.DIRECTION_HORIZONTAL) && (vX = 0);
+				!(direction & _consts.DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
+
+				var offset = _Coordinate2.default.getNextOffsetPos([vX * (e.deltaX < 0 ? -1 : 1) * scale[0], vY * (e.deltaY < 0 ? -1 : 1) * scale[1]], this.options.deceleration);
+				var destPos = [pos[0] + offset[0], pos[1] + offset[1]];
+
+				destPos = _Coordinate2.default.getPointOfIntersection(pos, destPos, this.options.min, this.options.max, this.options.circular, this.options.bounce);
+				/**
+     * This event is fired when a user release an element on the screen of the device.
+     * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+     * @event eg.MovableCoord#release
+     *
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
+     * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
+     * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
+     * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+     * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
+     * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
+     * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
+     *
+     */
+				this.trigger("release", {
+					depaPos: pos.concat(),
+					destPos: destPos,
+					hammerEvent: e || null
+				});
+				if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
+					this._animateTo(destPos, null, e || null);
+				} else {
+					this._setInterrupt(false);
+				}
+			}
+			this._status.moveDistance = null;
+		};
+
+		_class.prototype._isInterrupting = function _isInterrupting() {
+			// when interruptable is 'true', return value is always 'true'.
+			return this._status.currentOptions.interruptable || this._status.prevented;
+		};
+
+		_class.prototype._setInterrupt = function _setInterrupt(prevented) {
+			!this._status.currentOptions.interruptable && (this._status.prevented = prevented);
+		};
+
+		return _class;
+	}(superclass);
+};
+
+module.exports = exports["default"];
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _movableCoord = __webpack_require__(4);
+var _MovableCoord = __webpack_require__(4);
 
-var _movableCoord2 = _interopRequireDefault(_movableCoord);
+var _MovableCoord2 = _interopRequireDefault(_MovableCoord);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = _movableCoord2.default;
+_MovableCoord2.default.VERSION = "2.0.0-rc.1";
+module.exports = _MovableCoord2.default;
 
 /***/ }),
 /* 9 */
@@ -1468,7 +1462,7 @@ var Component = exports.Component = function () {
 		_classCallCheck(this, Component);
 
 		this._eventHandler = {};
-		this._options = {};
+		this.options = {};
 	}
 
 	/**
@@ -1502,21 +1496,21 @@ var Component = exports.Component = function () {
 			if (arguments.length >= 2) {
 				var _key = arguments.length <= 0 ? undefined : arguments[0];
 				var value = arguments.length <= 1 ? undefined : arguments[1];
-				this._options[_key] = value;
+				this.options[_key] = value;
 				return this;
 			}
 
 			var key = arguments.length <= 0 ? undefined : arguments[0];
 			if (typeof key === "string") {
-				return this._options[key];
+				return this.options[key];
 			}
 
 			if (arguments.length === 0) {
-				return this._options;
+				return this.options;
 			}
 
 			var options = key;
-			this._options = options;
+			this.options = options;
 
 			return this;
 		}
@@ -1760,7 +1754,6 @@ module.exports = _component.Component;
 /******/ ]);
 });
 //# sourceMappingURL=component.js.map
-
 
 /***/ }),
 /* 10 */

@@ -1,6 +1,6 @@
 {
   "name": "@egjs/movablecoord",
-  "version": "2.0.0-beta",
+  "version": "2.0.0-rc.1",
   "main": "dist/movablecoord.js",
   "module": "src/MovableCoord.js",
   "es2015": "src/MovableCoord.js",
