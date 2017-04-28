@@ -1341,7 +1341,7 @@ var _MovableCoord2 = _interopRequireDefault(_MovableCoord);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_MovableCoord2.default.VERSION = "2.0.0-rc.1";
+_MovableCoord2.default.VERSION = "2.0.0-rc.2";
 module.exports = _MovableCoord2.default;
 
 /***/ }),

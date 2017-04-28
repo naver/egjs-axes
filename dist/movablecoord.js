@@ -5,7 +5,7 @@
  * @egjs/movablecoord JavaScript library
  * https://github.com/naver/egjs-movablecoord
  * 
- * @version 2.0.0-rc.1
+ * @version 2.0.0-rc.2
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -1345,7 +1345,7 @@ var _MovableCoord2 = _interopRequireDefault(_MovableCoord);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_MovableCoord2.default.VERSION = "2.0.0-rc.1";
+_MovableCoord2.default.VERSION = "2.0.0-rc.2";
 module.exports = _MovableCoord2.default;
 
 /***/ }),
