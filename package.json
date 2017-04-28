@@ -24,7 +24,7 @@
   "homepage": "https://github.com/naver/egjs-movablecoord",
   "license": "MIT <https://naver.github.io/egjs/license.txt>",
   "dependencies": {
-    "@egjs/component": "github:naver/egjs-component",
+    "@egjs/component": "^2.0.0-rc.1",
     "hammerjs": "^2.0.8"
   },
   "devDependencies": {
