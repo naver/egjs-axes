@@ -11,7 +11,7 @@ describe("MovableCoord init Test", function() {
         this.inst = null;
       }
     });
-    
+
     it("should check a initialization empty value", () => {
         // Given
         // When
@@ -29,7 +29,7 @@ describe("MovableCoord init Test", function() {
         });
         // Then
         expect(this.inst.get()).to.deep.equal([-100, 0]);
-    });    
+    });
 
 
     it("should check initialization status", () => {
@@ -74,7 +74,7 @@ describe("MovableCoord init Test", function() {
       expect(this.inst.options.circular).to.deep.equal([false, false, false, false]);
     });
 });
- 
+
 describe("MovableCoord methods Test", function() {
     beforeEach(() => {
 		  this.inst = new MovableCoord( {
@@ -100,7 +100,7 @@ describe("MovableCoord methods Test", function() {
       // Then
       expect(pos1).to.not.equal(pos2);
       expect(pos1).to.deep.equal(pos2);
-    });        
+    });
 });
 
 describe("MovableCoord Event Test", function() {
@@ -113,7 +113,7 @@ describe("MovableCoord Event Test", function() {
         circular : false
       });
       var el = sandbox();
-      var html = `<div id="area" 
+      var html = `<div id="area"
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
       el.innerHTML = html;
       this.el = el;
@@ -125,7 +125,7 @@ describe("MovableCoord Event Test", function() {
       }
       cleanup();
     });
-    
+
     it("should check slow movement test (no-velocity)", (done) => {
       // Given
       var holdHandler = sinon.spy();
@@ -255,7 +255,7 @@ describe("MovableCoord Event Test", function() {
           done();
         }, 2000);
       });
-    });    
+    });
 
     it("should check movement test when stop method was called in 'animationStart' event", (done) => {
       // Given
@@ -307,7 +307,35 @@ describe("MovableCoord Event Test", function() {
           done();
         }, 1000);
       });
-    }); 
+    });
+
+		it("should check _animateParam to be null on 'animationEnd' event", (done) => {
+      // Given
+			var isAnimating = true;
+      this.inst.on({
+        "animationEnd" : (e) => {
+					isAnimating = !!this.inst._animateParam;
+				}
+      });
+      this.inst.bind(this.el);
+
+      // When
+      Simulator.gestures.pan(this.el, {
+        pos: [30, 30],
+        deltaX: 300,
+        deltaY: 100,
+        duration: 50,
+        easing: "cubic"
+      });
+
+			setTimeout(() => {
+				// Grab movable area while animating.
+				Simulator.gestures.tap(this.el, {}, function() {
+					expect(isAnimating).to.be.false;
+					done();
+				});
+			}, 101);
+		});
 });
 
 describe("MovableCoord Direction Test", function() {
@@ -320,7 +348,7 @@ describe("MovableCoord Direction Test", function() {
         circular : false
       });
       var el = sandbox();
-      var html = `<div id="area" 
+      var html = `<div id="area"
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
       el.innerHTML = html;
       this.el = el;
@@ -332,7 +360,7 @@ describe("MovableCoord Direction Test", function() {
       }
       cleanup();
     });
-    
+
     it("should check movement direction (DIRECTION_ALL)", (done) => {
       // Given
       var releaseHandler = sinon.spy();
@@ -375,7 +403,7 @@ describe("MovableCoord Direction Test", function() {
         expect(this.inst._pos).to.deep.equal([10, 0]);
         done();
       });
-    });    
+    });
 
     it("should check movement direction (DIRECTION_VERTICAL)", (done) => {
       // Given
@@ -397,7 +425,7 @@ describe("MovableCoord Direction Test", function() {
         expect(this.inst._pos).to.deep.equal([0, 10]);
         done();
       });
-    });    
+    });
 
     it("should check cross movement (vertical movement on DIRECTION_HORIZONTAL)", (done) => {
       // Given
@@ -419,7 +447,7 @@ describe("MovableCoord Direction Test", function() {
         expect(this.inst._pos).to.deep.equal([0, 0]);
         done();
       });
-    });      
+    });
 
     it("should check cross movement test (horizontal movement on DIRECTION_VERTICAL", (done) => {
       // Given
@@ -441,5 +469,5 @@ describe("MovableCoord Direction Test", function() {
         expect(this.inst._pos).to.deep.equal([0, 0]);
         done();
       });
-    });      
+    });
 });

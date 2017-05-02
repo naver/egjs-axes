@@ -12,7 +12,6 @@ export default superclass => class extends superclass {
 
 	_grab(min, max, circular) {
 		if (this._animateParam) {
-			this.trigger("animationEnd");
 			const orgPos = this.get();
 
 			const pos = Coordinate.getCircularPos(this.get(), min, max, circular);
@@ -23,6 +22,7 @@ export default superclass => class extends superclass {
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
+			this.trigger("animationEnd");
 		}
 	}
 
