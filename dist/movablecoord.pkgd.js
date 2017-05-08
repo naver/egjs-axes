@@ -828,7 +828,6 @@ exports.default = function (superclass) {
 
 		_class.prototype._grab = function _grab(min, max, circular) {
 			if (this._animateParam) {
-				this.trigger("animationEnd");
 				var orgPos = this.get();
 
 				var pos = _Coordinate2.default.getCircularPos(this.get(), min, max, circular);
@@ -839,6 +838,7 @@ exports.default = function (superclass) {
 				this._animateParam = null;
 				this._raf && _browser.window.cancelAnimationFrame(this._raf);
 				this._raf = null;
+				this.trigger("animationEnd");
 			}
 		};
 
