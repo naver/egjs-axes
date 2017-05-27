@@ -1,3 +1,7 @@
+[![Issue Stats](http://issuestats.com/github/naver/egjs-movablecoord/badge/pr?style=flat)](http://issuestats.com/github/naver/egjs-movablecoord)
+[![Issue Stats](http://issuestats.com/github/naver/egjs-movablecoord/badge/issue?style=flat)](http://issuestats.com/github/naver/egjs-movablecoord)
+[![npm version](https://badge.fury.io/js/%40egjs%2Fmovablecoord.svg)](https://badge.fury.io/js/%40egjs%2Fmovablecoord)
+
 # egjs-movablecoord
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
