@@ -6,6 +6,8 @@
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.  
 You can implement a user interface by applying the logical coordinates provided. 
 
+![](demo/assets/image/360car.gif)
+
 ## Documentation
 * API Documentation
     - Latest: [http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html](http://naver.github.io/egjs/latest/doc/eg.MovableCoord.html)
