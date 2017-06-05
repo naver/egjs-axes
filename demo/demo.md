@@ -1,3 +1,69 @@
+### Car 360º viewer
+
+<div class="car_spot">
+<div class="car_rotate">
+  <div class="img_cont" style="position:relative;z-index:10">
+    <img height="150" src="./assets/image/car360/beatle (1).png">
+    <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;">
+    <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none">
+    <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none">
+  </div>
+  <div class="ratate_bg"></div>
+</div>
+</div>
+
+
+```javascript
+new eg.MovableCoord({
+  min: [0, 0],
+  max: [720, 0],
+  bounce: [0, 0, 0, 0],
+  circular: [false, true, false, true],
+}).on({
+  "change": function(e) {
+    var $images = jQuery(".car_rotate img");
+    var imagesNum = $images.length;
+    var ape = 360 / imagesNum; // angle per each 
+    var index = Math.min(Math.round(e.pos[0] % 360 / ape), imagesNum - 1);
+    
+    $images.hide().eq(index).show();
+  }
+}).bind(jQuery(".car_rotate").get(0));
+```
+
+
 ### Cards in hands
 
 <!-- Cards in hands -->
