@@ -10,7 +10,7 @@ var config = {
 	output: {
 		path: path.resolve(__dirname, "dist"),
 		filename: "[name].js",
-		library: ["eg", "MovableCoord"],
+		library: [pkg.namespace.eg, "MovableCoord"],
 		libraryTarget: "umd",
 		umdNamedDefine: true
 	},
@@ -19,14 +19,14 @@ var config = {
 			commonjs: "@egjs/component",
 			commonjs2: "@egjs/component",
 			amd: "@egjs/component",
-			root: ["eg", "Component"]
+			root: [pkg.namespace.eg, "Component"]
 		},
 		"hammerjs": {
 			commonjs: "hammerjs",
 			commonjs2: "hammerjs",
 			amd: "hammerjs",
-			root: "Hammer"
-		}
+			root: pkg.namespace.Hammer,
+		},
 	}],
 	devtool: "cheap-module-source-map",
 	module: {

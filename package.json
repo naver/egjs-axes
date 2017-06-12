@@ -20,6 +20,10 @@
   "author": {
     "name": "NAVER corp"
   },
+  "namespace" : {
+    "eg": "eg",
+    "Hammer": "hammer"
+  },
   "homepage": "https://github.com/naver/egjs-movablecoord",
   "license": "MIT <https://naver.github.io/egjs/license.txt>",
   "dependencies": {
