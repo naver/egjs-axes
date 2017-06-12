@@ -1116,7 +1116,8 @@ exports.default = function (superclass) {
 				currentHammer: null, // current hammer instance
 				currentOptions: {}, // current bind options
 				moveDistance: null, // a position of the first user's action
-				prevented: false };
+				prevented: false //  check whether the animation event was prevented
+			};
 			return _this;
 		}
 
