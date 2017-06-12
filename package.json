@@ -2,7 +2,6 @@
   "name": "@egjs/movablecoord",
   "version": "2.0.0-rc.2",
   "main": "dist/movablecoord.js",
-  "module": "dist/movablecoord.js",
   "es2015": "src/MovableCoord.js",
   "scripts": {
     "start": "webpack-dev-server --open",
