@@ -11,9 +11,10 @@
     "lint": "eslint src",
     "jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
     "coverage": "karma start --coverage",
-    "start-demo": "npm run prebuild-demo && jekyll serve -s demo",
-    "prebuild-demo": "cpx 'doc/**/*' demo/doc/ --clean && cpx 'dist/**/*' demo/dist --clean",
-    "build-demo": "jekyll build -s demo",
+    "demo:start": "npm run demo:prebuild && jekyll serve -s demo",
+    "demo:build": "jekyll build -s demo",
+    "demo:prebuild": "cpx 'doc/**/*' demo/doc/ --clean && cpx 'dist/**/*' demo/dist --clean",
+    "demo:deploy": "gh-pages -d demo/_site",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
   },
