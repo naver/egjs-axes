@@ -1,0 +1,55 @@
+{
+	"tags": {
+		"allowUnknownTags" : true,
+		"dictionaries": ["jsdoc","closure"]
+	},
+	"source": {
+		"include": ["src", "README.md" , "node_modules/@egjs/component/src/component.js"], 
+		"includePattern": ".+\\.js(doc|x)?$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"opts": {
+		"template": "node_modules/egjs-jsdoc-template",
+		"destination": "./doc/",
+		"ignores": ["eg.Component"],
+		"expendsItemMembers": true
+	},
+	"plugins": [
+		"plugins/markdown",
+		"node_modules/egjs-jsdoc-template/jsdoc-plugin/ko",
+		"node_modules/egjs-jsdoc-template/jsdoc-plugin/group",
+		"node_modules/egjs-jsdoc-template/jsdoc-plugin/codepen",
+		"node_modules/egjs-jsdoc-template/jsdoc-plugin/support"
+	],
+	"templates": {
+		"cleverLinks": true,
+		"monospaceLinks": true,
+		"default": {
+			"outputSourceFiles" : true
+		},
+		"applicationName": "eg.Axes",
+		"disqus": "egjs",
+		"googleAnalytics": "UA-70842526-16",
+		"openGraph": {
+			"title": "",
+			"type": "website",
+			"image": "",
+			"site_name": "",
+			"url": ""
+		},
+		"meta": {
+			"title": "egjs::axes - API",
+			"description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.",
+			"keyword": ""
+		},
+		"linenums": true,
+		"link": {
+			"canonical": "http://naver.github.io/egjs-axes/release/latest/doc/"
+		}
+	},
+	"markdown": {
+		"parser": "gfm",
+		"hardwrap": true,
+		"tags": ["examples", "ko"]
+	}
+}

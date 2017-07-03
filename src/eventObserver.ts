@@ -1,0 +1,214 @@
+import Coordinate from "./Coordinate";
+
+export default superclass => class extends superclass {
+	constructor() {
+		super();
+		this._status = {
+			grabOutside: false,		// check whether user's action started on outside
+			prevented: false,		//  check whether the animation event was prevented
+		};
+	}
+
+	/* ****************
+	 * interruptable
+	 * ****************/
+	_isInterrupting() {
+		// when interruptable is 'true', return value is always 'true'.
+		return this.options.interruptable || this._status.prevented;
+	}
+
+	_isInterrupted() {
+		return !this.options.interruptable && this._status.prevented;
+	}
+
+	_setInterrupt(prevented) {
+		!this.options.interruptable && (this._status.prevented = prevented);
+	}
+
+	// trigger 'change' event
+	_setPosAndTriggerChange(position, holding, e) {
+		/**
+		 * This event is fired when coordinate changes.
+		 * @ko 좌표가 변경됐을 때 발생하는 이벤트
+		 * @name eg.MovableCoord#change
+		 * @event
+		 *
+		 * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+		 * @param {Array} param.position departure coordinate  <ko>좌표</ko>
+		 * @param {Number} param.position.0 The X coordinate <ko>x 좌표</ko>
+		 * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
+		 * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
+		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+		 *
+		 */
+		 position.
+
+		this._pos = position.concat();
+		this.trigger("change", {
+			pos: position.concat(),
+			holding,
+			hammerEvent: e || null,
+		});
+	}
+
+
+	/* ****************
+	 * Event Observer
+	 * ****************/
+	onHold(inputType, event) {
+		if (this._isInterrupted()) {
+			return;
+		}
+		this._setInterrupt(true);
+
+		const pos: { [key: string]: number } = this.get(inputType.getAxes());
+		// const min = this.options.min;
+		// const max = this.options.max;
+
+		// this._grab(min, max, this.options.circular);
+		/**
+		 * This event is fired when a user holds an element on the screen of the device.
+		 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+		 * @event eg.MovableCoord#hold
+		 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+		 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
+		 * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
+		 * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
+		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+		 *
+		 */
+		this.trigger("hold", {
+			pos: pos,
+			// hammerEvent: e,
+			inputEvent: event,
+		});
+
+		// this._status.grabOutside = Coordinate.isOutside(pos, min, max);
+	}
+	onChange(inputType, event) {
+		if (!this._isInterrupting()) {
+			return;
+		}
+		const offset = inputType.OnChange();
+
+		if (offset[0] === 0 && offset[1] === 0) {
+			return;
+		}
+		const min = this.options.min;
+		const max = this.options.max;
+		const out = [
+			this.options.margin[0] + this.options.bounce[0],
+			this.options.margin[1] + this.options.bounce[1],
+			this.options.margin[2] + this.options.bounce[2],
+			this.options.margin[3] + this.options.bounce[3],
+		];
+		let pos = this.get();
+
+		pos[0] += offset[0];
+		pos[1] += offset[1];
+
+		pos = Coordinate.getCircularPos(pos, min, max, this.options.circular);
+
+		// from outside to inside
+		if (this._status.grabOutside && !Coordinate.isOutside(pos, min, max)) {
+			this._status.grabOutside = false;
+		}
+
+		// when move pointer is held in outside
+		let tv;
+		let tn;
+		let tx;
+
+		if (this._status.grabOutside) {
+			tn = min[0] - out[3];
+			tx = max[0] + out[1];
+			tv = pos[0];
+			/* eslint-disable no-nested-ternary */
+			pos[0] = tv > tx ? tx : (tv < tn ? tn : tv);
+			tn = min[1] - out[0];
+			tx = max[1] + out[2];
+			tv = pos[1];
+			pos[1] = tv > tx ? tx : (tv < tn ? tn : tv);
+			/* eslint-enable no-nested-ternary */
+		} else {
+			// when start pointer is held in inside
+			// get a initialization slope value to prevent smooth animation.
+			const initSlope = this._easing(0.00001) / 0.00001;
+
+			if (pos[1] < min[1]) { // up
+				tv = (min[1] - pos[1]) / (out[0] * initSlope);
+				pos[1] = min[1] - this._easing(tv) * out[0];
+			} else if (pos[1] > max[1]) { // down
+				tv = (pos[1] - max[1]) / (out[2] * initSlope);
+				pos[1] = max[1] + this._easing(tv) * out[2];
+			}
+			if (pos[0] < min[0]) { // left
+				tv = (min[0] - pos[0]) / (out[3] * initSlope);
+				pos[0] = min[0] - this._easing(tv) * out[3];
+			} else if (pos[0] > max[0]) { // right
+				tv = (pos[0] - max[0]) / (out[1] * initSlope);
+				pos[0] = max[0] + this._easing(tv) * out[1];
+			}
+		}
+		this._setPosAndTriggerChange(pos, true, event);
+	}
+	onRelease(inputType, event) {
+		if (!this._isInterrupting()) {
+			return;
+		}
+		const offset = inputType.getOffsetOnChange();
+		const pos = this.get();
+
+		// Abort the animating post process when "tap" occurs
+		if (offset[0] === 0 && offset[1] === 0) {
+			this.trigger("release", {
+				depaPos: pos.concat(),
+				destPos: pos.concat(),
+				inputEvent: event || null,
+			});
+			this._setInterrupt(false);
+		} else {
+			const nextOffset = Coordinate.getNextOffsetPos([
+				offset[0],
+				offset[1],
+			], this.options.deceleration);
+			const destPos = Coordinate.getPointOfIntersection(
+				pos,
+				[
+					pos[0] + nextOffset[0],
+					pos[1] + nextOffset[1],
+				],
+				this.options.min,
+				this.options.max,
+				this.options.circular,
+				this.options.bounce
+			);
+
+			/**
+			 * This event is fired when a user release an element on the screen of the device.
+			 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+			 * @event eg.MovableCoord#release
+			 *
+			 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+			 * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
+			 * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
+			 * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
+			 * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+			 * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
+			 * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
+			 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
+			 *
+			 */
+			this.trigger("release", {
+				depaPos: pos.concat(),
+				destPos,
+				inputEvent: event || null,
+			});
+			if (pos[0] !== destPos[0] || pos[1] !== destPos[1]) {
+				this._animateTo(destPos, null, event || null);
+			} else {
+				this._setInterrupt(false);
+			}
+		}
+	}
+};
