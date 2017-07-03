@@ -1,32 +1,21 @@
+import { Position, PositionManager } from './Position';
 import Coordinate from "./Coordinate";
 
-export default superclass => class extends superclass {
+// export default superclass => class extends superclass {
+export default class EventObserver {
+	_pm: PositionManager;
+	_pos: Position;
+
 	constructor() {
 		super();
+		this._pm = new PositionManager();
 		this._status = {
 			grabOutside: false,		// check whether user's action started on outside
-			prevented: false,		//  check whether the animation event was prevented
 		};
 	}
 
-	/* ****************
-	 * interruptable
-	 * ****************/
-	_isInterrupting() {
-		// when interruptable is 'true', return value is always 'true'.
-		return this.options.interruptable || this._status.prevented;
-	}
-
-	_isInterrupted() {
-		return !this.options.interruptable && this._status.prevented;
-	}
-
-	_setInterrupt(prevented) {
-		!this.options.interruptable && (this._status.prevented = prevented);
-	}
-
 	// trigger 'change' event
-	_setPosAndTriggerChange(position, holding, e) {
+	_setPosAndTriggerChange(position: Position, holding: boolean, e) {
 		/**
 		 * This event is fired when coordinate changes.
 		 * @ko 좌표가 변경됐을 때 발생하는 이벤트
@@ -41,11 +30,9 @@ export default superclass => class extends superclass {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-		 position.
 
-		this._pos = position.concat();
 		this.trigger("change", {
-			pos: position.concat(),
+			pos: this._pm.moveTo(position),
 			holding,
 			hammerEvent: e || null,
 		});
@@ -61,7 +48,7 @@ export default superclass => class extends superclass {
 		}
 		this._setInterrupt(true);
 
-		const pos: { [key: string]: number } = this.get(inputType.getAxes());
+		const pos: Position = this._pm.filter(inputType.getAxes());
 		// const min = this.options.min;
 		// const max = this.options.max;
 

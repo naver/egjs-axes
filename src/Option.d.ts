@@ -13,7 +13,6 @@ export interface AxisOption {
   bounce?: Array<number>;
   margin?: Array<number>;
   circular?: Array<boolean>;
-
 }
 export interface AxesOption {
   easing?: (x:number) => number;

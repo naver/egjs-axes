@@ -1,7 +1,8 @@
-export interface InputType {
+export interface IInputType {
+	axes: Array<string>;
 	subscribe(observer);
 	unsubscribe();
 	mapAxes(axes: Array<string>);
-	OnHold?(inputType:InputType, event);
-	OnChange?(inputType:InputType, event);
+	OnHold?(inputType: IInputType, event);
+	OnChange?(inputType: IInputType, event);
 }

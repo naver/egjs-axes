@@ -1,7 +1,9 @@
+import { AxesOption, HammerTypeOption } from "./../Option.d";
 import Hammer from "hammerjs";
-import Coordinate from "./Coordinate";
-import { SUPPORT_TOUCH, UNIQUEKEY } from "../const";
+// import Coordinate from "../Coordinate.js";
+import { SUPPORT_TOUCH, UNIQUEKEY, DIRECTION } from "../const";
 import { $ } from "../utils.js";
+import { IInputType } from "./Input.d";
 
 /**
  * Hammer helps you add support for touch gestures to your page
@@ -15,34 +17,34 @@ if (typeof Hammer === "undefined") {
 	throw new Error(`The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/`);
 }
 
-export default class HammerInputType implements InputType {
-	public options: HammerTypeOption;
+export default class HammerInputType implements IInputType {
+	axes: Array<string>;
+	options: HammerTypeOption;
 	private _hammer;
-	private _axes:Array<string>;
 	private _element: HTMLElement;
 	constructor(el: HTMLElement|string, options: HammerTypeOption) {
 		this._element = $(el);
-		this.options = {...{
+		this.options = Object.assign({
 			inputType: ["touch", "mouse"],
 			direction: DIRECTION.DIRECTION_ALL,
 			scale: [1, 1],
 			thresholdAngle: 45,
 			interruptable: true,
-		}, ...options};
+		}, options);
 	}
-	mapAxes(axes:Array<string>) {
-		this._axes = axes;
+	mapAxes(axes: Array<string>) {
+		this.axes = axes;
 	}
 	getAxes(): Array<string> {
-		return this._axes.concat();
+		return this.axes.concat();
 	}
 	subscribe(observer) {
 		const inputClass = HammerInputType.convertHammerInputType(this.options.inputType);
 		if (!inputClass) {
 			throw new Error("Wrong inputType parameter!");
 		}
-		
-		let keyValue:string = this._element.getAttribute(UNIQUEKEY);
+
+		let keyValue: string = this._element.getAttribute(UNIQUEKEY);
 		if (keyValue) {
 			this._hammer.destroy();
 		} else {

@@ -2,27 +2,38 @@ import Coordinate from "./Coordinate";
 import {window} from "./browser";
 
 export default superclass => class extends superclass {
-	constructor() {
+	constructor(private core) {
 		super();
 		this._raf = null;
 		this._animateParam = null;
 		this._animationEnd = this._animationEnd.bind(this);	// for caching
 		this._restore = this._restore.bind(this);	// for caching
+		
 	}
 
-	_grab(min, max, circular) {
+	_grab(axes: Array<string>, range: Array<number>, circular: Array<boolean>) {
 		if (this._animateParam) {
-			const orgPos = this.get();
+			const coreAxes = this.core.options.axes;
+			const orgPos = this.core._pm.filter(axes);
+			const changedAxes = [];
+			let pos;
 
-			const pos = Coordinate.getCircularPos(this.get(), min, max, circular);
-
-			if (pos[0] !== orgPos[0] || pos[1] !== orgPos[1]) {
-				this._setPosAndTriggerChange(pos, true);
+			for (const k in orgPos) {
+				pos = Coordinate.getCircularPos(orgPos[k], coreAxes[k].range, coreAxes[k].circular);	
+				if (pos !== orgPos[k]) {
+					// trigger change!!!
+					changedAxes.push(k);
+					
+				}
 			}
+			if (changedAxes.length > 0) {
+				
+			}
+
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
-			this.trigger("animationEnd");
+			this.core.trigger("animationEnd");
 		}
 	}
 

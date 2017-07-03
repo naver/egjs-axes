@@ -5,15 +5,18 @@
   ],
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": false,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es3",
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "./src/"
+    ],
+    "types":[
+      "./typings.d.ts"
     ],
     "lib": [
       "es2016",
