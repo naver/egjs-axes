@@ -1,19 +1,19 @@
+import { AxesOption } from "./Option.d";
 export class InterruptManager {
   private _prevented = false; //  check whether the animation event was prevented
+  constructor(private options: AxesOption) {}
 
-  constructor(private core) {
-  }
   isInterrupting() {
     // when interruptable is 'true', return value is always 'true'.
-    return this.core.options.interruptable || this._prevented;
+    return this.options.interruptable || this._prevented;
   }
 
   isInterrupted() {
-    return !this.core.options.interruptable && this._prevented;
+    return !this.options.interruptable && this._prevented;
   }
 
   setInterrupt(prevented) {
-    !this.core.options.interruptable && (this._prevented = prevented);
+    !this.options.interruptable && (this._prevented = prevented);
   }
 };
 

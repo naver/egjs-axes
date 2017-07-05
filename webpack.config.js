@@ -54,7 +54,10 @@ var config = {
 			})
 		}]
 	},
-	plugins: [new StringReplacePlugin()]
+	plugins: [
+		// new webpack.optimize.ModuleConcatenationPlugin(),
+		new StringReplacePlugin()
+	]
 };
 
 module.exports = function (env) {

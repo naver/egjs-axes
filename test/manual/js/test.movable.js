@@ -3,22 +3,11 @@
  */
 
 
-var axes = new eg.Axes({
-  interruptable: true,
-  axis: {
-    x: {
-      range: [0, 100],
-      bounce: [50, 50],
-      margin: [0, 0],
-      circular: [false, false]
-    },
-    y: {
-      range: [0, 100],
-      bounce: [100, 100],
-      margin: [0, 0],
-      circular: [true, true]
-    }    
-  }
+var mv = new eg.MovableCoord({
+  min: [0, 0],
+  max: [100, 100],
+  bounce: [100, 50, 100, 50],
+  circular: [true, false, true, false]
 }).on({
   "hold": (e) => {
     console.info("hold", e);
@@ -34,5 +23,5 @@ var axes = new eg.Axes({
   }
 })
 
-console.log("Hello eg.Axes!!!", axes);
+console.log("Hello eg.MovableCoord!!!", mv);
 

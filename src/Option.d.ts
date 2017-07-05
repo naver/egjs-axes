@@ -18,7 +18,8 @@ export interface AxesOption {
   easing?: (x:number) => number;
   maximumDuration?: number;
   deceleration?: number;
-  axes?: {
+  axis?: {
     [key: string]: AxisOption
   }
+  interruptable?: boolean;
 }

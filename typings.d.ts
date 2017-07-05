@@ -1,11 +1,3 @@
-interface IInputType {
-	subscribe(observer);
-	unsubscribe();
-	mapAxes(axes: Array<string>);
-	OnHold?(inputType:IInputType, event);
-	OnChange?(inputType:IInputType, event);
-}
-
 interface HammerTypeOption {
 	inputType?: Array<"touch" | "mouse">;
 	// direction?: DIRECTION;
