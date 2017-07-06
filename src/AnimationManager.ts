@@ -30,7 +30,7 @@ export class AnimationManager {
 	}
 
 	grab(axes: Array<string>) {
-		if (this._animateParam) {
+		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			let pos: Axis = this.axm.map(orgPos, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 			pos = this.axm.filter(pos, (v, k) => orgPos[k] !== v);

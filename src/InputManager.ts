@@ -9,20 +9,25 @@ import { AnimationManager } from "./AnimationManager";
 export class InputManager {
   constructor(
     private options: AxesOption,
+    private itm: InterruptManager,
     private em: EventManager,
     private axm: AxisManager,
-    private itm: InterruptManager
+    private am: AnimationManager,
   ) {
   }
 
   onHold(inputType: IInputType, event) {
-    if (this.itm.isInterrupted()) {
+    if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
     }
     this.itm.setInterrupt(true);
     this.am.grab(inputType.axes);
 
-    const offset: Axis = inputType.onHold();
+    let pos: Axis = this.axm.get(inputType.axes);
+    if (inputType.onHold) {
+      const offset: Axis = inputType.onHold();
+      pos = this.axm.map(this.axm.get(inputType.axes), (v, k) => v + offset[k]);
+    }
     // 현재 좌표정보에 offset을 반영 ????
 		/**
 		 * This event is fired when a user holds an element on the screen of the device.
@@ -37,7 +42,6 @@ export class InputManager {
 		 */
     this.em.trigger("hold", {
       pos,
-      // hammerEvent: e,
       inputEvent: event,
     });
 

@@ -38,8 +38,8 @@ export default class Axes extends Component {
 		this._em = new EventManager(this);
 		this._axm = new AxisManager(this.options);
 		this._itm = new InterruptManager(this.options);
-		this._am = new AnimationManager(this.options, this._em, this._axm, this._itm);
-		this.im = new InputManager(this.options, this._em, this._axm, this._itm);
+		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
+		this._im = new InputManager(this.options, this._itm, this._em, this._axm, this._am);
 	}
 
 	/**
