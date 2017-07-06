@@ -3,7 +3,7 @@ import {AnimationManager} from "./AnimationManager";
 import {EventManager} from "./EventManager";
 import {InterruptManager} from "./InterruptManager";
 import {AxisManager} from "./AxisManager";
-import {InputManager} from "./InputManager";
+// import {InputManager} from "./InputManager";
 /**
  * Copyright (c) NAVER Corp.
  * egjs-axes projects are licensed under the MIT license
@@ -39,7 +39,7 @@ export default class Axes extends Component {
 		this._axm = new AxisManager(this.options);
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._em, this._axm, this._itm);
-		// this.im = new InputManager(this.options, this.em, this.apm, this.itm);
+		this.im = new InputManager(this.options, this._em, this._axm, this._itm);
 	}
 
 	/**

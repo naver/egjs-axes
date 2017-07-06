@@ -9,10 +9,10 @@ import { AnimationManager } from "./AnimationManager";
 export class InputManager {
   constructor(
     private options: AxesOption,
-    // private apm: AxisManager,
-    private itm: InterruptManager,
-    private am: AnimationManager
-    ) {
+    private em: EventManager,
+    private axm: AxisManager,
+    private itm: InterruptManager
+  ) {
   }
 
   onHold(inputType: IInputType, event) {
@@ -143,21 +143,21 @@ export class InputManager {
     //     this.options.bounce
     //   );
 
-		// 	/**
-		// 	 * This event is fired when a user release an element on the screen of the device.
-		// 	 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-		// 	 * @event eg.MovableCoord#release
-		// 	 *
-		// 	 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-		// 	 * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
-		// 	 * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
-		// 	 * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
-		// 	 * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
-		// 	 * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
-		// 	 * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
-		// 	 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
-		// 	 *
-		// 	 */
+    // 	/**
+    // 	 * This event is fired when a user release an element on the screen of the device.
+    // 	 * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+    // 	 * @event eg.MovableCoord#release
+    // 	 *
+    // 	 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+    // 	 * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
+    // 	 * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
+    // 	 * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
+    // 	 * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+    // 	 * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
+    // 	 * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
+    // 	 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
+    // 	 *
+    // 	 */
     //   this.trigger("release", {
     //     depaPos: pos.concat(),
     //     destPos,
