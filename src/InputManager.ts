@@ -35,11 +35,11 @@ export class InputManager {
 		 * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
 		 *
 		 */
-    // this.em.trigger("hold", {
-    //   pos,
-    //   // hammerEvent: e,
-    //   inputEvent: event,
-    // });
+    this.em.trigger("hold", {
+      pos,
+      // hammerEvent: e,
+      inputEvent: event,
+    });
 
     // this._status.grabOutside = Coordinate.isOutside(pos, min, max);
   }

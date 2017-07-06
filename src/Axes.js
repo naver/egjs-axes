@@ -2,8 +2,8 @@ import Component from "@egjs/component";
 import {AnimationManager} from "./AnimationManager";
 import {EventManager} from "./EventManager";
 import {InterruptManager} from "./InterruptManager";
-import {InputManager} from "./InputManager";
 import {AxisManager} from "./AxisManager";
+import {InputManager} from "./InputManager";
 /**
  * Copyright (c) NAVER Corp.
  * egjs-axes projects are licensed under the MIT license
@@ -34,12 +34,29 @@ export default class Axes extends Component {
 				},
 			},
 		}, options);
-		// this._reviseOptions();
+		this._complementOptions();
 		this._em = new EventManager(this);
 		this._axm = new AxisManager(this.options);
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._em, this._axm, this._itm);
 		// this.im = new InputManager(this.options, this.em, this.apm, this.itm);
+	}
+
+	/**
+	 * set up 'css' expression
+	 * @private
+	 */
+	_complementOptions() {
+		Object.keys(this.options.axis).forEach(axis => {
+			["bounce", "margin", "circular"].forEach(v => {
+				const axisOption = this.options.axis;
+				const key = axisOption[axis][v];
+
+				if (/string|number|boolean/.test(typeof key)) {
+					axisOption[axis][v] = [key, key];
+				}
+			});
+		});
 	}
 
 	addInput(axes, inputType) {
@@ -53,15 +70,7 @@ export default class Axes extends Component {
 		return this;
 	}
 
-		// deep copy
-	// get(axes?: Array<string>): Position {
-	//   if (axes) {
-	//     return axes.reduce((acc, v) => {
-	//       acc[v] = this._pos[v];
-	//       return acc;
-	//     }, {});
-	//   } else {
-	//     return { ...this._pos };
-	//   }
-	// }
-};
+	get(axes) {
+		return this._axm.get(axes);
+	}
+}

@@ -10,13 +10,13 @@ var axes = new eg.Axes({
       range: [0, 100],
       bounce: [50, 50],
       margin: [0, 0],
-      circular: [false, false]
+      circular: false
     },
     y: {
       range: [0, 100],
-      bounce: [100, 100],
-      margin: [0, 0],
-      circular: [true, true]
+      bounce: 100,
+      margin: 0,
+      circular: true
     }    
   }
 }).on({
