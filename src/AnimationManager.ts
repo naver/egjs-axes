@@ -1,6 +1,6 @@
 import Coordinate from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
-import { AxesOption } from "./Option.d";
+import { AxesOption } from "./AxesOption";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
 
@@ -21,38 +21,36 @@ export class AnimationManager {
 
 	constructor(
 		private options: AxesOption,
+		private itm: InterruptManager,
 		private em: EventManager,
-		private axm: AxisManager,
-		private itm: InterruptManager
+		private axm: AxisManager
 	) {
-		// this._animationEnd = this._animationEnd.bind(this);	// for caching
-		// this._restore = this._restore.bind(this);	// for caching
 	}
 
-	grab(axes: Array<string>) {
+	grab(axes: string[]) {
 		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
-			let pos: Axis = this.axm.map(orgPos, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
-			pos = this.axm.filter(pos, (v, k) => orgPos[k] !== v);
-			Object.keys(pos).length && this.em.triggerChange(this.axm.moveTo(pos), true);
-
+			const pos: Axis = this.axm.map(orgPos,
+				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
+			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
+				this.em.triggerChange(this.axm.moveTo(pos), true);
+			}
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
-			this.em.trigger("animationEnd");
+			// this.em.trigger("animationEnd");
 		}
 	}
-
-	createAnimationParam(absPos: Axis, duration: number, inputEvent = null): AnimationParam {
+	private createAnimationParam(absPos: Axis, duration: number, inputEvent = null): AnimationParam {
 		const maximumDuration = this.options.maximumDuration;
 		let depaPos: Axis = this.axm.get(Object.keys(absPos));
 		let destPos: Axis = this.axm.map(absPos, (v, k, opt) => {
+				// depaPos[k],
 			return Coordinate.getInsidePosition(
-				depaPos[k],
 				v,
 				opt.range,
-				opt.bounce,
-				opt.circular
+				opt.circular,
+				opt.bounce
 			);
 		});
 
@@ -66,8 +64,10 @@ export class AnimationManager {
 		return {
 			depaPos,
 			destPos,
-			isBounce: this.axm.some(destPos, (v, k, opt) => Coordinate.isOutside(v, opt.range)),
-			isCircular: this.axm.some(destPos, (v, k, opt) => Coordinate.isCircular(v, opt.range, opt.circular)),
+			isBounce: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isOutside(v, opt.range)),
+			isCircular: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isCircular(v, opt.range, opt.circular)),
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
@@ -75,11 +75,12 @@ export class AnimationManager {
 		};
 	}
 
-	restore(axes: Array<string>, complete: () => void, inputEvent = null) {
-		console.info("restore");
+	private restore(axes: string[], complete: () => void, inputEvent = null) {
 		const pos: Axis = this.axm.get(axes);
-		const destPos: Axis = this.axm.map(pos, (v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
-		const durations: Axis = this.axm.map(destPos, v => Coordinate.getDuration(v, this.options.deceleration));
+		const destPos: Axis = this.axm.map(pos,
+			(v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
+		const durations: Axis = this.axm.map(destPos,
+			v => Coordinate.getDuration(v, this.options.deceleration));
 
 		this.animateLoop(
 			this.createAnimationParam(
@@ -108,7 +109,7 @@ export class AnimationManager {
 		this.em.trigger("animationEnd");
 	}
 
-	animateLoop(param: AnimationParam, complete: () => void) {
+	private animateLoop(param: AnimationParam, complete: () => void) {
 		this._animateParam = { ...param };
 		this._animateParam.startTime = new Date().getTime();
 		if (param.duration) {
@@ -149,7 +150,7 @@ export class AnimationManager {
 			if (!AxisManager.equal(param.depaPos, param.destPos)) {
 				queue.push(() => this.animateLoop(param, dequeue));
 			}
-			if (this.axm.some(param.destPos, (v, k, opt) => Coordinate.isOutside(v, opt.range))) {
+			if (this.axm.every(param.destPos, (v, k, opt) => Coordinate.isOutside(v, opt.range))) {
 				queue.push(() => this.restore(Object.keys(param.destPos), dequeue, inputEvent));
 			}
 			queue.push(() => this.animationEnd());
@@ -158,19 +159,20 @@ export class AnimationManager {
 	}
 
 	// animation frame (0~1)
-	frame(param: AnimationParam) {
+	private frame(param: AnimationParam) {
 		const curTime = new Date().getTime() - param.startTime;
 		const easingPer = this.easing(curTime / param.duration);
 		let toPos: Axis = param.depaPos;
 		toPos = this.axm.map(toPos, (v, k, opt) => {
-			toPos[k] += (param.destPos[k] - toPos[k]) * easingPer;
-			return Coordinate.getCirculatedPos(toPos[k], opt.range, opt.circular);
+			v += (param.destPos[k] - v) * easingPer;
+			return Coordinate.getCirculatedPos(v, opt.range, opt.circular);
 		});
 		this.em.triggerChange(this.axm.moveTo(toPos));
 		return easingPer;
 	}
 
 	easing(p) {
+		// console.log("easing", p, this.options.easing(p));
 		return p > 1 ? 1 : this.options.easing(p);
 	}
 
@@ -184,7 +186,7 @@ export class AnimationManager {
 	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(pos: Axis, duration: number = 0) {
-		const axes: Array<string> = Object.keys(pos);
+		const axes: string[] = Object.keys(pos);
 		this.grab(axes);
 		const orgPos: Axis = this.axm.get(axes);
 
@@ -197,24 +199,15 @@ export class AnimationManager {
 			return;
 		}
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			let value = v;
-			if (!opt.circular[1]) {
-				value = Math.max(opt.range[0], value);
-			}
-			if (!opt.circular[0]) {
-				value = Math.min(opt.range[1], value);
-			}
-			if (!duration) {
-				value = Coordinate.getCirculatedPos(value, opt.range, opt.circular);
-			}
-			return value;
+			v = Coordinate.getInsidePosition(v, opt.range, opt.circular);
+			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular);
 		});
 		if (AxisManager.equal(movedPos, orgPos)) {
 			return this;
 		} else if (duration) {
 			this.animateTo(movedPos, duration);
 		} else {
-			this.em.triggerChange(this.axm.moveTo(movedPos), false);
+			this.em.triggerChange(this.axm.moveTo(movedPos));
 			this.itm.setInterrupt(false);
 		}
 		return this;

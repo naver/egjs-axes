@@ -4,35 +4,50 @@
 
 
 var axes = new eg.Axes({
-  interruptable: true,
-  axis: {
-    x: {
-      range: [0, 100],
-      bounce: [50, 50],
-      margin: [0, 0],
-      circular: false
-    },
-    y: {
-      range: [0, 100],
-      bounce: 100,
-      margin: 0,
-      circular: true
-    }    
-  }
+	interruptable: true,
+	axis: {
+		x: {
+			range: [0, 300],
+			bounce: 100,
+			margin: [0, 0],
+			circular: false
+		},
+		y: {
+			range: [0, 500],
+			bounce: 100,
+			margin: 0,
+			circular: false
+		}
+	}
 }).on({
-  "hold": (e) => {
-    console.info("hold", e);
-  },
-  "change" : (e) => {
-    console.info("change", e.pos, e);
-  },
-  "animationStart" : (e) => {
-    console.info("animationStart", e, console.time("Animation"));
-  },
-  "animationEnd" : (e) => {
-    console.info("animationEnd", e, console.timeEnd("Animation"));
-  }
+	"hold": (e) => {
+		// console.info("hold", e.pos);
+	},
+	"release": (e) => {
+		console.warn("release", e.depaPos, "=>", e.destPos);
+	},
+	"change": (e) => {
+		// console.info("change", e.pos, e);
+    pointer.style[eg.Axes.TRANSFORM] = `translate(${e.pos.x}px, ${e.pos.y}px)`;
+	},
+	"animationStart": (e) => {
+    console.warn("animationStart-",e.duration);
+		if (e.duration === 0) {
+			debugger;
+		}
+		// console.info("animationStart", e);
+	},
+	"animationEnd": (e) => {
+    console.warn("animationEnd");
+	}
 })
 
-console.log("Hello eg.Axes!!!", axes);
+var pointer = document.querySelector(".pointer");
+axes.addInput(["x", "y"],
+	new eg.Axes.HammerInput(document, {
+		scale: [1, 1]
+	})
+);
 
+axes.setTo({x: 10, y: 10});
+console.log("Hello eg.Axes!!!", axes);

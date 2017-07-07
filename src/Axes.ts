@@ -1,9 +1,13 @@
-import Component from "@egjs/component";
+import * as Component from "@egjs/component";
+import {AxesOption} from "./AxesOption";
 import {AnimationManager} from "./AnimationManager";
 import {EventManager} from "./EventManager";
 import {InterruptManager} from "./InterruptManager";
-import {AxisManager} from "./AxisManager";
-// import {InputManager} from "./InputManager";
+import { AxisManager, Axis } from "./AxisManager";
+import {InputObserver} from "./InputObserver";
+import {HammerInput} from "./inputType/HammerInput";
+import {TRANSFORM} from "./const";
+
 /**
  * Copyright (c) NAVER Corp.
  * egjs-axes projects are licensed under the MIT license
@@ -15,10 +19,20 @@ import {AxisManager} from "./AxisManager";
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
-export default class Axes extends Component {
-	constructor(options) {
+class Axes extends Component {
+	options: AxesOption;
+	private _em: EventManager;
+	private _axm: AxisManager;
+	private _itm: InterruptManager;
+	private _am: AnimationManager;
+	private _io: InputObserver;
+
+	static HammerInput = HammerInput;
+	static TRANSFORM = TRANSFORM;
+
+	constructor(options: AxesOption) {
 		super();
-		Object.assign(this.options = {
+		this.options = { ...{
 			easing: function easeOutCubic(x) {
 				return 1 - Math.pow(1 - x, 3);
 			},
@@ -33,20 +47,20 @@ export default class Axes extends Component {
 					circular: [false, false],
 				},
 			},
-		}, options);
+		}, ...options};
 		this._complementOptions();
 		this._em = new EventManager(this);
 		this._axm = new AxisManager(this.options);
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
-		this._im = new InputManager(this.options, this._itm, this._em, this._axm, this._am);
+		this._io = new InputObserver(this.options, this._itm, this._em, this._axm, this._am);
 	}
 
 	/**
 	 * set up 'css' expression
 	 * @private
 	 */
-	_complementOptions() {
+	private _complementOptions() {
 		Object.keys(this.options.axis).forEach(axis => {
 			["bounce", "margin", "circular"].forEach(v => {
 				const axisOption = this.options.axis;
@@ -61,7 +75,7 @@ export default class Axes extends Component {
 
 	addInput(axes, inputType) {
 		inputType.mapAxes(axes);
-		inputType.subscribe(this);
+		inputType.subscribe(this._io);
 		return this;
 	}
 
@@ -73,4 +87,10 @@ export default class Axes extends Component {
 	get(axes) {
 		return this._axm.get(axes);
 	}
+
+	setTo(pos: Axis, duration = 0) {
+		return this._am.setTo(pos, duration);
+	}
 }
+
+export default Axes;

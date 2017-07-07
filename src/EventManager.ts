@@ -9,7 +9,7 @@ export class EventManager {
   }
 
 	// trigger 'change' event
-	triggerChange(pos: Axis, holding = false, event = null) {
+	triggerChange(pos: Axis, event = null) {
 		/**
 		 * This event is fired when coordinate changes.
 		 * @ko 좌표가 변경됐을 때 발생하는 이벤트
@@ -26,7 +26,7 @@ export class EventManager {
 		 */
 		this.trigger("change", {
 			pos,
-			holding,
+			holding: event !== null,
 			inputEvent: event,
 		});
 	}

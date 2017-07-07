@@ -230,6 +230,7 @@ var Coordinate = {
 		return (pos[0] < min[0] || pos[0] > max[0] || pos[1] < min[1] || pos[1] > max[1]) && (destPos[0] < min[0] || destPos[0] > max[0] || destPos[1] < min[1] || destPos[1] > max[1]);
 	},
 	getNextOffsetPos: function getNextOffsetPos(speeds, deceleration) {
+		console.warn(speeds);
 		var normalSpeed = Math.sqrt(speeds[0] * speeds[0] + speeds[1] * speeds[1]);
 		var duration = Math.abs(normalSpeed / -deceleration);
 
@@ -313,8 +314,7 @@ function $(param) {
 		if (!multi) {
 			el = el.length >= 1 ? el[0] : undefined;
 		}
-	} else if (param.nodeName && param.nodeType === 1) {
-		// HTMLElement
+	} else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {	// HTMLElement, Document
 		el = param;
 	} else if (_browser.window.jQuery && param instanceof jQuery) {
 		// jQuery
@@ -700,7 +700,7 @@ var HammerManager = function () {
 
 	HammerManager.prototype.add = function add(element, options, handler) {
 		var el = (0, _utils.$)(element);
-		var keyValue = el.getAttribute(_consts.UNIQUEKEY);
+		var keyValue = el[_consts.UNIQUEKEY];
 		var bindOptions = _extends({
 			direction: _consts.DIRECTION.DIRECTION_ALL,
 			scale: [1, 1],
@@ -724,7 +724,7 @@ var HammerManager = function () {
 			el: el,
 			options: bindOptions
 		};
-		el.setAttribute(_consts.UNIQUEKEY, keyValue);
+		el[_consts.UNIQUEKEY] = keyValue;
 	};
 
 	HammerManager.prototype.remove = function remove(element) {
@@ -999,6 +999,7 @@ exports.default = function (superclass) {
 		};
 
 		_class.prototype._easing = function _easing(p) {
+			// console.log("easing", p, this.options.easing(p));
 			return p > 1 ? 1 : this.options.easing(p);
 		};
 
@@ -1157,6 +1158,7 @@ exports.default = function (superclass) {
 
 			this._status.moveDistance = pos.concat();
 			this._status.grabOutside = _Coordinate2.default.isOutside(pos, min, max);
+			console.warn("holdOutSide", this._status.grabOutside );
 		};
 
 		// panmove event handler
@@ -1209,12 +1211,13 @@ exports.default = function (superclass) {
 			pos[0] = this._status.moveDistance[0];
 			pos[1] = this._status.moveDistance[1];
 			pos = _Coordinate2.default.getCircularPos(pos, min, max, this.options.circular);
+			console.warn(pos);
+
 
 			// from outside to inside
 			if (this._status.grabOutside && !_Coordinate2.default.isOutside(pos, min, max)) {
 				this._status.grabOutside = false;
 			}
-
 			// when move pointer is held in outside
 			var tv = void 0;
 			var tn = void 0;
@@ -1235,10 +1238,11 @@ exports.default = function (superclass) {
 				// when start pointer is held in inside
 				// get a initialization slope value to prevent smooth animation.
 				var initSlope = this._easing(0.00001) / 0.00001;
-
+				// console.log("initSlope", initSlope, pos);
 				if (pos[1] < min[1]) {
 					// up
 					tv = (min[1] - pos[1]) / (out[0] * initSlope);
+					
 					pos[1] = min[1] - this._easing(tv) * out[0];
 				} else if (pos[1] > max[1]) {
 					// down
@@ -1248,6 +1252,7 @@ exports.default = function (superclass) {
 				if (pos[0] < min[0]) {
 					// left
 					tv = (min[0] - pos[0]) / (out[3] * initSlope);
+					console.log(pos[0], tv, this._easing(tv), out[0]);
 					pos[0] = min[0] - this._easing(tv) * out[3];
 				} else if (pos[0] > max[0]) {
 					// right
@@ -1286,6 +1291,7 @@ exports.default = function (superclass) {
 				!(direction & _consts.DIRECTION.DIRECTION_VERTICAL) && (vY = 0);
 
 				var offset = _Coordinate2.default.getNextOffsetPos([vX * (e.deltaX < 0 ? -1 : 1) * scale[0], vY * (e.deltaY < 0 ? -1 : 1) * scale[1]], this.options.deceleration);
+				console.info("오프셋", offset);
 				var destPos = [pos[0] + offset[0], pos[1] + offset[1]];
 
 				destPos = _Coordinate2.default.getPointOfIntersection(pos, destPos, this.options.min, this.options.max, this.options.circular, this.options.bounce);

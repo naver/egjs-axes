@@ -1,4 +1,4 @@
-import { AxisOption, AxesOption } from "./Option.d";
+import { AxisOption, AxesOption } from "./AxesOption";
 
 export interface Axis {
   [key: string]: number
@@ -20,7 +20,7 @@ export class AxisManager {
       return acc;
     }, {});
   }
-  get(axes?: Array<string>): Axis {
+  get(axes?: string[]): Axis {
     if (axes) {
       return axes.reduce((acc, v) => {
         acc[v] = this._pos[v];
@@ -34,9 +34,9 @@ export class AxisManager {
     for (const k in pos) {
       this._pos[k] = pos[k];
     }
-    return { ... this._pos };
+    return { ...this._pos };
   }
-  some(
+  every(
     pos: Axis,
     callback: (value: number, key: string, options: AxisOption) => boolean): boolean {
     const axisOptions = this.options.axis;
@@ -57,6 +57,9 @@ export class AxisManager {
     }
     return filtered;
   }
+  map(
+    pos: Axis,
+    callback: (value: number, key: string, options: AxisOption) => any);
   map(
     pos: Axis,
     callback: (value: number, key: string, options: AxisOption) => number): Axis {

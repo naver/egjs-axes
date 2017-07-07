@@ -1,6 +1,4 @@
-import {window, document} from "./browser";
-
-function $(param, multi = false) {
+export function $(param, multi = false) {
 	let el;
 
 	if (typeof param === "string") {	// String (HTML, Selector)
@@ -19,24 +17,12 @@ function $(param, multi = false) {
 		if (!multi) {
 			el = el.length >= 1 ? el[0] : undefined;
 		}
-	} else if (param.nodeName && param.nodeType === 1) {	// HTMLElement
+	} else if (param.nodeName &&
+	(param.nodeType === 1 || param.nodeType === 9)) {	// HTMLElement, Document
 		el = param;
-	} else if ((window.jQuery && param instanceof jQuery) || param.constructor.prototype.jquery) {	// jQuery
+	} else if ((window.jQuery && param instanceof jQuery) ||
+		param.constructor.prototype.jquery) {	// jQuery
 		el = multi ? param.toArray() : param.get(0);
 	}
-
 	return el;
 }
-
-class MixinBuilder {
-	constructor(superclass) {
-		this.superclass = superclass || class {};
-	}
-	with(...mixins) {
-		return mixins.reduce((c, m) => m(c), this.superclass);
-	}
-}
-
-const Mixin = superclass => new MixinBuilder(superclass);
-
-export {Mixin, $};

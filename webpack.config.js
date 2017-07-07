@@ -55,7 +55,7 @@ var config = {
 		}]
 	},
 	plugins: [
-		// new webpack.optimize.ModuleConcatenationPlugin(),
+		new webpack.optimize.ModuleConcatenationPlugin(),
 		new StringReplacePlugin()
 	]
 };
