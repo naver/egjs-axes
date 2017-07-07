@@ -3,8 +3,11 @@ import { Axis } from "../AxisManager";
 
 export abstract class InputType {
 	axes: string[];
-	abstract subscribe(observer);
+	abstract subscribe(observer: IInputTypeObserver);
 	abstract unsubscribe();
+	abstract enable?();
+	abstract disable?();
+	abstract isEnable?(): boolean;
 	mapAxes(axes: string[]) {
 		this.axes = axes;
 	}
@@ -12,7 +15,7 @@ export abstract class InputType {
 
 export interface IInputTypeObserver {
 	options: AxesOption;
-	hold(inputType: InputType, event);
 	change(inputType: InputType, event, offset: Axis);
+	hold(inputType: InputType, event);
 	release(inputType: InputType, event, offset: Axis, duration?: number);
 }

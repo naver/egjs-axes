@@ -52,9 +52,7 @@ export class InputObserver implements IInputTypeObserver {
     const depaPos: Axis = this.axm.get(inputType.axes);
 
     // for outside logic
-    this.moveDistance = this.axm.map(this.moveDistance, (v, k) => {
-      return v + offset[k];
-    });
+    this.moveDistance = this.axm.map(this.moveDistance, (v, k) => v + offset[k]);
     let destPos: Axis = this.axm.map(this.moveDistance, (v, k, opt) => {
       return Coordinate.getCirculatedPos(v, opt.range, opt.circular);
     });

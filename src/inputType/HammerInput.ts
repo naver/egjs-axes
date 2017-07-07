@@ -210,7 +210,6 @@ export class HammerInput extends InputType {
 				!!(direction & DIRECTION.DIRECTION_HORIZONTAL),
 				!!(direction & DIRECTION.DIRECTION_VERTICAL)
 			]);
-		console.warn("realse", offset, event);
 		offset = HammerInput.getNextOffset(offset, observer.options.deceleration);
 		observer.release(this, event, this.toAxis(offset));
 	}
