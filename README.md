@@ -2,6 +2,8 @@
 
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
 
+![car360 using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif)
+
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-axes/)
 - [API documentation](https://naver.github.io/egjs-axes/release/latest/doc/)
@@ -50,15 +52,15 @@ The following are the supported browsers.
 
 |Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
 |---|---|---|---|---|---|
-|||||||
+|10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
 ## Dependency
 
 egjs-axes has the dependencies for the following libraries:
 
-|[egjs-component](http://github.com/naver/egjs/egjs-component)|
-|----|
-|2.0.0+|
+|[egjs-component](http://github.com/naver/egjs/egjs-component)|[Hammer.JS](http://hammerjs.github.io/)|
+|----|----|
+|2.0.0+|2.0.4+|
 
 
 ## How to start developing egjs-axes?
@@ -106,8 +108,7 @@ Two folders will be created after complete build is completed.
 
 ### Linting
 
-To keep the same code style, we adopted [ESLint](http://eslint.org/) to maintain our code quality. The [rules](https://github.com/naver/eslint-config-naver/tree/master/rules) are modified version based on [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript).
-Setup your editor for check or run below command for linting.
+To keep the same code style, we adopted [TSLint](https://palantir.github.io/tslint/) to maintain our code quality.
 
 ```bash
 $ npm run lint
