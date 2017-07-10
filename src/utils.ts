@@ -1,3 +1,5 @@
+// declare var jQuery: any;
+
 export function $(param, multi = false) {
 	let el;
 
@@ -20,7 +22,7 @@ export function $(param, multi = false) {
 	} else if (param.nodeName &&
 	(param.nodeType === 1 || param.nodeType === 9)) {	// HTMLElement, Document
 		el = param;
-	} else if ((window.jQuery && param instanceof jQuery) ||
+	} else if (("jQuery" in window && param instanceof jQuery) ||
 		param.constructor.prototype.jquery) {	// jQuery
 		el = multi ? param.toArray() : param.get(0);
 	}

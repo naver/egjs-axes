@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "tslint-eslint-rules"
+  ],
   "rules": {
     "callable-types": true,
     "class-name": true,
@@ -17,10 +20,16 @@
     ],
     "interface-over-type-literal": true,
     "label-position": true,
-    "max-line-length": [
-      true,
-      100
-    ],
+    "max-len": ["error", {
+      "code": 100,
+      "tabWidth": 1,
+      "ignoreComments": true,
+      "ignoreTrailingComments": true,
+      "ignoreRegExpLiterals": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreStrings": true,
+      "ignoreUrls": true
+    }],
     "member-access": false,
     "member-ordering": [
       true,
@@ -50,7 +59,6 @@
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": false,
-    "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
     "one-line": [

@@ -1,4 +1,4 @@
-import Axes from "../../src/Axes";
+import Axes from "../../src/Axes.ts";
 
 describe("axes", () => {
 	let axes;

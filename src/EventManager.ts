@@ -31,11 +31,7 @@ export class EventManager {
 		});
 	}
 
-  // trigger(option) {
-  //   this.axes.trigger("hold", {
-  //     pos: pos,
-  //     // hammerEvent: e,
-  //     inputEvent: event,
-  //   });
-  // }
+	destroy() {
+		this.axes.off();
+	}
 };

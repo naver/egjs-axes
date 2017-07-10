@@ -14,8 +14,8 @@ var config = {
 	},
 	module: {
 		rules: [{
-			test: /(\.js)$/,
-			loader: "eslint-loader",
+			test: /(\.ts)$/,
+			loader: "tslint-loader",
 			include: path.resolve(process.cwd(), "src"),
 			exclude: /(node_modules)/,
 			enforce: "pre"

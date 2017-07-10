@@ -23,7 +23,9 @@ export class AxisManager {
   get(axes?: string[]): Axis {
     if (axes) {
       return axes.reduce((acc, v) => {
-        acc[v] = this._pos[v];
+        if (v) {
+          acc[v] = this._pos[v];
+        }
         return acc;
       }, {});
     } else {
@@ -32,7 +34,9 @@ export class AxisManager {
   }
   moveTo(pos: Axis): Axis {
     for (const k in pos) {
-      this._pos[k] = pos[k];
+      if (k) {
+        this._pos[k] = pos[k];
+      }
     }
     return { ...this._pos };
   }
@@ -41,8 +45,10 @@ export class AxisManager {
     callback: (value: number, key: string, options: AxisOption) => boolean): boolean {
     const axisOptions = this.options.axis;
     for (const k in pos) {
-      if (!callback(pos[k], k, axisOptions[k])) {
-        return false;
+      if (k) {
+        if (!callback(pos[k], k, axisOptions[k])) {
+          return false;
+        }
       }
     }
     return true;
@@ -53,7 +59,9 @@ export class AxisManager {
     const filtered: Axis = {};
     const axisOptions = this.options.axis;
     for (const k in pos) {
-      callback(pos[k], k, axisOptions[k]) && (filtered[k] = pos[k]);
+      if (k) {
+        callback(pos[k], k, axisOptions[k]) && (filtered[k] = pos[k]);
+      }
     }
     return filtered;
   }
@@ -66,7 +74,9 @@ export class AxisManager {
     const tranformed: Axis = {};
     const axisOptions = this.options.axis;
     for (const k in pos) {
-      tranformed[k] = callback(pos[k], k, axisOptions[k]);
+      if (k) {
+        tranformed[k] = callback(pos[k], k, axisOptions[k]);
+      }
     }
     return tranformed;
   }

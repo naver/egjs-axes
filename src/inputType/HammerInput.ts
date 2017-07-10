@@ -1,7 +1,7 @@
 import { InputObserver } from "./../InputObserver";
 import * as Hammer from "hammerjs";
-import { SUPPORT_TOUCH, UNIQUEKEY, DIRECTION } from "../const";
-import { $ } from "../utils.js";
+import { SUPPORT_TOUCH, UNIQUEKEY } from "../const";
+import { $ } from "../utils";
 import { InputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";
 
@@ -17,9 +17,15 @@ if (typeof Hammer === "undefined") {
 	throw new Error(`The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/`);
 }
 
+enum DIRECTION {
+	DIRECTION_NONE = 1,
+	DIRECTION_HORIZONTAL = 2 | 4,
+	DIRECTION_VERTICAL = 8 | 16,
+	DIRECTION_ALL = 2 | 4 | 8 | 16
+}
+
 export interface HammerInputOption {
 	inputType?: string[];
-	direction?: DIRECTION;
 	scale?: number[];
 	thresholdAngle?: number;
 	interruptable?: boolean;
@@ -27,8 +33,9 @@ export interface HammerInputOption {
 
 export class HammerInput extends InputType {
 	options: HammerInputOption;
-	private _hammer;
-	private _element: HTMLElement;
+	hammer;
+	private _element;
+	private _direction: DIRECTION;
 	static convertHammerInputType(inputType) {
 		let hasTouch = false;
 		let hasMouse = false;
@@ -45,14 +52,114 @@ export class HammerInput extends InputType {
 			(hasMouse && Hammer.MouseInput) || null;
 	}
 
-	static createHammer(el, direction, inputClass) {
+	// get user's direction
+	static getDirectionByAngle(angle: number, thresholdAngle: number): DIRECTION {
+		if (thresholdAngle < 0 || thresholdAngle > 90) {
+			return DIRECTION.DIRECTION_NONE;
+		}
+		const toAngle = Math.abs(angle);
+
+		return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
+			DIRECTION.DIRECTION_VERTICAL : DIRECTION.DIRECTION_HORIZONTAL;
+	}
+
+	static getNextOffset(speeds: number[], deceleration: number) {
+		const normalSpeed = Math.sqrt(
+			speeds[0] * speeds[0] + speeds[1] * speeds[1]
+		);
+		const duration = Math.abs(normalSpeed / -deceleration);
+		return [
+			speeds[0] / 2 * duration,
+			speeds[1] / 2 * duration
+		];
+	}
+
+	static useDirection(
+		checkType: DIRECTION,
+		direction: DIRECTION,
+		userDirection?: DIRECTION): boolean {
+		if (userDirection) {
+			return !!(direction & DIRECTION.DIRECTION_ALL ||
+				(direction & checkType && userDirection & checkType));
+		} else {
+			return !!(direction & DIRECTION.DIRECTION_ALL ||
+				(direction & checkType));
+		}
+	}
+
+	constructor(el, options: HammerInputOption) {
+		super();
+		this._element = $(el);
+		this.options = {
+			...{
+				inputType: ["touch", "mouse"],
+				scale: [1, 1],
+				thresholdAngle: 45
+			}, ...options
+		};
+	}
+
+	mapAxes(axes: string[]) {
+		const useHorizontal = !!axes[0];
+		const useVertical = !!axes[1];
+		if (useHorizontal && useVertical) {
+			this._direction = DIRECTION.DIRECTION_ALL;
+		} else if (useHorizontal) {
+			this._direction = DIRECTION.DIRECTION_HORIZONTAL;
+		} else if (useVertical) {
+			this._direction = DIRECTION.DIRECTION_VERTICAL;
+		} else {
+			this._direction = DIRECTION.DIRECTION_NONE;
+		}
+		this.axes = axes;
+	}
+
+	create(observer: IInputTypeObserver): InputType {
+		const inputClass = HammerInput.convertHammerInputType(this.options.inputType);
+		if (!inputClass) {
+			throw new Error("Wrong inputType parameter!");
+		}
+
+		let keyValue: string = this._element[UNIQUEKEY];
+		if (keyValue) {
+			this.hammer.destroy();
+		} else {
+			keyValue = String(Math.round(Math.random() * new Date().getTime()));
+		}
+		this.hammer = this.createHammer(inputClass)
+			.on("hammer.input", event => {
+				if (event.isFirst) {
+					observer.hold(this, event);
+				} else if (event.isFinal) {
+					this.onRelease(observer, event);
+				}
+			}).on("panstart panmove", event => {
+				this.onChange(observer, event);
+			});
+		this._element[UNIQUEKEY] = keyValue;
+		return this;
+	}
+
+	destroy() {
+		if (this._element[UNIQUEKEY]) {
+			this.hammer.off("hammer.input panstart panmove panend");
+			this.hammer.destroy();
+			delete this._element[UNIQUEKEY];
+		}
+		this.hammer = null;
+		this._element = null;
+		this.options = {};
+		return this;
+	}
+
+	private createHammer(inputClass) {
 		try {
 			// create Hammer
-			return new Hammer.Manager(el, {
+			return new Hammer.Manager(this._element, {
 				recognizers: [
 					[
 						Hammer.Pan, {
-							direction,
+							direction: this._direction,
 							threshold: 0,
 						},
 					],
@@ -72,87 +179,6 @@ export class HammerInput extends InputType {
 		}
 	}
 
-	// get user's direction
-	static getDirectionByAngle(angle: number, thresholdAngle: number): DIRECTION {
-		if (thresholdAngle < 0 || thresholdAngle > 90) {
-			return DIRECTION.DIRECTION_NONE;
-		}
-		const toAngle = Math.abs(angle);
-
-		return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
-			DIRECTION.DIRECTION_VERTICAL : DIRECTION.DIRECTION_HORIZONTAL;
-	}
-	static isHorizontal(direction: DIRECTION, userDirection: DIRECTION): boolean {
-		return !!(direction & DIRECTION.DIRECTION_ALL ||
-			(direction & DIRECTION.DIRECTION_HORIZONTAL &&
-				userDirection & DIRECTION.DIRECTION_HORIZONTAL));
-	}
-	static isVertical(direction: DIRECTION, userDirection: DIRECTION): boolean {
-		return !!(direction === DIRECTION.DIRECTION_ALL ||
-			(direction & DIRECTION.DIRECTION_VERTICAL &&
-				userDirection & DIRECTION.DIRECTION_VERTICAL));
-	}
-	static getNextOffset(speeds: number[], deceleration: number) {
-		const normalSpeed = Math.sqrt(
-			speeds[0] * speeds[0] + speeds[1] * speeds[1]
-		);
-		const duration = Math.abs(normalSpeed / -deceleration);
-		return [
-			speeds[0] / 2 * duration,
-			speeds[1] / 2 * duration
-		];
-	}
-
-	constructor(el: HTMLElement | string, options: HammerInputOption) {
-		super();
-		this._element = $(el);
-		this.options = {
-			...{
-				inputType: ["touch", "mouse"],
-				direction: DIRECTION.DIRECTION_ALL,
-				scale: [1, 1],
-				thresholdAngle: 45
-			}, ...options
-		};
-	}
-	subscribe(observer: IInputTypeObserver) {
-		const inputClass = HammerInput.convertHammerInputType(this.options.inputType);
-		if (!inputClass) {
-			throw new Error("Wrong inputType parameter!");
-		}
-
-		let keyValue: string = this._element[UNIQUEKEY];
-		if (keyValue) {
-			this._hammer.destroy();
-		} else {
-			keyValue = String(Math.round(Math.random() * new Date().getTime()));
-		}
-		this._hammer = HammerInput.createHammer(this._element, this.options.direction, inputClass)
-			.on("hammer.input", event => {
-				if (event.isFirst) {
-					observer.hold(this, event);
-				} else if (event.isFinal) {
-					this.onRelease(observer, event);
-				}
-			}).on("panstart panmove", event => {
-				this.onChange(observer, event);
-			});
-		this._element[UNIQUEKEY] = keyValue;
-		return this;
-	}
-
-	unsubscribe() {
-		if (this._element[UNIQUEKEY]) {
-			this._hammer.off("hammer.input panstart panmove panend");
-			this._hammer.destroy();
-			delete this._element[UNIQUEKEY];
-		}
-		this._hammer = null;
-		this._element = null;
-		this.options = {};
-		return this;
-	}
-
 	private getOffset(
 		properties: number[],
 		useDirection: boolean[]): number[] {
@@ -169,12 +195,11 @@ export class HammerInput extends InputType {
 	}
 
 	private onChange(observer: IInputTypeObserver, event) {
-		const direction = this.options.direction;
 		const userDirection = HammerInput.getDirectionByAngle(
 			event.angle, this.options.thresholdAngle);
 
 		// not support offset properties in Hammerjs - start
-		const prevInput = this._hammer.session.prevInput;
+		const prevInput = this.hammer.session.prevInput;
 
 		/* eslint-disable no-param-reassign */
 		if (prevInput) {
@@ -187,8 +212,8 @@ export class HammerInput extends InputType {
 		const offset: number[] = this.getOffset(
 			[event.offsetX, event.offsetY],
 			[
-				HammerInput.isHorizontal(direction, userDirection),
-				HammerInput.isVertical(direction, userDirection)
+				HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
+				HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
 			]);
 		const prevent = offset.some(v => v !== 0);
 		if (prevent) {
@@ -200,15 +225,14 @@ export class HammerInput extends InputType {
 	}
 
 	private onRelease(observer: IInputTypeObserver, event) {
-		const direction = this.options.direction;
 		let offset: number[] = this.getOffset(
 			[
 				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
 				Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1)
 			],
 			[
-				!!(direction & DIRECTION.DIRECTION_HORIZONTAL),
-				!!(direction & DIRECTION.DIRECTION_VERTICAL)
+				HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction),
+				HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction)
 			]);
 		offset = HammerInput.getNextOffset(offset, observer.options.deceleration);
 		observer.release(this, event, this.toAxis(offset));
@@ -216,19 +240,21 @@ export class HammerInput extends InputType {
 
 	private toAxis(offset: number[]): Axis {
 		return offset.reduce((acc, v, i) => {
-			acc[this.axes[i]] = v;
+			if (this.axes[i]) {
+				acc[this.axes[i]] = v;
+			}
 			return acc;
 		}, {});
 	}
 
 	enable() {
-		this._hammer && (this._hammer.get("pan").options.enable = true);
+		this.hammer && (this.hammer.get("pan").options.enable = true);
 	}
 	disable() {
-		this._hammer && (this._hammer.get("pan").options.enable = false);
+		this.hammer && (this.hammer.get("pan").options.enable = false);
 	}
 	isEnable() {
-		return this._hammer && this._hammer.get("pan").options.enable;
+		return this.hammer && this.hammer.get("pan").options.enable;
 	}
 }
 

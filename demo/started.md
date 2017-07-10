@@ -1,5 +1,5 @@
 ### Browser support
-IE 9+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
+IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ### Quick steps to use:
 
@@ -7,7 +7,7 @@ IE 9+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 #### Set up your HTML
 
 ``` html
-<div>
+<div id="area">
 ```
 
 #### Load files or import library
@@ -28,9 +28,39 @@ import Axes from "@egjs/axes";
 ### Initialize
 
 #### ES5
-```javascript
+```js
+// create eg.Axes with option
+var axes = new eg.Axes("#area", {
+  axis: {
+		left: { range: [0, 100] },
+		top: { range: [0, 100] }
+	}
+});
+
+// create InputType
+var hammerType = new eg.Axes.HammerInputType("#area", {
+  scale: [1, 1.5]
+});
+
+// add innputType at axes
+axes.mapInput(["left", "top"], hammerType);
 ```
 
-#### ES6+
+#### ES6
 ```js
+// create eg.Axes with option
+const axes = new Axes("#area", {
+  axis: {
+		left: { range: [0, 100] },
+		top: { range: [0, 100] }
+	}
+});
+
+// create InputType
+const hammerType = new Axes.HammerInputType("#area", {
+  scale: [1, 1.5]
+});
+
+// add innputType at axes
+axes.mapInput(["left", "top"], hammerType);
 ```

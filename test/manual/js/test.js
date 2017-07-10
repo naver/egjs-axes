@@ -28,26 +28,32 @@ var axes = new eg.Axes({
 	},
 	"change": (e) => {
 		// console.info("change", e.pos, e);
-    pointer.style[eg.Axes.TRANSFORM] = `translate(${e.pos.x}px, ${e.pos.y}px)`;
+		pointer.style[eg.Axes.TRANSFORM] = `translate(${e.pos.x}px, ${e.pos.y}px)`;
 	},
 	"animationStart": (e) => {
-    console.warn("animationStart-",e.duration);
+		console.warn("animationStart-", e.duration);
 		if (e.duration === 0) {
 			debugger;
 		}
 		// console.info("animationStart", e);
 	},
 	"animationEnd": (e) => {
-    console.warn("animationEnd");
+		console.warn("animationEnd");
 	}
 })
 
 var pointer = document.querySelector(".pointer");
-axes.addInput(["x", "y"],
+axes.mapInput(["", "x"],
 	new eg.Axes.HammerInput(document, {
 		scale: [1, 1]
 	})
 );
 
-axes.setTo({x: 10, y: 10});
+axes.setTo({
+	x: 10,
+	y: 10
+});
 console.log("Hello eg.Axes!!!", axes);
+
+
+

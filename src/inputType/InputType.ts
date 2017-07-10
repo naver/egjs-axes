@@ -3,8 +3,8 @@ import { Axis } from "../AxisManager";
 
 export abstract class InputType {
 	axes: string[];
-	abstract subscribe(observer: IInputTypeObserver);
-	abstract unsubscribe();
+	abstract create(observer: IInputTypeObserver): InputType;
+	abstract destroy();
 	abstract enable?();
 	abstract disable?();
 	abstract isEnable?(): boolean;

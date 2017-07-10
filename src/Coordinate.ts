@@ -18,7 +18,7 @@ const Coordinate = {
     if (!circular[1]) {
       toDestPos = Math.min(targetRange[1], toDestPos);
     }
-    return toDestPos;
+		return Math.min(range[1], Math.max(range[0], toDestPos));
   },
 
 
@@ -27,14 +27,6 @@ const Coordinate = {
 		return pos < range[0] || pos > range[1];
 	},
 
-
-	// from outside to outside
-	// isOutToOut(pos, destPos, min, max) {
-	// 	return (pos[0] < min[0] || pos[0] > max[0] ||
-	// 		pos[1] < min[1] || pos[1] > max[1]) &&
-	// 		(destPos[0] < min[0] || destPos[0] > max[0] ||
-	// 		destPos[1] < min[1] || destPos[1] > max[1]);
-	// },
 	getDuration(distance: number, deceleration): number {
 		const duration = Math.sqrt(distance / deceleration * 2);
 

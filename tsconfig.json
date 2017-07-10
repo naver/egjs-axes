@@ -1,26 +1,24 @@
 {
-  "files": [
-    "src/**/*.ts"
-  ],
   "compilerOptions": {
     "allowJs": true,
     "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
     "target": "es5",
+    "moduleResolution": "node",
+    "types": [
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "dom",
-      "es2015",
-      "es5"
+      "es2015"
     ]
   },
   "include": [
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "dist"
   ]
 }

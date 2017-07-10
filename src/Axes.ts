@@ -7,6 +7,7 @@ import { AxisManager, Axis } from "./AxisManager";
 import {InputObserver} from "./InputObserver";
 import {HammerInput} from "./inputType/HammerInput";
 import {TRANSFORM} from "./const";
+import { InputType } from "./inputType/InputType";
 
 /**
  * Copyright (c) NAVER Corp.
@@ -20,15 +21,15 @@ import {TRANSFORM} from "./const";
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
 class Axes extends Component {
+	static HammerInput = HammerInput;
+	static TRANSFORM = TRANSFORM;
+
 	options: AxesOption;
 	private _em: EventManager;
 	private _axm: AxisManager;
 	private _itm: InterruptManager;
 	private _am: AnimationManager;
 	private _io: InputObserver;
-
-	static HammerInput = HammerInput;
-	static TRANSFORM = TRANSFORM;
 
 	constructor(options: AxesOption) {
 		super();
@@ -39,15 +40,9 @@ class Axes extends Component {
 			interruptable: true,
 			maximumDuration: Infinity,
 			deceleration: 0.0006,
-			axis: {
-				x: {
-					range: [0, 100],
-					bounce: [0, 0],
-					margin: [0, 0],
-					circular: [false, false],
-				},
-			},
+			axis: {},
 		}, ...options};
+
 		this._complementOptions();
 		this._em = new EventManager(this);
 		this._axm = new AxisManager(this.options);
@@ -62,6 +57,13 @@ class Axes extends Component {
 	 */
 	private _complementOptions() {
 		Object.keys(this.options.axis).forEach(axis => {
+			this.options.axis[axis] = { ...{
+				range: [0, 100],
+				bounce: [0, 0],
+				margin: [0, 0],
+				circular: [false, false]
+			}, ...this.options.axis[axis]};
+
 			["bounce", "margin", "circular"].forEach(v => {
 				const axisOption = this.options.axis;
 				const key = axisOption[axis][v];
@@ -73,14 +75,15 @@ class Axes extends Component {
 		});
 	}
 
-	addInput(axes, inputType) {
-		inputType.mapAxes(axes);
-		inputType.subscribe(this._io);
-		return this;
-	}
-
-	removeInput(inputType) {
-		inputType.unsubscribe();
+	mapInput(axes: string[] | string, inputType: InputType) {
+		let mapped;
+		if (typeof axes === "string") {
+			mapped = [axes];
+		} else {
+			mapped = axes.concat();
+		}
+		inputType.mapAxes(mapped);
+		inputType.create(this._io);
 		return this;
 	}
 
@@ -89,7 +92,12 @@ class Axes extends Component {
 	}
 
 	setTo(pos: Axis, duration = 0) {
-		return this._am.setTo(pos, duration);
+		this._am.setTo(pos, duration);
+		return this;
+	}
+
+	destroy() {
+		this._em.destroy();
 	}
 }
 

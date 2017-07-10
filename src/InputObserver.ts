@@ -43,6 +43,7 @@ export class InputObserver implements IInputTypeObserver {
       inputEvent: event,
     });
     this.isOutside = !this.axm.every(pos, (v, k, opt) => !Coordinate.isOutside(v, opt.range));
+
     this.moveDistance = this.axm.get(inputType.axes);
   }
   change(inputType, event, offset: Axis) {
@@ -82,6 +83,9 @@ export class InputObserver implements IInputTypeObserver {
         const min = opt.range[0];
         const max = opt.range[1];
         const out = [opt.margin[0] + opt.bounce[0], opt.margin[1] + opt.bounce[1]];
+        if (out[0] === 0 && out[1] === 0) {
+          return v;
+        }
         if (v < min) { // left
           return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
         } else if (v > max) { // right
@@ -115,7 +119,7 @@ export class InputObserver implements IInputTypeObserver {
         );
       duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
       if (duration === 0) {
-        console.log("--------moveTo on release---------");
+        // console.log("--------moveTo on release---------");
         this.em.triggerChange(this.axm.moveTo(destPos), event);
       } else {
         isAnimate = true;
@@ -143,8 +147,10 @@ export class InputObserver implements IInputTypeObserver {
     });
     this.moveDistance = null;
     if (isAnimate) {
-      console.log("--------animation---------");
-      this.am.animateTo(destPos, duration);
+      // console.log("--------animation---------");
+      this.am.animateTo(
+        destPos,
+        this.options.maximumDuration > duration ? duration : this.options.maximumDuration);
     } else {
       this.itm.setInterrupt(false);
     }
