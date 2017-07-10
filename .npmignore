@@ -28,5 +28,7 @@ coverage/
 node_modules/
 .github
 .babelrc
+tslint.json
+tsconfig.json
 mocha.opts
 demo/
