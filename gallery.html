@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>egjs-axes</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700">
+    <link rel="stylesheet" href="./common/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./common/css/page.css">
+    <link rel="stylesheet" href="./common/css/monokai.css">
+    <script src="./common/js/jquery-2.2.4.js"></script>
+    <script src="./common/js/bootstrap.min.js"></script>
+</head>
+
+	<link rel="stylesheet" href="assets/css/car360viewer.css">
+
+	<link rel="stylesheet" href="assets/css/cardinhand.css">
+
+	<link rel="stylesheet" href="assets/css/cube.css">
+
+	<link rel="stylesheet" href="assets/css/cover.css">
+
+
+	<script src="release/latest/dist/axes.pkgd.js"></script>
+
+<script>
+	window.LIBLINK = [];
+	
+	window.LIBLINK.push(window.location.href.replace("/index.html", "/")
+            .replace("/gallery.html", "/") + "release/latest/dist/axes.pkgd.js");
+	
+</script>
+<body>
+<link rel="stylesheet" href="./common/css/gallery.css">
+<div>
+	<section id="docs" class="docs section demos">
+		<div class="container">
+			<div class="docs-inner">
+				
+				<h3 id="car-360º-viewer">Car 360º viewer</h3>
+
+<div class="car_spot" codepen="car360viewer">
+  <div class="car_rotate">
+    <div class="img_cont" style="position:relative;z-index:10">
+      <img height="150" src="./assets/image/car360/beatle (1).png" />
+      <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none" />
+    </div>
+    <div class="ratate_bg"></div>
+  </div>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+		<span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+		<span class="p">}</span>
+	<span class="p">},</span>
+	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.01</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">trace</span><span class="p">(</span><span class="s2">"change"</span><span class="p">);</span>
+	<span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">/</span> <span class="nx">ape</span><span class="p">),</span> <span class="nx">imagesNum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+	<span class="nx">images</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">index</span> <span class="p">?</span> <span class="s2">"inline-block"</span> <span class="p">:</span> <span class="s2">"none"</span><span class="p">;</span>
+	<span class="p">});</span>
+<span class="p">}).</span><span class="nx">mapInput</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
+</code></pre>
+</div>
+
+<h3 id="cards-in-hands">Cards in hands</h3>
+
+<div id="showcase" codepen="cardinhand">
+  <div class="showcase-item">
+  <div class="showcase-content">
+    <div id="movableCoordWrapper">
+    <div class="hand">
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+      <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+    </div>
+    </div>
+    <div id="dot" class="movableDot"></div>
+  </div>
+  </div>
+  <div class="codepen"></div>
+</div>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+		<span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
+			<span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
+		<span class="p">},</span>
+		<span class="na">top</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+			<span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
+		<span class="p">},</span>
+	<span class="p">},</span>
+	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.00034</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">cardDistance</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">cardOffset</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">currentRotateZ</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">pos</span><span class="p">;</span>
+
+	<span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="s2">"bottom"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.4</span> <span class="o">*</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span> <span class="o">+</span> <span class="s2">"px"</span><span class="p">;</span>
+	<span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translateX("</span> <span class="o">+</span> <span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">*</span> <span class="mf">2.3</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px)"</span><span class="p">;</span>
+	<span class="nx">hand</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rotateZ("</span> <span class="o">+</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
+	<span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cardDistance</span> <span class="o">=</span> <span class="nx">getCardDistance</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">hand</span><span class="p">).</span><span class="nx">distance</span><span class="p">;</span>
+		<span class="nx">cardOffset</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">;</span>
+		<span class="nx">currentRotateZ</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s2">"translateY"</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="nx">currentRotateZ</span> <span class="o">+</span>
+			<span class="s2">"translateY("</span> <span class="o">+</span> <span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"data-cardOffset"</span><span class="p">))</span> <span class="o">+</span>
+				<span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px)"</span><span class="p">;</span>
+	<span class="p">});</span>
+<span class="p">}).</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"hand"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
+	<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="p">})).</span><span class="nx">setTo</span><span class="p">({</span>
+	<span class="na">hand</span><span class="p">:</span> <span class="p">(</span><span class="nx">handRotMin</span> <span class="o">+</span> <span class="nx">handRotMax</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<h3 id="rotate-a-cube">Rotate a Cube</h3>
+
+<div id="area" codepen="cube">
+  <div id="box">
+  <div class="face metal-linear" style="-webkit-transform:rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px);">1</div>
+  <div class="face metal-linear" style="-webkit-transform:rotateY(-90deg) translate3d(0px,-50px,100px);">2</div>
+  <div class="face metal-linear" style="-webkit-transform:rotateY(90deg) translate3d(0px,-50px,0px);">3</div>
+  <div class="face metal-linear" style="-webkit-transform:rotateX(90deg) translate3d(-50px,0px,100px);">4</div>
+  <div class="face metal-linear" style="-webkit-transform:rotateY(180deg) translate3d(50px,-50px,50px);">5</div>
+  <div class="face metal-linear" style="-webkit-transform:rotateX(-90deg) translate3d(-50px,0px,0px);">6</div>
+  </div>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"box"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+		<span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+		<span class="p">},</span>
+		<span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+		<span class="p">}</span>
+	<span class="p">},</span>
+	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rotateY("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateX</span> <span class="o">+</span> <span class="s2">"deg) rotateX("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateY</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"rotateX"</span><span class="p">,</span> <span class="s2">"rotateY"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">));</span>
+<span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
+	<span class="s2">"rotateX"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+	<span class="s2">"rotateY"</span><span class="p">:</span> <span class="mi">315</span>
+<span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+</code></pre>
+</div>
+
+			</div>
+		</div>
+	</section>
+</div>
+
+	<script src="assets/js/car360viewer.js"></script>
+
+	<script src="assets/js/cardinhand.js"></script>
+
+	<script src="assets/js/cube.js"></script>
+
+<script>
+$("h3[id]").append(function() {
+	return "<a href='./index.html#" + this.id + "' target='_blank' class='more'>" +
+		'<span class="moreBtn">more</span></a>';
+});
+</script>
+</body>
+</html>
