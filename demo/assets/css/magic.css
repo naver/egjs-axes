@@ -1,0 +1,28 @@
+#boardWrapper {
+  /*position: relative;*/
+  width: 100%;
+  /*display: flex;
+  justify-content: center;
+  align-items: center;*/
+  -webkit-perspective    : 300px;
+  -moz-perspective       : 300px;
+  -ms-perspective        : 300px;
+  -o-perspective         : 300px;
+  perspective            : 300px;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style   : preserve-3d;
+  -ms-transform-style    : preserve-3d;
+  -o-transform-style     : preserve-3d;
+  transform-style        : preserve-3d;
+}
+
+.board {
+  /*position: absolute;*/
+  width: 75px;
+  height: 75px;
+  -webkit-transform: rotateX(25deg);
+  -moz-transform: rotateX(25deg)
+  -ms-transform: rotateX(25deg)
+  -o-transform: rotateX(25deg)
+  transform: rotateX(25deg)
+}
