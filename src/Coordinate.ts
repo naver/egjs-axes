@@ -4,19 +4,15 @@ const Coordinate = {
   getInsidePosition(
 		destPos: number,
 		range: number[],
-		circular: boolean[],
-		bounce?: number[]
+		circular: boolean[]
 		): number {
-		const includeBounce = !!bounce;
-		const targetRange = includeBounce ?
-			[range[0] - bounce[0], range[1] + bounce[1]] : range.concat();
     let toDestPos = destPos;
 
     if (!circular[0]) {
-      toDestPos = Math.max(targetRange[0], toDestPos);
+      toDestPos = Math.max(range[0], toDestPos);
     }
     if (!circular[1]) {
-      toDestPos = Math.min(targetRange[1], toDestPos);
+      toDestPos = Math.min(range[1], toDestPos);
     }
 		return Math.min(range[1], Math.max(range[0], toDestPos));
   },
@@ -33,7 +29,7 @@ const Coordinate = {
 		// when duration is under 100, then value is zero
 		return duration < 100 ? 0 : duration;
 	},
-	isCircular(destPos: number, range: number[], circular: boolean[]): boolean {
+	isCircularable(destPos: number, range: number[], circular: boolean[]): boolean {
 		return (circular[1] && destPos > range[1]) ||
 				(circular[0] && destPos < range[0]);
 	},

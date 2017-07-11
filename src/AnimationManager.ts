@@ -8,7 +8,7 @@ interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	isBounce: boolean,
-	isCircular: boolean,
+	isCircularable: boolean,
 	duration: number;
 	distance: Axis;
 	startTime?: number;
@@ -49,8 +49,7 @@ export class AnimationManager {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
-				opt.circular,
-				opt.bounce
+				opt.circular
 			);
 		});
 
@@ -66,8 +65,8 @@ export class AnimationManager {
 			destPos,
 			isBounce: this.axm.every(destPos,
 				(v, k, opt) => Coordinate.isOutside(v, opt.range)),
-			isCircular: this.axm.every(destPos,
-				(v, k, opt) => Coordinate.isCircular(v, opt.range, opt.circular)),
+			isCircularable: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)),
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
@@ -135,7 +134,7 @@ export class AnimationManager {
 		const retTrigger = this.em.trigger("animationStart", param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
-		if (param.isCircular && !retTrigger) {
+		if (param.isCircularable && !retTrigger) {
 			throw new Error(
 				"You can't stop the 'animation' event when 'circular' is true."
 			);

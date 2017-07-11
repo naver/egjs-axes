@@ -1,3 +1,4 @@
+
 module.exports = function (config) {
 	var karmaConfig = {
 		frameworks: ["mocha", "chai", "sinon"],
@@ -5,6 +6,8 @@ module.exports = function (config) {
 		// list of files / patterns to load in the browser
 		files: [
 			"./node_modules/lite-fixture/index.js",
+			"./node_modules/hammer-simulator/index.js",
+      "./test/hammer-simulator.run.js",
 			"./test/unit/**/*.spec.js"
 		],
 
