@@ -87,3 +87,7 @@ var axes = new eg.Axes({
 	"rotateY": 315
 }, 100);
 ```
+
+### Wingardium Leviosa
+
+{% include_relative assets/html/magic.html %}
