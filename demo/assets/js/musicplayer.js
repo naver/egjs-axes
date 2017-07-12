@@ -96,45 +96,24 @@ class MusicPlayer {
     */
 	player(index) { 
         let autoPlayNext;
-        let progress = this.currentMusicProgress;
-        this.barPlayDom.style.width = progress / this.playList[index].playTime * 100 + "%";
+        this.currentMusicProgress;
+        this.barPlayDom.style.width = this.currentMusicProgress / this.playList[index].playTime * 100 + "%";
         this.titleDom.innerHTML = this.playList[index].title;
 		this.artistDom.innerHTML = this.playList[index].artist;
 		this.turnTableDom.style.backgroundColor = this.playList[index].color;
 
-        // this.timer = setInterval(() => {
-        //     if(this.playStatus === false) {
-	       //      clearTimeout(autoPlayNext);
-        //         clearInterval(timer);
-        //         this.currentMusicProgress  = progress;
-        //         return false;
-        //     } else if (progress === this.playList[index].playTime) {
-        //         clearInterval(timer);
-        //         return false;
-        //     } else {
-        //         ++progress;
-        //         console.log(progress)
-        //         this.barPlayDom.style.width = progress / this.playList[index].playTime * 100 + "%";
-        //     }
-        // }, 1000);
         this.timer = setInterval(() => {
-            if (progress === this.playList[index].playTime) {
+            if (this.currentMusicProgress === this.playList[index].playTime) {
                 clearInterval(this.timer);
                 this.currentMusicProgress = 0;
                 this.nextMusic();
                 return false;
             } else {
-                ++progress;
-                console.log(progress)
-                this.barPlayDom.style.width = progress / this.playList[index].playTime * 100 + "%";
+                ++this.currentMusicProgress;
+                console.log(this.currentMusicProgress)
+                this.barPlayDom.style.width = this.currentMusicProgress / this.playList[index].playTime * 100 + "%";
             }
         }, 1000);
-
-  //       autoPlayNext = setTimeout(() => {
-  //           this.currentMusicProgress = 0;
-		//     this.nextMusic();
-  //           return false;
-		// }, (this.playList[index].playTime - progress) * 1000 + 1000);
 	}
 
     // play player
