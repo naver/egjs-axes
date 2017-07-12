@@ -3,11 +3,11 @@ import {AxesOption} from "./AxesOption";
 import {AnimationManager} from "./AnimationManager";
 import {EventManager} from "./EventManager";
 import {InterruptManager} from "./InterruptManager";
-import { AxisManager, Axis } from "./AxisManager";
+import {AxisManager, Axis} from "./AxisManager";
 import {InputObserver} from "./InputObserver";
 import {HammerInput} from "./inputType/HammerInput";
 import {TRANSFORM} from "./const";
-import { InputType } from "./inputType/InputType";
+import {InputType} from "./inputType/InputType";
 
 /**
  * Copyright (c) NAVER Corp.
@@ -83,17 +83,21 @@ class Axes extends Component {
 			mapped = axes.concat();
 		}
 		inputType.mapAxes(mapped);
-		inputType.create(this._io);
+		inputType.connect(this._io);
 		return this;
 	}
 
-	get(axes) {
+	get(axes?: string[]) {
 		return this._axm.get(axes);
 	}
 
 	setTo(pos: Axis, duration = 0) {
 		this._am.setTo(pos, duration);
 		return this;
+	}
+
+	isOutside(axes?: string[]) {
+		return this._axm.isOutside(axes);
 	}
 
 	destroy() {

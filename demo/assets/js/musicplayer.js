@@ -99,7 +99,6 @@ class MusicPlayer {
                 return false;
             } else {
                 ++this.currentMusicProgress;
-                console.log(this.currentMusicProgress)
                 this.barPlayDom.style.width = this.currentMusicProgress / this.playList[index].playTime * 100 + "%";
             }
         }, 1000);
@@ -145,21 +144,27 @@ class MusicPlayer {
             axis: {
                 rotateX: {
                     range: [0, 360],
-                    // circular: true
+                    circular: true
                 },
                 rotateY: {
                     range: [0, 360],
-                    // circular: true
+                    circular: true
                 }
             },
             deceleration: 0.0024
         }).on({
             "change": (e) => {
-                console.log(e.pos.rotateX, ' ', e.pos.rotateY);
+                // console.log(e.pos.rotateX, ' ', e.pos.rotateY);
+                // console.log(e.inputEvent.angle + 180)
+                // console.log(e.inputEvent);
+                // console.log(e)
+                // if(e.inputEvent.overallVelocityX > 0 || e.inputEvent.overallVelocityY >0) {
+                //     console.log("go to foward");
+                // }
             //     var mPos = {x: e.clientX-elPos.x, y: e.clientY-elPos.y};
             //    var atan = Math.atan2(mPos.x-radius, mPos.y-radius);
             //    deg = -atan/(Math.PI/180) + 180; // final (0-360 positive) degrees from mouse position 
-                
+                // console.log(Math.atan2(e.inputEvent.angle))
             //    X = Math.round(radius* Math.sin(deg*Math.PI/180));    
             //    Y = Math.round(radius*  -Math.cos(deg*Math.PI/180));
             //    $slider.css({ left: X+radius-sliderW2, top: Y+radius-sliderH2 });              
@@ -173,7 +178,7 @@ class MusicPlayer {
                 // Math.sqrt(Math.abs(e.pos.rotateX * e.pos.rotateY))
                 // console.log(Math.sqrt(Math.abs(e.pos.rotateX * e.pos.rotateY)));
                 // console.log(Math.atan2(e.pos.rotateX, e.pos.rotateY)*360);
-                // this.turnTableDom.style[eg.Axes.TRANSFORM] = "rotate(" + deg + "deg)";
+                this.turnTableDom.style[eg.Axes.TRANSFORM] = "rotate(" + (e.inputEvent.angle + 180) + "deg)";
             },
             "hold": (e) => {
                 this.pauseMusic();

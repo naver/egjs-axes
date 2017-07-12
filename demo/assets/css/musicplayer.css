@@ -90,8 +90,8 @@
 }
 
 @-webkit-keyframes spin {
-    0%  {-webkit-transform: rotate(0deg);}
-    100% {-webkit-transform: rotate(360deg);}
+    from  {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(360deg);}
 }
  
 @-moz-keyframes spin {
