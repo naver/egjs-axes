@@ -61,16 +61,6 @@ class MusicPlayer {
 
 	init() {
 		this.currentMusicIndex = 0;
-
-        // eventListener declaration 
-        // this.turnTableDom.addEventListener("mousedown", (e) => {
-        //     this.pauseMusic();
-        // });
-
-        // this.turnTableDom.addEventListener("mouseup", (e) => {
-        //     this.playMusic();
-        // });
-
         this.initPlayListPannel();
 		this.playMusic();
         this.turnTableHandler();
@@ -150,6 +140,7 @@ class MusicPlayer {
 
     // handle turn table using egjs-axes
 	turnTableHandler() {
+        // let radius = 15;
         let axes = new eg.Axes({
             axis: {
                 rotateX: {
@@ -165,7 +156,24 @@ class MusicPlayer {
         }).on({
             "change": (e) => {
                 console.log(e.pos.rotateX, ' ', e.pos.rotateY);
-                // this.turnTableDom.style[eg.Axes.TRANSFORM] = "rotate(" + e.pos.rotateX + "deg)";
+            //     var mPos = {x: e.clientX-elPos.x, y: e.clientY-elPos.y};
+            //    var atan = Math.atan2(mPos.x-radius, mPos.y-radius);
+            //    deg = -atan/(Math.PI/180) + 180; // final (0-360 positive) degrees from mouse position 
+                
+            //    X = Math.round(radius* Math.sin(deg*Math.PI/180));    
+            //    Y = Math.round(radius*  -Math.cos(deg*Math.PI/180));
+            //    $slider.css({ left: X+radius-sliderW2, top: Y+radius-sliderH2 });              
+            //    // AND FINALLY apply exact degrees to ball rotation
+            //    $slider.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});
+            //    $slider.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});
+
+                // let atan = Math.atan2(e.pos.rotateX - 230, e.pos.rotateY - 230);
+                // let deg = -atan/(Math.PI/180) + 180;
+                // console.log(deg);
+                // Math.sqrt(Math.abs(e.pos.rotateX * e.pos.rotateY))
+                // console.log(Math.sqrt(Math.abs(e.pos.rotateX * e.pos.rotateY)));
+                // console.log(Math.atan2(e.pos.rotateX, e.pos.rotateY)*360);
+                // this.turnTableDom.style[eg.Axes.TRANSFORM] = "rotate(" + deg + "deg)";
             },
             "hold": (e) => {
                 this.pauseMusic();
