@@ -8,7 +8,7 @@ interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	isBounce: boolean,
-	isCircular: boolean,
+	isCircularable: boolean,
 	duration: number;
 	distance: Axis;
 	startTime?: number;
@@ -49,8 +49,7 @@ export class AnimationManager {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
-				opt.circular,
-				opt.bounce
+				opt.circular
 			);
 		});
 
@@ -66,8 +65,8 @@ export class AnimationManager {
 			destPos,
 			isBounce: this.axm.every(destPos,
 				(v, k, opt) => Coordinate.isOutside(v, opt.range)),
-			isCircular: this.axm.every(destPos,
-				(v, k, opt) => Coordinate.isCircular(v, opt.range, opt.circular)),
+			isCircularable: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)),
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
@@ -103,7 +102,7 @@ export class AnimationManager {
 		/**
 		 * This event is fired when animation ends.
 		 * @ko 에니메이션이 끝났을 때 발생한다.
-		 * @name eg.MovableCoord#animationEnd
+		 * @name eg.Axes#animationEnd
 		 * @event
 		 */
 		this.em.trigger("animationEnd");
@@ -135,7 +134,7 @@ export class AnimationManager {
 		const retTrigger = this.em.trigger("animationStart", param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
-		if (param.isCircular && !retTrigger) {
+		if (param.isCircularable && !retTrigger) {
 			throw new Error(
 				"You can't stop the 'animation' event when 'circular' is true."
 			);
@@ -179,11 +178,11 @@ export class AnimationManager {
 	/**
 	 * Moves an element to specific coordinates.
 	 * @ko 좌표를 이동한다.
-	 * @method eg.MovableCoord#setTo
+	 * @method eg.Axes#setTo
 	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
 	 * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
 	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+	 * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setTo(pos: Axis, duration: number = 0) {
 		const axes: string[] = Object.keys(pos);
@@ -216,11 +215,11 @@ export class AnimationManager {
 	/**
 	 * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
 	 * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
-	 * @method eg.MovableCoord#setBy
+	 * @method eg.Axes#setBy
 	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
 	 * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
 	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.MovableCoord} An instance of a module itself <ko>자신의 인스턴스</ko>
+	 * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
 	 */
 	setBy(pos: Axis, duration = 0) {
 		return this.setTo(

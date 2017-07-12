@@ -1,4 +1,4 @@
-// declare var jQuery: any;
+declare var jQuery: any;
 
 export function $(param, multi = false) {
 	let el;

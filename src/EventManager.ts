@@ -13,7 +13,7 @@ export class EventManager {
 		/**
 		 * This event is fired when coordinate changes.
 		 * @ko 좌표가 변경됐을 때 발생하는 이벤트
-		 * @name eg.MovableCoord#change
+		 * @name eg.Axes#change
 		 * @event
 		 *
 		 * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>

@@ -5,31 +5,78 @@
 <title>egjs-axes</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  .box {
-    margin:100px;
-    border: 2px solid red;
-    width:300px;
-    height:500px;
-    position:relative;
-  }
-  .pointer {
-    border-radius: 20px;
-    background-color:goldenrod;
-    width:20px;
-    height:20px;
-    position:absolute;
-  }
+#dot {
+  position:absolute; background-color:#f00; width:9px; height:9px;
+  left:0; top:0; color:#000; margin:-4px; border-radius:100%;
+}
+
+.centerFont {
+  font-size: 2em;
+  text-align: center;
+  line-height: 200px;
+}
+
+#area {
+  position:relative; 
+  border: 1px solid #444; 
+  background-color:bisque;
+  width:150px; height:200px; 
+  color: #000;
+  margin: 100px 0px 0px 50px;
+  box-sizing:content-box; z-index:9;
+}
+
+#bounced {
+  position:relative; 
+  border: 1px dashed #444; 
+  width:250px; height:400px; color:#aaa; 
+  margin: 0;
+}
+
+#hmove {
+  position:relative; background-color:goldenrod;
+  width:250px; height:100px;
+  top: -100px;
+  line-height: 100px;
+}
+
+#vmove {
+  position:relative; background-color:skyblue;
+  width:50px; height:200px; left:200px; top:-400px;
+}
+
+button {
+  background-color: #eed;
+  border-radius: 5px;
+  float:right;
+  margin:5px;
+}
+
+.logbox {
+  margin-top: -300px;
+}
+.log{border:solid 1px #000;overflow:scroll;-webkit-overflow-scrolling:touch; width:99%;height:300px}
 </style>
 </head>
 <body>
-<!-- Add your content here -->
-<p>Hello egjs-axes Manual Test!!!</p>
-<div class="box">
-  <div class="pointer"></div>
-</div>
-<script src="../../node_modules/hammerjs/hammer.js"></script>
-<script src="../../node_modules/@egjs/component/dist/component.js"></script>
-<script src="../../dist/axes.js"></script>
-<script src="js/test.js"></script>
+  <div id="bounced">
+    <div id="area" class="centerFont">
+      ALL
+      <div id="dot"></div>
+    </div>
+  </div>
+
+  <div id="hmove" class="centerFont">H</div>
+  <div id="vmove" class="centerFont">V</div>
+  <div class="logbox">
+    <button id="clear">LOG CLEAR</button>
+    <textarea id="log" class="log"></textarea>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
+  <script src="../../node_modules/hammerjs/hammer.js"></script>
+  <script src="../../node_modules/@egjs/component/dist/component.js"></script>
+  <script src="../../dist/axes.js"></script>
+  <script src="js/index.js"></script>
 </body>
 </html>
