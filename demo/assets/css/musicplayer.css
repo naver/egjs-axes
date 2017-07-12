@@ -103,7 +103,7 @@
     100% {transform: rotate(360deg);}
 }
 
-.stoped{    
+.spin.paused{    
     -webkit-animation-play-state: paused;
     -moz-animation-play-state: paused;
     -ms-animation-play-state: paused;
@@ -111,7 +111,7 @@
     animation-play-state: paused;
 }
 
-.turned{    
+.spin.turned{    
     -webkit-animation-play-state: running;
     -moz-animation-play-state: running;
     -ms-animation-play-state: running;

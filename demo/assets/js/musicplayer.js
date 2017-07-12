@@ -30,13 +30,13 @@ class Music {
 }
 
 const samplePlayList = [
-	new Music("My passion is red", "Reddy", 4, "red", "red"),
-	new Music("title2", "Orangy", 5, "orange", "orange"),
-	new Music("title3", "Yello", 3, "yellow", "yellow"),
-	new Music("title3", "Greenist", 4, "green", "green"),
-	new Music("title3", "Blues", 5, "blue", "blue"),
-	new Music("title3", "Naver", 4, "navy", "navy"),
-	new Music("title3", "Pupler", 5, "purple", "purple"),
+	new Music("My passion is red", "Reddy", 14, "red", "red"),
+	new Music("title2", "Orangy", 15, "orange", "orange"),
+	new Music("title3", "Yello", 13, "yellow", "yellow"),
+	new Music("title3", "Greenist", 14, "green", "green"),
+	new Music("title3", "Blues", 15, "blue", "blue"),
+	new Music("title3", "Naver", 14, "navy", "navy"),
+	new Music("title3", "Pupler", 15, "purple", "purple"),
 ];
 
 class MusicPlayer {
@@ -48,7 +48,6 @@ class MusicPlayer {
 	constructor(playList) {
 		this.currentMusicIndex = 0;
         this.currentMusicProgress = 0;
-        this.playStatus = false;
 		this.playList = samplePlayList;
         this.timer = null;
 
@@ -64,16 +63,17 @@ class MusicPlayer {
 		this.currentMusicIndex = 0;
 
         // eventListener declaration 
-        this.turnTableDom.addEventListener("mousedown", (e) => {
-            this.pauseMusic();
-        });
+        // this.turnTableDom.addEventListener("mousedown", (e) => {
+        //     this.pauseMusic();
+        // });
 
-        this.turnTableDom.addEventListener("mouseup", (e) => {
-            this.playMusic();
-        });
+        // this.turnTableDom.addEventListener("mouseup", (e) => {
+        //     this.playMusic();
+        // });
 
         this.initPlayListPannel();
 		this.playMusic();
+        this.turnTableHandler();
 	}
 
     // make list Dom to the bottom of music player
@@ -95,7 +95,6 @@ class MusicPlayer {
     *  @param {Number} index
     */
 	player(index) { 
-        let autoPlayNext;
         this.currentMusicProgress;
         this.barPlayDom.style.width = this.currentMusicProgress / this.playList[index].playTime * 100 + "%";
         this.titleDom.innerHTML = this.playList[index].title;
@@ -118,15 +117,15 @@ class MusicPlayer {
 
     // play player
     playMusic() {
-        this.playStatus = true;
         this.player(this.currentMusicIndex);
+        this.turnTableDom.classList.remove('paused');
     }
 
     // pause player
 	pauseMusic() {
-        this.playStatus = false;
         clearInterval(this.timer);
-	}
+        this.turnTableDom.classList.add('paused');
+    }
 
     // play next music
 	nextMusic() {
@@ -151,17 +150,35 @@ class MusicPlayer {
 
     // handle turn table using egjs-axes
 	turnTableHandler() {
-        let axes = new egAxes({
+        let axes = new eg.Axes({
             axis: {
-                angle: {
+                rotateX: {
                     range: [0, 360],
-                    circular: true
+                    // circular: true
+                },
+                rotateY: {
+                    range: [0, 360],
+                    // circular: true
                 }
             },
-            deceleration: 0.1
-        }).on("change", (e) => {
-
-        })
+            deceleration: 0.0024
+        }).on({
+            "change": (e) => {
+                console.log(e.pos.rotateX, ' ', e.pos.rotateY);
+                // this.turnTableDom.style[eg.Axes.TRANSFORM] = "rotate(" + e.pos.rotateX + "deg)";
+            },
+            "hold": (e) => {
+                this.pauseMusic();
+            },
+            "release": (e) => {
+                this.playMusic();
+            }
+        }).mapInput(["rotateX", "rotateY"], new eg.Axes.HammerInput(".turntable_container"))
+        // .setTo({
+        //     "rotateX": 40,
+        //     "rotateY": 315
+        // }, 100);
+        window._axes = axes;
 	}
 }
 
