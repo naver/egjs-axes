@@ -1,0 +1,187 @@
+/************************************************
+*
+*	css for MusicPlayer component
+*	
+*	autor: doyoon.kim doyoon.kim@navercorp.com
+*   github: @BillionaireDY
+*	date: 2017.07.11
+*	latest update: 2017.07.11
+*	notice: -
+*
+************************************************/
+
+.musicplayer_wrapper {
+    position: relative;
+    background-color: #f5f5f5;
+}
+
+
+/*********************************
+*   APP BAR SECTION
+*********************************/
+.musicplayer_appbar {
+    padding: 0 10px;
+    height: 75px;
+    line-height: 75px;
+    /*background-image: linear-gradient(0deg, #eebf3f, rgba(255,255,255,0));*/
+    background-color:#333;
+}
+
+.musicplayer_appbar img {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.musicplayer_appbar span {
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/*********************************
+*   TURN TABLE SECTION
+*********************************/
+.musicplayer_turntable {
+    position: relative;
+    padding: 30px;
+    margin: 0 auto;
+    max-width: 400px;
+    /*background-color: white;*/
+}
+
+.turntable_container {
+    position: relative;
+    width: 100%;
+}
+
+.turntable_container:before{
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+#turntable {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 100%;
+}
+
+#tunrtable_hole {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    background-color: white;
+    border-radius: 100%;
+    z-index: 2;
+}
+
+.spin{
+    -animation: spin 2.5s infinite linear;
+    -webkit-animation: spin 2.5s infinite linear;
+    -o-animation: spin 2.5s infinite linear;
+    -moz-animation: spin 2.5s infinite linear;
+}
+
+@-webkit-keyframes spin {
+    0%  {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(360deg);}
+}
+ 
+@-moz-keyframes spin {
+   0%  {-moz-transform: rotate(0deg);}
+    100% {-moz-transform: rotate(360deg);}
+}
+@keyframes spin {
+    0%  {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
+.stoped{    
+    -webkit-animation-play-state: paused;
+    -moz-animation-play-state: paused;
+    -ms-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    animation-play-state: paused;
+}
+
+.turned{    
+    -webkit-animation-play-state: running;
+    -moz-animation-play-state: running;
+    -ms-animation-play-state: running;
+    -o-animation-play-state: running;
+    animation-play-state: running;
+}
+
+/*********************************
+*   INFOBAR SECTION
+*********************************/
+.musicplayer_infobar {
+    height: 100px;
+    line-height: 100px;
+    background-color: yellow;
+    padding: 20px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.musicplayer_infobar #title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: black; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;   
+}
+
+
+/*********************************
+*   CONTROLLER SECTION
+*********************************/
+.musicplayer_controller {
+    /*background-color: blue;*/
+    padding: 30px 0;
+}
+
+#list_container {
+    width: 100%;
+}
+
+#list_container figure {
+    display: inline-block;
+    text-align: center;
+    width: 20%;
+    margin: 0 15px;
+}
+
+#list_container span {
+    /*position: absolute;*/
+}
+
+#list_cd {
+    position: relative;
+    width: 100%;
+    border-radius: 100%;
+}
+
+#list_cd:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+#list_cd_hole {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    background-color: white;
+    border-radius: 100%;
+    z-index: 2;
+}
