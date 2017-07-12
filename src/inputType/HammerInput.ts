@@ -11,13 +11,13 @@ import { Axis } from "../AxisManager";
  * @external Hammer
  * @see {@link http://hammerjs.github.io|Hammer.JS}
  * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
- * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS
+ * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
  */
 if (typeof Hammer === "undefined") {
-	throw new Error(`The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/`);
+	throw new Error(`The Hammerjs must be loaded before eg.Axes.\nhttp://hammerjs.github.io/`);
 }
 
-enum DIRECTION {
+export enum DIRECTION {
 	DIRECTION_NONE = 1,
 	DIRECTION_HORIZONTAL = 2 | 4,
 	DIRECTION_VERTICAL = 8 | 16,
@@ -114,7 +114,7 @@ export class HammerInput extends InputType {
 		this.axes = axes;
 	}
 
-	create(observer: IInputTypeObserver): InputType {
+	connect(observer: IInputTypeObserver): InputType {
 		const inputClass = HammerInput.convertHammerInputType(this.options.inputType);
 		if (!inputClass) {
 			throw new Error("Wrong inputType parameter!");
@@ -140,16 +140,20 @@ export class HammerInput extends InputType {
 		return this;
 	}
 
-	destroy() {
+	disconnect() {
 		if (this._element[UNIQUEKEY]) {
 			this.hammer.off("hammer.input panstart panmove panend");
 			this.hammer.destroy();
 			delete this._element[UNIQUEKEY];
 		}
 		this.hammer = null;
+		return this;
+	}
+
+	destroy() {
+		this.disconnect();
 		this._element = null;
 		this.options = {};
-		return this;
 	}
 
 	private createHammer(inputClass) {
