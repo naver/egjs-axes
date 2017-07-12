@@ -87,3 +87,11 @@ var axes = new eg.Axes({
 	"rotateY": 315
 }, 100);
 ```
+
+### Carousel
+
+{% include_relative assets/html/carousel.html %}
+
+```js
+// Insert code.
+```
