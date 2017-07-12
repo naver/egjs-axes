@@ -1,4 +1,4 @@
-export const UNIQUEKEY = "__MOVABLECOORD__";
+export const UNIQUEKEY = "__EGJS_AXES__";
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const TRANSFORM = (function() {
     const bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;

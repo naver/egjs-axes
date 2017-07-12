@@ -11,10 +11,10 @@ import { Axis } from "../AxisManager";
  * @external Hammer
  * @see {@link http://hammerjs.github.io|Hammer.JS}
  * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
- * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.MovableCoord module removes all default CSS properties provided by Hammer.JS
+ * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
  */
 if (typeof Hammer === "undefined") {
-	throw new Error(`The Hammerjs must be loaded before eg.MovableCoord.\nhttp://hammerjs.github.io/`);
+	throw new Error(`The Hammerjs must be loaded before eg.Axes.\nhttp://hammerjs.github.io/`);
 }
 
 export enum DIRECTION {

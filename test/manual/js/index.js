@@ -33,6 +33,9 @@ var axes = new eg.Axes({
 	},
 	"release" : function(evt) {
 		addLog("[release] " + JSON.stringify(evt.destPos));
+		console.warn(evt);
+		// evt.destPos = {x: 0, y: 0};
+		// evt.duration = 3000;
 	},
 	"animationStart" : function(evt) {
 		addLog("[animationStart ==>]");

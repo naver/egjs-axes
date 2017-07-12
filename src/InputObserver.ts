@@ -19,6 +19,16 @@ export class InputObserver implements IInputTypeObserver {
   ) {
   }
 
+  private getDuration(destPos: Axis, pos: Axis) {
+    const durations: Axis = this.axm.map(
+      destPos,
+      (v, k) => Coordinate.getDuration(
+        Math.abs(Math.abs(v) - Math.abs(pos[k])),
+        this.options.deceleration)
+      );
+    return Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
+  }
+
   hold(inputType: InputType, event) {
     if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
@@ -30,7 +40,7 @@ export class InputObserver implements IInputTypeObserver {
 		/**
 		 * This event is fired when a user holds an element on the screen of the device.
 		 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-		 * @event eg.MovableCoord#hold
+		 * @event eg.Axes#hold
 		 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 		 * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
 		 * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
@@ -95,7 +105,7 @@ export class InputObserver implements IInputTypeObserver {
       });
     }
   }
-  release(inputType: InputType, event, offset: Axis) {
+  release(inputType: InputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
       return;
     }
@@ -112,12 +122,7 @@ export class InputObserver implements IInputTypeObserver {
     let duration = 0;
 
     if (!AxisManager.equal(destPos, pos)) {
-      const durations: Axis = this.axm.map(destPos,
-        (v, k) => Coordinate.getDuration(
-          Math.abs(Math.abs(v) - Math.abs(pos[k])),
-          this.options.deceleration)
-        );
-      duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
+      duration = typeof inputDuration !== "undefined" ? inputDuration : this.getDuration(destPos, pos);
       if (duration === 0) {
         // console.log("--------moveTo on release---------");
         this.em.triggerChange(this.axm.moveTo(destPos), event);
@@ -128,7 +133,7 @@ export class InputObserver implements IInputTypeObserver {
     /**
      * This event is fired when a user release an element on the screen of the device.
      * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-     * @event eg.MovableCoord#release
+     * @event eg.Axes#release
      *
      * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
@@ -140,17 +145,19 @@ export class InputObserver implements IInputTypeObserver {
      * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
      *
      */
-    this.em.trigger("release", {
+    const param = {
       depaPos,
       destPos: { ...depaPos, ...destPos},
+      duration,
       inputEvent: event
-    });
+    }
+    this.em.trigger("release", param);
     this.moveDistance = null;
-    if (isAnimate) {
+    if (isAnimate || param.duration > 0) {
       // console.log("--------animation---------");
       this.am.animateTo(
-        destPos,
-        this.options.maximumDuration > duration ? duration : this.options.maximumDuration);
+        param.destPos,
+        this.options.maximumDuration > param.duration ? param.duration : this.options.maximumDuration);
     } else {
       this.itm.setInterrupt(false);
     }
