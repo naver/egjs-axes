@@ -12,7 +12,7 @@
 
 .musicplayer_wrapper {
     position: relative;
-    background-color: #f5f5f5;
+    /*background-color: #f5f5f5;*/
 }
 
 
@@ -68,6 +68,7 @@
     bottom: 0;
     right: 0;
     border-radius: 100%;
+    cursor: pointer;
 }
 
 #tunrtable_hole {
@@ -122,9 +123,9 @@
 *   INFOBAR SECTION
 *********************************/
 .musicplayer_infobar {
-    height: 100px;
-    line-height: 100px;
-    background-color: yellow;
+    /*height: 100px;
+    line-height: 100px;*/
+    background-color: #f5f5f5;
     padding: 20px;
     text-align: center;
     line-height: 1.6;
@@ -139,12 +140,36 @@
     white-space: nowrap;   
 }
 
+#progress_bar {
+    position: relative;
+    margin-top: 15px;
+    width: 100%;
+    height: 10px;
+}
+
+#bar_load {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 10px;
+    background-color: #dadada;
+}
+
+#bar_play {
+    position: absolute;
+    top:0;
+    left:0;
+    height: 10px;
+    background-color: #eebf3f;
+}   
+
 
 /*********************************
 *   CONTROLLER SECTION
 *********************************/
 .musicplayer_controller {
-    /*background-color: blue;*/
+    background-color: #424242;
     padding: 30px 0;
 }
 
@@ -158,6 +183,8 @@
     width: 20%;
     margin: 0 15px;
 }
+
+@media 
 
 #list_container span {
     /*position: absolute;*/
@@ -173,6 +200,14 @@
     content: "";
     display: block;
     padding-top: 100%;
+}
+
+#list_cd_title {
+    padding: 10px 0;
+    font-size: 0.8em;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;   
 }
 
 #list_cd_hole {
