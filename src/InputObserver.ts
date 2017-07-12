@@ -52,8 +52,7 @@ export class InputObserver implements IInputTypeObserver {
       pos,
       inputEvent: event,
     });
-    this.isOutside = !this.axm.every(pos, (v, k, opt) => !Coordinate.isOutside(v, opt.range));
-
+    this.isOutside = this.axm.isOutside(inputType.axes);
     this.moveDistance = this.axm.get(inputType.axes);
   }
   change(inputType, event, offset: Axis) {
@@ -64,22 +63,20 @@ export class InputObserver implements IInputTypeObserver {
 
     // for outside logic
     this.moveDistance = this.axm.map(this.moveDistance, (v, k) => v + offset[k]);
-    let destPos: Axis = this.axm.map(this.moveDistance, (v, k, opt) => {
-      return Coordinate.getCirculatedPos(v, opt.range, opt.circular);
-    });
+    let destPos: Axis = this.axm.map(this.moveDistance, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 
     // from outside to inside
     if (this.isOutside &&
       this.axm.every(depaPos, (v, k, opt) => !Coordinate.isOutside(v, opt.range))) {
       this.isOutside = false;
     }
-    destPos = this.atOutside(destPos, this.isOutside);
+    destPos = this.atOutside(destPos);
     this.em.triggerChange(this.axm.moveTo(destPos), event);
   }
 
   // when move pointer is held in outside
-  private atOutside(pos: Axis, isOutside) {
-    if (isOutside) {
+  private atOutside(pos: Axis) {
+    if (this.isOutside) {
       return this.axm.map(pos, (v, k, opt) => {
         const tn = opt.range[0] - (opt.margin[0] + opt.bounce[0]);
         const tx = opt.range[1] + (opt.margin[1] + opt.bounce[1]);
@@ -93,9 +90,6 @@ export class InputObserver implements IInputTypeObserver {
         const min = opt.range[0];
         const max = opt.range[1];
         const out = [opt.margin[0] + opt.bounce[0], opt.margin[1] + opt.bounce[1]];
-        if (out[0] === 0 && out[1] === 0) {
-          return v;
-        }
         if (v < min) { // left
           return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
         } else if (v > max) { // right
