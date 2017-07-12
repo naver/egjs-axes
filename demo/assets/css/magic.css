@@ -1,9 +1,7 @@
 #boardWrapper {
-  /*position: relative;*/
+  position: relative;
   width: 100%;
-  /*display: flex;
-  justify-content: center;
-  align-items: center;*/
+  height: 450px;
   -webkit-perspective    : 300px;
   -moz-perspective       : 300px;
   -ms-perspective        : 300px;
@@ -17,12 +15,12 @@
 }
 
 .board {
-  /*position: absolute;*/
-  width: 75px;
-  height: 75px;
-  -webkit-transform: rotateX(25deg);
-  -moz-transform: rotateX(25deg)
-  -ms-transform: rotateX(25deg)
-  -o-transform: rotateX(25deg)
-  transform: rotateX(25deg)
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  -webkit-border-radius:2px;
+  -moz-border-radius:2px;
+  -ms-border-radius:2px;
+  -o-border-radius:2px;
+  border-radius:2px;
 }
