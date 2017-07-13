@@ -15,5 +15,5 @@ js:
 css:
 - assets/css/car360viewer.css
 - assets/css/cardinhand.css
-- assets/css/musicplayer.css
 - assets/css/cube.css
+- assets/css/musicplayer.css
