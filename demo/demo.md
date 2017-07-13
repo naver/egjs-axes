@@ -87,3 +87,7 @@ var axes = new eg.Axes({
 	"rotateY": 315
 }, 100);
 ```
+
+### Music Player
+
+{% include_relative assets/html/musicplayer.html %}
