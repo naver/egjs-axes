@@ -12,7 +12,6 @@
 
 .musicplayer_wrapper {
     position: relative;
-    /*background-color: #f5f5f5;*/
 }
 
 
@@ -23,7 +22,6 @@
     padding: 0 10px;
     height: 75px;
     line-height: 75px;
-    /*background-image: linear-gradient(0deg, #eebf3f, rgba(255,255,255,0));*/
     background-color:#333;
 }
 
@@ -46,8 +44,7 @@
     position: relative;
     padding: 30px;
     margin: 0 auto;
-    max-width: 400px;
-    /*background-color: white;*/
+    max-width: 320px;
 }
 
 .turntable_container {
@@ -63,6 +60,9 @@
 
 #turntable {
     position: absolute;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;  
     top: 0;
     left: 0;
     bottom: 0;
@@ -79,19 +79,20 @@
     height: 20%;
     background-color: white;
     border-radius: 100%;
+    border: 5px solid rgba(0,0,0,0.4);
     z-index: 2;
 }
 
 .spin{
-    -animation: spin 2.5s infinite linear;
-    -webkit-animation: spin 2.5s infinite linear;
-    -o-animation: spin 2.5s infinite linear;
-    -moz-animation: spin 2.5s infinite linear;
+    -animation: spin 1.5s infinite linear;
+    -webkit-animation: spin 1.5s infinite linear;
+    -o-animation: spin 1.5s infinite linear;
+    -moz-animation: spin 1.5s infinite linear;
 }
 
 @-webkit-keyframes spin {
-    from  {-webkit-transform: rotate(0deg);}
-    to {-webkit-transform: rotate(360deg);}
+    0%  {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(360deg);}
 }
  
 @-moz-keyframes spin {
@@ -123,10 +124,8 @@
 *   INFOBAR SECTION
 *********************************/
 .musicplayer_infobar {
-    /*height: 100px;
-    line-height: 100px;*/
     background-color: #f5f5f5;
-    padding: 20px;
+    padding: 10px 0 15px 0;
     text-align: center;
     line-height: 1.6;
 }
@@ -169,31 +168,43 @@
 *   CONTROLLER SECTION
 *********************************/
 .musicplayer_controller {
-    background-color: #424242;
-    padding: 30px 0;
+    background-color: #333;
+    height: 300px;
+    padding-top: 10px;
+    overflow: hidden;
 }
 
-#list_container {
+.music_list_container {
+    margin: 0 auto;
+    width: 210px;
+    height: 210px;
+    position: relative;
+    perspective: 1000px;
+}
+
+#list_carousel {
     width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
 }
 
-#list_container figure {
-    display: inline-block;
-    text-align: center;
-    width: 20%;
-    margin: 0 15px;
-}
-
-@media 
-
-#list_container span {
-    /*position: absolute;*/
+#list_carousel figure {
+    margin: 0;
+    padding: 20px;
+    display: block;
+    position: absolute;
+    width: 100%;
 }
 
 #list_cd {
     position: relative;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;  
     width: 100%;
     border-radius: 100%;
+    opacity: 0.75;
 }
 
 #list_cd:before {
@@ -203,11 +214,19 @@
 }
 
 #list_cd_title {
-    padding: 10px 0;
-    font-size: 0.8em;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 0.9em;
     overflow: hidden; 
     text-overflow: ellipsis;
     white-space: nowrap;   
+}
+
+#list_cd_artist {
+    color: #dadada;
+    text-align: center;
+    font-size: 0.75em;
 }
 
 #list_cd_hole {
@@ -216,7 +235,41 @@
     left: 40%;
     width: 20%;
     height: 20%;
-    background-color: white;
+    background-color: transparent;
     border-radius: 100%;
     z-index: 2;
+}
+
+#bullet_container {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.bullet {
+    display: inline-block;  
+    margin: 0 15px;
+}
+
+.bullet.active {
+    color: #dadada;
+}
+
+@media only screen and (max-width: 480px) {
+    .musicplayer_turntable {
+        padding: 20px 50px;
+    }
+    .musicplayer_controller {
+        height: 240px;
+    }
+    .music_list_container {
+        width: 150px;
+        height: 150px;
+        perspective: 700px;
+    }
+    .bullet {
+        margin: 0 7.5px;
+    }
 }
