@@ -7,8 +7,8 @@ import { EventManager } from "./EventManager";
 interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
-	// isBounce: boolean,
-	// isCircularable: boolean,
+	isBounce: boolean,
+	isCircularable: boolean,
 	duration: number;
 	distance: Axis;
 	startTime?: number;
@@ -63,10 +63,10 @@ export class AnimationManager {
 		return {
 			depaPos,
 			destPos,
-			// isBounce: this.axm.every(destPos,
-				// (v, k, opt) => Coordinate.isOutside(v, opt.range)),
-			// isCircularable: this.axm.every(destPos,
-				// (v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)),
+			isBounce: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isOutside(v, opt.range)),
+			isCircularable: this.axm.every(destPos,
+				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)),
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
@@ -133,12 +133,12 @@ export class AnimationManager {
 		const param: AnimationParam = this.createAnimationParam(absPos, duration, inputEvent);
 		const retTrigger = this.em.trigger("animationStart", param);
 
-		// // You can't stop the 'animationStart' event when 'circular' is true.
-		// if (param.isCircularable && !retTrigger) {
-		// 	throw new Error(
-		// 		"You can't stop the 'animation' event when 'circular' is true."
-		// 	);
-		// }
+		// You can't stop the 'animationStart' event when 'circular' is true.
+		if (param.isCircularable && !retTrigger) {
+			throw new Error(
+				"You can't stop the 'animation' event when 'circular' is true."
+			);
+		}
 
 		if (retTrigger) {
 			const queue = [];

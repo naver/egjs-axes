@@ -8,6 +8,7 @@ import {InputObserver} from "./InputObserver";
 import {HammerInput} from "./inputType/HammerInput";
 import {TRANSFORM} from "./const";
 import {InputType} from "./inputType/InputType";
+import Coordinate from "./Coordinate";
 
 /**
  * Copyright (c) NAVER Corp.
@@ -96,8 +97,8 @@ class Axes extends Component {
 		return this;
 	}
 
-	isOutside(axes?: string[]) {
-		return this._axm.isOutside(axes);
+	isOutside(pos?: string[]) {
+		return !this._axm.every(this._axm.get(pos), (v, k, opt) => !Coordinate.isOutside(v, opt.range));
 	}
 
 	destroy() {

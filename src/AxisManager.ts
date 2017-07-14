@@ -1,5 +1,4 @@
 import { AxisOption, AxesOption } from "./AxesOption";
-import Coordinate from "./Coordinate";
 
 export interface Axis {
   [key: string]: number
@@ -32,12 +31,6 @@ export class AxisManager {
     } else {
       return { ...this._pos };
     }
-  }
-  isOutside(axes?: string[]) {
-    return !this.every(
-      axes ? this.get(axes) : this._pos,
-      (v, k, opt) => !Coordinate.isOutside(v, opt.range)
-    );
   }
   moveTo(pos: Axis): Axis {
     for (const k in pos) {
