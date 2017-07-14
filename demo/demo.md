@@ -105,22 +105,21 @@ const axes = new eg.Axes({
     "change": e => {
         previousXelem = previousXelem ? previousXelem : e.pos.xElem;
         let direction = ((e.pos.xElem - previousXelem) > 0) ? 1 : -1;
-
         for (let i = 0; i < boards.length; i++) {
             boards[i].style.left = e.pos.xElem + "px";
             if (e.pos.xElem > maxRange / 2) {
                 // Form a cube
                 let xDeg = Math.floor(maxRange - e.pos.xElem);
                 boards[i].style.top = 50 + "%";
-                boards[i].style.transform = "rotateX(" + xDeg + "deg)";
+                boards[i].style[eg.Axes.TRANSFORM] = "rotateX(" + xDeg + "deg)";
                 if (e.pos.xElem === maxRange) {
                     let shuffledBoards = shuffleArr(boards);
                     shuffledBoards[0].style[eg.Axes.TRANSFORM] = "translate3d(0, 0, 0)";
-                    shuffledBoards[1].style[eg.Axes.TRANSFORM] = "translate3d(0, 0, -50px)";
-                    shuffledBoards[2].style[eg.Axes.TRANSFORM] = "translate3d(-25px, 0, -25px) rotateY(90deg)";
-                    shuffledBoards[3].style[eg.Axes.TRANSFORM] = "translate3d(25px, 0, -25px) rotateY(90deg)";
-                    shuffledBoards[4].style[eg.Axes.TRANSFORM] = "translate3d(0, -25px, -25px) rotateX(90deg)";
-                    shuffledBoards[5].style[eg.Axes.TRANSFORM] = "translate3d(0, 25px, -25px) rotateX(90deg)";
+                    shuffledBoards[1].style[eg.Axes.TRANSFORM] = "translate3d(0, 0, -" + boardWidth + "px)";
+                    shuffledBoards[2].style[eg.Axes.TRANSFORM] = "translate3d(-" + boardWidth/2 + "px, 0, -" + boardWidth/2 + "px) rotateY(90deg)";
+                    shuffledBoards[3].style[eg.Axes.TRANSFORM] = "translate3d(" + boardWidth/2 + "px, 0, -" + boardWidth/2 + "px) rotateY(90deg)";
+                    shuffledBoards[4].style[eg.Axes.TRANSFORM] = "translate3d(0, -" + boardWidth/2 + "px, -" + boardWidth/2 + "px) rotateX(90deg)";
+                    shuffledBoards[5].style[eg.Axes.TRANSFORM] = "translate3d(0, " + boardWidth/2 + "px, -" + boardWidth/2 + "px) rotateX(90deg)";
                     boardWrapper.style[eg.Axes.TRANSFORM] = "rotateX(30deg)";
                     break;
                 }
@@ -151,4 +150,3 @@ const axes = new eg.Axes({
     }
 })
 .mapInput("xElem", new eg.Axes.HammerInput("#boardWrapper"));
-```
