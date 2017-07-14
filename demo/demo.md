@@ -150,3 +150,4 @@ const axes = new eg.Axes({
     }
 })
 .mapInput("xElem", new eg.Axes.HammerInput("#boardWrapper"));
+```
