@@ -1,28 +1,32 @@
-(function() {
-    const AXES_SCALE = 0.5;
-    const CONTENT_VIEW_PORT = 280;
-    const DEFAULT_DETAIL_X = 50;
-    const DEFAULT_DETAIL_Y = 100;
-    const MAX_SCALE = 1.3;
-    const MIN_SACLE = 0.8;
-    const SCALE_RATIO = 0.1;
-    const PANEL_WIDTH = 120;
-    const FIRST_PANEL_IDX = 1;
-    const LAST_PANEL_IDX = 8;
-    const BASE = document.querySelector("#carousel-container")
-                        .getBoundingClientRect().width / 2 - (PANEL_WIDTH / 2);
-    let scaleRatio = 1;
-
+(() => {
     const carouselArea = document.querySelector("#carousel-area");
     const detailViewImg = document.querySelector("#detail-view-content > img");
     const btnMoreInfo = document.querySelector("#btn-more-info");
     const detailViewArea = document.querySelector("#detail-view-carousel");
     const zoomInBtn = document.querySelector("#btn-control-zoom-in");
     const zoomOutBtn = document.querySelector("#btn-control-zoom-out");
+    const carouselContainer = document.querySelector("#carousel-container");
+    const zoomBtnSection = document.querySelector(".btn-control-section");
+
+    const AXES_SCALE = 0.5;
+    const CONTENT_VIEW_PORT = 280;
+    const DEFAULT_DETAIL_X = 50;
+    const DEFAULT_DETAIL_Y = 100;
+    const MAX_SCALE = 1.7;
+    const MIN_SACLE = 0.8;
+    const SCALE_RATIO = 0.1;
+    const PANEL_WIDTH = 120;
+    const FIRST_PANEL_IDX = 1;
+    const LAST_PANEL_IDX = carouselArea.children.length;
+    const INITIAL_POS = 3;
+    const BASE = carouselContainer.getBoundingClientRect().width / 2 - (PANEL_WIDTH / 2);
+    const SCALE_UP = 1;
+    const SCALE_DOWM = -1;
+    let scaleRatio = 1;
 
     const imgSrcCache = [];
     const boxElmCache = [];
-    Array.from(document.querySelectorAll("[data-boxId]")).map(elm => {
+    [...(document.querySelectorAll("[data-boxId]"))].map(elm => {
         const boxId = elm.dataset.boxid;
         imgSrcCache[boxId] = elm.children[0].src;
         boxElmCache[boxId] = elm;
@@ -44,7 +48,7 @@
     });
 
     const adjustRangeOfDVAxes = (scaleRatio = 1, direction = 1) => {
-        let toRange = Math.floor((scaleRatio - 1) * CONTENT_VIEW_PORT / 2 * direction);
+        const toRange = Math.floor((scaleRatio - 1) * CONTENT_VIEW_PORT / 2 * direction);
         const axisOptions = axes.option().axis;
         if (scaleRatio === 1) {
             axisOptions.detailX.range[0] = 0;
@@ -68,18 +72,36 @@
 
     const getIdx = pos => Math.round(((pos - BASE) * -1) / PANEL_WIDTH) + 1;
 
+    const initDetailView = () => axes.setTo({
+            detailX: DEFAULT_DETAIL_X / 2,
+            detailY: DEFAULT_DETAIL_Y / 2,
+    }, 300);
+    
+    const changeScale = direction => {
+        detailViewImg.style[eg.Axes.TRANSFORM] = `scale(${scaleRatio += SCALE_RATIO * direction})`;
+        adjustRangeOfDVAxes(scaleRatio, direction);
+    }
+
+    const getBtn = target => {
+        if (target.id === "") {
+            return target.parentNode;
+        }
+        return target;
+    }
+
+    const clickedEffectAdd = ({target}) => getBtn(target).classList.add("btn-clicked");
+    const clickedEffectDel = ({target}) => getBtn(target).classList.remove("btn-clicked");
+
     axes.on({
         "hold": ({inputEvent}) => {
             if (inputEvent.target.parentNode.parentNode.id === "carousel-area") {
-                axes.setTo({
-                    detailX: DEFAULT_DETAIL_X / 2,
-                    detailY: DEFAULT_DETAIL_Y / 2,
-                }, 300);
+                initDetailView();
                 detailViewImg.style[eg.Axes.TRANSFORM] = `scale(1)`;
-                scaleRatio = 1;
                 adjustRangeOfDVAxes();
+                scaleRatio = 1;
             }
         },
+
         "change": ({pos}) => {
             const move = pos.carousel;
             const idx = getIdx(move);
@@ -96,6 +118,7 @@
                 }
             }
         },
+
         "release": ({destPos}) => {
             const idx = getIdx(destPos.carousel);
             destPos.carousel = ((idx - 1) * PANEL_WIDTH * -1) + BASE;
@@ -114,26 +137,26 @@
     .setTo({
         detailX: DEFAULT_DETAIL_X / 2,
         detailY: DEFAULT_DETAIL_Y / 2,
-        carousel: BASE,
+        carousel: BASE - (INITIAL_POS * PANEL_WIDTH),
     });
 
     zoomInBtn.addEventListener("click", () => {
         if (scaleRatio >= MAX_SCALE) {
             return ;
         }
-        detailViewImg.style[eg.Axes.TRANSFORM] = `scale(${scaleRatio += SCALE_RATIO})`;
-        adjustRangeOfDVAxes(scaleRatio);
+        changeScale(SCALE_UP);
     });
 
     zoomOutBtn.addEventListener("click", () => {
         if (scaleRatio < MIN_SACLE) {
             return ;
         }
-        detailViewImg.style[eg.Axes.TRANSFORM] = `scale(${scaleRatio -= SCALE_RATIO})`;
-        adjustRangeOfDVAxes(scaleRatio, -1);
-        axes.setTo({
-            detailX: DEFAULT_DETAIL_X / 2,
-            detailY: DEFAULT_DETAIL_Y / 2,
-        }, 300);
+        initDetailView();
+        changeScale(SCALE_DOWM);
     });
+
+    zoomBtnSection.addEventListener("mousedown", clickedEffectAdd);
+    zoomBtnSection.addEventListener("touchstart", clickedEffectAdd);
+    zoomBtnSection.addEventListener("mouseup", clickedEffectDel);
+    zoomBtnSection.addEventListener("touchend", clickedEffectDel);
 })();
