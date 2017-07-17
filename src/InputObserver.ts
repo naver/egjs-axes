@@ -19,16 +19,6 @@ export class InputObserver implements IInputTypeObserver {
   ) {
   }
 
-  private getDuration(destPos: Axis, pos: Axis) {
-    const durations: Axis = this.axm.map(
-      destPos,
-      (v, k) => Coordinate.getDuration(
-        Math.abs(Math.abs(v) - Math.abs(pos[k])),
-        this.options.deceleration)
-      );
-    return Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
-  }
-
   hold(inputType: InputType, event) {
     if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
@@ -78,8 +68,8 @@ export class InputObserver implements IInputTypeObserver {
   private atOutside(pos: Axis) {
     if (this.isOutside) {
       return this.axm.map(pos, (v, k, opt) => {
-        const tn = opt.range[0] - (opt.margin[0] + opt.bounce[0]);
-        const tx = opt.range[1] + (opt.margin[1] + opt.bounce[1]);
+        const tn = opt.range[0] - opt.bounce[0];
+        const tx = opt.range[1] + opt.bounce[1];
         return v > tx ? tx : (v < tn ? tn : v);
       });
     } else {
@@ -89,7 +79,7 @@ export class InputObserver implements IInputTypeObserver {
       return this.axm.map(pos, (v, k, opt) => {
         const min = opt.range[0];
         const max = opt.range[1];
-        const out = [opt.margin[0] + opt.bounce[0], opt.margin[1] + opt.bounce[1]];
+        const out = opt.bounce;
         if (v < min) { // left
           return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
         } else if (v > max) { // right
@@ -109,21 +99,10 @@ export class InputObserver implements IInputTypeObserver {
       return Coordinate.getInsidePosition(
         pos[k] + v,
         opt.range,
+        opt.bounce,
         opt.circular
       );
     });
-    let isAnimate = false;
-    let duration = 0;
-
-    if (!AxisManager.equal(destPos, pos)) {
-      duration = typeof inputDuration !== "undefined" ? inputDuration : this.getDuration(destPos, pos);
-      if (duration === 0) {
-        // console.log("--------moveTo on release---------");
-        this.em.triggerChange(this.axm.moveTo(destPos), event);
-      } else {
-        isAnimate = true;
-      }
-    }
     /**
      * This event is fired when a user release an element on the screen of the device.
      * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
@@ -139,21 +118,19 @@ export class InputObserver implements IInputTypeObserver {
      * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
      *
      */
+    // prepare duration
     const param = {
       depaPos,
       destPos: { ...depaPos, ...destPos},
-      duration,
+      duration: this.am.getDuration(destPos, pos, inputDuration),
       inputEvent: event
     }
     this.em.trigger("release", param);
-    this.moveDistance = null;
-    if (isAnimate || param.duration > 0) {
-      // console.log("--------animation---------");
-      this.am.animateTo(
-        param.destPos,
-        this.options.maximumDuration > param.duration ? param.duration : this.options.maximumDuration);
-    } else {
+    if (AxisManager.equal(param.destPos, param.depaPos) && !this.axm.isOutside(Object.keys(param.destPos)) ) {
       this.itm.setInterrupt(false);
+    } else {
+      this.am.animateTo(param.destPos, param.duration);
     }
+    this.moveDistance = null;
   }
 };

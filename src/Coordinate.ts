@@ -4,17 +4,19 @@ const Coordinate = {
   getInsidePosition(
 		destPos: number,
 		range: number[],
+		bounce: number[],
 		circular: boolean[]
 		): number {
-    let toDestPos = destPos;
+		let toDestPos = destPos;
+		const targetRange = [
+			circular[0] ? range[0] : range[0] - bounce[0],
+			circular[1] ? range[1] : range[1] + bounce[1]
+		];
 
-    if (!circular[0]) {
-      toDestPos = Math.max(range[0], toDestPos);
-    }
-    if (!circular[1]) {
-      toDestPos = Math.min(range[1], toDestPos);
-    }
-		return Math.min(range[1], Math.max(range[0], toDestPos));
+		toDestPos = Math.max(targetRange[0], toDestPos);
+		toDestPos = Math.min(targetRange[1], toDestPos);
+
+		return Math.min(targetRange[1], Math.max(targetRange[0], toDestPos));
   },
 
 
