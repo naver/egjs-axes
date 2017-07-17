@@ -32,8 +32,7 @@ var axes = new eg.Axes({
 		addLog("[hold] " + JSON.stringify(evt.pos));
 	},
 	"release" : function(evt) {
-		addLog("[release] " + JSON.stringify(evt.destPos));
-		console.warn(evt);
+		addLog("[release] " + JSON.stringify(evt.depaPos) + " => " + JSON.stringify(evt.destPos) + "(" + evt.duration + "ms)");
 		// evt.destPos = {x: 0, y: 0};
 		// evt.duration = 3000;
 	},

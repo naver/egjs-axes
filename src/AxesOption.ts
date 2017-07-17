@@ -1,7 +1,6 @@
 export interface AxisOption {
   range?: number[];
   bounce?: number[];
-  margin?: number[];
   circular?: boolean[];
 }
 export interface AxesOption {

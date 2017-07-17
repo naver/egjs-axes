@@ -60,11 +60,10 @@ class Axes extends Component {
 			this.options.axis[axis] = { ...{
 				range: [0, 100],
 				bounce: [0, 0],
-				margin: [0, 0],
 				circular: [false, false]
 			}, ...this.options.axis[axis]};
 
-			["bounce", "margin", "circular"].forEach(v => {
+			["bounce", "circular"].forEach(v => {
 				const axisOption = this.options.axis;
 				const key = axisOption[axis][v];
 

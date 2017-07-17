@@ -7,10 +7,9 @@ import { EventManager } from "./EventManager";
 interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
-	// isBounce: boolean,
-	// isCircularable: boolean,
 	duration: number;
 	distance: Axis;
+	done: () => void;
 	startTime?: number;
 	inputEvent?;
 }
@@ -41,53 +40,49 @@ export class AnimationManager {
 			// this.em.trigger("animationEnd");
 		}
 	}
-	private createAnimationParam(absPos: Axis, duration: number, inputEvent = null): AnimationParam {
+	private createAnimationParam(absPos: Axis, duration?: number, inputEvent = null): AnimationParam {
 		const maximumDuration = this.options.maximumDuration;
-		let depaPos: Axis = this.axm.get(Object.keys(absPos));
-		let destPos: Axis = this.axm.map(absPos, (v, k, opt) => {
-				// depaPos[k],
+		const depaPos: Axis = this.axm.get(Object.keys(absPos));
+		const destPos: Axis = this.axm.map(absPos, (v, k, opt) => {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
-				opt.circular
+				opt.bounce,
+				opt.circular,
 			);
 		});
-
-		// remove unnecessary axis
-		destPos = this.axm.filter(destPos, (v, k) => depaPos[k] !== v);
-		depaPos = this.axm.filter(depaPos, (v, k) => k in destPos);
-
-		// destPos = this.apmCoordinate.isOutToOut(pos, destPos, min, max) ? pos : destPos;
 		const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
 
 		return {
 			depaPos,
 			destPos,
-			// isBounce: this.axm.every(destPos,
-				// (v, k, opt) => Coordinate.isOutside(v, opt.range)),
-			// isCircularable: this.axm.every(destPos,
-				// (v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)),
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
-			// done: this._animationEnd,
+			done: this.animationEnd
 		};
 	}
+  getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number) {
+		let duration;
+		if (typeof wishDuration !== "undefined") {
+			duration = wishDuration;
+		} else {
+			const durations: Axis = this.axm.map(
+				destPos,
+				(v, k) => Coordinate.getDuration(
+					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
+					this.options.deceleration)
+				);
+			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
+		}
+		return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
+	}
 
-	private restore(axes: string[], complete: () => void, inputEvent = null) {
-		const pos: Axis = this.axm.get(axes);
+	private restore(inputEvent = null) {
+		const pos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.map(pos,
 			(v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
-		const durations: Axis = this.axm.map(destPos,
-			v => Coordinate.getDuration(v, this.options.deceleration));
-
-		this.animateLoop(
-			this.createAnimationParam(
-				destPos,
-				Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity),
-				inputEvent
-			),
-			complete);
+		this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
 	}
 
 	animationEnd() {
@@ -106,6 +101,7 @@ export class AnimationManager {
 		 * @event
 		 */
 		this.em.trigger("animationEnd");
+		this.axm.isOutside() && this.restore();
 	}
 
 	private animateLoop(param: AnimationParam, complete: () => void) {
@@ -129,31 +125,29 @@ export class AnimationManager {
 		}
 	}
 
-	animateTo(absPos: Axis, duration: number, inputEvent = null) {
-		const param: AnimationParam = this.createAnimationParam(absPos, duration, inputEvent);
-		const retTrigger = this.em.trigger("animationStart", param);
+	animateTo(destPos: Axis, duration: number, inputEvent = null) {
+		const depaPos = this.axm.get();
+		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
+		let retTrigger = this.em.trigger("animationStart", param);
 
-		// // You can't stop the 'animationStart' event when 'circular' is true.
-		// if (param.isCircularable && !retTrigger) {
-		// 	throw new Error(
-		// 		"You can't stop the 'animation' event when 'circular' is true."
-		// 	);
-		// }
+		// You can't stop the 'animationStart' event when 'circular' is true.
+		if (!retTrigger) {
+			if (this.axm.every(
+				param.destPos,
+				(v, k, opt) => !Coordinate.isCircularable(v, opt.range, opt.circular))
+			) {
+				retTrigger = true;
+			} else {
+				console.warn("You can't stop the 'animation' event when 'circular' is true.");
+			}
+		}
 
 		if (retTrigger) {
-			const queue = [];
-			const dequeue = function () {
-				const task = queue.shift();
-				task && task.call(this);
-			};
-			if (!AxisManager.equal(param.depaPos, param.destPos)) {
-				queue.push(() => this.animateLoop(param, dequeue));
+			if (!AxisManager.equal(param.destPos, param.depaPos)) {
+				this.animateLoop(param, () => this.animationEnd());
+			} else if (this.axm.isOutside(Object.keys(param.destPos))) {
+				this.restore(inputEvent);
 			}
-			if (this.axm.every(param.destPos, (v, k, opt) => Coordinate.isOutside(v, opt.range))) {
-				queue.push(() => this.restore(Object.keys(param.destPos), dequeue, inputEvent));
-			}
-			queue.push(() => this.animationEnd());
-			dequeue();
 		}
 	}
 
@@ -171,7 +165,6 @@ export class AnimationManager {
 	}
 
 	easing(p) {
-		// console.log("easing", p, this.options.easing(p));
 		return p > 1 ? 1 : this.options.easing(p);
 	}
 
@@ -198,7 +191,7 @@ export class AnimationManager {
 			return;
 		}
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			v = Coordinate.getInsidePosition(v, opt.range, opt.circular);
+			v = Coordinate.getInsidePosition(v, opt.range, opt.bounce, opt.circular);
 			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular);
 		});
 		if (AxisManager.equal(movedPos, orgPos)) {
