@@ -25,6 +25,44 @@ export class AnimationManager {
 		private axm: AxisManager
 	) {
 	}
+	getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number) {
+		let duration;
+		if (typeof wishDuration !== "undefined") {
+			duration = wishDuration;
+		} else {
+			const durations: Axis = this.axm.map(
+				destPos,
+				(v, k) => Coordinate.getDuration(
+					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
+					this.options.deceleration)
+			);
+			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
+		}
+		return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
+	}
+
+	private createAnimationParam(pos: Axis, duration: number, inputEvent = null): AnimationParam {
+		const depaPos: Axis = this.axm.get(Object.keys(pos));
+		const destPos: Axis = this.axm.map(pos, (v, k, opt) => {
+			return Coordinate.getInsidePosition(
+				v,
+				opt.range,
+				opt.bounce,
+				opt.circular,
+			);
+		});
+		const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
+		const maximumDuration = this.options.maximumDuration;
+
+		return {
+			depaPos,
+			destPos,
+			duration: maximumDuration > duration ? duration : maximumDuration,
+			distance,
+			inputEvent,
+			done: this.animationEnd
+		};
+	}
 
 	grab(axes: string[]) {
 		if (this._animateParam && !axes.length) {
@@ -40,43 +78,7 @@ export class AnimationManager {
 			// this.em.trigger("animationEnd");
 		}
 	}
-	private createAnimationParam(absPos: Axis, duration?: number, inputEvent = null): AnimationParam {
-		const maximumDuration = this.options.maximumDuration;
-		const depaPos: Axis = this.axm.get(Object.keys(absPos));
-		const destPos: Axis = this.axm.map(absPos, (v, k, opt) => {
-			return Coordinate.getInsidePosition(
-				v,
-				opt.range,
-				opt.bounce,
-				opt.circular,
-			);
-		});
-		const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
 
-		return {
-			depaPos,
-			destPos,
-			duration: maximumDuration > duration ? duration : maximumDuration,
-			distance,
-			inputEvent,
-			done: this.animationEnd
-		};
-	}
-  getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number) {
-		let duration;
-		if (typeof wishDuration !== "undefined") {
-			duration = wishDuration;
-		} else {
-			const durations: Axis = this.axm.map(
-				destPos,
-				(v, k) => Coordinate.getDuration(
-					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
-					this.options.deceleration)
-				);
-			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
-		}
-		return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
-	}
 
 	private restore(inputEvent = null) {
 		const pos: Axis = this.axm.get();

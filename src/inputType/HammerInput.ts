@@ -79,11 +79,10 @@ export class HammerInput extends InputType {
 		direction: DIRECTION,
 		userDirection?: DIRECTION): boolean {
 		if (userDirection) {
-			return !!(direction & DIRECTION.DIRECTION_ALL ||
-				(direction & checkType && userDirection & checkType));
+			return !!((direction === DIRECTION.DIRECTION_ALL) ||
+				((direction & checkType) && (userDirection & checkType)));
 		} else {
-			return !!(direction & DIRECTION.DIRECTION_ALL ||
-				(direction & checkType));
+			return !!(direction & checkType);
 		}
 	}
 

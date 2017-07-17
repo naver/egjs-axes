@@ -24,7 +24,7 @@ export class AxisManager {
   get(axes?: string[]): Axis {
     if (axes) {
       return axes.reduce((acc, v) => {
-        if (v) {
+        if (v && (v in this._pos)) {
           acc[v] = this._pos[v];
         }
         return acc;
@@ -33,15 +33,9 @@ export class AxisManager {
       return { ...this._pos };
     }
   }
-  isOutside(axes?: string[]) {
-    return !this.every(
-      axes ? this.get(axes) : this._pos,
-      (v, k, opt) => !Coordinate.isOutside(v, opt.range)
-    );
-  }
   moveTo(pos: Axis): Axis {
     for (const k in pos) {
-      if (k) {
+      if (k && (k in this._pos)) {
         this._pos[k] = pos[k];
       }
     }
@@ -86,5 +80,11 @@ export class AxisManager {
       }
     }
     return tranformed;
+  }
+  isOutside(axes?: string[]) {
+    return !this.every(
+      axes ? this.get(axes) : this._pos,
+      (v, k, opt) => !Coordinate.isOutside(v, opt.range)
+    );
   }
 };

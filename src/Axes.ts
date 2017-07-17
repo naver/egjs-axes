@@ -20,7 +20,7 @@ import {InputType} from "./inputType/InputType";
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
-class Axes extends Component {
+export default class Axes extends Component {
 	static HammerInput = HammerInput;
 	static TRANSFORM = TRANSFORM;
 
@@ -103,5 +103,3 @@ class Axes extends Component {
 		this._em.destroy();
 	}
 }
-
-export default Axes;
