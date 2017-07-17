@@ -99,8 +99,8 @@ export class InputObserver implements IInputTypeObserver {
       return Coordinate.getInsidePosition(
         pos[k] + v,
         opt.range,
+        opt.circular,
         opt.bounce,
-        opt.circular
       );
     });
     /**

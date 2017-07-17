@@ -47,8 +47,8 @@ export class AnimationManager {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
-				opt.bounce,
 				opt.circular,
+				opt.bounce,
 			);
 		});
 		const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
@@ -75,7 +75,7 @@ export class AnimationManager {
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
-			// this.em.trigger("animationEnd");
+			this.em.trigger("animationEnd");
 		}
 	}
 
@@ -130,25 +130,29 @@ export class AnimationManager {
 	animateTo(destPos: Axis, duration: number, inputEvent = null) {
 		const depaPos = this.axm.get();
 		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
-		let retTrigger = this.em.trigger("animationStart", param);
+		if (param.duration === 0 && this.axm.isOutside(Object.keys(param.destPos))) {
+			this.restore(inputEvent);
+		} else {
+			let retTrigger = this.em.trigger("animationStart", param);
 
-		// You can't stop the 'animationStart' event when 'circular' is true.
-		if (!retTrigger) {
-			if (this.axm.every(
-				param.destPos,
-				(v, k, opt) => !Coordinate.isCircularable(v, opt.range, opt.circular))
-			) {
-				retTrigger = true;
-			} else {
-				console.warn("You can't stop the 'animation' event when 'circular' is true.");
+			// You can't stop the 'animationStart' event when 'circular' is true.
+			if (!retTrigger) {
+				if (this.axm.every(
+					param.destPos,
+					(v, k, opt) => !Coordinate.isCircularable(v, opt.range, opt.circular))
+				) {
+					retTrigger = true;
+				} else {
+					console.warn("You can't stop the 'animation' event when 'circular' is true.");
+				}
 			}
-		}
 
-		if (retTrigger) {
-			if (!AxisManager.equal(param.destPos, param.depaPos)) {
-				this.animateLoop(param, () => this.animationEnd());
-			} else if (this.axm.isOutside(Object.keys(param.destPos))) {
-				this.restore(inputEvent);
+			if (retTrigger) {
+				if (!AxisManager.equal(param.destPos, param.depaPos)) {
+					this.animateLoop(param, () => this.animationEnd());
+				} else if (this.axm.isOutside(Object.keys(param.destPos))) {
+					this.restore(inputEvent);
+				}
 			}
 		}
 	}
@@ -193,7 +197,7 @@ export class AnimationManager {
 			return;
 		}
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			v = Coordinate.getInsidePosition(v, opt.range, opt.bounce, opt.circular);
+			v = Coordinate.getInsidePosition(v, opt.range, opt.circular);
 			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular);
 		});
 		if (AxisManager.equal(movedPos, orgPos)) {

@@ -7,9 +7,9 @@ export interface Axis {
 
 export class AxisManager {
   private _pos: Axis;
-  static equal(pos1: Axis, pos2: Axis): boolean {
-    for (const k in pos1) {
-      if (pos1[k] !== pos2[k]) {
+  static equal(target: Axis, base: Axis): boolean {
+    for (const k in target) {
+      if (target[k] !== base[k]) {
         return false;
       }
     }

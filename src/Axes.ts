@@ -95,6 +95,11 @@ export default class Axes extends Component {
 		return this;
 	}
 
+	setBy(pos: Axis, duration = 0) {
+		this._am.setBy(pos, duration);
+		return this;
+	}
+
 	isOutside(axes?: string[]) {
 		return this._axm.isOutside(axes);
 	}
