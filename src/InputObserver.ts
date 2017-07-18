@@ -19,6 +19,32 @@ export class InputObserver implements IInputTypeObserver {
   ) {
   }
 
+  // when move pointer is held in outside
+  private atOutside(pos: Axis) {
+    if (this.isOutside) {
+      return this.axm.map(pos, (v, k, opt) => {
+        const tn = opt.range[0] - opt.bounce[0];
+        const tx = opt.range[1] + opt.bounce[1];
+        return v > tx ? tx : (v < tn ? tn : v);
+      });
+    } else {
+      // when start pointer is held in inside
+      // get a initialization slope value to prevent smooth animation.
+      const initSlope = this.am.easing(0.00001) / 0.00001;
+      return this.axm.map(pos, (v, k, opt) => {
+        const min = opt.range[0];
+        const max = opt.range[1];
+        const out = opt.bounce;
+        if (v < min) { // left
+          return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
+        } else if (v > max) { // right
+          return max + this.am.easing((v - max) / (out[1] * initSlope)) * out[1];
+        }
+        return v;
+      });
+    }
+  }
+
   hold(inputType: InputType, event) {
     if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
@@ -63,32 +89,6 @@ export class InputObserver implements IInputTypeObserver {
     destPos = this.atOutside(destPos);
     this.em.triggerChange(this.axm.moveTo(destPos), event);
   }
-
-  // when move pointer is held in outside
-  private atOutside(pos: Axis) {
-    if (this.isOutside) {
-      return this.axm.map(pos, (v, k, opt) => {
-        const tn = opt.range[0] - opt.bounce[0];
-        const tx = opt.range[1] + opt.bounce[1];
-        return v > tx ? tx : (v < tn ? tn : v);
-      });
-    } else {
-      // when start pointer is held in inside
-      // get a initialization slope value to prevent smooth animation.
-      const initSlope = this.am.easing(0.00001) / 0.00001;
-      return this.axm.map(pos, (v, k, opt) => {
-        const min = opt.range[0];
-        const max = opt.range[1];
-        const out = opt.bounce;
-        if (v < min) { // left
-          return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
-        } else if (v > max) { // right
-          return max + this.am.easing((v - max) / (out[1] * initSlope)) * out[1];
-        }
-        return v;
-      });
-    }
-  }
   release(inputType: InputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
       return;
@@ -126,10 +126,14 @@ export class InputObserver implements IInputTypeObserver {
       inputEvent: event
     }
     this.em.trigger("release", param);
-    if (AxisManager.equal(param.destPos, param.depaPos) && !this.axm.isOutside(Object.keys(param.destPos)) ) {
-      this.itm.setInterrupt(false);
+    if (this.axm.isOutside()) {
+      this.am.restore(event);
     } else {
-      this.am.animateTo(param.destPos, param.duration);
+      if (AxisManager.equal(param.destPos, param.depaPos)) {
+        this.itm.setInterrupt(false);
+      } else {
+        this.am.animateTo(param.destPos, param.duration);
+      }
     }
     this.moveDistance = null;
   }
