@@ -255,33 +255,37 @@ describe("AnimationManager", function () {
       // When
       this.inst.animateTo(destPos, 1000);
     });
-    it("should check 'animateTo' method (outside. depaPos === destPos => restore)", (done) => {
+    it("should check position when animation is running. then, start other animation", (done) => {
       // Given
-      const depaPos = this.inst.axm.get();
-      const destPos = {
-        x: 150,
-        z: -140
-      };
-      this.inst.axm.moveTo(destPos);
-      this.inst.options.maximumDuration = 200;
-
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy();
       const endHandler = sinon.spy();
       this.component.on({
+        "change": changeHandler,
         "animationStart": startHandler,
         "animationEnd": endHandler
       });
       
       // When
-      this.inst.animateTo(destPos, 0);
-
+      this.inst.setTo({x:80, y: 150}, 200);
+      
       // Then
       setTimeout(() => {
-        expect(startHandler.callCount).to.be.equal(1);
-        expect(endHandler.callCount).to.be.equal(1);
-        expect(this.inst.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
+        expect(startHandler.calledOnce).to.be.true;
+        expect(changeHandler.called).to.be.true;  
+        expect(endHandler.called).to.be.false;
+
+        // When
+        this.inst.setTo({x:0, y:0}, 300);
+        expect(this.inst.axm.get()).to.not.eql({x:80, y:150, z:-100});
+      }, 100);
+      setTimeout(() => {
+        expect(startHandler.calledTwice).to.be.true;  
+        expect(changeHandler.called).to.be.true;    
+        expect(endHandler.calledTwice).to.be.true;
+        expect(this.inst.axm.get()).to.eql({x:0, y:0, z:-100});
         done();
-      }, 300);
-    });
+      }, 500);   
+    });      
   });
 });

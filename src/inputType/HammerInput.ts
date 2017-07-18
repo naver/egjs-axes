@@ -34,7 +34,7 @@ export interface HammerInputOption {
 export class HammerInput extends InputType {
 	options: HammerInputOption;
 	hammer;
-	private _element;
+	element;
 	private _direction: DIRECTION;
 	static convertHammerInputType(inputType) {
 		let hasTouch = false;
@@ -88,7 +88,7 @@ export class HammerInput extends InputType {
 
 	constructor(el, options: HammerInputOption) {
 		super();
-		this._element = $(el);
+		this.element = $(el);
 		this.options = {
 			...{
 				inputType: ["touch", "mouse"],
@@ -119,7 +119,7 @@ export class HammerInput extends InputType {
 			throw new Error("Wrong inputType parameter!");
 		}
 
-		let keyValue: string = this._element[UNIQUEKEY];
+		let keyValue: string = this.element[UNIQUEKEY];
 		if (keyValue) {
 			this.hammer.destroy();
 		} else {
@@ -135,15 +135,15 @@ export class HammerInput extends InputType {
 			}).on("panstart panmove", event => {
 				this.onChange(observer, event);
 			});
-		this._element[UNIQUEKEY] = keyValue;
+		this.element[UNIQUEKEY] = keyValue;
 		return this;
 	}
 
 	disconnect() {
-		if (this._element[UNIQUEKEY]) {
+		if (this.element[UNIQUEKEY]) {
 			this.hammer.off("hammer.input panstart panmove panend");
 			this.hammer.destroy();
-			delete this._element[UNIQUEKEY];
+			delete this.element[UNIQUEKEY];
 		}
 		this.hammer = null;
 		return this;
@@ -151,14 +151,14 @@ export class HammerInput extends InputType {
 
 	destroy() {
 		this.disconnect();
-		this._element = null;
+		this.element = null;
 		this.options = {};
 	}
 
 	private createHammer(inputClass) {
 		try {
 			// create Hammer
-			return new Hammer.Manager(this._element, {
+			return new Hammer.Manager(this.element, {
 				recognizers: [
 					[
 						Hammer.Pan, {

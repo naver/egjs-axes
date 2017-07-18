@@ -60,7 +60,7 @@ export class AnimationManager {
 			duration: maximumDuration > duration ? duration : maximumDuration,
 			distance,
 			inputEvent,
-			done: this.animationEnd
+			done: this.animationEnd.bind(this)
 		};
 	}
 
@@ -79,8 +79,7 @@ export class AnimationManager {
 		}
 	}
 
-
-	private restore(inputEvent = null) {
+	restore(inputEvent = null) {
 		const pos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.map(pos,
 			(v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
@@ -130,31 +129,18 @@ export class AnimationManager {
 	animateTo(destPos: Axis, duration: number, inputEvent = null) {
 		const depaPos = this.axm.get();
 		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
-		if (param.duration === 0 && this.axm.isOutside(Object.keys(param.destPos))) {
-			this.restore(inputEvent);
-		} else {
-			let retTrigger = this.em.trigger("animationStart", param);
+		const retTrigger = this.em.trigger("animationStart", param);
 
-			// You can't stop the 'animationStart' event when 'circular' is true.
-			if (!retTrigger) {
-				if (this.axm.every(
-					param.destPos,
-					(v, k, opt) => !Coordinate.isCircularable(v, opt.range, opt.circular))
-				) {
-					retTrigger = true;
-				} else {
-					console.warn("You can't stop the 'animation' event when 'circular' is true.");
-				}
-			}
-
-			if (retTrigger) {
-				if (!AxisManager.equal(param.destPos, param.depaPos)) {
-					this.animateLoop(param, () => this.animationEnd());
-				} else if (this.axm.isOutside(Object.keys(param.destPos))) {
-					this.restore(inputEvent);
-				}
-			}
+		// You can't stop the 'animationStart' event when 'circular' is true.
+		if (!retTrigger && this.axm.every(
+				param.destPos,
+				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular))) {
+				console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
+
+		retTrigger &&
+			!AxisManager.equal(param.destPos, param.depaPos) &&
+			this.animateLoop(param, () => this.animationEnd());
 	}
 
 	// animation frame (0~1)
