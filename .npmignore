@@ -32,3 +32,4 @@ tslint.json
 tsconfig.json
 mocha.opts
 demo/
+_site
