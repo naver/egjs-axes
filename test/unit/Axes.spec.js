@@ -209,7 +209,34 @@ describe("Axes", function () {
       // Then
       expect(this.inst._inputs).to.be.eql([]);
       expect(ret).to.be.equal(this.inst);
-    });    
+    });
+    it("should check `enable/disalbe` methods of inputType", () => {
+      // Given
+      // When
+      const input = new HammerInput("#sandbox");
+
+      // Then
+      expect(input.isEnable()).to.be.false;
+
+      // When
+      this.inst.connect("x", input);
+
+      // Then
+      expect(input.isEnable()).to.be.true;
+
+      // When
+      input.disable();
+
+      // Then
+      expect(input.isEnable()).to.be.false;
+
+      // When
+      input.enable();
+
+      // Then
+      expect(input.isEnable()).to.be.true;
+    });
+    
   });
   describe("Axes Custom Event Test with interruptable", function () {
     beforeEach(() => {
@@ -463,8 +490,7 @@ describe("Axes", function () {
               expect(holdHandler.calledOnce).to.be.true;
               expect(releaseHandler.calledOnce).to.be.true;
               expect(animationStartHandler.calledOnce).to.be.true;
-              console.log(animationEndHandler.callCount);
-              // expect(animationEndHandler.calledOnce).to.be.true;
+              expect(animationEndHandler.calledOnce).to.be.true;
               done();
           }, 1000);    
       }); 

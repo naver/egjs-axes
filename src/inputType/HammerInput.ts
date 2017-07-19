@@ -140,12 +140,12 @@ export class HammerInput extends InputType {
 	}
 
 	disconnect() {
-		if (this.element[UNIQUEKEY]) {
+		if (this.hammer) {
 			this.hammer.off("hammer.input panstart panmove panend");
 			this.hammer.destroy();
+			this.hammer = null;
 			delete this.element[UNIQUEKEY];
 		}
-		this.hammer = null;
 		this._direction = DIRECTION.DIRECTION_NONE;
 		this.element = null;
 		this.options = {};
@@ -254,7 +254,7 @@ export class HammerInput extends InputType {
 		this.hammer && (this.hammer.get("pan").options.enable = false);
 	}
 	isEnable() {
-		return this.hammer && this.hammer.get("pan").options.enable;
+		return !!(this.hammer && this.hammer.get("pan").options.enable);
 	}
 }
 
