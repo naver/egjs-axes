@@ -43,7 +43,7 @@ var hammerType = new eg.Axes.HammerInputType("#area", {
 });
 
 // add innputType at axes
-axes.mapInput(["left", "top"], hammerType);
+axes.connect(["left", "top"], hammerType);
 ```
 
 #### ES6
@@ -62,5 +62,5 @@ const hammerType = new Axes.HammerInputType("#area", {
 });
 
 // add innputType at axes
-axes.mapInput(["left", "top"], hammerType);
+axes.connect(["left", "top"], hammerType);
 ```

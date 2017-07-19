@@ -124,12 +124,12 @@
             destPos.carousel = ((idx - 1) * PANEL_WIDTH * -1) + BASE;
         },
     })
-    .mapInput(
+    .connect(
         ["detailX", "detailY"],
         new eg.Axes.HammerInput("#detail-view-carousel-container", {
             scale: [-AXES_SCALE, -AXES_SCALE],
         }))
-    .mapInput(
+    .connect(
         "carousel",
         new eg.Axes.HammerInput("#carousel-container", {
             scale: [AXES_SCALE, 0]

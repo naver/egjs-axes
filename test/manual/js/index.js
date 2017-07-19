@@ -49,6 +49,6 @@ var axes = new eg.Axes({
 });
 
 
-axes.mapInput(["x", "y"], hammerInputArea)
-	.mapInput(["x"], hammerInputHmove)
-	.mapInput(["", "y"], hammerInputVmode);
+axes.connect(["x", "y"], hammerInputArea)
+	.connect(["x"], hammerInputHmove)
+	.connect(["", "y"], hammerInputVmode);

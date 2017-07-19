@@ -5,7 +5,6 @@ export abstract class InputType {
 	axes: string[];
 	abstract connect(observer: IInputTypeObserver): InputType;
 	abstract disconnect();
-	abstract destroy();
 	abstract enable?();
 	abstract disable?();
 	abstract isEnable?(): boolean;
