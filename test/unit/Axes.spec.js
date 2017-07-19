@@ -2,7 +2,7 @@ import Axes from "../../src/Axes.ts";
 import {HammerInput} from "../../src/inputType/HammerInput.ts";
 
 describe("Axes", function () {
-  describe("Axes init Test", function () {
+  describe("Axes Test", function () {
     beforeEach(() => {
       this.inst = null;
     });
@@ -154,34 +154,62 @@ describe("Axes", function () {
       cleanup();
     });
 
-    it("should check `mapInput` method", () => {
+    it("should check `connect` method", () => {
       // Given
       const input = new HammerInput("#sandbox");
 
       // When
-      let ret = this.inst.mapInput("x", input);
+      let ret = this.inst.connect("x", input);
 
       // Then
       expect(input.axes).to.be.eql(["x"]);
       expect(ret).to.be.equal(this.inst);
-      input.disconnect();
 
       // When
-      ret = this.inst.mapInput(["x"], input);
+      ret = this.inst.connect(["x"], input);
       
       // Then
       expect(input.axes).to.be.eql(["x"]);
       expect(ret).to.be.equal(this.inst);
-      input.disconnect();
 
       // When
-      ret = this.inst.mapInput(["x", "y"], input);
+      ret = this.inst.connect(["x", "y"], input);
       
       // Then
       expect(input.axes).to.be.eql(["x", "y"]);
       expect(ret).to.be.equal(this.inst);
-      input.disconnect();
+
+      // When
+      ret = this.inst.connect("x y", input);
+      
+      // Then
+      expect(input.axes).to.be.eql(["x", "y"]);
+      expect(ret).to.be.equal(this.inst);
     });
+
+    it("should check `disconnect` method", () => {
+      // Given
+      const input1 = new HammerInput("#sandbox");
+      const input2 = new HammerInput("#sandbox");
+      const input3 = new HammerInput("#sandbox");
+      this.inst.connect("x", input1);
+      this.inst.connect("y", input2);
+      this.inst.connect("x y", input3);
+
+      // When
+      let ret = this.inst.disconnect(input1);
+      
+      // Then
+      expect(this.inst._inputs.indexOf(input1)).to.be.equal(-1);
+      expect(ret).to.be.equal(this.inst);
+
+      // When
+      ret = this.inst.disconnect();
+      
+      // Then
+      expect(this.inst._inputs).to.be.eql([]);
+      expect(ret).to.be.equal(this.inst);
+    });    
   });
   describe("Axes Custom Event Test with interruptable", function () {
     beforeEach(() => {
@@ -210,14 +238,13 @@ describe("Axes", function () {
         expect(self._itm._prevented).to.be.false;
       };
       this.input = new HammerInput(this.el);
-      this.inst.mapInput(["x", "y"], this.input);
+      this.inst.connect(["x", "y"], this.input);
     });
     afterEach(() => {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
       }
-      this.input.disconnect();
       cleanup();
     });
 
@@ -286,7 +313,7 @@ describe("Axes", function () {
         "release": this.releaseHandler,
         "animationStart": this.animationStartHandler,
         "animationEnd": this.animationEndHandler
-      }).mapInput(["x", "y"], this.input);
+      }).connect(["x", "y"], this.input);
     });
     afterEach(() => {
       if (this.inst) {
@@ -297,7 +324,6 @@ describe("Axes", function () {
       this.releaseHandler.reset();
       this.animationStartHandler.reset();
       this.animationEndHandler.reset();
-      this.input.disconnect();
       cleanup();
     });
 

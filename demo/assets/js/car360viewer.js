@@ -19,5 +19,5 @@
 			v.style.display = i === index ? "inline-block" : "none";
 		});
 	});
-	axes.mapInput("angle", new eg.Axes.HammerInput(".car_rotate"));
+	axes.connect("angle", new eg.Axes.HammerInput(".car_rotate"));
 })();

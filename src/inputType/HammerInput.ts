@@ -121,7 +121,7 @@ export class HammerInput extends InputType {
 
 		let keyValue: string = this.element[UNIQUEKEY];
 		if (keyValue) {
-			this.hammer.destroy();
+			this.hammer && this.hammer.destroy();
 		} else {
 			keyValue = String(Math.round(Math.random() * new Date().getTime()));
 		}
@@ -146,13 +146,10 @@ export class HammerInput extends InputType {
 			delete this.element[UNIQUEKEY];
 		}
 		this.hammer = null;
-		return this;
-	}
-
-	destroy() {
-		this.disconnect();
+		this._direction = DIRECTION.DIRECTION_NONE;
 		this.element = null;
 		this.options = {};
+		return this;
 	}
 
 	private createHammer(inputClass) {

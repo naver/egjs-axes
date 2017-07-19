@@ -30,6 +30,7 @@ export default class Axes extends Component {
 	private _itm: InterruptManager;
 	private _am: AnimationManager;
 	private _io: InputObserver;
+	private _inputs: InputType[] = [];
 
 	constructor(options: AxesOption) {
 		super();
@@ -74,15 +75,30 @@ export default class Axes extends Component {
 		});
 	}
 
-	mapInput(axes: string[] | string, inputType: InputType) {
+	connect(axes: string[] | string, inputType: InputType) {
 		let mapped;
 		if (typeof axes === "string") {
-			mapped = [axes];
+			mapped = axes.split(" ");
 		} else {
 			mapped = axes.concat();
 		}
+		if (~this._inputs.indexOf(inputType)) {
+			inputType.disconnect();
+		}
 		inputType.mapAxes(mapped);
 		inputType.connect(this._io);
+		return this;
+	}
+
+	disconnect(inputType?: InputType) {
+		if (inputType) {
+			const index = this._inputs.indexOf(inputType);
+
+			~index && this._inputs.splice(index, 1);
+		} else {
+			this._inputs.forEach(v => v.disconnect());
+			this._inputs = [];
+		}
 		return this;
 	}
 
@@ -105,6 +121,7 @@ export default class Axes extends Component {
 	}
 
 	destroy() {
+		this.disconnect();
 		this._em.destroy();
 	}
 }

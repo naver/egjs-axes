@@ -9,7 +9,7 @@ describe("HammerInput", () => {
     });
     afterEach(() => {
       if (this.inst) {
-        this.inst.destroy();
+        this.inst.disconnect();
         this.inst = null;
       }
       cleanup();

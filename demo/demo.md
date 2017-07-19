@@ -17,7 +17,7 @@ var axes = new eg.Axes({
 	images.forEach(function (v, i) {
 		v.style.display = i === index ? "inline-block" : "none";
 	});
-}).mapInput("angle", new eg.Axes.HammerInput(".car_rotate"));
+}).connect("angle", new eg.Axes.HammerInput(".car_rotate"));
 ```
 
 ### Cards in hands
@@ -54,7 +54,7 @@ var axes = new eg.Axes({
 			"translateY(" + (parseFloat(v.getAttribute("data-cardOffset")) +
 				pos.top) + "px)";
 	});
-}).mapInput(["hand", "top"], new eg.Axes.HammerInput(hand, {
+}).connect(["hand", "top"], new eg.Axes.HammerInput(hand, {
 	scale: [0.3, 0.8]
 })).setTo({
 	hand: (handRotMin + handRotMax) / 2
@@ -81,7 +81,7 @@ var axes = new eg.Axes({
 	deceleration: 0.0024
 }).on("change", function(e) {
 	box.style[eg.Axes.TRANSFORM] = "rotateY(" + e.pos.rotateX + "deg) rotateX(" + e.pos.rotateY + "deg)";
-}).mapInput(["rotateX", "rotateY"], new eg.Axes.HammerInput("#area"));
+}).connect(["rotateX", "rotateY"], new eg.Axes.HammerInput("#area"));
 .setTo({
 	"rotateX": 40,
 	"rotateY": 315
@@ -139,12 +139,12 @@ const axes = new eg.Axes({
 		destPos.carousel = ((idx - 1) * PANEL_WIDTH * -1) + BASE;
 	},
 })
-.mapInput(
+.connect(
 	["detailX", "detailY"],
 	new eg.Axes.HammerInput("#detail-view-carousel-container", {
 		scale: [-AXES_SCALE, -AXES_SCALE],
 	}))
-.mapInput(
+.connect(
 	"carousel",
 	new eg.Axes.HammerInput("#carousel-container", {
 		scale: [AXES_SCALE, 0]
