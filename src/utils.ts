@@ -19,12 +19,19 @@ export function $(param, multi = false) {
 		if (!multi) {
 			el = el.length >= 1 ? el[0] : undefined;
 		}
+	} else if (param === window) { // window
+		el = param;
 	} else if (param.nodeName &&
-	(param.nodeType === 1 || param.nodeType === 9)) {	// HTMLElement, Document
+		(param.nodeType === 1 || param.nodeType === 9)) {	// HTMLElement, Document
 		el = param;
 	} else if (("jQuery" in window && param instanceof jQuery) ||
 		param.constructor.prototype.jquery) {	// jQuery
 		el = multi ? param.toArray() : param.get(0);
+	} else if (Array.isArray(param)) {
+		el = param.map(v => $(v));
+		if (!multi) {
+			el = el.length >= 1 ? el[0] : undefined;
+		}
 	}
 	return el;
 }
