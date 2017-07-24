@@ -126,12 +126,12 @@
     })
     .connect(
         ["detailX", "detailY"],
-        new eg.Axes.HammerInput("#detail-view-carousel-container", {
+        new eg.Axes.PanInput("#detail-view-carousel-container", {
             scale: [-AXES_SCALE, -AXES_SCALE],
         }))
     .connect(
         "carousel",
-        new eg.Axes.HammerInput("#carousel-container", {
+        new eg.Axes.PanInput("#carousel-container", {
             scale: [AXES_SCALE, 0]
         }))
     .setTo({
