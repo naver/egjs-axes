@@ -5,9 +5,10 @@ import {EventManager} from "./EventManager";
 import {InterruptManager} from "./InterruptManager";
 import {AxisManager, Axis} from "./AxisManager";
 import {InputObserver} from "./InputObserver";
-import {HammerInput} from "./inputType/HammerInput";
-import {TRANSFORM} from "./const";
-import {InputType} from "./inputType/InputType";
+import {PanInput} from "./inputType/PanInput";
+import {PinchInput} from "./inputType/PinchInput";
+import {TRANSFORM, DIRECTION} from "./const";
+import {IInputType} from "./inputType/InputType";
 
 /**
  * Copyright (c) NAVER Corp.
@@ -21,8 +22,17 @@ import {InputType} from "./inputType/InputType";
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
 export default class Axes extends Component {
-	static HammerInput = HammerInput;
+	static PanInput = PanInput;
+	static PinchInput = PinchInput;
 	static TRANSFORM = TRANSFORM;
+	static DIRECTION_ALL = DIRECTION.DIRECTION_ALL;
+	static DIRECTION_DOWN = DIRECTION.DIRECTION_DOWN;
+	static DIRECTION_HORIZONTAL = DIRECTION.DIRECTION_HORIZONTAL;
+	static DIRECTION_LEFT = DIRECTION.DIRECTION_LEFT;
+	static DIRECTION_NONE = DIRECTION.DIRECTION_NONE;
+	static DIRECTION_RIGHT = DIRECTION.DIRECTION_RIGHT;
+	static DIRECTION_UP = DIRECTION.DIRECTION_UP;
+	static DIRECTION_VERTICAL = DIRECTION.DIRECTION_VERTICAL;
 
 	options: AxesOption;
 	private _em: EventManager;
@@ -30,7 +40,7 @@ export default class Axes extends Component {
 	private _itm: InterruptManager;
 	private _am: AnimationManager;
 	private _io: InputObserver;
-	private _inputs: InputType[] = [];
+	private _inputs: IInputType[] = [];
 
 	constructor(options: AxesOption) {
 		super();
@@ -75,25 +85,34 @@ export default class Axes extends Component {
 		});
 	}
 
-	connect(axes: string[] | string, inputType: InputType) {
+	connect(axes: string[] | string, inputType: IInputType) {
 		let mapped;
 		if (typeof axes === "string") {
 			mapped = axes.split(" ");
 		} else {
 			mapped = axes.concat();
 		}
+
+		// check same instance
 		if (~this._inputs.indexOf(inputType)) {
-			inputType.disconnect();
+			this.disconnect(inputType);
+		}
+
+		// check same element in hammer type for share
+		const targets = this._inputs.filter(v => v.hammer && v.element === inputType.element);
+		if (targets.length) {
+			inputType.hammer = targets[0].hammer;
 		}
 		inputType.mapAxes(mapped);
 		inputType.connect(this._io);
+		this._inputs.push(inputType);
 		return this;
 	}
 
-	disconnect(inputType?: InputType) {
+	disconnect(inputType?: IInputType) {
 		if (inputType) {
 			const index = this._inputs.indexOf(inputType);
-
+			this._inputs[index].disconnect();
 			~index && this._inputs.splice(index, 1);
 		} else {
 			this._inputs.forEach(v => v.disconnect());
@@ -124,4 +143,4 @@ export default class Axes extends Component {
 		this.disconnect();
 		this._em.destroy();
 	}
-}
+};

@@ -9,14 +9,14 @@
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("@egjs/component"), require("hammerjs"));
+		module.exports = factory(require("hammerjs"), require("@egjs/component"));
 	else if(typeof define === 'function' && define.amd)
-		define("Axes", ["@egjs/component", "hammerjs"], factory);
+		define("Axes", ["hammerjs", "@egjs/component"], factory);
 	else if(typeof exports === 'object')
-		exports["Axes"] = factory(require("@egjs/component"), require("hammerjs"));
+		exports["Axes"] = factory(require("hammerjs"), require("@egjs/component"));
 	else
-		root["eg"] = root["eg"] || {}, root["eg"]["Axes"] = factory(root["eg"]["Component"], root["Hammer"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_11__) {
+		root["eg"] = root["eg"] || {}, root["eg"]["Axes"] = factory(root["Hammer"], root["eg"]["Component"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -228,13 +228,68 @@ exports.AxisManager = AxisManager;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+/**
+ * @name eg.MovableCoord.DIRECTION_NONE
+ * @constant
+ * @type {Number}
+ */
+/**
+ * @name eg.MovableCoord.DIRECTION_LEFT
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_RIGHT
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_UP
+ * @constant
+ * @type {Number}
+     */
+/**
+ * @name eg.MovableCoord.DIRECTION_DOWN
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_HORIZONTAL
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_VERTICAL
+ * @constant
+ * @type {Number}
+*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UNIQUEKEY = "__EGJS_AXES__";
-exports.SUPPORT_TOUCH = "ontouchstart" in window;
+/**
+ * @name eg.MovableCoord.DIRECTION_ALL
+ * @constant
+ * @type {Number}
+*/
+var DIRECTION;
+(function (DIRECTION) {
+    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
+    DIRECTION[DIRECTION["DIRECTION_LEFT"] = 2] = "DIRECTION_LEFT";
+    DIRECTION[DIRECTION["DIRECTION_RIGHT"] = 4] = "DIRECTION_RIGHT";
+    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
+    DIRECTION[DIRECTION["DIRECTION_UP"] = 8] = "DIRECTION_UP";
+    DIRECTION[DIRECTION["DIRECTION_DOWN"] = 16] = "DIRECTION_DOWN";
+    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
+    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
+})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
 exports.TRANSFORM = (function () {
     var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
     var target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
@@ -248,13 +303,124 @@ exports.TRANSFORM = (function () {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function $(param, multi) {
+    if (multi === void 0) { multi = false; }
+    var el;
+    if (typeof param === "string") {
+        // check if string is HTML tag format
+        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+        // creating element
+        if (match) {
+            var dummy = document.createElement("div");
+            dummy.innerHTML = param;
+            el = Array.prototype.slice.call(dummy.childNodes);
+        }
+        else {
+            el = Array.prototype.slice.call(document.querySelectorAll(param));
+        }
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    else if (param === window) {
+        el = param;
+    }
+    else if (param.nodeName &&
+        (param.nodeType === 1 || param.nodeType === 9)) {
+        el = param;
+    }
+    else if (("jQuery" in window && param instanceof jQuery) ||
+        param.constructor.prototype.jquery) {
+        el = multi ? param.toArray() : param.get(0);
+    }
+    else if (Array.isArray(param)) {
+        el = param.map(function (v) { return $(v); });
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    return el;
+}
+exports.$ = $;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Hammer = __webpack_require__(2);
+exports.SUPPORT_TOUCH = "ontouchstart" in window;
+exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
+function toAxis(source, offset) {
+    return offset.reduce(function (acc, v, i) {
+        if (source[i]) {
+            acc[source[i]] = v;
+        }
+        return acc;
+    }, {});
+}
+exports.toAxis = toAxis;
+;
+function createHammer(element, recognizers, inputClass) {
+    try {
+        var options = {
+            recognizers: [
+                recognizers
+            ],
+            // css properties were removed due to usablility issue
+            // http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
+            cssProps: {
+                userSelect: "none",
+                touchSelect: "none",
+                touchCallout: "none",
+                userDrag: "none",
+            }
+        };
+        inputClass && (options["inputClass"] = inputClass);
+        // create Hammer
+        return new Hammer.Manager(element, options);
+    }
+    catch (e) {
+        return null;
+    }
+}
+exports.createHammer = createHammer;
+;
+function convertInputType(inputType) {
+    if (inputType === void 0) { inputType = []; }
+    var hasTouch = false;
+    var hasMouse = false;
+    inputType.forEach(function (v) {
+        switch (v) {
+            case "mouse":
+                hasMouse = true;
+                break;
+            case "touch": hasTouch = exports.SUPPORT_TOUCH;
+        }
+    });
+    return (hasTouch && Hammer.TouchInput) ||
+        (hasMouse && Hammer.MouseInput) || null;
+}
+exports.convertInputType = convertInputType;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _Axes = __webpack_require__(4);
+var _Axes = __webpack_require__(7);
 
 var _Axes2 = _interopRequireDefault(_Axes);
 
@@ -268,7 +434,7 @@ _Axes2["default"].VERSION = "2.0.0-rc"; /**
 module.exports = _Axes2["default"];
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -292,14 +458,15 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Component = __webpack_require__(5);
-var AnimationManager_1 = __webpack_require__(6);
-var EventManager_1 = __webpack_require__(7);
-var InterruptManager_1 = __webpack_require__(8);
+var Component = __webpack_require__(8);
+var AnimationManager_1 = __webpack_require__(9);
+var EventManager_1 = __webpack_require__(10);
+var InterruptManager_1 = __webpack_require__(11);
 var AxisManager_1 = __webpack_require__(1);
-var InputObserver_1 = __webpack_require__(9);
-var HammerInput_1 = __webpack_require__(10);
-var const_1 = __webpack_require__(2);
+var InputObserver_1 = __webpack_require__(12);
+var PanInput_1 = __webpack_require__(13);
+var PinchInput_1 = __webpack_require__(14);
+var const_1 = __webpack_require__(3);
 /**
  * Copyright (c) NAVER Corp.
  * egjs-axes projects are licensed under the MIT license
@@ -362,16 +529,24 @@ var Axes = (function (_super) {
         else {
             mapped = axes.concat();
         }
+        // check same instance
         if (~this._inputs.indexOf(inputType)) {
-            inputType.disconnect();
+            this.disconnect(inputType);
+        }
+        // check same element in hammer type for share
+        var targets = this._inputs.filter(function (v) { return v.hammer && v.element === inputType.element; });
+        if (targets.length) {
+            inputType.hammer = targets[0].hammer;
         }
         inputType.mapAxes(mapped);
         inputType.connect(this._io);
+        this._inputs.push(inputType);
         return this;
     };
     Axes.prototype.disconnect = function (inputType) {
         if (inputType) {
             var index = this._inputs.indexOf(inputType);
+            this._inputs[index].disconnect();
             ~index && this._inputs.splice(index, 1);
         }
         else {
@@ -400,21 +575,31 @@ var Axes = (function (_super) {
         this.disconnect();
         this._em.destroy();
     };
-    Axes.HammerInput = HammerInput_1.HammerInput;
+    Axes.PanInput = PanInput_1.PanInput;
+    Axes.PinchInput = PinchInput_1.PinchInput;
     Axes.TRANSFORM = const_1.TRANSFORM;
+    Axes.DIRECTION_ALL = const_1.DIRECTION.DIRECTION_ALL;
+    Axes.DIRECTION_DOWN = const_1.DIRECTION.DIRECTION_DOWN;
+    Axes.DIRECTION_HORIZONTAL = const_1.DIRECTION.DIRECTION_HORIZONTAL;
+    Axes.DIRECTION_LEFT = const_1.DIRECTION.DIRECTION_LEFT;
+    Axes.DIRECTION_NONE = const_1.DIRECTION.DIRECTION_NONE;
+    Axes.DIRECTION_RIGHT = const_1.DIRECTION.DIRECTION_RIGHT;
+    Axes.DIRECTION_UP = const_1.DIRECTION.DIRECTION_UP;
+    Axes.DIRECTION_VERTICAL = const_1.DIRECTION.DIRECTION_VERTICAL;
     return Axes;
 }(Component));
 exports.default = Axes;
+;
 
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -606,7 +791,7 @@ exports.AnimationManager = AnimationManager;
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -652,7 +837,7 @@ exports.EventManager = EventManager;
 
 
 /***/ }),
-/* 8 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -680,7 +865,7 @@ exports.InterruptManager = InterruptManager;
 
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -764,7 +949,7 @@ var InputObserver = (function () {
         }
         var depaPos = this.axm.get(inputType.axes);
         // for outside logic
-        this.moveDistance = this.axm.map(this.moveDistance, function (v, k) { return v + offset[k]; });
+        this.moveDistance = this.axm.map(this.moveDistance, function (v, k) { return v + (offset[k] || 0); });
         var destPos = this.axm.map(this.moveDistance, function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular); });
         // from outside to inside
         if (this.isOutside &&
@@ -826,21 +1011,11 @@ exports.InputObserver = InputObserver;
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -850,65 +1025,44 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Hammer = __webpack_require__(11);
-var const_1 = __webpack_require__(2);
-var utils_1 = __webpack_require__(12);
-var InputType_1 = __webpack_require__(13);
-/**
- * Hammer helps you add support for touch gestures to your page
- *
- * @external Hammer
- * @see {@link http://hammerjs.github.io|Hammer.JS}
- * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
- * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
- */
-if (typeof Hammer === "undefined") {
-    throw new Error("The Hammerjs must be loaded before eg.Axes.\nhttp://hammerjs.github.io/");
-}
-var DIRECTION;
-(function (DIRECTION) {
-    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
-    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
-    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
-    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
-})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
-var HammerInput = (function (_super) {
-    __extends(HammerInput, _super);
-    function HammerInput(el, options) {
-        var _this = _super.call(this) || this;
-        _this.element = utils_1.$(el);
-        _this.options = __assign({
+var Hammer = __webpack_require__(2);
+var const_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(4);
+var InputType_1 = __webpack_require__(5);
+var PanInput = (function () {
+    function PanInput(el, options) {
+        /**
+         * Hammer helps you add support for touch gestures to your page
+         *
+         * @external Hammer
+         * @see {@link http://hammerjs.github.io|Hammer.JS}
+         * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
+         * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
+         */
+        if (typeof Hammer === "undefined") {
+            throw new Error("The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/");
+        }
+        this.element = utils_1.$(el);
+        this.options = __assign({
             inputType: ["touch", "mouse"],
             scale: [1, 1],
-            thresholdAngle: 45
+            thresholdAngle: 45,
+            threshold: 0,
         }, options);
-        return _this;
+        this.onHammerInput = this.onHammerInput.bind(this);
+        this.onPanmove = this.onPanmove.bind(this);
+        this.onPanend = this.onPanend.bind(this);
     }
-    HammerInput.convertHammerInputType = function (inputType) {
-        var hasTouch = false;
-        var hasMouse = false;
-        var inputs = inputType || [];
-        inputs.forEach(function (v) {
-            switch (v) {
-                case "mouse":
-                    hasMouse = true;
-                    break;
-                case "touch": hasTouch = const_1.SUPPORT_TOUCH;
-            }
-        });
-        return (hasTouch && Hammer.TouchInput) ||
-            (hasMouse && Hammer.MouseInput) || null;
-    };
     // get user's direction
-    HammerInput.getDirectionByAngle = function (angle, thresholdAngle) {
+    PanInput.getDirectionByAngle = function (angle, thresholdAngle) {
         if (thresholdAngle < 0 || thresholdAngle > 90) {
-            return DIRECTION.DIRECTION_NONE;
+            return const_1.DIRECTION.DIRECTION_NONE;
         }
         var toAngle = Math.abs(angle);
         return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
-            DIRECTION.DIRECTION_VERTICAL : DIRECTION.DIRECTION_HORIZONTAL;
+            const_1.DIRECTION.DIRECTION_VERTICAL : const_1.DIRECTION.DIRECTION_HORIZONTAL;
     };
-    HammerInput.getNextOffset = function (speeds, deceleration) {
+    PanInput.getNextOffset = function (speeds, deceleration) {
         var normalSpeed = Math.sqrt(speeds[0] * speeds[0] + speeds[1] * speeds[1]);
         var duration = Math.abs(normalSpeed / -deceleration);
         return [
@@ -916,111 +1070,92 @@ var HammerInput = (function (_super) {
             speeds[1] / 2 * duration
         ];
     };
-    HammerInput.useDirection = function (checkType, direction, userDirection) {
+    PanInput.useDirection = function (checkType, direction, userDirection) {
         if (userDirection) {
-            return !!((direction === DIRECTION.DIRECTION_ALL) ||
+            return !!((direction === const_1.DIRECTION.DIRECTION_ALL) ||
                 ((direction & checkType) && (userDirection & checkType)));
         }
         else {
             return !!(direction & checkType);
         }
     };
-    HammerInput.prototype.mapAxes = function (axes) {
+    PanInput.prototype.mapAxes = function (axes) {
         var useHorizontal = !!axes[0];
         var useVertical = !!axes[1];
         if (useHorizontal && useVertical) {
-            this._direction = DIRECTION.DIRECTION_ALL;
+            this._direction = const_1.DIRECTION.DIRECTION_ALL;
         }
         else if (useHorizontal) {
-            this._direction = DIRECTION.DIRECTION_HORIZONTAL;
+            this._direction = const_1.DIRECTION.DIRECTION_HORIZONTAL;
         }
         else if (useVertical) {
-            this._direction = DIRECTION.DIRECTION_VERTICAL;
+            this._direction = const_1.DIRECTION.DIRECTION_VERTICAL;
         }
         else {
-            this._direction = DIRECTION.DIRECTION_NONE;
+            this._direction = const_1.DIRECTION.DIRECTION_NONE;
         }
         this.axes = axes;
     };
-    HammerInput.prototype.connect = function (observer) {
-        var _this = this;
-        var inputClass = HammerInput.convertHammerInputType(this.options.inputType);
-        if (!inputClass) {
-            throw new Error("Wrong inputType parameter!");
-        }
-        var keyValue = this.element[const_1.UNIQUEKEY];
-        if (keyValue) {
-            this.hammer && this.hammer.destroy();
+    PanInput.prototype.connect = function (observer) {
+        var hammerOption = {
+            direction: this._direction,
+            threshold: this.options.threshold,
+        };
+        if (this.hammer) {
+            this.dettachEvent();
+            // hammer remove previous PanRecognizer.
+            this.hammer.add(new Hammer.Pan(hammerOption));
         }
         else {
-            keyValue = String(Math.round(Math.random() * new Date().getTime()));
+            var keyValue = this.element[InputType_1.UNIQUEKEY];
+            if (keyValue) {
+                this.hammer.destroy();
+            }
+            else {
+                keyValue = String(Math.round(Math.random() * new Date().getTime()));
+            }
+            var inputClass = InputType_1.convertInputType(this.options.inputType);
+            if (!inputClass) {
+                throw new Error("Wrong inputType parameter!");
+            }
+            this.hammer = InputType_1.createHammer(this.element, [Hammer.Pan, hammerOption], inputClass);
+            this.element[InputType_1.UNIQUEKEY] = keyValue;
         }
-        this.hammer = this.createHammer(inputClass)
-            .on("hammer.input", function (event) {
-            if (event.isFirst) {
-                observer.hold(_this, event);
-            }
-            else if (event.isFinal) {
-                _this.onRelease(observer, event);
-            }
-        }).on("panstart panmove", function (event) {
-            _this.onChange(observer, event);
-        });
-        this.element[const_1.UNIQUEKEY] = keyValue;
+        this.attachEvent(observer);
         return this;
     };
-    HammerInput.prototype.disconnect = function () {
+    PanInput.prototype.disconnect = function () {
         if (this.hammer) {
-            this.hammer.off("hammer.input panstart panmove panend");
-            this.hammer.destroy();
-            this.hammer = null;
-            delete this.element[const_1.UNIQUEKEY];
+            this.dettachEvent();
         }
-        this._direction = DIRECTION.DIRECTION_NONE;
-        this.element = null;
-        this.options = {};
+        this._direction = const_1.DIRECTION.DIRECTION_NONE;
         return this;
     };
-    HammerInput.prototype.createHammer = function (inputClass) {
-        try {
-            // create Hammer
-            return new Hammer.Manager(this.element, {
-                recognizers: [
-                    [
-                        Hammer.Pan, {
-                            direction: this._direction,
-                            threshold: 0,
-                        },
-                    ],
-                ],
-                // css properties were removed due to usablility issue
-                // http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-                cssProps: {
-                    userSelect: "none",
-                    touchSelect: "none",
-                    touchCallout: "none",
-                    userDrag: "none",
-                },
-                inputClass: inputClass,
-            });
+    PanInput.prototype.destroy = function () {
+        this.disconnect();
+        if (this.hammer) {
+            this.hammer.destroy();
         }
-        catch (e) {
-            return null;
+        delete this.element[InputType_1.UNIQUEKEY];
+        this.element = null;
+        this.hammer = null;
+    };
+    PanInput.prototype.enable = function () {
+        this.hammer && (this.hammer.get("pan").options.enable = true);
+    };
+    PanInput.prototype.disable = function () {
+        this.hammer && (this.hammer.get("pan").options.enable = false);
+    };
+    PanInput.prototype.isEnable = function () {
+        return !!(this.hammer && this.hammer.get("pan").options.enable);
+    };
+    PanInput.prototype.onHammerInput = function (event) {
+        if (this.isEnable() && event.isFirst) {
+            this.observer.hold(this, event);
         }
     };
-    HammerInput.prototype.getOffset = function (properties, useDirection) {
-        var offset = [0, 0];
-        var scale = this.options.scale;
-        if (useDirection[0]) {
-            offset[0] = (properties[0] * scale[0]);
-        }
-        if (useDirection[1]) {
-            offset[1] = (properties[1] * scale[1]);
-        }
-        return offset;
-    };
-    HammerInput.prototype.onChange = function (observer, event) {
-        var userDirection = HammerInput.getDirectionByAngle(event.angle, this.options.thresholdAngle);
+    PanInput.prototype.onPanmove = function (event) {
+        var userDirection = PanInput.getDirectionByAngle(event.angle, this.options.thresholdAngle);
         // not support offset properties in Hammerjs - start
         var prevInput = this.hammer.session.prevInput;
         /* eslint-disable no-param-reassign */
@@ -1033,8 +1168,8 @@ var HammerInput = (function (_super) {
             event.offsetY = 0;
         }
         var offset = this.getOffset([event.offsetX, event.offsetY], [
-            HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
-            HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
         ]);
         var prevent = offset.some(function (v) { return v !== 0; });
         if (prevent) {
@@ -1042,112 +1177,167 @@ var HammerInput = (function (_super) {
             event.srcEvent.stopPropagation();
         }
         event.preventSystemEvent = prevent;
-        prevent && observer.change(this, event, this.toAxis(offset));
+        prevent && this.observer.change(this, event, InputType_1.toAxis(this.axes, offset));
     };
-    HammerInput.prototype.onRelease = function (observer, event) {
+    PanInput.prototype.onPanend = function (event) {
         var offset = this.getOffset([
             Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
             Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1)
         ], [
-            HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction),
-            HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction)
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_HORIZONTAL, this._direction),
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_VERTICAL, this._direction)
         ]);
-        offset = HammerInput.getNextOffset(offset, observer.options.deceleration);
-        observer.release(this, event, this.toAxis(offset));
+        offset = PanInput.getNextOffset(offset, this.observer.options.deceleration);
+        this.observer.release(this, event, InputType_1.toAxis(this.axes, offset));
     };
-    HammerInput.prototype.toAxis = function (offset) {
-        var _this = this;
-        return offset.reduce(function (acc, v, i) {
-            if (_this.axes[i]) {
-                acc[_this.axes[i]] = v;
-            }
-            return acc;
-        }, {});
+    PanInput.prototype.attachEvent = function (observer) {
+        this.observer = observer;
+        this.hammer.on("hammer.input", this.onHammerInput)
+            .on("panstart panmove", this.onPanmove)
+            .on("panend", this.onPanend);
     };
-    HammerInput.prototype.enable = function () {
-        this.hammer && (this.hammer.get("pan").options.enable = true);
+    PanInput.prototype.dettachEvent = function () {
+        this.hammer.off("hammer.input", this.onHammerInput)
+            .off("panstart panmove", this.onPanmove)
+            .off("panend", this.onPanend);
+        this.observer = null;
     };
-    HammerInput.prototype.disable = function () {
-        this.hammer && (this.hammer.get("pan").options.enable = false);
+    PanInput.prototype.getOffset = function (properties, useDirection) {
+        var offset = [0, 0];
+        var scale = this.options.scale;
+        if (useDirection[0]) {
+            offset[0] = (properties[0] * scale[0]);
+        }
+        if (useDirection[1]) {
+            offset[1] = (properties[1] * scale[1]);
+        }
+        return offset;
     };
-    HammerInput.prototype.isEnable = function () {
-        return !!(this.hammer && this.hammer.get("pan").options.enable);
-    };
-    return HammerInput;
-}(InputType_1.InputType));
-exports.HammerInput = HammerInput;
+    return PanInput;
+}());
+exports.PanInput = PanInput;
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_11__;
-
-/***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function $(param, multi) {
-    if (multi === void 0) { multi = false; }
-    var el;
-    if (typeof param === "string") {
-        // check if string is HTML tag format
-        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
-        // creating element
-        if (match) {
-            var dummy = document.createElement("div");
-            dummy.innerHTML = param;
-            el = Array.prototype.slice.call(dummy.childNodes);
+var Hammer = __webpack_require__(2);
+var utils_1 = __webpack_require__(4);
+var InputType_1 = __webpack_require__(5);
+var PinchInput = (function () {
+    function PinchInput(el, options) {
+        this._prev = null;
+        /**
+         * Hammer helps you add support for touch gestures to your page
+         *
+         * @external Hammer
+         * @see {@link http://hammerjs.github.io|Hammer.JS}
+         * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
+         * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
+         */
+        if (typeof Hammer === "undefined") {
+            throw new Error("The Hammerjs must be loaded before eg.Axes.PinchInput.\nhttp://hammerjs.github.io/");
         }
-        else {
-            el = Array.prototype.slice.call(document.querySelectorAll(param));
-        }
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
+        this.element = utils_1.$(el);
+        this.options = __assign({
+            scale: 1,
+            threshold: 0
+        }, options);
+        this.onPinchStart = this.onPinchStart.bind(this);
+        this.onPinchMove = this.onPinchMove.bind(this);
+        this.onPinchEnd = this.onPinchEnd.bind(this);
     }
-    else if (param === window) {
-        el = param;
-    }
-    else if (param.nodeName &&
-        (param.nodeType === 1 || param.nodeType === 9)) {
-        el = param;
-    }
-    else if (("jQuery" in window && param instanceof jQuery) ||
-        param.constructor.prototype.jquery) {
-        el = multi ? param.toArray() : param.get(0);
-    }
-    else if (Array.isArray(param)) {
-        el = param.map(function (v) { return $(v); });
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
-    }
-    return el;
-}
-exports.$ = $;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var InputType = (function () {
-    function InputType() {
-    }
-    InputType.prototype.mapAxes = function (axes) {
+    PinchInput.prototype.mapAxes = function (axes) {
         this.axes = axes;
     };
-    return InputType;
+    PinchInput.prototype.connect = function (observer) {
+        var hammerOption = {
+            threshold: this.options.threshold,
+        };
+        if (this.hammer) {
+            this.dettachEvent();
+            // hammer remove previous PinchRecognizer.
+            this.hammer.add(new Hammer.Pinch(hammerOption));
+        }
+        else {
+            var keyValue = this.element[InputType_1.UNIQUEKEY];
+            if (keyValue) {
+                this.hammer.destroy();
+            }
+            else {
+                keyValue = String(Math.round(Math.random() * new Date().getTime()));
+            }
+            this.hammer = InputType_1.createHammer(this.element, [Hammer.Pinch, hammerOption], Hammer.TouchInput);
+            this.element[InputType_1.UNIQUEKEY] = keyValue;
+        }
+        this.attachEvent(observer);
+        return this;
+    };
+    PinchInput.prototype.disconnect = function () {
+        if (this.hammer) {
+            this.dettachEvent();
+        }
+        return this;
+    };
+    PinchInput.prototype.destroy = function () {
+        this.disconnect();
+        if (this.hammer) {
+            this.hammer.destroy();
+        }
+        delete this.element[InputType_1.UNIQUEKEY];
+        this.element = null;
+        this.hammer = null;
+    };
+    PinchInput.prototype.onPinchStart = function (event) {
+        this._prev = event.scale;
+        this.observer.hold(this, event);
+    };
+    PinchInput.prototype.onPinchMove = function (event) {
+        var offset = (event.scale - this._prev) * this.options.scale;
+        this.observer.change(this, event, InputType_1.toAxis(this.axes, [offset]));
+        this._prev = event.scale;
+    };
+    PinchInput.prototype.onPinchEnd = function (event) {
+        this.observer.release(this, event, InputType_1.toAxis(this.axes, [0]), 0);
+        this._prev = null;
+    };
+    PinchInput.prototype.attachEvent = function (observer) {
+        this.observer = observer;
+        this.hammer.on("pinchstart", this.onPinchStart)
+            .on("pinchmove", this.onPinchMove)
+            .on("pinchend", this.onPinchEnd);
+    };
+    PinchInput.prototype.dettachEvent = function () {
+        this.hammer.off("pinchstart", this.onPinchStart)
+            .off("pinchmove", this.onPinchMove)
+            .off("pinchend", this.onPinchEnd);
+        this.observer = null;
+        this._prev = null;
+    };
+    PinchInput.prototype.enable = function () {
+        this.hammer && (this.hammer.get("pinch").options.enable = true);
+    };
+    PinchInput.prototype.disable = function () {
+        this.hammer && (this.hammer.get("pinch").options.enable = false);
+    };
+    PinchInput.prototype.isEnable = function () {
+        return !!(this.hammer && this.hammer.get("pinch").options.enable);
+    };
+    return PinchInput;
 }());
-exports.InputType = InputType;
+exports.PinchInput = PinchInput;
 
 
 /***/ })

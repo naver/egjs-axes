@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>egjs-axes</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
 <style>
 #dot {
   position:absolute; background-color:#f00; width:9px; height:9px;
@@ -61,7 +61,9 @@ button {
 <body>
   <div id="bounced">
     <div id="area" class="centerFont">
-      ALL
+      <div style="overflow:hidden">
+        <div id="area-content">ALL</div>
+      </div>
       <div id="dot"></div>
     </div>
   </div>
@@ -74,10 +76,10 @@ button {
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
-  <!-- <script src="../../node_modules/hammerjs/hammer.js"></script>
+   <script src="../../node_modules/hammerjs/hammer.js"></script>
   <script src="../../node_modules/@egjs/component/dist/component.js"></script>
-  <script src="../../dist/axes.js"></script> -->
-  <script src="../../dist/axes.pkgd.js"></script>
+  <script src="../../dist/axes.js"></script> 
+  <!-- <script src="../../dist/axes.pkgd.js"></script> -->
   <script src="js/index.js"></script>
 </body>
 </html>

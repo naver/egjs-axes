@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -232,1263 +232,6 @@ exports.AxisManager = AxisManager;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UNIQUEKEY = "__EGJS_AXES__";
-exports.SUPPORT_TOUCH = "ontouchstart" in window;
-exports.TRANSFORM = (function () {
-    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
-    var target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
-    for (var i = 0, len = target.length; i < len; i++) {
-        if (target[i] in bodyStyle) {
-            return target[i];
-        }
-    }
-    return "";
-})();
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _Axes = __webpack_require__(4);
-
-var _Axes2 = _interopRequireDefault(_Axes);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-_Axes2["default"].VERSION = "2.0.0-rc"; /**
-                                         * Copyright (c) NAVER Corp.
-                                         * egjs-axes projects are licensed under the MIT license
-                                         */
-
-module.exports = _Axes2["default"];
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Component = __webpack_require__(5);
-var AnimationManager_1 = __webpack_require__(6);
-var EventManager_1 = __webpack_require__(7);
-var InterruptManager_1 = __webpack_require__(8);
-var AxisManager_1 = __webpack_require__(1);
-var InputObserver_1 = __webpack_require__(9);
-var HammerInput_1 = __webpack_require__(10);
-var const_1 = __webpack_require__(2);
-/**
- * Copyright (c) NAVER Corp.
- * egjs-axes projects are licensed under the MIT license
- */
-/**
- * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
- * @alias eg.Axes
- * @extends eg.Component
- *
- * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
- */
-var Axes = (function (_super) {
-    __extends(Axes, _super);
-    function Axes(options) {
-        var _this = _super.call(this) || this;
-        _this._inputs = [];
-        _this.options = __assign({
-            easing: function easeOutCubic(x) {
-                return 1 - Math.pow(1 - x, 3);
-            },
-            interruptable: true,
-            maximumDuration: Infinity,
-            deceleration: 0.0006,
-            axis: {},
-        }, options);
-        _this._complementOptions();
-        _this._em = new EventManager_1.EventManager(_this);
-        _this._axm = new AxisManager_1.AxisManager(_this.options);
-        _this._itm = new InterruptManager_1.InterruptManager(_this.options);
-        _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
-        _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
-        return _this;
-    }
-    /**
-     * set up 'css' expression
-     * @private
-     */
-    Axes.prototype._complementOptions = function () {
-        var _this = this;
-        Object.keys(this.options.axis).forEach(function (axis) {
-            _this.options.axis[axis] = __assign({
-                range: [0, 100],
-                bounce: [0, 0],
-                circular: [false, false]
-            }, _this.options.axis[axis]);
-            ["bounce", "circular"].forEach(function (v) {
-                var axisOption = _this.options.axis;
-                var key = axisOption[axis][v];
-                if (/string|number|boolean/.test(typeof key)) {
-                    axisOption[axis][v] = [key, key];
-                }
-            });
-        });
-    };
-    Axes.prototype.connect = function (axes, inputType) {
-        var mapped;
-        if (typeof axes === "string") {
-            mapped = axes.split(" ");
-        }
-        else {
-            mapped = axes.concat();
-        }
-        if (~this._inputs.indexOf(inputType)) {
-            inputType.disconnect();
-        }
-        inputType.mapAxes(mapped);
-        inputType.connect(this._io);
-        return this;
-    };
-    Axes.prototype.disconnect = function (inputType) {
-        if (inputType) {
-            var index = this._inputs.indexOf(inputType);
-            ~index && this._inputs.splice(index, 1);
-        }
-        else {
-            this._inputs.forEach(function (v) { return v.disconnect(); });
-            this._inputs = [];
-        }
-        return this;
-    };
-    Axes.prototype.get = function (axes) {
-        return this._axm.get(axes);
-    };
-    Axes.prototype.setTo = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        this._am.setTo(pos, duration);
-        return this;
-    };
-    Axes.prototype.setBy = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        this._am.setBy(pos, duration);
-        return this;
-    };
-    Axes.prototype.isOutside = function (axes) {
-        return this._axm.isOutside(axes);
-    };
-    Axes.prototype.destroy = function () {
-        this.disconnect();
-        this._em.destroy();
-    };
-    Axes.HammerInput = HammerInput_1.HammerInput;
-    Axes.TRANSFORM = const_1.TRANSFORM;
-    return Axes;
-}(Component));
-exports.default = Axes;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(true)
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["Component"] = factory();
-	else
-		root["eg"] = root["eg"] || {}, root["eg"]["Component"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
-/******/ 			return installedModules[moduleId].exports;
-/******/
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Copyright (c) 2015 NAVER Corp.
- * egjs projects are licensed under the MIT license
- */
-
-/**
- * A class used to manage events and options in a component
- * @class
- * @group egjs
- * @name eg.Component
- * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
- *
- * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
- */
-var Component = exports.Component = function () {
-	function Component() {
-		_classCallCheck(this, Component);
-
-		this._eventHandler = {};
-		this.options = {};
-	}
-
-	/**
-  * Sets options in a component or returns them.
-  * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
-  * @method eg.Component#option
-  * @param {String} key The key of the option<ko>옵션의 키</ko>
-  * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
-  * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
-  * @example
- 	 class Some extends eg.Component{
- 		}
- 	 const some = new Some({
- 		"foo": 1,
- 		"bar": 2
- 	});
- 	 some.option("foo"); // return 1
-  some.option("foo",3); // return some instance
-  some.option(); // return options object.
-  some.option({
- 		"foo" : 10,
- 		"bar" : 20,
- 		"baz" : 30
- 	}); // return some instance.
-  */
-
-
-	_createClass(Component, [{
-		key: "option",
-		value: function option() {
-			if (arguments.length >= 2) {
-				var _key = arguments.length <= 0 ? undefined : arguments[0];
-				var value = arguments.length <= 1 ? undefined : arguments[1];
-				this.options[_key] = value;
-				return this;
-			}
-
-			var key = arguments.length <= 0 ? undefined : arguments[0];
-			if (typeof key === "string") {
-				return this.options[key];
-			}
-
-			if (arguments.length === 0) {
-				return this.options;
-			}
-
-			var options = key;
-			this.options = options;
-
-			return this;
-		}
-		/**
-   * Triggers a custom event.
-   * @ko 커스텀 이벤트를 발생시킨다
-   * @method eg.Component#trigger
-   * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
-   * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
-   * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
-   * @example
-   class Some extends eg.Component{
-  		some(){
-  			this.trigger("hi");// fire hi event.
-  		}
-  	}
-   */
-
-	}, {
-		key: "trigger",
-		value: function trigger(eventName) {
-			var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-			var handlerList = this._eventHandler[eventName] || [];
-			var hasHandlerList = handlerList.length > 0;
-
-			if (!hasHandlerList) {
-				return true;
-			}
-
-			// If detach method call in handler in first time then handeler list calls.
-			handlerList = handlerList.concat();
-
-			customEvent.eventType = eventName;
-
-			var isCanceled = false;
-			var arg = [customEvent];
-			var i = void 0;
-
-			customEvent.stop = function () {
-				return isCanceled = true;
-			};
-
-			for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
-				restParam[_key2 - 2] = arguments[_key2];
-			}
-
-			if (restParam.length >= 1) {
-				arg = arg.concat(restParam);
-			}
-
-			for (i in handlerList) {
-				handlerList[i].apply(this, arg);
-			}
-
-			return !isCanceled;
-		}
-		/**
-   * Executed event just one time.
-   * @ko 이벤트가 한번만 실행된다.
-   * @method eg.Component#once
-   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-  		hi(){
-  			alert("hi");
-  		}
-  		thing(){
-  			this.once("hi", this.hi);
-  		}
-  	}
-  	 var some = new Some();
-   some.thing();
-   some.trigger("hi");
-   // fire alert("hi");
-   some.trigger("hi");
-   // Nothing happens
-   */
-
-	}, {
-		key: "once",
-		value: function once(eventName, handlerToAttach) {
-			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				var i = void 0;
-				for (i in eventHash) {
-					this.once(i, eventHash[i]);
-				}
-				return this;
-			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-				var self = this;
-				this.on(eventName, function listener() {
-					for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-						arg[_key3] = arguments[_key3];
-					}
-
-					handlerToAttach.apply(self, arg);
-					self.off(eventName, listener);
-				});
-			}
-
-			return this;
-		}
-
-		/**
-   * Checks whether an event has been attached to a component.
-   * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
-   * @method eg.Component#hasOn
-   * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
-   * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
-   * @example
-   class Some extends eg.Component{
-  		some(){
-  			this.hasOn("hi");// check hi event.
-  		}
-  	}
-   */
-
-	}, {
-		key: "hasOn",
-		value: function hasOn(eventName) {
-			return !!this._eventHandler[eventName];
-		}
-
-		/**
-   * Attaches an event to a component.
-   * @ko 컴포넌트에 이벤트를 등록한다.
-   * @method eg.Component#on
-   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-   		hi(){
-  			console.log("hi");
-   		}
-  		some(){
-  			this.on("hi",this.hi); //attach event
-  		}
-  	}
-   */
-
-	}, {
-		key: "on",
-		value: function on(eventName, handlerToAttach) {
-			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				var name = void 0;
-				for (name in eventHash) {
-					this.on(name, eventHash[name]);
-				}
-				return this;
-			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-				var handlerList = this._eventHandler[eventName];
-
-				if (typeof handlerList === "undefined") {
-					handlerList = this._eventHandler[eventName] = [];
-				}
-
-				handlerList.push(handlerToAttach);
-			}
-
-			return this;
-		}
-		/**
-   * Detaches an event from the component.
-   * @ko 컴포넌트에 등록된 이벤트를 해제한다
-   * @method eg.Component#off
-   * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
-   * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-   		hi(){
-  			console.log("hi");
-   		}
-  		some(){
-  			this.off("hi",this.hi); //detach event
-  		}
-  	}
-   */
-
-	}, {
-		key: "off",
-		value: function off(eventName, handlerToDetach) {
-			// All event detach.
-			if (typeof eventName === "undefined") {
-				this._eventHandler = {};
-				return this;
-			}
-
-			// All handler of specific event detach.
-			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string") {
-					this._eventHandler[eventName] = undefined;
-					return this;
-				} else {
-					var eventHash = eventName;
-					var name = void 0;
-					for (name in eventHash) {
-						this.off(name, eventHash[name]);
-					}
-					return this;
-				}
-			}
-
-			// The handler of specific event detach.
-			var handlerList = this._eventHandler[eventName];
-			if (handlerList) {
-				var k = void 0;
-				var handlerFunction = void 0;
-				for (k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
-					if (handlerFunction === handlerToDetach) {
-						handlerList = handlerList.splice(k, 1);
-						break;
-					}
-				}
-			}
-
-			return this;
-		}
-	}]);
-
-	return Component;
-}();
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _component = __webpack_require__(0);
-
-module.exports = _component.Component;
-
-/***/ })
-/******/ ]);
-});
-//# sourceMappingURL=component.js.map
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Coordinate_1 = __webpack_require__(0);
-var AxisManager_1 = __webpack_require__(1);
-var AnimationManager = (function () {
-    function AnimationManager(options, itm, em, axm) {
-        this.options = options;
-        this.itm = itm;
-        this.em = em;
-        this.axm = axm;
-    }
-    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
-        var _this = this;
-        var duration;
-        if (typeof wishDuration !== "undefined") {
-            duration = wishDuration;
-        }
-        else {
-            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1.default.getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
-            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
-        }
-        return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
-    };
-    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get(Object.keys(pos));
-        var destPos = this.axm.map(pos, function (v, k, opt) {
-            return Coordinate_1.default.getInsidePosition(v, opt.range, opt.circular, opt.bounce);
-        });
-        var distance = this.axm.map(destPos, function (v, k) { return v - depaPos[k]; });
-        var maximumDuration = this.options.maximumDuration;
-        return {
-            depaPos: depaPos,
-            destPos: destPos,
-            duration: maximumDuration > duration ? duration : maximumDuration,
-            distance: distance,
-            inputEvent: inputEvent,
-            done: this.animationEnd.bind(this)
-        };
-    };
-    AnimationManager.prototype.grab = function (axes) {
-        if (this._animateParam && !axes.length) {
-            var orgPos_1 = this.axm.get(axes);
-            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular); });
-            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
-                this.em.triggerChange(this.axm.moveTo(pos), true);
-            }
-            this._animateParam = null;
-            this._raf && window.cancelAnimationFrame(this._raf);
-            this._raf = null;
-            this.em.trigger("animationEnd");
-        }
-    };
-    AnimationManager.prototype.restore = function (inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var pos = this.axm.get();
-        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
-        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
-    };
-    AnimationManager.prototype.animationEnd = function () {
-        this._animateParam = null;
-        // for Circular
-        this.setTo(this.axm.map(this.axm.get(), function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(Math.round(v), opt.range, opt.circular); }));
-        this.itm.setInterrupt(false);
-        /**
-         * This event is fired when animation ends.
-         * @ko 에니메이션이 끝났을 때 발생한다.
-         * @name eg.Axes#animationEnd
-         * @event
-         */
-        this.em.trigger("animationEnd");
-        this.axm.isOutside() && this.restore();
-    };
-    AnimationManager.prototype.animateLoop = function (param, complete) {
-        this._animateParam = __assign({}, param);
-        this._animateParam.startTime = new Date().getTime();
-        if (param.duration) {
-            var info_1 = this._animateParam;
-            var self_1 = this;
-            (function loop() {
-                self_1._raf = null;
-                if (self_1.frame(info_1) >= 1) {
-                    complete();
-                    return;
-                } // animationEnd
-                self_1._raf = window.requestAnimationFrame(loop);
-            })();
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(param.destPos));
-            complete();
-        }
-    };
-    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
-        var _this = this;
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get();
-        var param = this.createAnimationParam(destPos, duration, inputEvent);
-        var retTrigger = this.em.trigger("animationStart", param);
-        // You can't stop the 'animationStart' event when 'circular' is true.
-        if (!retTrigger && this.axm.every(param.destPos, function (v, k, opt) { return Coordinate_1.default.isCircularable(v, opt.range, opt.circular); })) {
-            console.warn("You can't stop the 'animation' event when 'circular' is true.");
-        }
-        retTrigger &&
-            !AxisManager_1.AxisManager.equal(param.destPos, param.depaPos) &&
-            this.animateLoop(param, function () { return _this.animationEnd(); });
-    };
-    // animation frame (0~1)
-    AnimationManager.prototype.frame = function (param) {
-        var curTime = new Date().getTime() - param.startTime;
-        var easingPer = this.easing(curTime / param.duration);
-        var toPos = param.depaPos;
-        toPos = this.axm.map(toPos, function (v, k, opt) {
-            v += (param.destPos[k] - v) * easingPer;
-            return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular);
-        });
-        this.em.triggerChange(this.axm.moveTo(toPos));
-        return easingPer;
-    };
-    AnimationManager.prototype.easing = function (p) {
-        return p > 1 ? 1 : this.options.easing(p);
-    };
-    /**
-     * Moves an element to specific coordinates.
-     * @ko 좌표를 이동한다.
-     * @method eg.Axes#setTo
-     * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-     * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
-     * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-     * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
-     */
-    AnimationManager.prototype.setTo = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        var axes = Object.keys(pos);
-        this.grab(axes);
-        var orgPos = this.axm.get(axes);
-        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
-            return this;
-        }
-        this.itm.setInterrupt(true);
-        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
-        if (!Object.keys(movedPos).length) {
-            return;
-        }
-        movedPos = this.axm.map(movedPos, function (v, k, opt) {
-            v = Coordinate_1.default.getInsidePosition(v, opt.range, opt.circular);
-            return duration ? v : Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular);
-        });
-        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
-            return this;
-        }
-        else if (duration) {
-            this.animateTo(movedPos, duration);
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(movedPos));
-            this.itm.setInterrupt(false);
-        }
-        return this;
-    };
-    /**
-     * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
-     * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
-     * @method eg.Axes#setBy
-     * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-     * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
-     * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-     * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
-     */
-    AnimationManager.prototype.setBy = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
-    };
-    return AnimationManager;
-}());
-exports.AnimationManager = AnimationManager;
-;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventManager = (function () {
-    function EventManager(axes) {
-        this.axes = axes;
-    }
-    EventManager.prototype.trigger = function (name, option) {
-        return this.axes.trigger(name, option);
-    };
-    // trigger 'change' event
-    EventManager.prototype.triggerChange = function (pos, event) {
-        if (event === void 0) { event = null; }
-        /**
-         * This event is fired when coordinate changes.
-         * @ko 좌표가 변경됐을 때 발생하는 이벤트
-         * @name eg.Axes#change
-         * @event
-         *
-         * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Array} param.position departure coordinate  <ko>좌표</ko>
-         * @param {Number} param.position.0 The X coordinate <ko>x 좌표</ko>
-         * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
-         * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
-         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
-         *
-         */
-        this.trigger("change", {
-            pos: pos,
-            holding: event !== null,
-            inputEvent: event,
-        });
-    };
-    EventManager.prototype.destroy = function () {
-        this.axes.off();
-    };
-    return EventManager;
-}());
-exports.EventManager = EventManager;
-;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var InterruptManager = (function () {
-    function InterruptManager(options) {
-        this.options = options;
-        this._prevented = false; //  check whether the animation event was prevented
-    }
-    InterruptManager.prototype.isInterrupting = function () {
-        // when interruptable is 'true', return value is always 'true'.
-        return this.options.interruptable || this._prevented;
-    };
-    InterruptManager.prototype.isInterrupted = function () {
-        return !this.options.interruptable && this._prevented;
-    };
-    InterruptManager.prototype.setInterrupt = function (prevented) {
-        !this.options.interruptable && (this._prevented = prevented);
-    };
-    return InterruptManager;
-}());
-exports.InterruptManager = InterruptManager;
-;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var AxisManager_1 = __webpack_require__(1);
-var Coordinate_1 = __webpack_require__(0);
-var InputObserver = (function () {
-    function InputObserver(options, itm, em, axm, am) {
-        this.options = options;
-        this.itm = itm;
-        this.em = em;
-        this.axm = axm;
-        this.am = am;
-        this.isOutside = false;
-    }
-    // when move pointer is held in outside
-    InputObserver.prototype.atOutside = function (pos) {
-        var _this = this;
-        if (this.isOutside) {
-            return this.axm.map(pos, function (v, k, opt) {
-                var tn = opt.range[0] - opt.bounce[0];
-                var tx = opt.range[1] + opt.bounce[1];
-                return v > tx ? tx : (v < tn ? tn : v);
-            });
-        }
-        else {
-            // when start pointer is held in inside
-            // get a initialization slope value to prevent smooth animation.
-            var initSlope_1 = this.am.easing(0.00001) / 0.00001;
-            return this.axm.map(pos, function (v, k, opt) {
-                var min = opt.range[0];
-                var max = opt.range[1];
-                var out = opt.bounce;
-                if (v < min) {
-                    return min - _this.am.easing((min - v) / (out[0] * initSlope_1)) * out[0];
-                }
-                else if (v > max) {
-                    return max + _this.am.easing((v - max) / (out[1] * initSlope_1)) * out[1];
-                }
-                return v;
-            });
-        }
-    };
-    InputObserver.prototype.hold = function (inputType, event) {
-        if (this.itm.isInterrupted() || !inputType.axes.length) {
-            return;
-        }
-        this.itm.setInterrupt(true);
-        this.am.grab(inputType.axes);
-        var pos = this.axm.get();
-        /**
-         * This event is fired when a user holds an element on the screen of the device.
-         * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-         * @event eg.Axes#hold
-         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
-         * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
-         * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
-         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
-         *
-         */
-        this.em.trigger("hold", {
-            pos: pos,
-            inputEvent: event,
-        });
-        this.isOutside = this.axm.isOutside(inputType.axes);
-        this.moveDistance = this.axm.get(inputType.axes);
-    };
-    InputObserver.prototype.change = function (inputType, event, offset) {
-        if (!this.itm.isInterrupting() || this.axm.every(offset, function (v) { return v === 0; })) {
-            return;
-        }
-        var depaPos = this.axm.get(inputType.axes);
-        // for outside logic
-        this.moveDistance = this.axm.map(this.moveDistance, function (v, k) { return v + offset[k]; });
-        var destPos = this.axm.map(this.moveDistance, function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular); });
-        // from outside to inside
-        if (this.isOutside &&
-            this.axm.every(depaPos, function (v, k, opt) { return !Coordinate_1.default.isOutside(v, opt.range); })) {
-            this.isOutside = false;
-        }
-        destPos = this.atOutside(destPos);
-        this.em.triggerChange(this.axm.moveTo(destPos), event);
-    };
-    InputObserver.prototype.release = function (inputType, event, offset, inputDuration) {
-        if (!this.itm.isInterrupting()) {
-            return;
-        }
-        var pos = this.axm.get(inputType.axes);
-        var depaPos = this.axm.get();
-        var destPos = this.axm.map(offset, function (v, k, opt) {
-            return Coordinate_1.default.getInsidePosition(pos[k] + v, opt.range, opt.circular, opt.bounce);
-        });
-        /**
-         * This event is fired when a user release an element on the screen of the device.
-         * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-         * @event eg.Axes#release
-         *
-         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
-         * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
-         * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
-         * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
-         * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
-         * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
-         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
-         *
-         */
-        // prepare duration
-        var param = {
-            depaPos: depaPos,
-            destPos: __assign({}, depaPos, destPos),
-            duration: this.am.getDuration(destPos, pos, inputDuration),
-            inputEvent: event
-        };
-        this.em.trigger("release", param);
-        if (this.axm.isOutside()) {
-            this.am.restore(event);
-        }
-        else {
-            if (AxisManager_1.AxisManager.equal(param.destPos, param.depaPos)) {
-                this.itm.setInterrupt(false);
-            }
-            else {
-                this.am.animateTo(param.destPos, param.duration);
-            }
-        }
-        this.moveDistance = null;
-    };
-    return InputObserver;
-}());
-exports.InputObserver = InputObserver;
-;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Hammer = __webpack_require__(11);
-var const_1 = __webpack_require__(2);
-var utils_1 = __webpack_require__(12);
-var InputType_1 = __webpack_require__(13);
-/**
- * Hammer helps you add support for touch gestures to your page
- *
- * @external Hammer
- * @see {@link http://hammerjs.github.io|Hammer.JS}
- * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
- * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
- */
-if (typeof Hammer === "undefined") {
-    throw new Error("The Hammerjs must be loaded before eg.Axes.\nhttp://hammerjs.github.io/");
-}
-var DIRECTION;
-(function (DIRECTION) {
-    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
-    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
-    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
-    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
-})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
-var HammerInput = (function (_super) {
-    __extends(HammerInput, _super);
-    function HammerInput(el, options) {
-        var _this = _super.call(this) || this;
-        _this.element = utils_1.$(el);
-        _this.options = __assign({
-            inputType: ["touch", "mouse"],
-            scale: [1, 1],
-            thresholdAngle: 45
-        }, options);
-        return _this;
-    }
-    HammerInput.convertHammerInputType = function (inputType) {
-        var hasTouch = false;
-        var hasMouse = false;
-        var inputs = inputType || [];
-        inputs.forEach(function (v) {
-            switch (v) {
-                case "mouse":
-                    hasMouse = true;
-                    break;
-                case "touch": hasTouch = const_1.SUPPORT_TOUCH;
-            }
-        });
-        return (hasTouch && Hammer.TouchInput) ||
-            (hasMouse && Hammer.MouseInput) || null;
-    };
-    // get user's direction
-    HammerInput.getDirectionByAngle = function (angle, thresholdAngle) {
-        if (thresholdAngle < 0 || thresholdAngle > 90) {
-            return DIRECTION.DIRECTION_NONE;
-        }
-        var toAngle = Math.abs(angle);
-        return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
-            DIRECTION.DIRECTION_VERTICAL : DIRECTION.DIRECTION_HORIZONTAL;
-    };
-    HammerInput.getNextOffset = function (speeds, deceleration) {
-        var normalSpeed = Math.sqrt(speeds[0] * speeds[0] + speeds[1] * speeds[1]);
-        var duration = Math.abs(normalSpeed / -deceleration);
-        return [
-            speeds[0] / 2 * duration,
-            speeds[1] / 2 * duration
-        ];
-    };
-    HammerInput.useDirection = function (checkType, direction, userDirection) {
-        if (userDirection) {
-            return !!((direction === DIRECTION.DIRECTION_ALL) ||
-                ((direction & checkType) && (userDirection & checkType)));
-        }
-        else {
-            return !!(direction & checkType);
-        }
-    };
-    HammerInput.prototype.mapAxes = function (axes) {
-        var useHorizontal = !!axes[0];
-        var useVertical = !!axes[1];
-        if (useHorizontal && useVertical) {
-            this._direction = DIRECTION.DIRECTION_ALL;
-        }
-        else if (useHorizontal) {
-            this._direction = DIRECTION.DIRECTION_HORIZONTAL;
-        }
-        else if (useVertical) {
-            this._direction = DIRECTION.DIRECTION_VERTICAL;
-        }
-        else {
-            this._direction = DIRECTION.DIRECTION_NONE;
-        }
-        this.axes = axes;
-    };
-    HammerInput.prototype.connect = function (observer) {
-        var _this = this;
-        var inputClass = HammerInput.convertHammerInputType(this.options.inputType);
-        if (!inputClass) {
-            throw new Error("Wrong inputType parameter!");
-        }
-        var keyValue = this.element[const_1.UNIQUEKEY];
-        if (keyValue) {
-            this.hammer && this.hammer.destroy();
-        }
-        else {
-            keyValue = String(Math.round(Math.random() * new Date().getTime()));
-        }
-        this.hammer = this.createHammer(inputClass)
-            .on("hammer.input", function (event) {
-            if (event.isFirst) {
-                observer.hold(_this, event);
-            }
-            else if (event.isFinal) {
-                _this.onRelease(observer, event);
-            }
-        }).on("panstart panmove", function (event) {
-            _this.onChange(observer, event);
-        });
-        this.element[const_1.UNIQUEKEY] = keyValue;
-        return this;
-    };
-    HammerInput.prototype.disconnect = function () {
-        if (this.hammer) {
-            this.hammer.off("hammer.input panstart panmove panend");
-            this.hammer.destroy();
-            this.hammer = null;
-            delete this.element[const_1.UNIQUEKEY];
-        }
-        this._direction = DIRECTION.DIRECTION_NONE;
-        this.element = null;
-        this.options = {};
-        return this;
-    };
-    HammerInput.prototype.createHammer = function (inputClass) {
-        try {
-            // create Hammer
-            return new Hammer.Manager(this.element, {
-                recognizers: [
-                    [
-                        Hammer.Pan, {
-                            direction: this._direction,
-                            threshold: 0,
-                        },
-                    ],
-                ],
-                // css properties were removed due to usablility issue
-                // http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-                cssProps: {
-                    userSelect: "none",
-                    touchSelect: "none",
-                    touchCallout: "none",
-                    userDrag: "none",
-                },
-                inputClass: inputClass,
-            });
-        }
-        catch (e) {
-            return null;
-        }
-    };
-    HammerInput.prototype.getOffset = function (properties, useDirection) {
-        var offset = [0, 0];
-        var scale = this.options.scale;
-        if (useDirection[0]) {
-            offset[0] = (properties[0] * scale[0]);
-        }
-        if (useDirection[1]) {
-            offset[1] = (properties[1] * scale[1]);
-        }
-        return offset;
-    };
-    HammerInput.prototype.onChange = function (observer, event) {
-        var userDirection = HammerInput.getDirectionByAngle(event.angle, this.options.thresholdAngle);
-        // not support offset properties in Hammerjs - start
-        var prevInput = this.hammer.session.prevInput;
-        /* eslint-disable no-param-reassign */
-        if (prevInput) {
-            event.offsetX = event.deltaX - prevInput.deltaX;
-            event.offsetY = event.deltaY - prevInput.deltaY;
-        }
-        else {
-            event.offsetX = 0;
-            event.offsetY = 0;
-        }
-        var offset = this.getOffset([event.offsetX, event.offsetY], [
-            HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
-            HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
-        ]);
-        var prevent = offset.some(function (v) { return v !== 0; });
-        if (prevent) {
-            event.srcEvent.preventDefault();
-            event.srcEvent.stopPropagation();
-        }
-        event.preventSystemEvent = prevent;
-        prevent && observer.change(this, event, this.toAxis(offset));
-    };
-    HammerInput.prototype.onRelease = function (observer, event) {
-        var offset = this.getOffset([
-            Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
-            Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1)
-        ], [
-            HammerInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction),
-            HammerInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction)
-        ]);
-        offset = HammerInput.getNextOffset(offset, observer.options.deceleration);
-        observer.release(this, event, this.toAxis(offset));
-    };
-    HammerInput.prototype.toAxis = function (offset) {
-        var _this = this;
-        return offset.reduce(function (acc, v, i) {
-            if (_this.axes[i]) {
-                acc[_this.axes[i]] = v;
-            }
-            return acc;
-        }, {});
-    };
-    HammerInput.prototype.enable = function () {
-        this.hammer && (this.hammer.get("pan").options.enable = true);
-    };
-    HammerInput.prototype.disable = function () {
-        this.hammer && (this.hammer.get("pan").options.enable = false);
-    };
-    HammerInput.prototype.isEnable = function () {
-        return !!(this.hammer && this.hammer.get("pan").options.enable);
-    };
-    return HammerInput;
-}(InputType_1.InputType));
-exports.HammerInput = HammerInput;
-
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -4138,7 +2881,77 @@ if (true) {
 
 
 /***/ }),
-/* 12 */
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @name eg.MovableCoord.DIRECTION_NONE
+ * @constant
+ * @type {Number}
+ */
+/**
+ * @name eg.MovableCoord.DIRECTION_LEFT
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_RIGHT
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_UP
+ * @constant
+ * @type {Number}
+     */
+/**
+ * @name eg.MovableCoord.DIRECTION_DOWN
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_HORIZONTAL
+ * @constant
+ * @type {Number}
+*/
+/**
+ * @name eg.MovableCoord.DIRECTION_VERTICAL
+ * @constant
+ * @type {Number}
+*/
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * @name eg.MovableCoord.DIRECTION_ALL
+ * @constant
+ * @type {Number}
+*/
+var DIRECTION;
+(function (DIRECTION) {
+    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
+    DIRECTION[DIRECTION["DIRECTION_LEFT"] = 2] = "DIRECTION_LEFT";
+    DIRECTION[DIRECTION["DIRECTION_RIGHT"] = 4] = "DIRECTION_RIGHT";
+    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
+    DIRECTION[DIRECTION["DIRECTION_UP"] = 8] = "DIRECTION_UP";
+    DIRECTION[DIRECTION["DIRECTION_DOWN"] = 16] = "DIRECTION_DOWN";
+    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
+    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
+})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
+exports.TRANSFORM = (function () {
+    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+    var target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
+    for (var i = 0, len = target.length; i < len; i++) {
+        if (target[i] in bodyStyle) {
+            return target[i];
+        }
+    }
+    return "";
+})();
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4186,21 +2999,1398 @@ exports.$ = $;
 
 
 /***/ }),
-/* 13 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var InputType = (function () {
-    function InputType() {
+var Hammer = __webpack_require__(2);
+exports.SUPPORT_TOUCH = "ontouchstart" in window;
+exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
+function toAxis(source, offset) {
+    return offset.reduce(function (acc, v, i) {
+        if (source[i]) {
+            acc[source[i]] = v;
+        }
+        return acc;
+    }, {});
+}
+exports.toAxis = toAxis;
+;
+function createHammer(element, recognizers, inputClass) {
+    try {
+        var options = {
+            recognizers: [
+                recognizers
+            ],
+            // css properties were removed due to usablility issue
+            // http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
+            cssProps: {
+                userSelect: "none",
+                touchSelect: "none",
+                touchCallout: "none",
+                userDrag: "none",
+            }
+        };
+        inputClass && (options["inputClass"] = inputClass);
+        // create Hammer
+        return new Hammer.Manager(element, options);
     }
-    InputType.prototype.mapAxes = function (axes) {
+    catch (e) {
+        return null;
+    }
+}
+exports.createHammer = createHammer;
+;
+function convertInputType(inputType) {
+    if (inputType === void 0) { inputType = []; }
+    var hasTouch = false;
+    var hasMouse = false;
+    inputType.forEach(function (v) {
+        switch (v) {
+            case "mouse":
+                hasMouse = true;
+                break;
+            case "touch": hasTouch = exports.SUPPORT_TOUCH;
+        }
+    });
+    return (hasTouch && Hammer.TouchInput) ||
+        (hasMouse && Hammer.MouseInput) || null;
+}
+exports.convertInputType = convertInputType;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Axes = __webpack_require__(7);
+
+var _Axes2 = _interopRequireDefault(_Axes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+_Axes2["default"].VERSION = "2.0.0-rc"; /**
+                                         * Copyright (c) NAVER Corp.
+                                         * egjs-axes projects are licensed under the MIT license
+                                         */
+
+module.exports = _Axes2["default"];
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Component = __webpack_require__(8);
+var AnimationManager_1 = __webpack_require__(9);
+var EventManager_1 = __webpack_require__(10);
+var InterruptManager_1 = __webpack_require__(11);
+var AxisManager_1 = __webpack_require__(1);
+var InputObserver_1 = __webpack_require__(12);
+var PanInput_1 = __webpack_require__(13);
+var PinchInput_1 = __webpack_require__(14);
+var const_1 = __webpack_require__(3);
+/**
+ * Copyright (c) NAVER Corp.
+ * egjs-axes projects are licensed under the MIT license
+ */
+/**
+ * A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
+ * @alias eg.Axes
+ * @extends eg.Component
+ *
+ * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ */
+var Axes = (function (_super) {
+    __extends(Axes, _super);
+    function Axes(options) {
+        var _this = _super.call(this) || this;
+        _this._inputs = [];
+        _this.options = __assign({
+            easing: function easeOutCubic(x) {
+                return 1 - Math.pow(1 - x, 3);
+            },
+            interruptable: true,
+            maximumDuration: Infinity,
+            deceleration: 0.0006,
+            axis: {},
+        }, options);
+        _this._complementOptions();
+        _this._em = new EventManager_1.EventManager(_this);
+        _this._axm = new AxisManager_1.AxisManager(_this.options);
+        _this._itm = new InterruptManager_1.InterruptManager(_this.options);
+        _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
+        _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
+        return _this;
+    }
+    /**
+     * set up 'css' expression
+     * @private
+     */
+    Axes.prototype._complementOptions = function () {
+        var _this = this;
+        Object.keys(this.options.axis).forEach(function (axis) {
+            _this.options.axis[axis] = __assign({
+                range: [0, 100],
+                bounce: [0, 0],
+                circular: [false, false]
+            }, _this.options.axis[axis]);
+            ["bounce", "circular"].forEach(function (v) {
+                var axisOption = _this.options.axis;
+                var key = axisOption[axis][v];
+                if (/string|number|boolean/.test(typeof key)) {
+                    axisOption[axis][v] = [key, key];
+                }
+            });
+        });
+    };
+    Axes.prototype.connect = function (axes, inputType) {
+        var mapped;
+        if (typeof axes === "string") {
+            mapped = axes.split(" ");
+        }
+        else {
+            mapped = axes.concat();
+        }
+        // check same instance
+        if (~this._inputs.indexOf(inputType)) {
+            this.disconnect(inputType);
+        }
+        // check same element in hammer type for share
+        var targets = this._inputs.filter(function (v) { return v.hammer && v.element === inputType.element; });
+        if (targets.length) {
+            inputType.hammer = targets[0].hammer;
+        }
+        inputType.mapAxes(mapped);
+        inputType.connect(this._io);
+        this._inputs.push(inputType);
+        return this;
+    };
+    Axes.prototype.disconnect = function (inputType) {
+        if (inputType) {
+            var index = this._inputs.indexOf(inputType);
+            this._inputs[index].disconnect();
+            ~index && this._inputs.splice(index, 1);
+        }
+        else {
+            this._inputs.forEach(function (v) { return v.disconnect(); });
+            this._inputs = [];
+        }
+        return this;
+    };
+    Axes.prototype.get = function (axes) {
+        return this._axm.get(axes);
+    };
+    Axes.prototype.setTo = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        this._am.setTo(pos, duration);
+        return this;
+    };
+    Axes.prototype.setBy = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        this._am.setBy(pos, duration);
+        return this;
+    };
+    Axes.prototype.isOutside = function (axes) {
+        return this._axm.isOutside(axes);
+    };
+    Axes.prototype.destroy = function () {
+        this.disconnect();
+        this._em.destroy();
+    };
+    Axes.PanInput = PanInput_1.PanInput;
+    Axes.PinchInput = PinchInput_1.PinchInput;
+    Axes.TRANSFORM = const_1.TRANSFORM;
+    Axes.DIRECTION_ALL = const_1.DIRECTION.DIRECTION_ALL;
+    Axes.DIRECTION_DOWN = const_1.DIRECTION.DIRECTION_DOWN;
+    Axes.DIRECTION_HORIZONTAL = const_1.DIRECTION.DIRECTION_HORIZONTAL;
+    Axes.DIRECTION_LEFT = const_1.DIRECTION.DIRECTION_LEFT;
+    Axes.DIRECTION_NONE = const_1.DIRECTION.DIRECTION_NONE;
+    Axes.DIRECTION_RIGHT = const_1.DIRECTION.DIRECTION_RIGHT;
+    Axes.DIRECTION_UP = const_1.DIRECTION.DIRECTION_UP;
+    Axes.DIRECTION_VERTICAL = const_1.DIRECTION.DIRECTION_VERTICAL;
+    return Axes;
+}(Component));
+exports.default = Axes;
+;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Component"] = factory();
+	else
+		root["eg"] = root["eg"] || {}, root["eg"]["Component"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
+
+/**
+ * A class used to manage events and options in a component
+ * @class
+ * @group egjs
+ * @name eg.Component
+ * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
+ *
+ * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+ */
+var Component = exports.Component = function () {
+	function Component() {
+		_classCallCheck(this, Component);
+
+		this._eventHandler = {};
+		this.options = {};
+	}
+
+	/**
+  * Sets options in a component or returns them.
+  * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
+  * @method eg.Component#option
+  * @param {String} key The key of the option<ko>옵션의 키</ko>
+  * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
+  * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
+  * @example
+ 	 class Some extends eg.Component{
+ 		}
+ 	 const some = new Some({
+ 		"foo": 1,
+ 		"bar": 2
+ 	});
+ 	 some.option("foo"); // return 1
+  some.option("foo",3); // return some instance
+  some.option(); // return options object.
+  some.option({
+ 		"foo" : 10,
+ 		"bar" : 20,
+ 		"baz" : 30
+ 	}); // return some instance.
+  */
+
+
+	_createClass(Component, [{
+		key: "option",
+		value: function option() {
+			if (arguments.length >= 2) {
+				var _key = arguments.length <= 0 ? undefined : arguments[0];
+				var value = arguments.length <= 1 ? undefined : arguments[1];
+				this.options[_key] = value;
+				return this;
+			}
+
+			var key = arguments.length <= 0 ? undefined : arguments[0];
+			if (typeof key === "string") {
+				return this.options[key];
+			}
+
+			if (arguments.length === 0) {
+				return this.options;
+			}
+
+			var options = key;
+			this.options = options;
+
+			return this;
+		}
+		/**
+   * Triggers a custom event.
+   * @ko 커스텀 이벤트를 발생시킨다
+   * @method eg.Component#trigger
+   * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
+   * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
+   * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
+   * @example
+   class Some extends eg.Component{
+  		some(){
+  			this.trigger("hi");// fire hi event.
+  		}
+  	}
+   */
+
+	}, {
+		key: "trigger",
+		value: function trigger(eventName) {
+			var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+			var handlerList = this._eventHandler[eventName] || [];
+			var hasHandlerList = handlerList.length > 0;
+
+			if (!hasHandlerList) {
+				return true;
+			}
+
+			// If detach method call in handler in first time then handeler list calls.
+			handlerList = handlerList.concat();
+
+			customEvent.eventType = eventName;
+
+			var isCanceled = false;
+			var arg = [customEvent];
+			var i = void 0;
+
+			customEvent.stop = function () {
+				return isCanceled = true;
+			};
+
+			for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
+				restParam[_key2 - 2] = arguments[_key2];
+			}
+
+			if (restParam.length >= 1) {
+				arg = arg.concat(restParam);
+			}
+
+			for (i in handlerList) {
+				handlerList[i].apply(this, arg);
+			}
+
+			return !isCanceled;
+		}
+		/**
+   * Executed event just one time.
+   * @ko 이벤트가 한번만 실행된다.
+   * @method eg.Component#once
+   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+   * @example
+   class Some extends eg.Component{
+  		hi(){
+  			alert("hi");
+  		}
+  		thing(){
+  			this.once("hi", this.hi);
+  		}
+  	}
+  	 var some = new Some();
+   some.thing();
+   some.trigger("hi");
+   // fire alert("hi");
+   some.trigger("hi");
+   // Nothing happens
+   */
+
+	}, {
+		key: "once",
+		value: function once(eventName, handlerToAttach) {
+			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+				var eventHash = eventName;
+				var i = void 0;
+				for (i in eventHash) {
+					this.once(i, eventHash[i]);
+				}
+				return this;
+			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+				var self = this;
+				this.on(eventName, function listener() {
+					for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+						arg[_key3] = arguments[_key3];
+					}
+
+					handlerToAttach.apply(self, arg);
+					self.off(eventName, listener);
+				});
+			}
+
+			return this;
+		}
+
+		/**
+   * Checks whether an event has been attached to a component.
+   * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
+   * @method eg.Component#hasOn
+   * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
+   * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
+   * @example
+   class Some extends eg.Component{
+  		some(){
+  			this.hasOn("hi");// check hi event.
+  		}
+  	}
+   */
+
+	}, {
+		key: "hasOn",
+		value: function hasOn(eventName) {
+			return !!this._eventHandler[eventName];
+		}
+
+		/**
+   * Attaches an event to a component.
+   * @ko 컴포넌트에 이벤트를 등록한다.
+   * @method eg.Component#on
+   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+   * @example
+   class Some extends eg.Component{
+   		hi(){
+  			console.log("hi");
+   		}
+  		some(){
+  			this.on("hi",this.hi); //attach event
+  		}
+  	}
+   */
+
+	}, {
+		key: "on",
+		value: function on(eventName, handlerToAttach) {
+			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+				var eventHash = eventName;
+				var name = void 0;
+				for (name in eventHash) {
+					this.on(name, eventHash[name]);
+				}
+				return this;
+			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+				var handlerList = this._eventHandler[eventName];
+
+				if (typeof handlerList === "undefined") {
+					handlerList = this._eventHandler[eventName] = [];
+				}
+
+				handlerList.push(handlerToAttach);
+			}
+
+			return this;
+		}
+		/**
+   * Detaches an event from the component.
+   * @ko 컴포넌트에 등록된 이벤트를 해제한다
+   * @method eg.Component#off
+   * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
+   * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
+   * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
+   * @example
+   class Some extends eg.Component{
+   		hi(){
+  			console.log("hi");
+   		}
+  		some(){
+  			this.off("hi",this.hi); //detach event
+  		}
+  	}
+   */
+
+	}, {
+		key: "off",
+		value: function off(eventName, handlerToDetach) {
+			// All event detach.
+			if (typeof eventName === "undefined") {
+				this._eventHandler = {};
+				return this;
+			}
+
+			// All handler of specific event detach.
+			if (typeof handlerToDetach === "undefined") {
+				if (typeof eventName === "string") {
+					this._eventHandler[eventName] = undefined;
+					return this;
+				} else {
+					var eventHash = eventName;
+					var name = void 0;
+					for (name in eventHash) {
+						this.off(name, eventHash[name]);
+					}
+					return this;
+				}
+			}
+
+			// The handler of specific event detach.
+			var handlerList = this._eventHandler[eventName];
+			if (handlerList) {
+				var k = void 0;
+				var handlerFunction = void 0;
+				for (k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
+					if (handlerFunction === handlerToDetach) {
+						handlerList = handlerList.splice(k, 1);
+						break;
+					}
+				}
+			}
+
+			return this;
+		}
+	}]);
+
+	return Component;
+}();
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _component = __webpack_require__(0);
+
+module.exports = _component.Component;
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=component.js.map
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Coordinate_1 = __webpack_require__(0);
+var AxisManager_1 = __webpack_require__(1);
+var AnimationManager = (function () {
+    function AnimationManager(options, itm, em, axm) {
+        this.options = options;
+        this.itm = itm;
+        this.em = em;
+        this.axm = axm;
+    }
+    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
+        var _this = this;
+        var duration;
+        if (typeof wishDuration !== "undefined") {
+            duration = wishDuration;
+        }
+        else {
+            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1.default.getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
+            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
+        }
+        return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
+    };
+    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var depaPos = this.axm.get(Object.keys(pos));
+        var destPos = this.axm.map(pos, function (v, k, opt) {
+            return Coordinate_1.default.getInsidePosition(v, opt.range, opt.circular, opt.bounce);
+        });
+        var distance = this.axm.map(destPos, function (v, k) { return v - depaPos[k]; });
+        var maximumDuration = this.options.maximumDuration;
+        return {
+            depaPos: depaPos,
+            destPos: destPos,
+            duration: maximumDuration > duration ? duration : maximumDuration,
+            distance: distance,
+            inputEvent: inputEvent,
+            done: this.animationEnd.bind(this)
+        };
+    };
+    AnimationManager.prototype.grab = function (axes) {
+        if (this._animateParam && !axes.length) {
+            var orgPos_1 = this.axm.get(axes);
+            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular); });
+            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
+                this.em.triggerChange(this.axm.moveTo(pos), true);
+            }
+            this._animateParam = null;
+            this._raf && window.cancelAnimationFrame(this._raf);
+            this._raf = null;
+            this.em.trigger("animationEnd");
+        }
+    };
+    AnimationManager.prototype.restore = function (inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var pos = this.axm.get();
+        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
+        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
+    };
+    AnimationManager.prototype.animationEnd = function () {
+        this._animateParam = null;
+        // for Circular
+        this.setTo(this.axm.map(this.axm.get(), function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(Math.round(v), opt.range, opt.circular); }));
+        this.itm.setInterrupt(false);
+        /**
+         * This event is fired when animation ends.
+         * @ko 에니메이션이 끝났을 때 발생한다.
+         * @name eg.Axes#animationEnd
+         * @event
+         */
+        this.em.trigger("animationEnd");
+        this.axm.isOutside() && this.restore();
+    };
+    AnimationManager.prototype.animateLoop = function (param, complete) {
+        this._animateParam = __assign({}, param);
+        this._animateParam.startTime = new Date().getTime();
+        if (param.duration) {
+            var info_1 = this._animateParam;
+            var self_1 = this;
+            (function loop() {
+                self_1._raf = null;
+                if (self_1.frame(info_1) >= 1) {
+                    complete();
+                    return;
+                } // animationEnd
+                self_1._raf = window.requestAnimationFrame(loop);
+            })();
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(param.destPos));
+            complete();
+        }
+    };
+    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
+        var _this = this;
+        if (inputEvent === void 0) { inputEvent = null; }
+        var depaPos = this.axm.get();
+        var param = this.createAnimationParam(destPos, duration, inputEvent);
+        var retTrigger = this.em.trigger("animationStart", param);
+        // You can't stop the 'animationStart' event when 'circular' is true.
+        if (!retTrigger && this.axm.every(param.destPos, function (v, k, opt) { return Coordinate_1.default.isCircularable(v, opt.range, opt.circular); })) {
+            console.warn("You can't stop the 'animation' event when 'circular' is true.");
+        }
+        retTrigger &&
+            !AxisManager_1.AxisManager.equal(param.destPos, param.depaPos) &&
+            this.animateLoop(param, function () { return _this.animationEnd(); });
+    };
+    // animation frame (0~1)
+    AnimationManager.prototype.frame = function (param) {
+        var curTime = new Date().getTime() - param.startTime;
+        var easingPer = this.easing(curTime / param.duration);
+        var toPos = param.depaPos;
+        toPos = this.axm.map(toPos, function (v, k, opt) {
+            v += (param.destPos[k] - v) * easingPer;
+            return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular);
+        });
+        this.em.triggerChange(this.axm.moveTo(toPos));
+        return easingPer;
+    };
+    AnimationManager.prototype.easing = function (p) {
+        return p > 1 ? 1 : this.options.easing(p);
+    };
+    /**
+     * Moves an element to specific coordinates.
+     * @ko 좌표를 이동한다.
+     * @method eg.Axes#setTo
+     * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+     * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
+     * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+     * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
+     */
+    AnimationManager.prototype.setTo = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        var axes = Object.keys(pos);
+        this.grab(axes);
+        var orgPos = this.axm.get(axes);
+        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
+            return this;
+        }
+        this.itm.setInterrupt(true);
+        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
+        if (!Object.keys(movedPos).length) {
+            return;
+        }
+        movedPos = this.axm.map(movedPos, function (v, k, opt) {
+            v = Coordinate_1.default.getInsidePosition(v, opt.range, opt.circular);
+            return duration ? v : Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular);
+        });
+        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
+            return this;
+        }
+        else if (duration) {
+            this.animateTo(movedPos, duration);
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(movedPos));
+            this.itm.setInterrupt(false);
+        }
+        return this;
+    };
+    /**
+     * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
+     * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
+     * @method eg.Axes#setBy
+     * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
+     * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
+     * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+     * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
+     */
+    AnimationManager.prototype.setBy = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
+    };
+    return AnimationManager;
+}());
+exports.AnimationManager = AnimationManager;
+;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventManager = (function () {
+    function EventManager(axes) {
+        this.axes = axes;
+    }
+    EventManager.prototype.trigger = function (name, option) {
+        return this.axes.trigger(name, option);
+    };
+    // trigger 'change' event
+    EventManager.prototype.triggerChange = function (pos, event) {
+        if (event === void 0) { event = null; }
+        /**
+         * This event is fired when coordinate changes.
+         * @ko 좌표가 변경됐을 때 발생하는 이벤트
+         * @name eg.Axes#change
+         * @event
+         *
+         * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Array} param.position departure coordinate  <ko>좌표</ko>
+         * @param {Number} param.position.0 The X coordinate <ko>x 좌표</ko>
+         * @param {Number} param.pos.1 The Y coordinate <ko>y 좌표</ko>
+         * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
+         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+         *
+         */
+        this.trigger("change", {
+            pos: pos,
+            holding: event !== null,
+            inputEvent: event,
+        });
+    };
+    EventManager.prototype.destroy = function () {
+        this.axes.off();
+    };
+    return EventManager;
+}());
+exports.EventManager = EventManager;
+;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var InterruptManager = (function () {
+    function InterruptManager(options) {
+        this.options = options;
+        this._prevented = false; //  check whether the animation event was prevented
+    }
+    InterruptManager.prototype.isInterrupting = function () {
+        // when interruptable is 'true', return value is always 'true'.
+        return this.options.interruptable || this._prevented;
+    };
+    InterruptManager.prototype.isInterrupted = function () {
+        return !this.options.interruptable && this._prevented;
+    };
+    InterruptManager.prototype.setInterrupt = function (prevented) {
+        !this.options.interruptable && (this._prevented = prevented);
+    };
+    return InterruptManager;
+}());
+exports.InterruptManager = InterruptManager;
+;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var AxisManager_1 = __webpack_require__(1);
+var Coordinate_1 = __webpack_require__(0);
+var InputObserver = (function () {
+    function InputObserver(options, itm, em, axm, am) {
+        this.options = options;
+        this.itm = itm;
+        this.em = em;
+        this.axm = axm;
+        this.am = am;
+        this.isOutside = false;
+    }
+    // when move pointer is held in outside
+    InputObserver.prototype.atOutside = function (pos) {
+        var _this = this;
+        if (this.isOutside) {
+            return this.axm.map(pos, function (v, k, opt) {
+                var tn = opt.range[0] - opt.bounce[0];
+                var tx = opt.range[1] + opt.bounce[1];
+                return v > tx ? tx : (v < tn ? tn : v);
+            });
+        }
+        else {
+            // when start pointer is held in inside
+            // get a initialization slope value to prevent smooth animation.
+            var initSlope_1 = this.am.easing(0.00001) / 0.00001;
+            return this.axm.map(pos, function (v, k, opt) {
+                var min = opt.range[0];
+                var max = opt.range[1];
+                var out = opt.bounce;
+                if (v < min) {
+                    return min - _this.am.easing((min - v) / (out[0] * initSlope_1)) * out[0];
+                }
+                else if (v > max) {
+                    return max + _this.am.easing((v - max) / (out[1] * initSlope_1)) * out[1];
+                }
+                return v;
+            });
+        }
+    };
+    InputObserver.prototype.hold = function (inputType, event) {
+        if (this.itm.isInterrupted() || !inputType.axes.length) {
+            return;
+        }
+        this.itm.setInterrupt(true);
+        this.am.grab(inputType.axes);
+        var pos = this.axm.get();
+        /**
+         * This event is fired when a user holds an element on the screen of the device.
+         * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+         * @event eg.Axes#hold
+         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Array} param.pos coordinate <ko>좌표 정보</ko>
+         * @param {Number} param.pos.0 The X coordinate<ko>x 좌표</ko>
+         * @param {Number} param.pos.1 The Y coordinate<ko>y 좌표</ko>
+         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+         *
+         */
+        this.em.trigger("hold", {
+            pos: pos,
+            inputEvent: event,
+        });
+        this.isOutside = this.axm.isOutside(inputType.axes);
+        this.moveDistance = this.axm.get(inputType.axes);
+    };
+    InputObserver.prototype.change = function (inputType, event, offset) {
+        if (!this.itm.isInterrupting() || this.axm.every(offset, function (v) { return v === 0; })) {
+            return;
+        }
+        var depaPos = this.axm.get(inputType.axes);
+        // for outside logic
+        this.moveDistance = this.axm.map(this.moveDistance, function (v, k) { return v + (offset[k] || 0); });
+        var destPos = this.axm.map(this.moveDistance, function (v, k, opt) { return Coordinate_1.default.getCirculatedPos(v, opt.range, opt.circular); });
+        // from outside to inside
+        if (this.isOutside &&
+            this.axm.every(depaPos, function (v, k, opt) { return !Coordinate_1.default.isOutside(v, opt.range); })) {
+            this.isOutside = false;
+        }
+        destPos = this.atOutside(destPos);
+        this.em.triggerChange(this.axm.moveTo(destPos), event);
+    };
+    InputObserver.prototype.release = function (inputType, event, offset, inputDuration) {
+        if (!this.itm.isInterrupting()) {
+            return;
+        }
+        var pos = this.axm.get(inputType.axes);
+        var depaPos = this.axm.get();
+        var destPos = this.axm.map(offset, function (v, k, opt) {
+            return Coordinate_1.default.getInsidePosition(pos[k] + v, opt.range, opt.circular, opt.bounce);
+        });
+        /**
+         * This event is fired when a user release an element on the screen of the device.
+         * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+         * @event eg.Axes#release
+         *
+         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Array} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표현재 </ko>
+         * @param {Number} param.depaPos.0 The X coordinate <ko> x 좌표</ko>
+         * @param {Number} param.depaPos.1 The Y coordinate <ko> y 좌표</ko>
+         * @param {Array} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+         * @param {Number} param.destPos.0 The X coordinate <ko>x 좌표</ko>
+         * @param {Number} param.destPos.1 The Y coordinate <ko>y 좌표</ko>
+         * @param {Object} param.hammerEvent The event information of Hammer.JS. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>Hammer.JS의 이벤트 정보. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다</ko>
+         *
+         */
+        // prepare duration
+        var param = {
+            depaPos: depaPos,
+            destPos: __assign({}, depaPos, destPos),
+            duration: this.am.getDuration(destPos, pos, inputDuration),
+            inputEvent: event
+        };
+        this.em.trigger("release", param);
+        if (this.axm.isOutside()) {
+            this.am.restore(event);
+        }
+        else {
+            if (AxisManager_1.AxisManager.equal(param.destPos, param.depaPos)) {
+                this.itm.setInterrupt(false);
+            }
+            else {
+                this.am.animateTo(param.destPos, param.duration);
+            }
+        }
+        this.moveDistance = null;
+    };
+    return InputObserver;
+}());
+exports.InputObserver = InputObserver;
+;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Hammer = __webpack_require__(2);
+var const_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(4);
+var InputType_1 = __webpack_require__(5);
+var PanInput = (function () {
+    function PanInput(el, options) {
+        /**
+         * Hammer helps you add support for touch gestures to your page
+         *
+         * @external Hammer
+         * @see {@link http://hammerjs.github.io|Hammer.JS}
+         * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
+         * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
+         */
+        if (typeof Hammer === "undefined") {
+            throw new Error("The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/");
+        }
+        this.element = utils_1.$(el);
+        this.options = __assign({
+            inputType: ["touch", "mouse"],
+            scale: [1, 1],
+            thresholdAngle: 45,
+            threshold: 0,
+        }, options);
+        this.onHammerInput = this.onHammerInput.bind(this);
+        this.onPanmove = this.onPanmove.bind(this);
+        this.onPanend = this.onPanend.bind(this);
+    }
+    // get user's direction
+    PanInput.getDirectionByAngle = function (angle, thresholdAngle) {
+        if (thresholdAngle < 0 || thresholdAngle > 90) {
+            return const_1.DIRECTION.DIRECTION_NONE;
+        }
+        var toAngle = Math.abs(angle);
+        return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
+            const_1.DIRECTION.DIRECTION_VERTICAL : const_1.DIRECTION.DIRECTION_HORIZONTAL;
+    };
+    PanInput.getNextOffset = function (speeds, deceleration) {
+        var normalSpeed = Math.sqrt(speeds[0] * speeds[0] + speeds[1] * speeds[1]);
+        var duration = Math.abs(normalSpeed / -deceleration);
+        return [
+            speeds[0] / 2 * duration,
+            speeds[1] / 2 * duration
+        ];
+    };
+    PanInput.useDirection = function (checkType, direction, userDirection) {
+        if (userDirection) {
+            return !!((direction === const_1.DIRECTION.DIRECTION_ALL) ||
+                ((direction & checkType) && (userDirection & checkType)));
+        }
+        else {
+            return !!(direction & checkType);
+        }
+    };
+    PanInput.prototype.mapAxes = function (axes) {
+        var useHorizontal = !!axes[0];
+        var useVertical = !!axes[1];
+        if (useHorizontal && useVertical) {
+            this._direction = const_1.DIRECTION.DIRECTION_ALL;
+        }
+        else if (useHorizontal) {
+            this._direction = const_1.DIRECTION.DIRECTION_HORIZONTAL;
+        }
+        else if (useVertical) {
+            this._direction = const_1.DIRECTION.DIRECTION_VERTICAL;
+        }
+        else {
+            this._direction = const_1.DIRECTION.DIRECTION_NONE;
+        }
         this.axes = axes;
     };
-    return InputType;
+    PanInput.prototype.connect = function (observer) {
+        var hammerOption = {
+            direction: this._direction,
+            threshold: this.options.threshold,
+        };
+        if (this.hammer) {
+            this.dettachEvent();
+            // hammer remove previous PanRecognizer.
+            this.hammer.add(new Hammer.Pan(hammerOption));
+        }
+        else {
+            var keyValue = this.element[InputType_1.UNIQUEKEY];
+            if (keyValue) {
+                this.hammer.destroy();
+            }
+            else {
+                keyValue = String(Math.round(Math.random() * new Date().getTime()));
+            }
+            var inputClass = InputType_1.convertInputType(this.options.inputType);
+            if (!inputClass) {
+                throw new Error("Wrong inputType parameter!");
+            }
+            this.hammer = InputType_1.createHammer(this.element, [Hammer.Pan, hammerOption], inputClass);
+            this.element[InputType_1.UNIQUEKEY] = keyValue;
+        }
+        this.attachEvent(observer);
+        return this;
+    };
+    PanInput.prototype.disconnect = function () {
+        if (this.hammer) {
+            this.dettachEvent();
+        }
+        this._direction = const_1.DIRECTION.DIRECTION_NONE;
+        return this;
+    };
+    PanInput.prototype.destroy = function () {
+        this.disconnect();
+        if (this.hammer) {
+            this.hammer.destroy();
+        }
+        delete this.element[InputType_1.UNIQUEKEY];
+        this.element = null;
+        this.hammer = null;
+    };
+    PanInput.prototype.enable = function () {
+        this.hammer && (this.hammer.get("pan").options.enable = true);
+    };
+    PanInput.prototype.disable = function () {
+        this.hammer && (this.hammer.get("pan").options.enable = false);
+    };
+    PanInput.prototype.isEnable = function () {
+        return !!(this.hammer && this.hammer.get("pan").options.enable);
+    };
+    PanInput.prototype.onHammerInput = function (event) {
+        if (this.isEnable() && event.isFirst) {
+            this.observer.hold(this, event);
+        }
+    };
+    PanInput.prototype.onPanmove = function (event) {
+        var userDirection = PanInput.getDirectionByAngle(event.angle, this.options.thresholdAngle);
+        // not support offset properties in Hammerjs - start
+        var prevInput = this.hammer.session.prevInput;
+        /* eslint-disable no-param-reassign */
+        if (prevInput) {
+            event.offsetX = event.deltaX - prevInput.deltaX;
+            event.offsetY = event.deltaY - prevInput.deltaY;
+        }
+        else {
+            event.offsetX = 0;
+            event.offsetY = 0;
+        }
+        var offset = this.getOffset([event.offsetX, event.offsetY], [
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
+        ]);
+        var prevent = offset.some(function (v) { return v !== 0; });
+        if (prevent) {
+            event.srcEvent.preventDefault();
+            event.srcEvent.stopPropagation();
+        }
+        event.preventSystemEvent = prevent;
+        prevent && this.observer.change(this, event, InputType_1.toAxis(this.axes, offset));
+    };
+    PanInput.prototype.onPanend = function (event) {
+        var offset = this.getOffset([
+            Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
+            Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1)
+        ], [
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_HORIZONTAL, this._direction),
+            PanInput.useDirection(const_1.DIRECTION.DIRECTION_VERTICAL, this._direction)
+        ]);
+        offset = PanInput.getNextOffset(offset, this.observer.options.deceleration);
+        this.observer.release(this, event, InputType_1.toAxis(this.axes, offset));
+    };
+    PanInput.prototype.attachEvent = function (observer) {
+        this.observer = observer;
+        this.hammer.on("hammer.input", this.onHammerInput)
+            .on("panstart panmove", this.onPanmove)
+            .on("panend", this.onPanend);
+    };
+    PanInput.prototype.dettachEvent = function () {
+        this.hammer.off("hammer.input", this.onHammerInput)
+            .off("panstart panmove", this.onPanmove)
+            .off("panend", this.onPanend);
+        this.observer = null;
+    };
+    PanInput.prototype.getOffset = function (properties, useDirection) {
+        var offset = [0, 0];
+        var scale = this.options.scale;
+        if (useDirection[0]) {
+            offset[0] = (properties[0] * scale[0]);
+        }
+        if (useDirection[1]) {
+            offset[1] = (properties[1] * scale[1]);
+        }
+        return offset;
+    };
+    return PanInput;
 }());
-exports.InputType = InputType;
+exports.PanInput = PanInput;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Hammer = __webpack_require__(2);
+var utils_1 = __webpack_require__(4);
+var InputType_1 = __webpack_require__(5);
+var PinchInput = (function () {
+    function PinchInput(el, options) {
+        this._prev = null;
+        /**
+         * Hammer helps you add support for touch gestures to your page
+         *
+         * @external Hammer
+         * @see {@link http://hammerjs.github.io|Hammer.JS}
+         * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
+         * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
+         */
+        if (typeof Hammer === "undefined") {
+            throw new Error("The Hammerjs must be loaded before eg.Axes.PinchInput.\nhttp://hammerjs.github.io/");
+        }
+        this.element = utils_1.$(el);
+        this.options = __assign({
+            scale: 1,
+            threshold: 0
+        }, options);
+        this.onPinchStart = this.onPinchStart.bind(this);
+        this.onPinchMove = this.onPinchMove.bind(this);
+        this.onPinchEnd = this.onPinchEnd.bind(this);
+    }
+    PinchInput.prototype.mapAxes = function (axes) {
+        this.axes = axes;
+    };
+    PinchInput.prototype.connect = function (observer) {
+        var hammerOption = {
+            threshold: this.options.threshold,
+        };
+        if (this.hammer) {
+            this.dettachEvent();
+            // hammer remove previous PinchRecognizer.
+            this.hammer.add(new Hammer.Pinch(hammerOption));
+        }
+        else {
+            var keyValue = this.element[InputType_1.UNIQUEKEY];
+            if (keyValue) {
+                this.hammer.destroy();
+            }
+            else {
+                keyValue = String(Math.round(Math.random() * new Date().getTime()));
+            }
+            this.hammer = InputType_1.createHammer(this.element, [Hammer.Pinch, hammerOption], Hammer.TouchInput);
+            this.element[InputType_1.UNIQUEKEY] = keyValue;
+        }
+        this.attachEvent(observer);
+        return this;
+    };
+    PinchInput.prototype.disconnect = function () {
+        if (this.hammer) {
+            this.dettachEvent();
+        }
+        return this;
+    };
+    PinchInput.prototype.destroy = function () {
+        this.disconnect();
+        if (this.hammer) {
+            this.hammer.destroy();
+        }
+        delete this.element[InputType_1.UNIQUEKEY];
+        this.element = null;
+        this.hammer = null;
+    };
+    PinchInput.prototype.onPinchStart = function (event) {
+        this._prev = event.scale;
+        this.observer.hold(this, event);
+    };
+    PinchInput.prototype.onPinchMove = function (event) {
+        var offset = (event.scale - this._prev) * this.options.scale;
+        this.observer.change(this, event, InputType_1.toAxis(this.axes, [offset]));
+        this._prev = event.scale;
+    };
+    PinchInput.prototype.onPinchEnd = function (event) {
+        this.observer.release(this, event, InputType_1.toAxis(this.axes, [0]), 0);
+        this._prev = null;
+    };
+    PinchInput.prototype.attachEvent = function (observer) {
+        this.observer = observer;
+        this.hammer.on("pinchstart", this.onPinchStart)
+            .on("pinchmove", this.onPinchMove)
+            .on("pinchend", this.onPinchEnd);
+    };
+    PinchInput.prototype.dettachEvent = function () {
+        this.hammer.off("pinchstart", this.onPinchStart)
+            .off("pinchmove", this.onPinchMove)
+            .off("pinchend", this.onPinchEnd);
+        this.observer = null;
+        this._prev = null;
+    };
+    PinchInput.prototype.enable = function () {
+        this.hammer && (this.hammer.get("pinch").options.enable = true);
+    };
+    PinchInput.prototype.disable = function () {
+        this.hammer && (this.hammer.get("pinch").options.enable = false);
+    };
+    PinchInput.prototype.isEnable = function () {
+        return !!(this.hammer && this.hammer.get("pinch").options.enable);
+    };
+    return PinchInput;
+}());
+exports.PinchInput = PinchInput;
 
 
 /***/ })

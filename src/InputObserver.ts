@@ -1,7 +1,7 @@
 import Axes from "./Axes";
 import { InterruptManager } from "./InterruptManager";
 import { AxesOption } from "./AxesOption";
-import { InputType, IInputTypeObserver } from "./inputType/InputType";
+import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { EventManager } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
@@ -45,7 +45,7 @@ export class InputObserver implements IInputTypeObserver {
     }
   }
 
-  hold(inputType: InputType, event) {
+  hold(inputType: IInputType, event) {
     if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
     }
@@ -76,9 +76,8 @@ export class InputObserver implements IInputTypeObserver {
       return;
     }
     const depaPos: Axis = this.axm.get(inputType.axes);
-
     // for outside logic
-    this.moveDistance = this.axm.map(this.moveDistance, (v, k) => v + offset[k]);
+    this.moveDistance = this.axm.map(this.moveDistance, (v, k) => v + (offset[k] || 0));
     let destPos: Axis = this.axm.map(this.moveDistance, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 
     // from outside to inside
@@ -89,7 +88,7 @@ export class InputObserver implements IInputTypeObserver {
     destPos = this.atOutside(destPos);
     this.em.triggerChange(this.axm.moveTo(destPos), event);
   }
-  release(inputType: InputType, event, offset: Axis, inputDuration?: number) {
+  release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
       return;
     }

@@ -1,5 +1,5 @@
 import Axes from "../../src/Axes.ts";
-import {HammerInput} from "../../src/inputType/HammerInput.ts";
+import {PanInput} from "../../src/inputType/PanInput.ts";
 
 describe("Axes", function () {
   describe("Axes Test", function () {
@@ -156,13 +156,14 @@ describe("Axes", function () {
 
     it("should check `connect` method", () => {
       // Given
-      const input = new HammerInput("#sandbox");
+      const input = new PanInput("#sandbox");
 
       // When
       let ret = this.inst.connect("x", input);
 
       // Then
       expect(input.axes).to.be.eql(["x"]);
+      expect(this.inst._inputs.length).to.be.equal(1);
       expect(ret).to.be.equal(this.inst);
 
       // When
@@ -170,6 +171,7 @@ describe("Axes", function () {
       
       // Then
       expect(input.axes).to.be.eql(["x"]);
+      expect(this.inst._inputs.length).to.be.equal(1);
       expect(ret).to.be.equal(this.inst);
 
       // When
@@ -177,6 +179,7 @@ describe("Axes", function () {
       
       // Then
       expect(input.axes).to.be.eql(["x", "y"]);
+      expect(this.inst._inputs.length).to.be.equal(1);
       expect(ret).to.be.equal(this.inst);
 
       // When
@@ -184,23 +187,28 @@ describe("Axes", function () {
       
       // Then
       expect(input.axes).to.be.eql(["x", "y"]);
+      expect(this.inst._inputs.length).to.be.equal(1);
       expect(ret).to.be.equal(this.inst);
+
+      input.destroy();
     });
 
     it("should check `disconnect` method", () => {
       // Given
-      const input1 = new HammerInput("#sandbox");
-      const input2 = new HammerInput("#sandbox");
-      const input3 = new HammerInput("#sandbox");
+      const input1 = new PanInput("#sandbox");
+      const input2 = new PanInput("#sandbox");
+      const input3 = new PanInput("#sandbox");
       this.inst.connect("x", input1);
       this.inst.connect("y", input2);
       this.inst.connect("x y", input3);
 
       // When
+      expect(this.inst._inputs.length).to.be.equal(3);
       let ret = this.inst.disconnect(input1);
       
       // Then
       expect(this.inst._inputs.indexOf(input1)).to.be.equal(-1);
+      expect(this.inst._inputs.length).to.be.equal(2);
       expect(ret).to.be.equal(this.inst);
 
       // When
@@ -209,34 +217,38 @@ describe("Axes", function () {
       // Then
       expect(this.inst._inputs).to.be.eql([]);
       expect(ret).to.be.equal(this.inst);
+      expect(this.inst._inputs.length).to.be.equal(0);
+
+      input1.destroy();
+      input2.destroy();
+      input3.destroy();
     });
-    it("should check `enable/disalbe` methods of inputType", () => {
+
+    it("should check if hammer instance is shared (diffrent instance, same element)", () => {
       // Given
-      // When
-      const input = new HammerInput("#sandbox");
-
-      // Then
-      expect(input.isEnable()).to.be.false;
-
-      // When
-      this.inst.connect("x", input);
-
-      // Then
-      expect(input.isEnable()).to.be.true;
+      const input1 = new PanInput("#sandbox");
+      const input2 = new PanInput("#sandbox");
+      const input3 = new PanInput("#sandbox");
+      this.inst.connect("x", input1);
+      this.inst.connect("y", input2);
+      this.inst.connect("x y", input3);
 
       // When
-      input.disable();
-
+      expect(this.inst._inputs.length).to.be.equal(3);
+      
       // Then
-      expect(input.isEnable()).to.be.false;
+      expect(input1.hammer).to.be.equal(input2.hammer);
+      expect(input3.hammer).to.be.equal(input2.hammer);
+      expect(input1).to.be.not.equal(input2);
+      expect(input2).to.be.not.equal(input3);
+      expect(input3).to.be.not.equal(input1);
+      expect(input1.element).to.be.equal(input2.element);
+      expect(input1.element).to.be.equal(input2.element);
 
-      // When
-      input.enable();
-
-      // Then
-      expect(input.isEnable()).to.be.true;
+      input1.destroy();
+      input2.destroy();
+      input3.destroy();
     });
-    
   });
   describe("Axes Custom Event Test with interruptable", function () {
     beforeEach(() => {
@@ -264,13 +276,17 @@ describe("Axes", function () {
       this.notPreventedFn = function() {
         expect(self._itm._prevented).to.be.false;
       };
-      this.input = new HammerInput(this.el);
+      this.input = new PanInput(this.el);
       this.inst.connect(["x", "y"], this.input);
     });
     afterEach(() => {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
       }
       cleanup();
     });
@@ -334,7 +350,7 @@ describe("Axes", function () {
       this.animationStartHandler = sinon.spy();
       this.animationEndHandler = sinon.spy();
 
-      this.input = new HammerInput(this.el);
+      this.input = new PanInput(this.el);
       this.inst.on({
         "hold": this.holdHandler,
         "release": this.releaseHandler,
@@ -346,6 +362,10 @@ describe("Axes", function () {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
       }
       this.holdHandler.reset();
       this.releaseHandler.reset();
