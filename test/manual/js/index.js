@@ -29,11 +29,9 @@ var axes = new eg.Axes({
 }).on({
 	"hold" : function(evt) {
 		addLog("[hold] " + JSON.stringify(evt.pos));
-		console.log("[hold] ",evt.pos);
 	},
 	"release" : function(evt) {
 		addLog("[release] " + JSON.stringify(evt.depaPos) + " => " + JSON.stringify(evt.destPos) + "(" + evt.duration + "ms)");
-		console.log("[release] ",  JSON.stringify(evt.depaPos) + " => " + JSON.stringify(evt.destPos) + "(" + evt.duration + "ms)");
 	},
 	"animationStart" : function(evt) {
 		addLog("[animationStart ==>]");
@@ -48,8 +46,6 @@ var axes = new eg.Axes({
 		} else {
 			dot.style[eg.Axes.TRANSFORM] = "translate(" + pos.x + "px," + pos.y + "px)";
 		}
-		addLog("[change] " + JSON.stringify(evt.pos));
-		console.trace(evt.pos);
 	}
 });
 
