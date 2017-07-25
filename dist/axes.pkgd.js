@@ -3027,10 +3027,6 @@ exports.convertInputType = convertInputType;
 
 "use strict";
 
-/**
- * Copyright (c) NAVER Corp.
- * egjs-axes projects are licensed under the MIT license
- */
 var Axes_1 = __webpack_require__(7);
 module.exports = Axes_1["default"];
 
@@ -3070,10 +3066,6 @@ var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
 var const_1 = __webpack_require__(3);
 /**
- * Copyright (c) NAVER Corp.
- * egjs-axes projects are licensed under the MIT license
- */
-/**
  * @typedef {Object} AxisOption The Axis information <ko>축 정보</ko>
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
@@ -3097,17 +3089,9 @@ var const_1 = __webpack_require__(3);
  * @class eg.Axes
  * @classdesc A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
  * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다.
- * @class
- * @name eg.Axes
  * @extends eg.Component
  *
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
- *
- * @see HammerJS {@link http://hammerjs.github.io}
- * @see •	Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.Axes module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.Axes 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
- *
- * @see Easing Functions Cheat Sheet {@link http://easings.net/}
- * @see If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) <ko>다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@lin https://jqueryui.com/easing})를 사용한다</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  */
@@ -3342,12 +3326,37 @@ var Axes = (function (_super) {
         this._am.setBy(pos, duration);
         return this;
     };
+    /**
+     * Returns whether there is a coordinate in the bounce area of ​​the target axis.
+     * @ko 대상 축 중 bounce영역에 좌표가 존재하는지를 반환한다
+     * @method eg.Axes#isBounceArea
+     * @param {Object} [axes] The names of the axis <ko>축 이름들</ko>
+     * @return {Boolen} Whether the bounce area exists. <ko>bounce 영역 존재 여부</ko>
+     * @example
+     * const axes = new eg.Axes({
+     *   axis: {
+     *     "x": {
+     *        range: [0, 100]
+     *     },
+     *     "xOther": {
+     *        range: [-100, 100]
+     *     },
+     * 		 "zoom": {
+     *        range: [50, 30]
+     *     }
+     *   }
+     * });
+     *
+     * axes.isBounceArea(["x"]);
+     * axes.isBounceArea(["x", "zoom"]);
+     * axes.isBounceArea();
+     */
     Axes.prototype.isBounceArea = function (axes) {
         return this._axm.isOutside(axes);
     };
     /**
-    * Destroys elements, properties, and events used in a module.
-    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+    * Destroys properties, and events used in a module and disconnect all connections to inputTypes.
+    * @ko 모듈에 사용한 속성, 이벤트를 해제한다. 모든 inputType과의 연결을 끊는다.
     * @method eg.Axes#destroy
     */
     Axes.prototype.destroy = function () {
@@ -3357,6 +3366,16 @@ var Axes = (function (_super) {
     Axes.VERSION = "#__VERSION__#";
     Axes.PanInput = PanInput_1.PanInput;
     Axes.PinchInput = PinchInput_1.PinchInput;
+    /**
+     * @name eg.Axes.TRANSFORM
+     * @desc Returns the transform attribute with CSS vendor prefixes.
+     * @ko CSS vendor prefixes를 붙인 transform 속성을 반환한다.
+     *
+     * @constant
+     * @type {String}
+     * @example
+     * eg.Axes.TRANSFORM; // "transform" or "webkitTransform"
+     */
     Axes.TRANSFORM = const_1.TRANSFORM;
     /**
      * @name eg.Axes.DIRECTION_NONE
@@ -4190,6 +4209,31 @@ var Hammer = __webpack_require__(2);
 var const_1 = __webpack_require__(3);
 var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
+/**
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
+ * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
+ * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
+ * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
+ * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+**/
+/**
+ * @class eg.Axes.PanInput
+ * @classdesc A module that transfers the change of the user's Pan operation to eg.Axes
+ * @ko 사용자의 Pan 동작 변화량을 eg.Axes에 전달하는 모듈
+ *
+ * @example
+ * const pan = new eg.Axes.PanInput("#area", {
+ * 		inputType: ["touch"],
+ * 		scale: [1, 1.3],
+ * });
+ *
+ * axes.connect("x y", pan);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ */
 var PanInput = (function () {
     function PanInput(el, options) {
         this.axes = [];
@@ -4295,6 +4339,11 @@ var PanInput = (function () {
         this._direction = const_1.DIRECTION.DIRECTION_NONE;
         return this;
     };
+    /**
+    * Destroys elements, properties, and events used in a module.
+    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+    * @method eg.Axes.PanInput#destroy
+    */
     PanInput.prototype.destroy = function () {
         this.disconnect();
         if (this.hammer) {
@@ -4304,12 +4353,32 @@ var PanInput = (function () {
         this.element = null;
         this.hammer = null;
     };
+    /**
+     * Enables input devices
+     * @ko 입력 장치를 사용할 수 있게 한다
+     * @method eg.Axes.PanInput#enable
+     * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     PanInput.prototype.enable = function () {
         this.hammer && (this.hammer.get("pan").options.enable = true);
+        return this;
     };
+    /**
+     * Disables input devices
+     * @ko 입력 장치를 사용할 수 없게 한다.
+     * @method eg.Axes.PanInput#disable
+     * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     PanInput.prototype.disable = function () {
         this.hammer && (this.hammer.get("pan").options.enable = false);
+        return this;
     };
+    /**
+     * Returns whether to use an input device
+     * @ko 입력 장치를 사용 여부를 반환한다.
+     * @method eg.Axes.PanInput#isEnable
+     * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+     */
     PanInput.prototype.isEnable = function () {
         return !!(this.hammer && this.hammer.get("pan").options.enable);
     };
@@ -4400,6 +4469,26 @@ exports.__esModule = true;
 var Hammer = __webpack_require__(2);
 var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
+/**
+ * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
+ * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+**/
+/**
+ * @class eg.Axes.PinchInput
+ * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
+ * @ko 사용자의 Pinch 동작 변화량을 eg.Axes에 전달하는 모듈
+ *
+ * @example
+ * const pan = new eg.Axes.PinchInput("#area", {
+ * 		scale: 1
+ * });
+ *
+ * axes.connect("zoom", pan);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ */
 var PinchInput = (function () {
     function PinchInput(el, options) {
         this.axes = [];
@@ -4458,6 +4547,11 @@ var PinchInput = (function () {
         }
         return this;
     };
+    /**
+    * Destroys elements, properties, and events used in a module.
+    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+    * @method eg.Axes.PinchInput#destroy
+    */
     PinchInput.prototype.destroy = function () {
         this.disconnect();
         if (this.hammer) {
@@ -4493,12 +4587,32 @@ var PinchInput = (function () {
         this.observer = null;
         this._prev = null;
     };
+    /**
+     * Enables input devices
+     * @ko 입력 장치를 사용할 수 있게 한다
+     * @method eg.Axes.PinchInput#enable
+     * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     PinchInput.prototype.enable = function () {
         this.hammer && (this.hammer.get("pinch").options.enable = true);
+        return this;
     };
+    /**
+     * Disables input devices
+     * @ko 입력 장치를 사용할 수 없게 한다.
+     * @method eg.Axes.PinchInput#disable
+     * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     PinchInput.prototype.disable = function () {
         this.hammer && (this.hammer.get("pinch").options.enable = false);
+        return this;
     };
+    /**
+     * Returns whether to use an input device
+     * @ko 입력 장치를 사용 여부를 반환한다.
+     * @method eg.Axes.PinchInput#isEnable
+     * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+     */
     PinchInput.prototype.isEnable = function () {
         return !!(this.hammer && this.hammer.get("pinch").options.enable);
     };

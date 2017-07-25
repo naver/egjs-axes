@@ -9,6 +9,28 @@ export interface PinchInputOption {
 	threshold?: number;
 }
 
+
+/**
+ * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
+ * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+**/
+
+/**
+ * @class eg.Axes.PinchInput
+ * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
+ * @ko 사용자의 Pinch 동작 변화량을 eg.Axes에 전달하는 모듈
+ *
+ * @example
+ * const pan = new eg.Axes.PinchInput("#area", {
+ * 		scale: 1
+ * });
+ *
+ * axes.connect("zoom", pan);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ */
 export class PinchInput implements IInputType {
 	options: PinchInputOption;
 	axes: string[] = [];
@@ -75,6 +97,11 @@ export class PinchInput implements IInputType {
 		return this;
 	}
 
+	/**
+	* Destroys elements, properties, and events used in a module.
+	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+	* @method eg.Axes.PinchInput#destroy
+	*/
 	destroy() {
 		this.disconnect();
 		if (this.hammer) {
@@ -114,12 +141,32 @@ export class PinchInput implements IInputType {
     this._prev = null;
 	}
 
+	/**
+	 * Enables input devices
+	 * @ko 입력 장치를 사용할 수 있게 한다
+	 * @method eg.Axes.PinchInput#enable
+	 * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 */
 	enable() {
 		this.hammer && (this.hammer.get("pinch").options.enable = true);
+		return this;
 	}
+	/**
+	 * Disables input devices
+	 * @ko 입력 장치를 사용할 수 없게 한다.
+	 * @method eg.Axes.PinchInput#disable
+	 * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 */
 	disable() {
 		this.hammer && (this.hammer.get("pinch").options.enable = false);
+		return this;
 	}
+	/**
+	 * Returns whether to use an input device
+	 * @ko 입력 장치를 사용 여부를 반환한다.
+	 * @method eg.Axes.PinchInput#isEnable
+	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+	 */
 	isEnable() {
 		return !!(this.hammer && this.hammer.get("pinch").options.enable);
 	}

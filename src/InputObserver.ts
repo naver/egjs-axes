@@ -52,6 +52,16 @@ export class InputObserver implements IInputTypeObserver {
     this.am.grab(inputType.axes);
     const pos = this.axm.get();
 
+    /**
+     * This event is fired when a user holds an element on the screen of the device.
+     * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+     * @name eg.Axes#hold
+     * @event
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
+     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+     *
+     */
     this.em.trigger("hold", {
       pos,
       inputEvent: event,
@@ -97,6 +107,18 @@ export class InputObserver implements IInputTypeObserver {
       duration: this.am.getDuration(destPos, pos, inputDuration),
       inputEvent: event
     }
+    /**
+     * This event is fired when a user release an element on the screen of the device.
+     * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+     * @name eg.Axes#release
+     * @event
+     *
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
+     * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element. You can change the destPos to run the animation.<ko>손을 뗀 뒤에 이동할 좌표. destPos를 변경하여 애니메이션을 동작시킬수 있다</ko>
+     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+     *
+     */
     this.em.trigger("release", param);
     if (this.axm.isOutside()) {
       this.am.restore(event);

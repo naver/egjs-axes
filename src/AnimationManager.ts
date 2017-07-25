@@ -7,7 +7,7 @@ interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
-	distance: Axis;
+	// distance: Axis;
 	done: () => void;
 	startTime?: number;
 	inputEvent?;
@@ -50,14 +50,14 @@ export class AnimationManager {
 				opt.bounce,
 			);
 		});
-		const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
+		// const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
 		const maximumDuration = this.options.maximumDuration;
 
 		return {
 			depaPos,
 			destPos,
 			duration: maximumDuration > duration ? duration : maximumDuration,
-			distance,
+			// distance,
 			inputEvent,
 			done: this.animationEnd.bind(this)
 		};
@@ -94,6 +94,12 @@ export class AnimationManager {
 			(v, k, opt) => Coordinate.getCirculatedPos(Math.round(v), opt.range, opt.circular)
 		));
 		this.itm.setInterrupt(false);
+		/**
+		 * This event is fired when animation ends.
+		 * @ko 에니메이션이 끝났을 때 발생한다.
+		 * @name eg.Axes#animationEnd
+		 * @event
+		 */
 		this.em.trigger("animationEnd");
 		this.axm.isOutside() && this.restore();
 	}
@@ -122,6 +128,18 @@ export class AnimationManager {
 	animateTo(destPos: Axis, duration: number, inputEvent = null) {
 		const depaPos = this.axm.get();
 		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
+		/**
+		 * This event is fired when animation starts.
+		 * @ko 에니메이션이 시작할 때 발생한다.
+		 * @name eg.Axes#animationStart
+		 * @event
+		 *
+		 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+ 		 * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
+		 * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+		 * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
+		 * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+		 */
 		const retTrigger = this.em.trigger("animationStart", param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.

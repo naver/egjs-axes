@@ -82,7 +82,7 @@ describe("AnimationManager", function () {
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
       expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
       expect(param.duration).to.be.eql(1000);
-      expect(param.distance).to.be.eql({x:150, y:200, z:-50});
+      // expect(param.distance).to.be.eql({x:150, y:200, z:-50});
       expect(param.inputEvent).to.be.eql(null);
 
       // When
@@ -94,7 +94,7 @@ describe("AnimationManager", function () {
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
       expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
       expect(param.duration).to.be.eql(500);
-      expect(param.distance).to.be.eql({x:150, y:200, z:-50});
+      // expect(param.distance).to.be.eql({x:150, y:200, z:-50});
       expect(param.inputEvent).to.be.equal(eventValue);
     });
   });

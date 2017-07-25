@@ -10,10 +10,6 @@ import {TRANSFORM, DIRECTION} from "./const";
 import {IInputType} from "./inputType/InputType";
 
 /**
- * Copyright (c) NAVER Corp.
- * egjs-axes projects are licensed under the MIT license
- */
-/**
  * @typedef {Object} AxisOption The Axis information <ko>축 정보</ko>
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
@@ -39,24 +35,69 @@ import {IInputType} from "./inputType/InputType";
  * @class eg.Axes
  * @classdesc A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
  * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다.
- * @class
- * @name eg.Axes
  * @extends eg.Component
  *
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
  *
- * @see HammerJS {@link http://hammerjs.github.io}
- * @see •	Hammer.JS applies specific CSS properties by default when creating an instance (See {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). The eg.Axes module removes all default CSS properties provided by Hammer.JS <ko>Hammer.JS는 인스턴스를 생성할 때 기본으로 특정 CSS 속성을 적용한다(참고: @link{http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html}). 특정한 상황에서는 Hammer.JS의 속성 때문에 사용성에 문제가 있을 수 있다. eg.Axes 모듈은 Hammer.JS의 기본 CSS 속성을 모두 제거했다</ko>
- *
- * @see Easing Functions Cheat Sheet {@link http://easings.net/}
- * @see If you want to try a different easing function, use the jQuery easing plugin ({@link http://gsgd.co.uk/sandbox/jquery/easing}) or the jQuery UI easing library ({@link https://jqueryui.com/easing}) <ko>다른 easing 함수를 사용하려면 jQuery easing 플러그인({@link http://gsgd.co.uk/sandbox/jquery/easing})이나, jQuery UI easing 라이브러리({@lin https://jqueryui.com/easing})를 사용한다</ko>
- *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ * @example
+ * const axes = new eg.Axes({
+ *	axis: {
+ *		x: {
+ *			range: [0, 150],
+ *			bounce: 50
+ *		},
+ *		y: {
+ *			range: [0, 200],
+ *			bounce: 100
+ *		},
+ *		z: {
+ *			range: [1, 10],
+ *		}
+ *	},
+ *  deceleration : 0.0024
+ *}).on({
+ *	"hold" : function(evt) {
+ *	},
+ *	"release" : function(evt) {
+ *	},
+ *	"animationStart" : function(evt) {
+ *	},
+ *	"animationEnd" : function(evt) {
+ *	},
+ *	"change" : function(evt) {
+ *	}
+ *});
+ *
+ *const panInputArea = new eg.Axes.PanInput("#area", {
+ *	scale: [0.5, 1]
+ *});
+ *const panInputHmove = new eg.Axes.PanInput("#hmove");
+ *const panInputVmove = new eg.Axes.PanInput("#vmove");
+ *const pinchInputArea = new eg.Axes.PinchInput("#area", {
+ *	scale: 1.5
+ *});
+ *
+ *axes.connect("x y", panInputArea)
+ *	.connect("x", panInputHmove)
+ *	.connect(" y", panInputVmove)
+ *	.connect("z", pinchInputArea);
  */
 export default class Axes extends Component {
 	static VERSION = "#__VERSION__#";
 	static PanInput = PanInput;
 	static PinchInput = PinchInput;
+
+	/**
+	 * @name eg.Axes.TRANSFORM
+	 * @desc Returns the transform attribute with CSS vendor prefixes.
+	 * @ko CSS vendor prefixes를 붙인 transform 속성을 반환한다.
+	 *
+	 * @constant
+	 * @type {String}
+	 * @example
+	 * eg.Axes.TRANSFORM; // "transform" or "webkitTransform"
+	 */
 	static TRANSFORM = TRANSFORM;
 	/**
 	 * @name eg.Axes.DIRECTION_NONE
@@ -363,7 +404,7 @@ export default class Axes extends Component {
 	 *     "xOther": {
 	 *        range: [-100, 100]
 	 *     },
-	 * 		 "zoom": {
+	 *     "zoom": {
 	 *        range: [50, 30]
 	 *     }
 	 *   }
@@ -378,8 +419,8 @@ export default class Axes extends Component {
 	}
 
 	/**
-	* Destroys elements, properties, and events used in a module.
-	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+	* Destroys properties, and events used in a module and disconnect all connections to inputTypes.
+	* @ko 모듈에 사용한 속성, 이벤트를 해제한다. 모든 inputType과의 연결을 끊는다.
 	* @method eg.Axes#destroy
 	*/
 	destroy() {

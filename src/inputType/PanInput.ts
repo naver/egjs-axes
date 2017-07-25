@@ -12,6 +12,31 @@ export interface PanInputOption {
 	threshold?: number;
 }
 
+/**
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
+ * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
+ * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
+ * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
+ * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+**/
+/**
+ * @class eg.Axes.PanInput
+ * @classdesc A module that transfers the change of the user's Pan operation to eg.Axes
+ * @ko 사용자의 Pan 동작 변화량을 eg.Axes에 전달하는 모듈
+ *
+ * @example
+ * const pan = new eg.Axes.PanInput("#area", {
+ * 		inputType: ["touch"],
+ * 		scale: [1, 1.3],
+ * });
+ *
+ * axes.connect("x y", pan);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ */
 export class PanInput implements IInputType {
 	options: PanInputOption;
 	axes: string[] = [];
@@ -132,6 +157,11 @@ export class PanInput implements IInputType {
 		return this;
 	}
 
+	/**
+	* Destroys elements, properties, and events used in a module.
+	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+	* @method eg.Axes.PanInput#destroy
+	*/
 	destroy() {
 		this.disconnect();
 		if (this.hammer) {
@@ -142,12 +172,32 @@ export class PanInput implements IInputType {
 		this.hammer = null;
 	}
 
+	/**
+	 * Enables input devices
+	 * @ko 입력 장치를 사용할 수 있게 한다
+	 * @method eg.Axes.PanInput#enable
+	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 */
 	enable() {
 		this.hammer && (this.hammer.get("pan").options.enable = true);
+		return this;
 	}
+	/**
+	 * Disables input devices
+	 * @ko 입력 장치를 사용할 수 없게 한다.
+	 * @method eg.Axes.PanInput#disable
+	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 */
 	disable() {
 		this.hammer && (this.hammer.get("pan").options.enable = false);
+		return this;
 	}
+	/**
+	 * Returns whether to use an input device
+	 * @ko 입력 장치를 사용 여부를 반환한다.
+	 * @method eg.Axes.PanInput#isEnable
+	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+	 */
 	isEnable() {
 		return !!(this.hammer && this.hammer.get("pan").options.enable);
 	}
