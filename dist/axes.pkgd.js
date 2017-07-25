@@ -3182,9 +3182,11 @@ var Axes = (function (_super) {
             this.disconnect(inputType);
         }
         // check same element in hammer type for share
-        var targets = this._inputs.filter(function (v) { return v.hammer && v.element === inputType.element; });
-        if (targets.length) {
-            inputType.hammer = targets[0].hammer;
+        if ("hammer" in inputType) {
+            var targets = this._inputs.filter(function (v) { return v.hammer && v.element === inputType.element; });
+            if (targets.length) {
+                inputType.hammer = targets[0].hammer;
+            }
         }
         inputType.mapAxes(mapped);
         inputType.connect(this._io);
@@ -4084,6 +4086,9 @@ var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
 var PanInput = (function () {
     function PanInput(el, options) {
+        this.axes = [];
+        this.hammer = null;
+        this.element = null;
         /**
          * Hammer helps you add support for touch gestures to your page
          *
@@ -4291,6 +4296,9 @@ var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
 var PinchInput = (function () {
     function PinchInput(el, options) {
+        this.axes = [];
+        this.hammer = null;
+        this.element = null;
         this._prev = null;
         /**
          * Hammer helps you add support for touch gestures to your page
