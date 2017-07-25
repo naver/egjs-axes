@@ -1,4 +1,3 @@
-import { AxesOption } from "./AxesOption";
 export class InterruptManager {
   private _prevented = false; //  check whether the animation event was prevented
   constructor(private options: AxesOption) {}

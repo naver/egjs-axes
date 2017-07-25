@@ -26,12 +26,22 @@ module.exports = function (config) {
 				rules: [{
 						test: /\.js$/,
 						exclude: /node_modules/,
-						loader: "babel-loader",
+						use: {
+							loader: "babel-loader",
+							options: {
+								presets: ["es2015"]
+							}
+						}
 					},
 					{
 						test: /\.ts$/,
 						exclude: /node_modules/,
-						loader: "awesome-typescript-loader"
+						use: {
+							loader: "awesome-typescript-loader",
+							options: {
+								transpileOnly: true
+							}
+						}
 					}
 				]
 			}

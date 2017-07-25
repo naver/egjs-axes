@@ -9,8 +9,8 @@ var banner = require("./banner");
 
 var config = {
 	entry: {
-		"axes": "./src/index.js",
-		"axes.min": "./src/index.js"
+		"axes": "./src/index.ts",
+		"axes.min": "./src/index.ts"
 	},
 	module: {
 		rules: [{

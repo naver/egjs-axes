@@ -1,6 +1,5 @@
 import Coordinate from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
-import { AxesOption } from "./AxesOption";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
 
@@ -95,12 +94,6 @@ export class AnimationManager {
 			(v, k, opt) => Coordinate.getCirculatedPos(Math.round(v), opt.range, opt.circular)
 		));
 		this.itm.setInterrupt(false);
-		/**
-		 * This event is fired when animation ends.
-		 * @ko 에니메이션이 끝났을 때 발생한다.
-		 * @name eg.Axes#animationEnd
-		 * @event
-		 */
 		this.em.trigger("animationEnd");
 		this.axm.isOutside() && this.restore();
 	}
@@ -160,15 +153,6 @@ export class AnimationManager {
 		return p > 1 ? 1 : this.options.easing(p);
 	}
 
-	/**
-	 * Moves an element to specific coordinates.
-	 * @ko 좌표를 이동한다.
-	 * @method eg.Axes#setTo
-	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-	 * @param {Number} y The Y coordinate to move to  <ko>이동할 y좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
-	 */
 	setTo(pos: Axis, duration: number = 0) {
 		const axes: string[] = Object.keys(pos);
 		this.grab(axes);
@@ -197,15 +181,6 @@ export class AnimationManager {
 		return this;
 	}
 
-	/**
-	 * Moves an element from the current coordinates to specific coordinates. The change event is fired when the method is executed.
-	 * @ko 현재 좌표를 기준으로 좌표를 이동한다. 메서드가 실행되면 change 이벤트가 발생한다
-	 * @method eg.Axes#setBy
-	 * @param {Number} x The X coordinate to move to <ko>이동할 x좌표</ko>
-	 * @param {Number} y The Y coordinate to move to <ko>이동할 y좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>자신의 인스턴스</ko>
-	 */
 	setBy(pos: Axis, duration = 0) {
 		return this.setTo(
 			this.axm.map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),

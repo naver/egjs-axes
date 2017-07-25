@@ -1,5 +1,4 @@
 import * as Hammer from "hammerjs";
-import { AxesOption } from "../AxesOption";
 import { Axis } from "../AxisManager";
 
 export interface IInputType {

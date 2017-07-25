@@ -5,7 +5,7 @@ var StringReplacePlugin = require("string-replace-webpack-plugin");
 
 var config = {
 	entry: {
-		"axes": "./src/index.js"
+		"axes": "./src/index.ts"
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),
@@ -33,11 +33,6 @@ var config = {
   },
 	module: {
 		rules: [
-		{
-			test: /\.js$/,
-			exclude: /node_modules/,
-			loader: "babel-loader"
-		},
 		{
 			test: /\.ts$/,
 			exclude: /node_modules/,

@@ -1,4 +1,3 @@
-import { AxisOption, AxesOption } from "./AxesOption";
 import Coordinate from "./Coordinate";
 
 export interface Axis {
