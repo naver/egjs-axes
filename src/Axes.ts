@@ -99,9 +99,11 @@ export default class Axes extends Component {
 		}
 
 		// check same element in hammer type for share
-		const targets = this._inputs.filter(v => v.hammer && v.element === inputType.element);
-		if (targets.length) {
-			inputType.hammer = targets[0].hammer;
+		if ("hammer" in inputType) {
+			const targets = this._inputs.filter(v => v.hammer && v.element === inputType.element);
+			if (targets.length) {
+				inputType.hammer = targets[0].hammer;
+			}
 		}
 		inputType.mapAxes(mapped);
 		inputType.connect(this._io);

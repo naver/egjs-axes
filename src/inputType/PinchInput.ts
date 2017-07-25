@@ -11,9 +11,9 @@ export interface PinchInputOption {
 
 export class PinchInput implements IInputType {
 	options: PinchInputOption;
-	axes: string[];
-	hammer;
-  element;
+	axes: string[] = [];
+	hammer = null;
+  element: HTMLElement = null;
   private observer: IInputTypeObserver;
   private _prev: number = null;
 	constructor(el, options: PinchInputOption) {

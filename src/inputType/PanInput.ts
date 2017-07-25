@@ -14,9 +14,9 @@ export interface PanInputOption {
 
 export class PanInput implements IInputType {
 	options: PanInputOption;
-	axes: string[];
-	hammer;
-	element: HTMLElement;
+	axes: string[] = [];
+	hammer = null;
+	element: HTMLElement = null;
 	private observer: IInputTypeObserver;
 	private _direction: DIRECTION;
 
