@@ -10,7 +10,8 @@ import {TRANSFORM, DIRECTION} from "./const";
 import {IInputType} from "./inputType/InputType";
 
 /**
- * @typedef {Object} AxisOption The Axis information <ko>축 정보</ko>
+ * @typedef {Object} AxisOption The Axis information
+ * @ko 축 정보
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @property {Number} [range.1=0] The coordinate of the maximum <ko>최대 좌표</ko>
@@ -23,7 +24,8 @@ import {IInputType} from "./inputType/InputType";
 **/
 
 /**
- * @typedef {Object} AxesOption The option object of the eg.Axes module <ko>eg.Axes 모듈의 옵션 객체</ko>
+ * @typedef {Object} AxesOption The option object of the eg.Axes module
+ * @ko eg.Axes 모듈의 옵션 객체
  * @property {Function} [easing=easing.easeOutCubic] The easing function to apply to an animation <ko>애니메이션에 적용할 easing 함수</ko>
  * @property {Number} [maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>

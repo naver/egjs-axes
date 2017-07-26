@@ -11,7 +11,8 @@ export interface PinchInputOption {
 
 
 /**
- * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
+ * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
+ * @ko eg.Axes.PinchInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
 **/

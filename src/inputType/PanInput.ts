@@ -13,7 +13,8 @@ export interface PanInputOption {
 }
 
 /**
- * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
+ * @ko eg.Axes.PanInput 모듈의 옵션 객체
  * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
  * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
