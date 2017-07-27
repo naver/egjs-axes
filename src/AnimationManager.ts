@@ -74,6 +74,7 @@ export class AnimationManager {
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
+			console.trace("grap");
 			this.em.trigger("animationEnd");
 		}
 	}
@@ -100,6 +101,7 @@ export class AnimationManager {
 		 * @name eg.Axes#animationEnd
 		 * @event
 		 */
+		console.log("animationEnd ---", this.axm.get());
 		this.em.trigger("animationEnd");
 		this.axm.isOutside() && this.restore();
 	}

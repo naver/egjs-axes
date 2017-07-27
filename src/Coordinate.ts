@@ -47,7 +47,7 @@ const Coordinate = {
 		if (circular[0] && pos < min) { // left
 			toPos = (toPos - min) % length + max;
 		}
-		return +toPos.toFixed(5);
+		return +toPos;
 	},
 };
 

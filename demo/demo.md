@@ -1,3 +1,6 @@
+### What is eg.Axes?
+
+
 ### Car 360º viewer
 
 {% include_relative assets/html/car360viewer.html %}
@@ -88,6 +91,43 @@ var axes = new eg.Axes({
 }, 100);
 ```
 
+### Mini Map
+
+{% include_relative assets/html/minimap.html %}
+
+```js
+var scale = [
+  (minimapRect.width - pointerRect.width) / (RAW_IMAGE_WIDTH - viewRect.width),
+  (minimapRect.height - pointerRect.height) / (RAW_IMAGE_HEIGHT - viewRect.height)
+];
+var axes = new eg.Axes({
+  axis: {
+    rawX: {
+      range: [0, RAW_IMAGE_WIDTH - viewRect.width],
+      bounce: 50
+    },
+    rawY: {
+      range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
+      bounce: 50
+    }
+  },
+  deceleration: 0.0024
+}).on("change", function(e) {
+  var rawX = e.pos.rawX;
+  var rawY = e.pos.rawY;
+  painting.style[eg.Axes.TRANSFORM] = "translate3d(" + (-rawX) + "px," + (-rawY) + "px, 0)";
+  pointer.style[eg.Axes.TRANSFORM] = "translate3d(" + (rawX * scale[0]) + "px," + (rawY * scale[1]) + "px, 0)";
+}).connect("rawX rawY", new eg.Axes.PanInput(view, {
+  scale: [-1, -1]
+}));
+```
+
+### Subway Map
+
+
+### Pull-Down Refresh
+
+
 ### Carousel
 
 {% include_relative assets/html/carousel.html %}
@@ -155,3 +195,5 @@ const axes = new eg.Axes({
 	carousel: BASE - (INITIAL_POS * PANEL_WIDTH),
 });
 ```
+
+### 3D Carousel

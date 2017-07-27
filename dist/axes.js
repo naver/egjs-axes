@@ -124,7 +124,7 @@ var Coordinate = {
         if (circular[0] && pos < min) {
             toPos = (toPos - min) % length + max;
         }
-        return +toPos.toFixed(5);
+        return +toPos;
     }
 };
 exports["default"] = Coordinate;
@@ -896,6 +896,7 @@ var AnimationManager = (function () {
             this._animateParam = null;
             this._raf && window.cancelAnimationFrame(this._raf);
             this._raf = null;
+            console.trace("grap");
             this.em.trigger("animationEnd");
         }
     };
@@ -916,6 +917,7 @@ var AnimationManager = (function () {
          * @name eg.Axes#animationEnd
          * @event
          */
+        console.log("animationEnd ---", this.axm.get());
         this.em.trigger("animationEnd");
         this.axm.isOutside() && this.restore();
     };

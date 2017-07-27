@@ -11,9 +11,11 @@ js:
 - assets/js/car360viewer.js
 - assets/js/cardinhand.js
 - assets/js/cube.js
+- assets/js/minimap.js
 - assets/js/carousel.js
 css:
 - assets/css/car360viewer.css
 - assets/css/cardinhand.css
 - assets/css/cube.css
+- assets/css/minimap.css
 - assets/css/carousel.css
