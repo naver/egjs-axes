@@ -3066,7 +3066,8 @@ var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
 var const_1 = __webpack_require__(3);
 /**
- * @typedef {Object} AxisOption The Axis information <ko>축 정보</ko>
+ * @typedef {Object} AxisOption The Axis information
+ * @ko 축 정보
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @property {Number} [range.1=0] The coordinate of the maximum <ko>최대 좌표</ko>
@@ -3078,7 +3079,8 @@ var const_1 = __webpack_require__(3);
  * @property {Boolean} [circular.1=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
 **/
 /**
- * @typedef {Object} AxesOption The option object of the eg.Axes module <ko>eg.Axes 모듈의 옵션 객체</ko>
+ * @typedef {Object} AxesOption The option object of the eg.Axes module
+ * @ko eg.Axes 모듈의 옵션 객체
  * @property {Function} [easing=easing.easeOutCubic] The easing function to apply to an animation <ko>애니메이션에 적용할 easing 함수</ko>
  * @property {Number} [maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
@@ -3094,6 +3096,48 @@ var const_1 = __webpack_require__(3);
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
+ * @example
+ * const axes = new eg.Axes({
+ *	axis: {
+ *		x: {
+ *			range: [0, 150],
+ *			bounce: 50
+ *		},
+ *		y: {
+ *			range: [0, 200],
+ *			bounce: 100
+ *		},
+ *		z: {
+ *			range: [1, 10],
+ *		}
+ *	},
+ *  deceleration : 0.0024
+ *}).on({
+ *	"hold" : function(evt) {
+ *	},
+ *	"release" : function(evt) {
+ *	},
+ *	"animationStart" : function(evt) {
+ *	},
+ *	"animationEnd" : function(evt) {
+ *	},
+ *	"change" : function(evt) {
+ *	}
+ *});
+ *
+ *const panInputArea = new eg.Axes.PanInput("#area", {
+ *	scale: [0.5, 1]
+ *});
+ *const panInputHmove = new eg.Axes.PanInput("#hmove");
+ *const panInputVmove = new eg.Axes.PanInput("#vmove");
+ *const pinchInputArea = new eg.Axes.PinchInput("#area", {
+ *	scale: 1.5
+ *});
+ *
+ *axes.connect("x y", panInputArea)
+ *	.connect("x", panInputHmove)
+ *	.connect(" y", panInputVmove)
+ *	.connect("z", pinchInputArea);
  */
 var Axes = (function (_super) {
     __extends(Axes, _super);
@@ -3341,7 +3385,7 @@ var Axes = (function (_super) {
      *     "xOther": {
      *        range: [-100, 100]
      *     },
-     * 		 "zoom": {
+     *     "zoom": {
      *        range: [50, 30]
      *     }
      *   }
@@ -3435,6 +3479,15 @@ exports["default"] = Axes;
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/*!
+ * Copyright (c) 2017 NAVER Corp.
+ * @egjs/component project is licensed under the MIT license
+ * 
+ * @egjs/component JavaScript library
+ * http://naver.github.io/egjs/component
+ * 
+ * @version 2.0.0-rc
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
 		module.exports = factory();
@@ -3453,9 +3506,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -3520,13 +3573,9 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
+exports.__esModule = true;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3537,14 +3586,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * A class used to manage events and options in a component
- * @class
- * @group egjs
- * @name eg.Component
  * @ko 컴포넌트의 이벤트와 옵션을 관리할 수 있게 하는 클래스
- *
- * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+ * @alias eg.Component
  */
-var Component = exports.Component = function () {
+var Component = function () {
+	/**
+  * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
+  */
 	function Component() {
 		_classCallCheck(this, Component);
 
@@ -3555,276 +3603,275 @@ var Component = exports.Component = function () {
 	/**
   * Sets options in a component or returns them.
   * @ko 컴포넌트에 옵션을 설정하거나 옵션을 반환한다
-  * @method eg.Component#option
   * @param {String} key The key of the option<ko>옵션의 키</ko>
   * @param {Object} [value] The option value that corresponds to a given key <ko>키에 해당하는 옵션값</ko>
   * @return {eg.Component|Object} An instance, an option value, or an option object of a component itself.<br>- If both key and value are used to set an option, it returns an instance of a component itself.<br>- If only a key is specified for the parameter, it returns the option value corresponding to a given key.<br>- If nothing is specified, it returns an option object. <ko>컴포넌트 자신의 인스턴스나 옵션값, 옵션 객체.<br>- 키와 값으로 옵션을 설정하면 컴포넌트 자신의 인스턴스를 반환한다.<br>- 파라미터에 키만 설정하면 키에 해당하는 옵션값을 반환한다.<br>- 파라미터에 아무것도 설정하지 않으면 옵션 객체를 반환한다.</ko>
   * @example
- 	 class Some extends eg.Component{
- 		}
- 	 const some = new Some({
- 		"foo": 1,
- 		"bar": 2
- 	});
- 	 some.option("foo"); // return 1
-  some.option("foo",3); // return some instance
-  some.option(); // return options object.
-  some.option({
- 		"foo" : 10,
- 		"bar" : 20,
- 		"baz" : 30
- 	}); // return some instance.
+ class Some extends eg.Component {
+ }
+ const some = new Some({
+  "foo": 1,
+  "bar": 2
+ });
+ some.option("foo"); // return 1
+ some.option("foo",3); // return some instance
+ some.option(); // return options object.
+ some.option({
+  "foo" : 10,
+  "bar" : 20,
+  "baz" : 30
+ }); // return some instance.
   */
 
 
-	_createClass(Component, [{
-		key: "option",
-		value: function option() {
-			if (arguments.length >= 2) {
-				var _key = arguments.length <= 0 ? undefined : arguments[0];
-				var value = arguments.length <= 1 ? undefined : arguments[1];
-				this.options[_key] = value;
-				return this;
-			}
+	Component.prototype.option = function option() {
+		if (arguments.length >= 2) {
+			var _key = arguments.length <= 0 ? undefined : arguments[0];
+			var value = arguments.length <= 1 ? undefined : arguments[1];
 
-			var key = arguments.length <= 0 ? undefined : arguments[0];
-			if (typeof key === "string") {
-				return this.options[key];
-			}
-
-			if (arguments.length === 0) {
-				return this.options;
-			}
-
-			var options = key;
-			this.options = options;
-
+			this.options[_key] = value;
 			return this;
 		}
-		/**
-   * Triggers a custom event.
-   * @ko 커스텀 이벤트를 발생시킨다
-   * @method eg.Component#trigger
-   * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
-   * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
-   * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
-   * @example
-   class Some extends eg.Component{
-  		some(){
-  			this.trigger("hi");// fire hi event.
-  		}
-  	}
-   */
 
-	}, {
-		key: "trigger",
-		value: function trigger(eventName) {
-			var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+		var key = arguments.length <= 0 ? undefined : arguments[0];
 
-			var handlerList = this._eventHandler[eventName] || [];
-			var hasHandlerList = handlerList.length > 0;
+		if (typeof key === "string") {
+			return this.options[key];
+		}
 
-			if (!hasHandlerList) {
-				return true;
-			}
+		if (arguments.length === 0) {
+			return this.options;
+		}
 
-			// If detach method call in handler in first time then handeler list calls.
-			handlerList = handlerList.concat();
+		var options = key;
 
-			customEvent.eventType = eventName;
+		this.options = options;
 
-			var isCanceled = false;
-			var arg = [customEvent];
+		return this;
+	};
+	/**
+  * Triggers a custom event.
+  * @ko 커스텀 이벤트를 발생시킨다
+  * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
+  * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
+  * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
+  * @example
+ class Some extends eg.Component {
+  some(){
+    this.trigger("hi");// fire hi event.
+  }
+ }
+  */
+
+
+	Component.prototype.trigger = function trigger(eventName) {
+		var customEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+		var handlerList = this._eventHandler[eventName] || [];
+		var hasHandlerList = handlerList.length > 0;
+
+		if (!hasHandlerList) {
+			return true;
+		}
+
+		// If detach method call in handler in first time then handeler list calls.
+		handlerList = handlerList.concat();
+
+		customEvent.eventType = eventName;
+
+		var isCanceled = false;
+		var arg = [customEvent];
+		var i = void 0;
+
+		customEvent.stop = function () {
+			isCanceled = true;
+		};
+
+		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
+			restParam[_key2 - 2] = arguments[_key2];
+		}
+
+		if (restParam.length >= 1) {
+			arg = arg.concat(restParam);
+		}
+
+		for (i in handlerList) {
+			handlerList[i].apply(this, arg);
+		}
+
+		return !isCanceled;
+	};
+	/**
+  * Executed event just one time.
+  * @ko 이벤트가 한번만 실행된다.
+  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    alert("hi");
+  }
+  thing() {
+    this.once("hi", this.hi);
+  }
+ }
+ var some = new Some();
+ some.thing();
+ some.trigger("hi");
+ // fire alert("hi");
+ some.trigger("hi");
+ // Nothing happens
+  */
+
+
+	Component.prototype.once = function once(eventName, handlerToAttach) {
+		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+			var eventHash = eventName;
 			var i = void 0;
 
-			customEvent.stop = function () {
-				return isCanceled = true;
-			};
-
-			for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key2 = 2; _key2 < _len; _key2++) {
-				restParam[_key2 - 2] = arguments[_key2];
+			for (i in eventHash) {
+				this.once(i, eventHash[i]);
 			}
+			return this;
+		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+			var self = this;
 
-			if (restParam.length >= 1) {
-				arg = arg.concat(restParam);
-			}
-
-			for (i in handlerList) {
-				handlerList[i].apply(this, arg);
-			}
-
-			return !isCanceled;
-		}
-		/**
-   * Executed event just one time.
-   * @ko 이벤트가 한번만 실행된다.
-   * @method eg.Component#once
-   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-  		hi(){
-  			alert("hi");
-  		}
-  		thing(){
-  			this.once("hi", this.hi);
-  		}
-  	}
-  	 var some = new Some();
-   some.thing();
-   some.trigger("hi");
-   // fire alert("hi");
-   some.trigger("hi");
-   // Nothing happens
-   */
-
-	}, {
-		key: "once",
-		value: function once(eventName, handlerToAttach) {
-			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
-				var eventHash = eventName;
-				var i = void 0;
-				for (i in eventHash) {
-					this.once(i, eventHash[i]);
+			this.on(eventName, function listener() {
+				for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+					arg[_key3] = arguments[_key3];
 				}
-				return this;
-			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-				var self = this;
-				this.on(eventName, function listener() {
-					for (var _len2 = arguments.length, arg = Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-						arg[_key3] = arguments[_key3];
-					}
 
-					handlerToAttach.apply(self, arg);
-					self.off(eventName, listener);
-				});
+				handlerToAttach.apply(self, arg);
+				self.off(eventName, listener);
+			});
+		}
+
+		return this;
+	};
+
+	/**
+  * Checks whether an event has been attached to a component.
+  * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
+  * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
+  * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
+  * @example
+ class Some extends eg.Component {
+  some() {
+    this.hasOn("hi");// check hi event.
+  }
+ }
+  */
+
+
+	Component.prototype.hasOn = function hasOn(eventName) {
+		return !!this._eventHandler[eventName];
+	};
+
+	/**
+  * Attaches an event to a component.
+  * @ko 컴포넌트에 이벤트를 등록한다.
+  * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
+  * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.on("hi",this.hi); //attach event
+  }
+ }
+ */
+
+
+	Component.prototype.on = function on(eventName, handlerToAttach) {
+		if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+			var eventHash = eventName;
+			var name = void 0;
+
+			for (name in eventHash) {
+				this.on(name, eventHash[name]);
+			}
+			return this;
+		} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
+			var handlerList = this._eventHandler[eventName];
+
+			if (typeof handlerList === "undefined") {
+				this._eventHandler[eventName] = [];
+				handlerList = this._eventHandler[eventName];
 			}
 
+			handlerList.push(handlerToAttach);
+		}
+
+		return this;
+	};
+	/**
+  * Detaches an event from the component.
+  * @ko 컴포넌트에 등록된 이벤트를 해제한다
+  * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
+  * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
+  * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
+  * @example
+ class Some extends eg.Component {
+  hi() {
+    console.log("hi");
+  }
+  some() {
+    this.off("hi",this.hi); //detach event
+  }
+ }
+  */
+
+
+	Component.prototype.off = function off(eventName, handlerToDetach) {
+		// All event detach.
+		if (typeof eventName === "undefined") {
+			this._eventHandler = {};
 			return this;
 		}
 
-		/**
-   * Checks whether an event has been attached to a component.
-   * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
-   * @method eg.Component#hasOn
-   * @param {String} eventName The name of the event to be attached <ko>등록 여부를 확인할 이벤트의 이름</ko>
-   * @return {Boolean} Indicates whether the event is attached. <ko>이벤트 등록 여부</ko>
-   * @example
-   class Some extends eg.Component{
-  		some(){
-  			this.hasOn("hi");// check hi event.
-  		}
-  	}
-   */
-
-	}, {
-		key: "hasOn",
-		value: function hasOn(eventName) {
-			return !!this._eventHandler[eventName];
-		}
-
-		/**
-   * Attaches an event to a component.
-   * @ko 컴포넌트에 이벤트를 등록한다.
-   * @method eg.Component#on
-   * @param {eventName} eventName The name of the event to be attached <ko>등록할 이벤트의 이름</ko>
-   * @param {Function} handlerToAttach The handler function of the event to be attached <ko>등록할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself<ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-   		hi(){
-  			console.log("hi");
-   		}
-  		some(){
-  			this.on("hi",this.hi); //attach event
-  		}
-  	}
-   */
-
-	}, {
-		key: "on",
-		value: function on(eventName, handlerToAttach) {
-			if ((typeof eventName === "undefined" ? "undefined" : _typeof(eventName)) === "object" && typeof handlerToAttach === "undefined") {
+		// All handler of specific event detach.
+		if (typeof handlerToDetach === "undefined") {
+			if (typeof eventName === "string") {
+				this._eventHandler[eventName] = undefined;
+				return this;
+			} else {
 				var eventHash = eventName;
 				var name = void 0;
+
 				for (name in eventHash) {
-					this.on(name, eventHash[name]);
+					this.off(name, eventHash[name]);
 				}
 				return this;
-			} else if (typeof eventName === "string" && typeof handlerToAttach === "function") {
-				var handlerList = this._eventHandler[eventName];
-
-				if (typeof handlerList === "undefined") {
-					handlerList = this._eventHandler[eventName] = [];
-				}
-
-				handlerList.push(handlerToAttach);
 			}
-
-			return this;
 		}
-		/**
-   * Detaches an event from the component.
-   * @ko 컴포넌트에 등록된 이벤트를 해제한다
-   * @method eg.Component#off
-   * @param {eventName} eventName The name of the event to be detached <ko>해제할 이벤트의 이름</ko>
-   * @param {Function} handlerToDetach The handler function of the event to be detached <ko>해제할 이벤트의 핸들러 함수</ko>
-   * @return {eg.Component} An instance of a component itself <ko>컴포넌트 자신의 인스턴스</ko>
-   * @example
-   class Some extends eg.Component{
-   		hi(){
-  			console.log("hi");
-   		}
-  		some(){
-  			this.off("hi",this.hi); //detach event
-  		}
-  	}
-   */
 
-	}, {
-		key: "off",
-		value: function off(eventName, handlerToDetach) {
-			// All event detach.
-			if (typeof eventName === "undefined") {
-				this._eventHandler = {};
-				return this;
-			}
+		// The handler of specific event detach.
+		var handlerList = this._eventHandler[eventName];
 
-			// All handler of specific event detach.
-			if (typeof handlerToDetach === "undefined") {
-				if (typeof eventName === "string") {
-					this._eventHandler[eventName] = undefined;
-					return this;
-				} else {
-					var eventHash = eventName;
-					var name = void 0;
-					for (name in eventHash) {
-						this.off(name, eventHash[name]);
-					}
-					return this;
+		if (handlerList) {
+			var k = void 0;
+			var handlerFunction = void 0;
+
+			for (k = 0; (handlerFunction = handlerList[k]) !== undefined; k++) {
+				if (handlerFunction === handlerToDetach) {
+					handlerList = handlerList.splice(k, 1);
+					break;
 				}
 			}
-
-			// The handler of specific event detach.
-			var handlerList = this._eventHandler[eventName];
-			if (handlerList) {
-				var k = void 0;
-				var handlerFunction = void 0;
-				for (k = 0, handlerFunction; handlerFunction = handlerList[k]; k++) {
-					if (handlerFunction === handlerToDetach) {
-						handlerList = handlerList.splice(k, 1);
-						break;
-					}
-				}
-			}
-
-			return this;
 		}
-	}]);
+
+		return this;
+	};
 
 	return Component;
 }();
+
+exports["default"] = Component;
+module.exports = exports["default"];
 
 /***/ }),
 /* 1 */
@@ -3833,9 +3880,14 @@ var Component = exports.Component = function () {
 "use strict";
 
 
-var _component = __webpack_require__(0);
+var _Component = __webpack_require__(0);
 
-module.exports = _component.Component;
+var _Component2 = _interopRequireDefault(_Component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+_Component2["default"].VERSION = "2.0.0-rc";
+module.exports = _Component2["default"];
 
 /***/ })
 /******/ ]);
@@ -3884,13 +3936,13 @@ var AnimationManager = (function () {
         var destPos = this.axm.map(pos, function (v, k, opt) {
             return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
         });
-        var distance = this.axm.map(destPos, function (v, k) { return v - depaPos[k]; });
+        // const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
         var maximumDuration = this.options.maximumDuration;
         return {
             depaPos: depaPos,
             destPos: destPos,
             duration: maximumDuration > duration ? duration : maximumDuration,
-            distance: distance,
+            // distance,
             inputEvent: inputEvent,
             done: this.animationEnd.bind(this)
         };
@@ -3919,6 +3971,12 @@ var AnimationManager = (function () {
         // for Circular
         this.setTo(this.axm.map(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(Math.round(v), opt.range, opt.circular); }));
         this.itm.setInterrupt(false);
+        /**
+         * This event is fired when animation ends.
+         * @ko 에니메이션이 끝났을 때 발생한다.
+         * @name eg.Axes#animationEnd
+         * @event
+         */
         this.em.trigger("animationEnd");
         this.axm.isOutside() && this.restore();
     };
@@ -3947,6 +4005,18 @@ var AnimationManager = (function () {
         if (inputEvent === void 0) { inputEvent = null; }
         var depaPos = this.axm.get();
         var param = this.createAnimationParam(destPos, duration, inputEvent);
+        /**
+         * This event is fired when animation starts.
+         * @ko 에니메이션이 시작할 때 발생한다.
+         * @name eg.Axes#animationStart
+         * @event
+         *
+         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
+         * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+         * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
+         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+         */
         var retTrigger = this.em.trigger("animationStart", param);
         // You can't stop the 'animationStart' event when 'circular' is true.
         if (!retTrigger && this.axm.every(param.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
@@ -4024,7 +4094,18 @@ var EventManager = (function () {
     EventManager.prototype.trigger = function (name, option) {
         return this.axes.trigger(name, option);
     };
-    // trigger 'change' event
+    /**
+     * This event is fired when coordinate changes.
+     * @ko 좌표가 변경됐을 때 발생하는 이벤트
+     * @name eg.Axes#change
+     * @event
+     *
+     * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.pos  departure coordinate <ko>좌표</ko>
+     * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
+     * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+     *
+     */
     EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
         this.trigger("change", {
@@ -4131,6 +4212,16 @@ var InputObserver = (function () {
         this.itm.setInterrupt(true);
         this.am.grab(inputType.axes);
         var pos = this.axm.get();
+        /**
+         * This event is fired when a user holds an element on the screen of the device.
+         * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+         * @name eg.Axes#hold
+         * @event
+         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
+         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+         *
+         */
         this.em.trigger("hold", {
             pos: pos,
             inputEvent: event
@@ -4170,6 +4261,18 @@ var InputObserver = (function () {
             duration: this.am.getDuration(destPos, pos, inputDuration),
             inputEvent: event
         };
+        /**
+         * This event is fired when a user release an element on the screen of the device.
+         * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+         * @name eg.Axes#release
+         * @event
+         *
+         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+         * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
+         * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element. You can change the destPos to run the animation.<ko>손을 뗀 뒤에 이동할 좌표. destPos를 변경하여 애니메이션을 동작시킬수 있다</ko>
+         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+         *
+         */
         this.em.trigger("release", param);
         if (this.axm.isOutside()) {
             this.am.restore(event);
@@ -4210,7 +4313,8 @@ var const_1 = __webpack_require__(3);
 var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
 /**
- * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
+ * @ko eg.Axes.PanInput 모듈의 옵션 객체
  * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
  * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
@@ -4470,7 +4574,8 @@ var Hammer = __webpack_require__(2);
 var utils_1 = __webpack_require__(4);
 var InputType_1 = __webpack_require__(5);
 /**
- * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
+ * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
+ * @ko eg.Axes.PinchInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
 **/
