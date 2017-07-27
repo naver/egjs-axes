@@ -8,7 +8,7 @@ egjs-axes has several style guidelines to follow.
 Before your start, please read attentively below instructions.
 
 ### Linting and Code Conventions
-We adopted we adopted [TSLint](https://palantir.github.io/tslint/) to maintain our code quality. 
+We adopted [TSLint](https://palantir.github.io/tslint/) to maintain our code quality. 
 All rules are described at [tslint.json](tslint.json) file.
 
 ### Commit Log Guidelines
