@@ -29,8 +29,8 @@ export interface PinchInputOption {
  *
  * axes.connect("zoom", pan);
  *
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
- * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
 export class PinchInput implements IInputType {
 	options: PinchInputOption;

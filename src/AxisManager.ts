@@ -20,8 +20,8 @@ export class AxisManager {
       return acc;
     }, {});
   }
-  get(axes?: string[]): Axis {
-    if (axes) {
+  get(axes?: string[] | Axis): Axis {
+    if (axes && Array.isArray(axes)) {
       return axes.reduce((acc, v) => {
         if (v && (v in this._pos)) {
           acc[v] = this._pos[v];
@@ -29,16 +29,26 @@ export class AxisManager {
         return acc;
       }, {});
     } else {
-      return { ...this._pos };
+      return { ...this._pos, ...<Axis>(axes || {}) };
     }
   }
-  moveTo(pos: Axis): Axis {
+  moveTo(pos: Axis): { [key: string]: Axis } {
+    const delta = this.map(this._pos, (v, key) => {
+      return pos[key] ? pos[key] - this._pos[key] : 0;
+    });
+
+    this.set(pos);
+    return {
+      pos: { ...this._pos },
+      delta
+    };
+  }
+  set(pos: Axis) {
     for (const k in pos) {
       if (k && (k in this._pos)) {
         this._pos[k] = pos[k];
       }
     }
-    return { ...this._pos };
   }
   every(
     pos: Axis,

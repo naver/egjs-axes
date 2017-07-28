@@ -32,6 +32,7 @@ var axes = new eg.Axes({
 	},
 	"release" : function(evt) {
 		addLog("[release] " + JSON.stringify(evt.depaPos) + " => " + JSON.stringify(evt.destPos) + "(" + evt.duration + "ms)");
+		console.log("setTo on release");
 	},
 	"animationStart" : function(evt) {
 		addLog("[animationStart ==>]");
@@ -40,12 +41,14 @@ var axes = new eg.Axes({
 		addLog("[==> animationEnd] " + JSON.stringify(this.get()));
 	},
 	"change" : function(evt) {
+		console.log(evt.pos.x);
 		var pos = evt.pos;
 		if(evt.holding && /^pinch/.test(evt.inputEvent.type)) {
 			areaContent.style[eg.Axes.TRANSFORM] = "scale(" +  evt.pos.z + ")";
 		} else {
 			dot.style[eg.Axes.TRANSFORM] = "translate(" + pos.x + "px," + pos.y + "px)";
 		}
+		evt.holding && evt.set({x: 20});
 	}
 });
 

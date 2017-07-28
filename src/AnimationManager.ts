@@ -3,12 +3,13 @@ import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
 
-interface AnimationParam {
+export interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
 	// distance: Axis;
-	done: () => void;
+	setTo?: (destPos?: Axis, duration?: number) => { destPos: Axis, duration: number };
+	done?: () => void;
 	startTime?: number;
 	inputEvent?;
 }
@@ -17,12 +18,17 @@ export class AnimationManager {
 	private _raf;
 	private _animateParam: AnimationParam;
 
+	static getDuration(duration: number, maximum: number): number {
+		return maximum > duration ? duration : maximum;
+	}
+
 	constructor(
 		private options: AxesOption,
 		private itm: InterruptManager,
 		private em: EventManager,
 		private axm: AxisManager
 	) {
+		this.animationEnd = this.animationEnd.bind(this);
 	}
 	getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number) {
 		let duration;
@@ -37,8 +43,10 @@ export class AnimationManager {
 			);
 			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
 		}
-		return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
+		return AnimationManager.getDuration(duration, this.options.maximumDuration);
 	}
+
+
 
 	private createAnimationParam(pos: Axis, duration: number, inputEvent = null): AnimationParam {
 		const depaPos: Axis = this.axm.get(Object.keys(pos));
@@ -51,31 +59,29 @@ export class AnimationManager {
 			);
 		});
 		// const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
-		const maximumDuration = this.options.maximumDuration;
 
 		return {
 			depaPos,
 			destPos,
-			duration: maximumDuration > duration ? duration : maximumDuration,
+			duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
 			// distance,
 			inputEvent,
-			done: this.animationEnd.bind(this)
+			done: this.animationEnd
 		};
 	}
 
-	grab(axes: string[]) {
+	grab(axes: string[], event?) {
 		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(this.axm.moveTo(pos), true);
+				this.em.triggerChange(this.axm.moveTo(pos), event);
 			}
 			this._animateParam = null;
 			this._raf && window.cancelAnimationFrame(this._raf);
 			this._raf = null;
-			console.trace("grap");
-			this.em.trigger("animationEnd");
+			this.em.triggerAnimationEnd();
 		}
 	}
 
@@ -90,19 +96,16 @@ export class AnimationManager {
 		this._animateParam = null;
 
 		// for Circular
-		this.setTo(this.axm.map(
+		const circularTargets = this.axm.filter(
 			this.axm.get(),
-			(v, k, opt) => Coordinate.getCirculatedPos(Math.round(v), opt.range, opt.circular)
+			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)
+		);
+		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
+			circularTargets,
+			(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular)
 		));
 		this.itm.setInterrupt(false);
-		/**
-		 * This event is fired when animation ends.
-		 * @ko 에니메이션이 끝났을 때 발생한다.
-		 * @name eg.Axes#animationEnd
-		 * @event
-		 */
-		console.log("animationEnd ---", this.axm.get());
-		this.em.trigger("animationEnd");
+		this.em.triggerAnimationEnd();
 		this.axm.isOutside() && this.restore();
 	}
 
@@ -130,30 +133,27 @@ export class AnimationManager {
 	animateTo(destPos: Axis, duration: number, inputEvent = null) {
 		const depaPos = this.axm.get();
 		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
-		/**
-		 * This event is fired when animation starts.
-		 * @ko 에니메이션이 시작할 때 발생한다.
-		 * @name eg.Axes#animationStart
-		 * @event
-		 *
-		 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
- 		 * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
-		 * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
-		 * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
-		 * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-		 */
-		const retTrigger = this.em.trigger("animationStart", param);
+		const retTrigger = this.em.triggerAnimationStart(param);
+
+		// to control
+		const userWish = param.setTo();
+		userWish.destPos = this.axm.get(userWish.destPos);
+		userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
-				param.destPos,
+				userWish.destPos,
 				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular))) {
 				console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
 
-		retTrigger &&
-			!AxisManager.equal(param.destPos, param.depaPos) &&
-			this.animateLoop(param, () => this.animationEnd());
+		if (retTrigger && !AxisManager.equal(userWish.destPos, depaPos)) {
+			this.animateLoop({
+				depaPos,
+				destPos: userWish.destPos,
+				duration: userWish.duration
+			}, () => this.animationEnd());
+		}
 	}
 
 	// animation frame (0~1)

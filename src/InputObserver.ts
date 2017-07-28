@@ -3,7 +3,7 @@ import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { EventManager } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
+import { AnimationParam, AnimationManager } from "./AnimationManager";
 import Coordinate from "./Coordinate";
 
 export class InputObserver implements IInputTypeObserver {
@@ -49,23 +49,8 @@ export class InputObserver implements IInputTypeObserver {
       return;
     }
     this.itm.setInterrupt(true);
-    this.am.grab(inputType.axes);
-    const pos = this.axm.get();
-
-    /**
-     * This event is fired when a user holds an element on the screen of the device.
-     * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-     * @name eg.Axes#hold
-     * @event
-     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-     * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
-     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-     *
-     */
-    this.em.trigger("hold", {
-      pos,
-      inputEvent: event,
-    });
+    this.am.grab(inputType.axes, event);
+    this.em.triggerHold(this.axm.get(), event);
     this.isOutside = this.axm.isOutside(inputType.axes);
     this.moveDistance = this.axm.get(inputType.axes);
   }
@@ -74,9 +59,12 @@ export class InputObserver implements IInputTypeObserver {
       return;
     }
     const depaPos: Axis = this.axm.get(inputType.axes);
+    let destPos: Axis;
+
     // for outside logic
-    this.moveDistance = this.axm.map(this.moveDistance, (v, k) => v + (offset[k] || 0));
-    let destPos: Axis = this.axm.map(this.moveDistance, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
+    destPos = this.axm.map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
+    this.moveDistance && (this.moveDistance = destPos);
+    destPos = this.axm.map(destPos, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 
     // from outside to inside
     if (this.isOutside &&
@@ -84,6 +72,7 @@ export class InputObserver implements IInputTypeObserver {
       this.isOutside = false;
     }
     destPos = this.atOutside(destPos);
+
     this.em.triggerChange(this.axm.moveTo(destPos), event);
   }
   release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
@@ -100,34 +89,25 @@ export class InputObserver implements IInputTypeObserver {
         opt.bounce,
       );
     });
-    // prepare duration
-    const param = {
+    // prepare params
+    const param: AnimationParam = {
       depaPos,
       destPos: { ...depaPos, ...destPos},
       duration: this.am.getDuration(destPos, pos, inputDuration),
-      inputEvent: event
-    }
-    /**
-     * This event is fired when a user release an element on the screen of the device.
-     * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-     * @name eg.Axes#release
-     * @event
-     *
-     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-     * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
-     * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element. You can change the destPos to run the animation.<ko>손을 뗀 뒤에 이동할 좌표. destPos를 변경하여 애니메이션을 동작시킬수 있다</ko>
-     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-     *
-     */
-    this.em.trigger("release", param);
-    if (this.axm.isOutside()) {
-      this.am.restore(event);
+      inputEvent: event,
+    };
+    this.em.triggerRelease(param);
+
+    // to contol
+    const userWish = param.setTo();
+    userWish.destPos = this.axm.get(userWish.destPos);
+    userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
+
+    if (AxisManager.equal(userWish.destPos, depaPos)) {
+      this.itm.setInterrupt(false);
+      this.axm.isOutside() && this.am.restore(event);
     } else {
-      if (AxisManager.equal(param.destPos, param.depaPos)) {
-        this.itm.setInterrupt(false);
-      } else {
-        this.am.animateTo(param.destPos, param.duration);
-      }
+      this.am.animateTo(userWish.destPos, userWish.duration);
     }
     this.moveDistance = null;
   }

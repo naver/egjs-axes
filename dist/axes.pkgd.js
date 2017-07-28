@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -170,7 +170,7 @@ var AxisManager = (function () {
     };
     AxisManager.prototype.get = function (axes) {
         var _this = this;
-        if (axes) {
+        if (axes && Array.isArray(axes)) {
             return axes.reduce(function (acc, v) {
                 if (v && (v in _this._pos)) {
                     acc[v] = _this._pos[v];
@@ -179,16 +179,26 @@ var AxisManager = (function () {
             }, {});
         }
         else {
-            return __assign({}, this._pos);
+            return __assign({}, this._pos, (axes || {}));
         }
     };
     AxisManager.prototype.moveTo = function (pos) {
+        var _this = this;
+        var delta = this.map(this._pos, function (v, key) {
+            return pos[key] ? pos[key] - _this._pos[key] : 0;
+        });
+        this.set(pos);
+        return {
+            pos: __assign({}, this._pos),
+            delta: delta
+        };
+    };
+    AxisManager.prototype.set = function (pos) {
         for (var k in pos) {
             if (k && (k in this._pos)) {
                 this._pos[k] = pos[k];
             }
         }
-        return __assign({}, this._pos);
     };
     AxisManager.prototype.every = function (pos, callback) {
         var axisOptions = this.options.axis;
@@ -2887,36 +2897,6 @@ if (true) {
 "use strict";
 
 exports.__esModule = true;
-var DIRECTION;
-(function (DIRECTION) {
-    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
-    DIRECTION[DIRECTION["DIRECTION_LEFT"] = 2] = "DIRECTION_LEFT";
-    DIRECTION[DIRECTION["DIRECTION_RIGHT"] = 4] = "DIRECTION_RIGHT";
-    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
-    DIRECTION[DIRECTION["DIRECTION_UP"] = 8] = "DIRECTION_UP";
-    DIRECTION[DIRECTION["DIRECTION_DOWN"] = 16] = "DIRECTION_DOWN";
-    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
-    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
-})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
-exports.TRANSFORM = (function () {
-    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
-    var target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
-    for (var i = 0, len = target.length; i < len; i++) {
-        if (target[i] in bodyStyle) {
-            return target[i];
-        }
-    }
-    return "";
-})();
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
 function $(param, multi) {
     if (multi === void 0) { multi = false; }
     var el;
@@ -2959,7 +2939,7 @@ exports.$ = $;
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3022,17 +3002,227 @@ exports.convertInputType = convertInputType;
 
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+exports.__esModule = true;
+var Coordinate_1 = __webpack_require__(0);
+var AxisManager_1 = __webpack_require__(1);
+var AnimationManager = (function () {
+    function AnimationManager(options, itm, em, axm) {
+        this.options = options;
+        this.itm = itm;
+        this.em = em;
+        this.axm = axm;
+        this.animationEnd = this.animationEnd.bind(this);
+    }
+    AnimationManager.getDuration = function (duration, maximum) {
+        return maximum > duration ? duration : maximum;
+    };
+    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
+        var _this = this;
+        var duration;
+        if (typeof wishDuration !== "undefined") {
+            duration = wishDuration;
+        }
+        else {
+            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1["default"].getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
+            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
+        }
+        return AnimationManager.getDuration(duration, this.options.maximumDuration);
+    };
+    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var depaPos = this.axm.get(Object.keys(pos));
+        var destPos = this.axm.map(pos, function (v, k, opt) {
+            return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
+        });
+        // const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
+        return {
+            depaPos: depaPos,
+            destPos: destPos,
+            duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
+            // distance,
+            inputEvent: inputEvent,
+            done: this.animationEnd
+        };
+    };
+    AnimationManager.prototype.grab = function (axes, event) {
+        if (this._animateParam && !axes.length) {
+            var orgPos_1 = this.axm.get(axes);
+            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
+            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
+                this.em.triggerChange(this.axm.moveTo(pos), event);
+            }
+            this._animateParam = null;
+            this._raf && window.cancelAnimationFrame(this._raf);
+            this._raf = null;
+            this.em.triggerAnimationEnd();
+        }
+    };
+    AnimationManager.prototype.restore = function (inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var pos = this.axm.get();
+        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
+        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
+    };
+    AnimationManager.prototype.animationEnd = function () {
+        this._animateParam = null;
+        // for Circular
+        var circularTargets = this.axm.filter(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); });
+        Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(circularTargets, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); }));
+        this.itm.setInterrupt(false);
+        this.em.triggerAnimationEnd();
+        this.axm.isOutside() && this.restore();
+    };
+    AnimationManager.prototype.animateLoop = function (param, complete) {
+        this._animateParam = __assign({}, param);
+        this._animateParam.startTime = new Date().getTime();
+        if (param.duration) {
+            var info_1 = this._animateParam;
+            var self_1 = this;
+            (function loop() {
+                self_1._raf = null;
+                if (self_1.frame(info_1) >= 1) {
+                    complete();
+                    return;
+                } // animationEnd
+                self_1._raf = window.requestAnimationFrame(loop);
+            })();
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(param.destPos));
+            complete();
+        }
+    };
+    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
+        var _this = this;
+        if (inputEvent === void 0) { inputEvent = null; }
+        var depaPos = this.axm.get();
+        var param = this.createAnimationParam(destPos, duration, inputEvent);
+        var retTrigger = this.em.triggerAnimationStart(param);
+        // to control
+        var userWish = param.setTo();
+        userWish.destPos = this.axm.get(userWish.destPos);
+        userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
+        // You can't stop the 'animationStart' event when 'circular' is true.
+        if (!retTrigger && this.axm.every(userWish.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
+            console.warn("You can't stop the 'animation' event when 'circular' is true.");
+        }
+        if (retTrigger && !AxisManager_1.AxisManager.equal(userWish.destPos, depaPos)) {
+            this.animateLoop({
+                depaPos: depaPos,
+                destPos: userWish.destPos,
+                duration: userWish.duration
+            }, function () { return _this.animationEnd(); });
+        }
+    };
+    // animation frame (0~1)
+    AnimationManager.prototype.frame = function (param) {
+        var curTime = new Date().getTime() - param.startTime;
+        var easingPer = this.easing(curTime / param.duration);
+        var toPos = param.depaPos;
+        toPos = this.axm.map(toPos, function (v, k, opt) {
+            v += (param.destPos[k] - v) * easingPer;
+            return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
+        });
+        this.em.triggerChange(this.axm.moveTo(toPos));
+        return easingPer;
+    };
+    AnimationManager.prototype.easing = function (p) {
+        return p > 1 ? 1 : this.options.easing(p);
+    };
+    AnimationManager.prototype.setTo = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        var axes = Object.keys(pos);
+        this.grab(axes);
+        var orgPos = this.axm.get(axes);
+        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
+            return this;
+        }
+        this.itm.setInterrupt(true);
+        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
+        if (!Object.keys(movedPos).length) {
+            return;
+        }
+        movedPos = this.axm.map(movedPos, function (v, k, opt) {
+            v = Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular);
+            return duration ? v : Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
+        });
+        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
+            return this;
+        }
+        else if (duration) {
+            this.animateTo(movedPos, duration);
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(movedPos));
+            this.itm.setInterrupt(false);
+        }
+        return this;
+    };
+    AnimationManager.prototype.setBy = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
+    };
+    return AnimationManager;
+}());
+exports.AnimationManager = AnimationManager;
+;
+
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var Axes_1 = __webpack_require__(7);
-module.exports = Axes_1["default"];
+exports.__esModule = true;
+var DIRECTION;
+(function (DIRECTION) {
+    DIRECTION[DIRECTION["DIRECTION_NONE"] = 1] = "DIRECTION_NONE";
+    DIRECTION[DIRECTION["DIRECTION_LEFT"] = 2] = "DIRECTION_LEFT";
+    DIRECTION[DIRECTION["DIRECTION_RIGHT"] = 4] = "DIRECTION_RIGHT";
+    DIRECTION[DIRECTION["DIRECTION_HORIZONTAL"] = 6] = "DIRECTION_HORIZONTAL";
+    DIRECTION[DIRECTION["DIRECTION_UP"] = 8] = "DIRECTION_UP";
+    DIRECTION[DIRECTION["DIRECTION_DOWN"] = 16] = "DIRECTION_DOWN";
+    DIRECTION[DIRECTION["DIRECTION_VERTICAL"] = 24] = "DIRECTION_VERTICAL";
+    DIRECTION[DIRECTION["DIRECTION_ALL"] = 30] = "DIRECTION_ALL";
+})(DIRECTION = exports.DIRECTION || (exports.DIRECTION = {}));
+exports.TRANSFORM = (function () {
+    var bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
+    var target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
+    for (var i = 0, len = target.length; i < len; i++) {
+        if (target[i] in bodyStyle) {
+            return target[i];
+        }
+    }
+    return "";
+})();
 
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Axes_1 = __webpack_require__(8);
+module.exports = Axes_1["default"];
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3056,15 +3246,16 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Component = __webpack_require__(8);
-var AnimationManager_1 = __webpack_require__(9);
+var Component = __webpack_require__(9);
+var AnimationManager_1 = __webpack_require__(5);
 var EventManager_1 = __webpack_require__(10);
 var InterruptManager_1 = __webpack_require__(11);
 var AxisManager_1 = __webpack_require__(1);
 var InputObserver_1 = __webpack_require__(12);
 var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
-var const_1 = __webpack_require__(3);
+var WheelInput_1 = __webpack_require__(15);
+var const_1 = __webpack_require__(6);
 /**
  * @typedef {Object} AxisOption The Axis information
  * @ko 축 정보
@@ -3410,6 +3601,7 @@ var Axes = (function (_super) {
     Axes.VERSION = "#__VERSION__#";
     Axes.PanInput = PanInput_1.PanInput;
     Axes.PinchInput = PinchInput_1.PinchInput;
+    Axes.WheelInput = WheelInput_1.WheelInput;
     /**
      * @name eg.Axes.TRANSFORM
      * @desc Returns the transform attribute with CSS vendor prefixes.
@@ -3476,7 +3668,7 @@ exports["default"] = Axes;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -3895,7 +4087,7 @@ module.exports = _Component2["default"];
 //# sourceMappingURL=component.js.map
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3909,192 +4101,82 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
-var AxisManager_1 = __webpack_require__(1);
-var AnimationManager = (function () {
-    function AnimationManager(options, itm, em, axm) {
-        this.options = options;
-        this.itm = itm;
-        this.em = em;
-        this.axm = axm;
-    }
-    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
-        var _this = this;
-        var duration;
-        if (typeof wishDuration !== "undefined") {
-            duration = wishDuration;
-        }
-        else {
-            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1["default"].getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
-            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
-        }
-        return this.options.maximumDuration > duration ? duration : this.options.maximumDuration;
-    };
-    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get(Object.keys(pos));
-        var destPos = this.axm.map(pos, function (v, k, opt) {
-            return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
-        });
-        // const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
-        var maximumDuration = this.options.maximumDuration;
-        return {
-            depaPos: depaPos,
-            destPos: destPos,
-            duration: maximumDuration > duration ? duration : maximumDuration,
-            // distance,
-            inputEvent: inputEvent,
-            done: this.animationEnd.bind(this)
-        };
-    };
-    AnimationManager.prototype.grab = function (axes) {
-        if (this._animateParam && !axes.length) {
-            var orgPos_1 = this.axm.get(axes);
-            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
-            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
-                this.em.triggerChange(this.axm.moveTo(pos), true);
-            }
-            this._animateParam = null;
-            this._raf && window.cancelAnimationFrame(this._raf);
-            this._raf = null;
-            console.trace("grap");
-            this.em.trigger("animationEnd");
-        }
-    };
-    AnimationManager.prototype.restore = function (inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var pos = this.axm.get();
-        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
-        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
-    };
-    AnimationManager.prototype.animationEnd = function () {
-        this._animateParam = null;
-        // for Circular
-        this.setTo(this.axm.map(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(Math.round(v), opt.range, opt.circular); }));
-        this.itm.setInterrupt(false);
-        /**
-         * This event is fired when animation ends.
-         * @ko 에니메이션이 끝났을 때 발생한다.
-         * @name eg.Axes#animationEnd
-         * @event
-         */
-        console.log("animationEnd ---", this.axm.get());
-        this.em.trigger("animationEnd");
-        this.axm.isOutside() && this.restore();
-    };
-    AnimationManager.prototype.animateLoop = function (param, complete) {
-        this._animateParam = __assign({}, param);
-        this._animateParam.startTime = new Date().getTime();
-        if (param.duration) {
-            var info_1 = this._animateParam;
-            var self_1 = this;
-            (function loop() {
-                self_1._raf = null;
-                if (self_1.frame(info_1) >= 1) {
-                    complete();
-                    return;
-                } // animationEnd
-                self_1._raf = window.requestAnimationFrame(loop);
-            })();
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(param.destPos));
-            complete();
-        }
-    };
-    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
-        var _this = this;
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get();
-        var param = this.createAnimationParam(destPos, duration, inputEvent);
-        /**
-         * This event is fired when animation starts.
-         * @ko 에니메이션이 시작할 때 발생한다.
-         * @name eg.Axes#animationStart
-         * @event
-         *
-         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
-         * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
-         * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
-         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-         */
-        var retTrigger = this.em.trigger("animationStart", param);
-        // You can't stop the 'animationStart' event when 'circular' is true.
-        if (!retTrigger && this.axm.every(param.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
-            console.warn("You can't stop the 'animation' event when 'circular' is true.");
-        }
-        retTrigger &&
-            !AxisManager_1.AxisManager.equal(param.destPos, param.depaPos) &&
-            this.animateLoop(param, function () { return _this.animationEnd(); });
-    };
-    // animation frame (0~1)
-    AnimationManager.prototype.frame = function (param) {
-        var curTime = new Date().getTime() - param.startTime;
-        var easingPer = this.easing(curTime / param.duration);
-        var toPos = param.depaPos;
-        toPos = this.axm.map(toPos, function (v, k, opt) {
-            v += (param.destPos[k] - v) * easingPer;
-            return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
-        });
-        this.em.triggerChange(this.axm.moveTo(toPos));
-        return easingPer;
-    };
-    AnimationManager.prototype.easing = function (p) {
-        return p > 1 ? 1 : this.options.easing(p);
-    };
-    AnimationManager.prototype.setTo = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        var axes = Object.keys(pos);
-        this.grab(axes);
-        var orgPos = this.axm.get(axes);
-        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
-            return this;
-        }
-        this.itm.setInterrupt(true);
-        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
-        if (!Object.keys(movedPos).length) {
-            return;
-        }
-        movedPos = this.axm.map(movedPos, function (v, k, opt) {
-            v = Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular);
-            return duration ? v : Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
-        });
-        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
-            return this;
-        }
-        else if (duration) {
-            this.animateTo(movedPos, duration);
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(movedPos));
-            this.itm.setInterrupt(false);
-        }
-        return this;
-    };
-    AnimationManager.prototype.setBy = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
-    };
-    return AnimationManager;
-}());
-exports.AnimationManager = AnimationManager;
-;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
 var EventManager = (function () {
     function EventManager(axes) {
         this.axes = axes;
     }
-    EventManager.prototype.trigger = function (name, option) {
-        return this.axes.trigger(name, option);
+    /**
+     * This event is fired when a user holds an element on the screen of the device.
+     * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
+     * @name eg.Axes#hold
+     * @event
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
+     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+     *
+     */
+    EventManager.prototype.triggerHold = function (pos, event) {
+        this.axes.trigger("hold", {
+            pos: pos,
+            inputEvent: event
+        });
+    };
+    /** Specifies the coordinates to move after the 'change' event. It works when the holding value of the change event is true.
+     * @ko 'change' 이벤트 이후 이동할 좌표를 지정한다. change이벤트의 holding 값이 true일 경우에 동작한다
+     * @name set
+   * @function
+     * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
+     * @example
+     * const axes = new eg.Axes({
+     *   axis: {
+     *     "x": {
+     *        range: [0, 100]
+     *     },
+     * 		 "zoom": {
+     *        range: [50, 30]
+     *     }
+     *   }
+     * }).on("change", function(event) {
+     *   event.holding && event.set({x: 10});
+     * });
+     */
+    /** Specifies the animation coordinates to move after the 'release' or 'animationStart' events.
+     * @ko 'release' 또는 'animationStart' 이벤트 이후 이동할 좌표를 지정한다.
+     * @name setTo
+   * @function
+     * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
+     * @param {Number} [duration] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+     * @example
+     * const axes = new eg.Axes({
+     *   axis: {
+     *     "x": {
+     *        range: [0, 100]
+     *     },
+     * 		 "zoom": {
+     *        range: [50, 30]
+     *     }
+     *   }
+     * }).on("animationStart", function(event) {
+     *   event.setTo({x: 10}, 2000);
+     * });
+     */
+    /**
+     * This event is fired when a user release an element on the screen of the device.
+     * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
+     * @name eg.Axes#release
+     * @event
+     *
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
+     * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+     * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+     * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
+     *
+     */
+    EventManager.prototype.triggerRelease = function (param, event) {
+        if (event === void 0) { event = null; }
+        param.setTo = this.createUserControll(param.destPos, param.duration);
+        this.axes.trigger("release", param);
     };
     /**
      * This event is fired when coordinate changes.
@@ -4106,15 +4188,60 @@ var EventManager = (function () {
      * @param {Object.<string, number>} param.pos  departure coordinate <ko>좌표</ko>
      * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
      * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+     * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
      *
      */
-    EventManager.prototype.triggerChange = function (pos, event) {
+    EventManager.prototype.triggerChange = function (moveTo, event) {
         if (event === void 0) { event = null; }
-        this.trigger("change", {
-            pos: pos,
+        var param = {
+            pos: moveTo.pos,
+            delta: moveTo.delta,
             holding: event !== null,
-            inputEvent: event
-        });
+            inputEvent: event,
+            set: event ? this.createUserControll(moveTo.pos) : function () { }
+        };
+        this.axes.trigger("change", param);
+        // @todo refactoring
+        event && this.axes._axm.set(param.set()["destPos"]);
+    };
+    /**
+     * This event is fired when animation starts.
+     * @ko 에니메이션이 시작할 때 발생한다.
+     * @name eg.Axes#animationStart
+     * @event
+     *
+     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+     * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
+        * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+        * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
+        * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
+        */
+    EventManager.prototype.triggerAnimationStart = function (param) {
+        param.setTo = this.createUserControll(param.destPos, param.duration);
+        return this.axes.trigger("animationStart", param);
+    };
+    /**
+     * This event is fired when animation ends.
+     * @ko 에니메이션이 끝났을 때 발생한다.
+     * @name eg.Axes#animationEnd
+     * @event
+     */
+    EventManager.prototype.triggerAnimationEnd = function () {
+        this.axes.trigger("animationEnd");
+    };
+    EventManager.prototype.createUserControll = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        // to controll
+        var userControl = {
+            destPos: __assign({}, pos),
+            duration: duration
+        };
+        return function (toPos, userDuration) {
+            toPos && (userControl.destPos = __assign({}, toPos));
+            (userDuration !== undefined) && (userControl.duration = userDuration);
+            return userControl;
+        };
     };
     EventManager.prototype.destroy = function () {
         this.axes.off();
@@ -4169,6 +4296,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var AxisManager_1 = __webpack_require__(1);
+var AnimationManager_1 = __webpack_require__(5);
 var Coordinate_1 = __webpack_require__(0);
 var InputObserver = (function () {
     function InputObserver(options, itm, em, axm, am) {
@@ -4212,22 +4340,8 @@ var InputObserver = (function () {
             return;
         }
         this.itm.setInterrupt(true);
-        this.am.grab(inputType.axes);
-        var pos = this.axm.get();
-        /**
-         * This event is fired when a user holds an element on the screen of the device.
-         * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-         * @name eg.Axes#hold
-         * @event
-         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
-         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-         *
-         */
-        this.em.trigger("hold", {
-            pos: pos,
-            inputEvent: event
-        });
+        this.am.grab(inputType.axes, event);
+        this.em.triggerHold(this.axm.get(), event);
         this.isOutside = this.axm.isOutside(inputType.axes);
         this.moveDistance = this.axm.get(inputType.axes);
     };
@@ -4236,9 +4350,11 @@ var InputObserver = (function () {
             return;
         }
         var depaPos = this.axm.get(inputType.axes);
+        var destPos;
         // for outside logic
-        this.moveDistance = this.axm.map(this.moveDistance, function (v, k) { return v + (offset[k] || 0); });
-        var destPos = this.axm.map(this.moveDistance, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
+        destPos = this.axm.map(this.moveDistance || depaPos, function (v, k) { return v + (offset[k] || 0); });
+        this.moveDistance && (this.moveDistance = destPos);
+        destPos = this.axm.map(destPos, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
         // from outside to inside
         if (this.isOutside &&
             this.axm.every(depaPos, function (v, k, opt) { return !Coordinate_1["default"].isOutside(v, opt.range); })) {
@@ -4256,36 +4372,24 @@ var InputObserver = (function () {
         var destPos = this.axm.map(offset, function (v, k, opt) {
             return Coordinate_1["default"].getInsidePosition(pos[k] + v, opt.range, opt.circular, opt.bounce);
         });
-        // prepare duration
+        // prepare params
         var param = {
             depaPos: depaPos,
             destPos: __assign({}, depaPos, destPos),
             duration: this.am.getDuration(destPos, pos, inputDuration),
             inputEvent: event
         };
-        /**
-         * This event is fired when a user release an element on the screen of the device.
-         * @ko 사용자가 기기의 화면에서 손을 뗐을 때 발생하는 이벤트
-         * @name eg.Axes#release
-         * @event
-         *
-         * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-         * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
-         * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element. You can change the destPos to run the animation.<ko>손을 뗀 뒤에 이동할 좌표. destPos를 변경하여 애니메이션을 동작시킬수 있다</ko>
-         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-         *
-         */
-        this.em.trigger("release", param);
-        if (this.axm.isOutside()) {
-            this.am.restore(event);
+        this.em.triggerRelease(param);
+        // to contol
+        var userWish = param.setTo();
+        userWish.destPos = this.axm.get(userWish.destPos);
+        userWish.duration = AnimationManager_1.AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
+        if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos)) {
+            this.itm.setInterrupt(false);
+            this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            if (AxisManager_1.AxisManager.equal(param.destPos, param.depaPos)) {
-                this.itm.setInterrupt(false);
-            }
-            else {
-                this.am.animateTo(param.destPos, param.duration);
-            }
+            this.am.animateTo(userWish.destPos, userWish.duration);
         }
         this.moveDistance = null;
     };
@@ -4311,9 +4415,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var Hammer = __webpack_require__(2);
-var const_1 = __webpack_require__(3);
-var utils_1 = __webpack_require__(4);
-var InputType_1 = __webpack_require__(5);
+var const_1 = __webpack_require__(6);
+var utils_1 = __webpack_require__(3);
+var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
@@ -4573,8 +4677,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var Hammer = __webpack_require__(2);
-var utils_1 = __webpack_require__(4);
-var InputType_1 = __webpack_require__(5);
+var utils_1 = __webpack_require__(3);
+var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
  * @ko eg.Axes.PinchInput 모듈의 옵션 객체
@@ -4593,8 +4697,8 @@ var InputType_1 = __webpack_require__(5);
  *
  * axes.connect("zoom", pan);
  *
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
- * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
 var PinchInput = (function () {
     function PinchInput(el, options) {
@@ -4726,6 +4830,137 @@ var PinchInput = (function () {
     return PinchInput;
 }());
 exports.PinchInput = PinchInput;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+exports.__esModule = true;
+var utils_1 = __webpack_require__(3);
+var InputType_1 = __webpack_require__(4);
+/**
+ * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
+ * @ko eg.Axes.WheelInput 모듈의 옵션 객체
+ * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+**/
+/**
+ * @class eg.Axes.WheelInput
+ * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
+ * @ko 사용자의 Wheel 동작 변화량을 eg.Axes에 전달하는 모듈
+ *
+ * @example
+ * const wheel = new eg.Axes.WheelInput("#area", {
+ * 		scale: 1
+ * });
+ *
+ * axes.connect("zoom", wheel);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
+ * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
+ */
+var WheelInput = (function () {
+    function WheelInput(el, options) {
+        this.axes = [];
+        this.element = null;
+        this._isEnabled = false;
+        this._timer = null;
+        this.element = utils_1.$(el);
+        this.options = __assign({
+            scale: 1,
+            throttle: 200
+        }, options);
+        this.onWheel = this.onWheel.bind(this);
+    }
+    WheelInput.prototype.mapAxes = function (axes) {
+        this.axes = axes;
+    };
+    WheelInput.prototype.connect = function (observer) {
+        this.dettachEvent();
+        this.attachEvent(observer);
+        return this;
+    };
+    WheelInput.prototype.disconnect = function () {
+        this.dettachEvent();
+        return this;
+    };
+    /**
+    * Destroys elements, properties, and events used in a module.
+    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+    * @method eg.Axes.WheelInput#destroy
+    */
+    WheelInput.prototype.destroy = function () {
+        this.disconnect();
+        this.element = null;
+    };
+    WheelInput.prototype.onWheel = function (event) {
+        var _this = this;
+        if (!this._isEnabled) {
+            return;
+        }
+        event.preventDefault();
+        if (event.deltaY === 0) {
+            return;
+        }
+        clearTimeout(this._timer);
+        this._timer = setTimeout(function () {
+            var offset = (event.deltaY < 0 ? -1 : 1) * _this.options.scale;
+            _this.observer.change(_this, event, InputType_1.toAxis(_this.axes, [offset]));
+        }, 200);
+    };
+    WheelInput.prototype.attachEvent = function (observer) {
+        this.observer = observer;
+        this.element.addEventListener("wheel", this.onWheel);
+        this._isEnabled = true;
+    };
+    WheelInput.prototype.dettachEvent = function () {
+        this.element.removeEventListener("wheel", this.onWheel);
+        this._isEnabled = false;
+        this.observer = null;
+    };
+    /**
+     * Enables input devices
+     * @ko 입력 장치를 사용할 수 있게 한다
+     * @method eg.Axes.WheelInput#enable
+     * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
+    WheelInput.prototype.enable = function () {
+        this._isEnabled = true;
+        return this;
+    };
+    /**
+     * Disables input devices
+     * @ko 입력 장치를 사용할 수 없게 한다.
+     * @method eg.Axes.WheelInput#disable
+     * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
+    WheelInput.prototype.disable = function () {
+        this._isEnabled = false;
+        return this;
+    };
+    /**
+     * Returns whether to use an input device
+     * @ko 입력 장치를 사용 여부를 반환한다.
+     * @method eg.Axes.WheelInput#isEnable
+     * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+     */
+    WheelInput.prototype.isEnable = function () {
+        return this._isEnabled;
+    };
+    return WheelInput;
+}());
+exports.WheelInput = WheelInput;
+;
 
 
 /***/ })
