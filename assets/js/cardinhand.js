@@ -89,7 +89,7 @@
 						pos.top) + "px)";
 			});
 		}
-	}).mapInput(["hand", "top"], new eg.Axes.HammerInput(hand, {
+	}).connect(["hand", "top"], new eg.Axes.PanInput(hand, {
 		scale: [0.3, 0.8]
 	})).setTo({
 		hand: (handRotMin + handRotMax) / 2

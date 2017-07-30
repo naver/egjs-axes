@@ -14,7 +14,7 @@
 		deceleration: 0.0024
 	}).on("change", function(e) {
 		box.style[eg.Axes.TRANSFORM] = "rotateY(" + e.pos.rotateX + "deg) rotateX(" + e.pos.rotateY + "deg)";
-	}).mapInput(["rotateX", "rotateY"], new eg.Axes.HammerInput("#area"))
+	}).connect(["rotateX", "rotateY"], new eg.Axes.PanInput("#area"))
 	.setTo({
 		"rotateX": 40,
 		"rotateY": 315

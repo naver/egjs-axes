@@ -15,13 +15,25 @@
     <script src="./common/js/bootstrap.min.js"></script>
 </head>
 
+	<link rel="stylesheet" href="assets/css/axes.css">
+
 	<link rel="stylesheet" href="assets/css/car360viewer.css">
 
 	<link rel="stylesheet" href="assets/css/cardinhand.css">
 
 	<link rel="stylesheet" href="assets/css/cube.css">
 
-	<link rel="stylesheet" href="assets/css/cover.css">
+	<link rel="stylesheet" href="assets/css/minimap.css">
+
+	<link rel="stylesheet" href="assets/css/subway.css">
+
+	<link rel="stylesheet" href="assets/css/video.css">
+
+	<link rel="stylesheet" href="assets/css/pulldownrefresh.css">
+
+	<link rel="stylesheet" href="assets/css/carousel.css">
+
+	<link rel="stylesheet" href="assets/css/3dcarousel.css">
 
 
 	<script src="release/latest/dist/axes.pkgd.js"></script>
@@ -65,7 +77,7 @@
                             <a class="page-scroll" href="release/latest/doc" target="_blank">API Document</a>
                         </li>
                         <li>
-                            <a class="page-scroll" href="//github.com/naver/egjs-axes/releases" target="_blank">v2.0.0-rc.1</a>
+                            <a class="page-scroll" href="//github.com/naver/egjs-axes/releases" target="_blank">v2.0.0-rc</a>
                         </li>
                     </ul>
                 </div>
@@ -80,7 +92,7 @@
         <div class="btns">
             <!--<a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">Github</a>-->
             <a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">API Document</a>
-            <a class="btn btn-cta-primary" href="//github.com/naver/egjs-axes/releases" target="_blank">v2.0.0-rc.1</a>
+            <a class="btn btn-cta-primary" href="//github.com/naver/egjs-axes/releases" target="_blank">v2.0.0-rc</a>
         </div>
     </div>
     <div class="social-media">
@@ -143,7 +155,7 @@
 <span class="p">});</span>
 
 <span class="c1">// add innputType at axes</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"left"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="nx">hammerType</span><span class="p">);</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"left"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="nx">hammerType</span><span class="p">);</span>
 </code></pre>
 </div>
 
@@ -162,7 +174,7 @@
 <span class="p">});</span>
 
 <span class="c1">// add innputType at axes</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"left"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="nx">hammerType</span><span class="p">);</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"left"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="nx">hammerType</span><span class="p">);</span>
 </code></pre>
 </div>
 
@@ -174,7 +186,27 @@
 			<div class="docs-inner">
 				<h2 class="title text-center">Demos</h2>
 				
-				<h3 id="car-360º-viewer">Car 360º viewer</h3>
+				<h3 id="what-is-egaxes">What is eg.Axes?</h3>
+
+<div class="demobox" codepen="axes">
+  <div class="inputTypeWrapper">
+    <div id="inputType">
+      <div class="pan"></div>
+      <div class="zoom">zoom: 1.00</div>
+    </div>
+  </div>
+  <div id="delegateTarget">
+    <div id="uiWrapper">
+      <div class="ui">
+        <img src="./assets/image/axes/logo.svg" />
+      </div>
+    </div>
+    <div id="grid"></div>
+  </div>
+  
+</div>
+
+<h3 id="car-360º-viewer">Car 360º viewer</h3>
 
 <div class="car_spot" codepen="car360viewer">
   <div class="car_rotate">
@@ -234,7 +266,7 @@
 	<span class="nx">images</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">index</span> <span class="p">?</span> <span class="s2">"inline-block"</span> <span class="p">:</span> <span class="s2">"none"</span><span class="p">;</span>
 	<span class="p">});</span>
-<span class="p">}).</span><span class="nx">mapInput</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
 </code></pre>
 </div>
 
@@ -289,7 +321,7 @@
 			<span class="s2">"translateY("</span> <span class="o">+</span> <span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"data-cardOffset"</span><span class="p">))</span> <span class="o">+</span>
 				<span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px)"</span><span class="p">;</span>
 	<span class="p">});</span>
-<span class="p">}).</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"hand"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"hand"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
 	<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
 <span class="p">})).</span><span class="nx">setTo</span><span class="p">({</span>
 	<span class="na">hand</span><span class="p">:</span> <span class="p">(</span><span class="nx">handRotMin</span> <span class="o">+</span> <span class="nx">handRotMax</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
@@ -325,12 +357,250 @@
 	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
 <span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rotateY("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateX</span> <span class="o">+</span> <span class="s2">"deg) rotateX("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateY</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
-<span class="p">}).</span><span class="nx">mapInput</span><span class="p">([</span><span class="s2">"rotateX"</span><span class="p">,</span> <span class="s2">"rotateY"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">));</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"rotateX"</span><span class="p">,</span> <span class="s2">"rotateY"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">));</span>
 <span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
 	<span class="s2">"rotateX"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
 	<span class="s2">"rotateY"</span><span class="p">:</span> <span class="mi">315</span>
 <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
 </code></pre>
+</div>
+
+<h3 id="mini-map">Mini Map</h3>
+
+<div class="demobox" codepen="minimap">
+  <div style="position:relative">
+    <div id="imageView">
+      <div id="rawImage"></div>
+    </div>
+    <div id="minimap">
+      <div id="minimap-pointer"></div>
+    </div>
+  </div>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">(</span><span class="nx">minimapRect</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">pointerRect</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">),</span>
+  <span class="p">(</span><span class="nx">minimapRect</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">pointerRect</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span>
+<span class="p">];</span>
+<span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">rawX</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">50</span>
+    <span class="p">},</span>
+    <span class="na">rawY</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">50</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">rawX</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">rawY</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span><span class="p">;</span>
+  <span class="nx">painting</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translate3d("</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="nx">rawX</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px,"</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="nx">rawY</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px, 0)"</span><span class="p">;</span>
+  <span class="nx">pointer</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translate3d("</span> <span class="o">+</span> <span class="p">(</span><span class="nx">rawX</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"px,"</span> <span class="o">+</span> <span class="p">(</span><span class="nx">rawY</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"px, 0)"</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rawX rawY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">}));</span>
+</code></pre>
+</div>
+
+<h3 id="subway-map">Subway Map</h3>
+
+<div class="demobox" codepen="subway">
+  <div id="zoomWrapper">
+    <img id="subway" src="./assets/image/subway/subway.png" />
+  </div>
+</div>
+
+<h3 id="controll-video">Controll Video</h3>
+
+<div class="car_spot" codepen="car360viewer">
+  <div class="car_rotate">
+    <div class="img_cont" style="position:relative;z-index:10">
+      <img height="150" src="./assets/image/car360/beatle (1).png" />
+      <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;" />
+      <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none" />
+      <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none" />
+    </div>
+    <div class="ratate_bg"></div>
+  </div>
+</div>
+
+<h3 id="pull-down-refresh">Pull-Down Refresh</h3>
+
+<h3 id="carousel">Carousel</h3>
+
+<div codepen="carousel">
+  <section id="container">
+
+    <section id="carousel-container">
+      <section id="carousel-area">
+        <div class="box-element box-inactive" data-boxid="1">
+          <img src="./assets/image/carousel/carousel_img_1.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="2">
+          <img src="./assets/image/carousel/carousel_img_2.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="3">
+          <img src="./assets/image/carousel/carousel_img_3.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="4">
+          <img src="./assets/image/carousel/carousel_img_4.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="5">
+          <img src="./assets/image/carousel/carousel_img_5.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="6">
+          <img src="./assets/image/carousel/carousel_img_6.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="7">
+          <img src="./assets/image/carousel/carousel_img_7.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="8">
+          <img src="./assets/image/carousel/carousel_img_8.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="9">
+          <img src="./assets/image/carousel/carousel_img_9.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="10">
+          <img src="./assets/image/carousel/carousel_img_10.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="11">
+          <img src="./assets/image/carousel/carousel_img_11.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="12">
+          <img src="./assets/image/carousel/carousel_img_12.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="13">
+          <img src="./assets/image/carousel/carousel_img_13.png" alt="" />
+        </div>
+        <div class="box-element box-inactive" data-boxid="14">
+          <img src="./assets/image/carousel/carousel_img_14.png" alt="" />
+        </div>
+      </section>
+    </section>
+
+    <section class="detail-view" id="detail-view-carousel-container">
+      <section id="detail-view-carousel">
+        <article class="detail-view-content" id="detail-view-content">
+          <img src="./assets/image/carousel/carousel_img_1.png" alt="" />
+        </article>
+      </section>
+    </section>
+
+    <section class="btn-control-section">
+      <div class="btn-control-zoom" id="btn-control-zoom-in">
+        <span class="btn-control-zoom__text"> + </span>
+      </div>
+      <div class="btn-control-zoom" id="btn-control-zoom-out">
+        <span class="btn-control-zoom__text"> - </span>
+      </div>
+    </section>
+
+  </section>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+		<span class="na">detailX</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
+		<span class="p">},</span>
+		<span class="na">detailY</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
+		<span class="p">},</span>
+		<span class="na">carousel</span><span class="p">:</span> <span class="p">{</span>
+			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="p">(</span><span class="nx">LAST_PANEL_IDX</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)),</span> <span class="nx">BASE</span><span class="p">],</span>
+		<span class="p">},</span>
+	<span class="p">},</span>
+	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.007</span><span class="p">,</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">({</span>
+	<span class="s2">"hold"</span><span class="p">:</span> <span class="p">({</span><span class="nx">inputEvent</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">inputEvent</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="s2">"carousel-area"</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">axes</span><span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
+				<span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+				<span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+			<span class="p">},</span> <span class="mi">300</span><span class="p">);</span>
+			<span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+			<span class="nx">scaleRatio</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="nx">adjustRangeOfDVAxes</span><span class="p">();</span>
+		<span class="p">}</span>
+	<span class="p">},</span>
+	<span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="kr">const</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">;</span>
+		<span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">move</span><span class="p">);</span>
+		<span class="nx">carouselArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">move</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+		<span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">FIRST_PANEL_IDX</span><span class="p">,</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&gt;=</span> <span class="nx">FIRST_PANEL_IDX</span> <span class="o">&amp;&amp;</span> <span class="nx">idx</span> <span class="o">&lt;=</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+			<span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">"box-inactive"</span><span class="p">);</span>
+			<span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+			<span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">imgSrcCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">scaleRatio</span> <span class="o">&gt;</span> <span class="nx">MIN_SACLE</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">detailViewArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
+				<span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailX</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="nx">translateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">},</span>
+	<span class="s2">"release"</span><span class="p">:</span> <span class="p">({</span><span class="nx">destPos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+		<span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">);</span>
+		<span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span> <span class="o">=</span> <span class="p">((</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">BASE</span><span class="p">;</span>
+	<span class="p">},</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">connect</span><span class="p">(</span>
+	<span class="p">[</span><span class="s2">"detailX"</span><span class="p">,</span> <span class="s2">"detailY"</span><span class="p">],</span>
+	<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#detail-view-carousel-container"</span><span class="p">,</span> <span class="p">{</span>
+		<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">],</span>
+	<span class="p">}))</span>
+<span class="p">.</span><span class="nx">connect</span><span class="p">(</span>
+	<span class="s2">"carousel"</span><span class="p">,</span>
+	<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#carousel-container"</span><span class="p">,</span> <span class="p">{</span>
+		<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+	<span class="p">}))</span>
+<span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
+	<span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+	<span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+	<span class="na">carousel</span><span class="p">:</span> <span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">INITIAL_POS</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span><span class="p">),</span>
+<span class="p">});</span>
+</code></pre>
+</div>
+
+<h3 id="3d-carousel">3D Carousel</h3>
+
+<div class="demobox" codepen="axes">
+  
 </div>
 
 			</div>
@@ -357,11 +627,27 @@
     </script>
 
 
+	<script src="assets/js/common/AxesGridView.js"></script>
+
+	<script src="assets/js/axes.js"></script>
+
 	<script src="assets/js/car360viewer.js"></script>
 
 	<script src="assets/js/cardinhand.js"></script>
 
 	<script src="assets/js/cube.js"></script>
+
+	<script src="assets/js/minimap.js"></script>
+
+	<script src="assets/js/subway.js"></script>
+
+	<script src="assets/js/video.js"></script>
+
+	<script src="assets/js/pulldownrefresh.js"></script>
+
+	<script src="assets/js/carousel.js"></script>
+
+	<script src="assets/js/3dcarousel.js"></script>
 
 </body>
 </html>

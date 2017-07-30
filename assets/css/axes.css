@@ -1,0 +1,111 @@
+#grid {
+  position: relative;
+}
+#uiWrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background-color: #eebf3f;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0px 1px 2px #8c532e;
+}
+#uiWrapper .ui {
+  width: 100px;
+  height: 100px;
+  left: -50px;
+  top: -50px;
+  position: absolute;
+  background-color: black;
+  border-radius: 50px;
+  line-height: 100px;
+  text-align: center;
+  touch-action: none; user-select: none; -webkit-user-drag: none;
+}
+#uiWrapper .ui img {
+  width: 45px;
+  height: 75px;
+  touch-action: none; user-select: none; -webkit-user-drag: none;
+}
+
+#grid canvas {
+  box-shadow: 0px 1px 2px #888;
+}
+#grid .pan {
+  position:absolute;
+  left:0;
+  top:0;
+  display: none;
+}
+
+.inputTypeWrapper {
+  background-color: #f5f5f5;
+  height:100px;
+  padding-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+#inputType {
+  float: right;
+  left: -50%; 
+  text-align: center;
+  height: 100%; 
+  position: relative;
+  padding-top:10px;
+}
+#inputType div {
+  float:left;
+  left: 50%;
+  position: relative;
+  width:150px;
+  height:50px;
+  margin:0px;
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  background-position:center;
+  color: black;
+  font-weight: bold;
+  font-size: 15px;
+  padding-top: 50px;
+}
+
+#inputType .label {
+  margin:0;
+  padding:0;
+}
+
+.mouse .pan {
+  background:url("../image/axes/mouse-click.png");
+}
+
+.mouse .zoom {
+  background:url("../image/axes/mouse-wheel.png");
+}
+
+.touch .pan {
+  background:url("../image/axes/touch.png");
+}
+
+.touch .zoom {
+  background:url("../image/axes/touch-pinch.png");
+}
+
+
+.blinking{
+  -webkit-animation:blink 0.3s ease-in-out infinite alternate;
+  -moz-animation:blink 0.3s ease-in-out infinite alternate;
+  animation:blink 0.3s ease-in-out infinite alternate;
+}
+@-webkit-keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@-moz-keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@keyframes blink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}

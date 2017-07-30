@@ -1,0 +1,13 @@
+#zoomWrapper {
+  overflow:hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#subway {
+  transform-origin: 0 0; 
+}
+  
+  /* -webkit-transition:transform 0.5s, -webkit-transform 0.5s;
+  transition:transform 0.5s, -webkit-transform 0.5s; */
+/* } */

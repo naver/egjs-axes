@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Index | egjs::axes - API</title>
+    <title>External: Hammer | egjs::axes - API</title>
     
     <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions." />
     
@@ -262,145 +262,195 @@
 </div>
 
     <div class="main">
-        <h1 class="page-title" data-filename="index.html">Index</h1>
+        <h1 class="page-title" data-filename="external-Hammer.html">External: Hammer</h1>
         
 
 
+
+<section>
+
+<header>
+    <h2>
+    
+        <span>external:Hammer</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+            <div class="description"><p>Hammer helps you add support for touch gestures to your page</p></div>
+        
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://hammerjs.github.io">Hammer.JS</a></li>
+        
+            <li><a href="http://hammerjs.github.io/jsdoc/Hammer.html">Hammer.JS API documents</a></li>
+        
+            <li>Hammer.JS applies specific CSS properties by <a href="http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html">default</a> when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS</li>
+        </ul>
+    </dd>
+    
+
     
 
 
-    <h3> </h3>
+    <!-- if data.codepen -->
+</dl>
 
-
-
-
-
-
+        
+    
+    </div>
 
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
-    <section>
-        <article class="readme"><h1>egjs-axes <a href="https://badge.fury.io/js/%40egjs%2Faxes"><img src="https://badge.fury.io/js/%40egjs%2Faxes.svg" alt="npm version"></a> <a href="https://travis-ci.org/naver/egjs-axes"><img src="https://travis-ci.org/naver/egjs-axes.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/naver/egjs-axes?branch=master"><img src="https://coveralls.io/repos/github/naver/egjs-axes/badge.svg?branch=master" alt="Coverage Status"></a></h1><p>A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.</p>
-<p><img src="https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif" alt="car360 using egjs-axes"></p>
-<h2>Documents</h2><ul>
-<li><a href="https://naver.github.io/egjs-axes/">Get Started and Demos</a></li>
-<li><a href="https://naver.github.io/egjs-axes/release/latest/doc/">API documentation</a></li>
-</ul>
-<h2>Download and Installation</h2><p>Download dist files from repo directly or install it via npm. </p>
-<h3>For development (Uncompressed)</h3><p>You can download the uncompressed files for development</p>
-<ul>
-<li>Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.js</li>
-<li>Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.js</li>
-</ul>
-<h3>For production (Compressed)</h3><p>You can download the compressed files for production</p>
-<ul>
-<li>Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.min.js</li>
-<li>Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.min.js</li>
-</ul>
-<h3>Packaged version (with Dependencies)</h3><blockquote>
-<p>Packaged version is not an official distribution.<br>Is just to provide for ease use of 'egjs-axes' with dependency.</p>
-</blockquote>
-<ul>
-<li><p><strong>Latest</strong></p>
-<ul>
-<li>https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js</li>
-<li>https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.min.js</li>
-</ul>
-</li>
-<li><p><strong>Specific version</strong></p>
-<ul>
-<li>https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.js</li>
-<li>https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.min.js</li>
-</ul>
-</li>
-</ul>
-<h3>Installation with npm</h3><p>The following command shows how to install egjs-axes using npm.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm install @egjs/axes</code></pre><h2>Supported Browsers</h2><p>The following are the supported browsers.</p>
-<table>
-<thead>
-<tr>
-<th>Internet Explorer</th>
-<th>Chrome</th>
-<th>Firefox</th>
-<th>Safari</th>
-<th>iOS</th>
-<th>Android</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>10+</td>
-<td>Latest</td>
-<td>Latest</td>
-<td>Latest</td>
-<td>7+</td>
-<td>2.3+(except 3.x)</td>
-</tr>
-</tbody>
-</table>
-<h2>Dependency</h2><p>egjs-axes has the dependencies for the following libraries:</p>
-<table>
-<thead>
-<tr>
-<th><a href="http://github.com/naver/egjs/egjs-component">egjs-component</a></th>
-<th><a href="http://hammerjs.github.io/">Hammer.JS</a></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2.0.0+</td>
-<td>2.0.4+</td>
-</tr>
-</tbody>
-</table>
-<h2>How to start developing egjs-axes?</h2><p>For anyone interested to develop egjs-axes, follow the instructions below.</p>
-<h3>Development Environment</h3><h4>1. Clone the repository</h4><p>Clone the egjs-axes repository and install the dependency modules.</p>
-<pre class="prettyprint source lang-bash"><code># Clone the repository.
-$ git clone https://github.com/naver/egjs-axes.git</code></pre><h4>2. Install dependencies</h4><p><code>npm</code> is supported.</p>
-<pre class="prettyprint source"><code># Install the dependency modules.
-$ npm install</code></pre><h4>3. Build</h4><p>Use npm script to build billboard.js</p>
-<pre class="prettyprint source lang-bash"><code># Run webpack-dev-server for development
-$ npm start
 
-# Build
-$ npm run build
 
-# Generate jsdoc
-$ npm run jsdoc</code></pre><p>Two folders will be created after complete build is completed.</p>
-<ul>
-<li><strong>dist</strong> folder: Includes the <strong>axes.js</strong> and <strong>axes.min.js</strong> files.</li>
-<li><strong>doc</strong> folder: Includes API documentation. The home page for the documentation is <strong>doc/index.html</strong>.</li>
-</ul>
-<h3>Linting</h3><p>To keep the same code style, we adopted <a href="https://palantir.github.io/tslint/">TSLint</a> to maintain our code quality.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm run lint</code></pre><h3>Test</h3><p>Once you created a branch and done with development, you must perform a test running <code>npm run test</code> command before you push code to a remote repository.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm run test</code></pre><p>Running a <code>npm run test</code> command will start <a href="https://mochajs.org/">Mocha</a> tests via <a href="https://karma-runner.github.io/">Karma-runner</a>.</p>
-<h2>Bug Report</h2><p>If you find a bug, please report it to us using the <a href="https://github.com/naver/egjs-axes/issues">Issues</a> page on GitHub.</p>
-<h2>License</h2><p>egjs-axes is released under the <a href="http://naver.github.io/egjs/license.txt">MIT license</a>.</p>
-<pre class="prettyprint source"><code>Copyright (c) 2015 NAVER Corp.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &quot;Software&quot;), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+<section>
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+<header>
+    <h2>
+    
+        <span>external:Hammer</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
 
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.</code></pre></article>
-    </section>
+<article>
+    <div class="container-overview">
+    
 
+    
+        
+            <div class="description"><p>Hammer helps you add support for touch gestures to your page</p></div>
+        
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://hammerjs.github.io">Hammer.JS</a></li>
+        
+            <li><a href="http://hammerjs.github.io/jsdoc/Hammer.html">Hammer.JS API documents</a></li>
+        
+            <li>Hammer.JS applies specific CSS properties by <a href="http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html">default</a> when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS</li>
+        </ul>
+    </dd>
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+        
+    
+    </div>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

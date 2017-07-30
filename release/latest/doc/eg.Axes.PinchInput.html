@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Index | egjs::axes - API</title>
+    <title>Class: PinchInput | egjs::axes - API</title>
     
     <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions." />
     
@@ -262,145 +262,665 @@
 </div>
 
     <div class="main">
-        <h1 class="page-title" data-filename="index.html">Index</h1>
+        <h1 class="page-title" data-filename="eg.Axes.PinchInput.html">Class: PinchInput</h1>
+        
+
+
+
+<section>
+
+<header>
+    <h2>
+        <span class="ancestors">eg<a href="eg.Axes.html">.Axes</a>.</span>
+    
+    
+        <span>PinchInput</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="PinchInput">
+            
+            new eg.Axes.PinchInput<span class="signature">(element, <span class="optional">options</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PinchInput.js.html">PinchInput.js</a>, <a href="outjs_inputType_PinchInput.js.html#line20">line 20</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>A module that transfers the change of the user's Pinch operation to eg.Axes</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>사용자의 Pinch 동작 변화량을 eg.Axes에 전달하는 모듈</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>element</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">jQuery</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>An element to use the eg.Axes.PinchInput module </p></div>
+            <div class="description ko"><p>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>options</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type"><a href="global.html#PinchInputOption">PinchInputOption</a></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The option object of the eg.Axes.PinchInput module</p></div>
+            <div class="description ko"><p>eg.Axes.PinchInput 모듈의 옵션 객체</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const pan = new eg.Axes.PinchInput(&quot;#area&quot;, {<br>        scale: 1<br>});</p>
+<p>axes.connect(&quot;zoom&quot;, pan);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+
+
         
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
+    </div>
 
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="destroy">
+            
+            destroy<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PinchInput.js.html">PinchInput.js</a>, <a href="outjs_inputType_PinchInput.js.html#line93">line 93</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Destroys elements, properties, and events used in a module.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
 
+    <!-- if data.codepen -->
+</dl>
 
-    <section>
-        <article class="readme"><h1>egjs-axes <a href="https://badge.fury.io/js/%40egjs%2Faxes"><img src="https://badge.fury.io/js/%40egjs%2Faxes.svg" alt="npm version"></a> <a href="https://travis-ci.org/naver/egjs-axes"><img src="https://travis-ci.org/naver/egjs-axes.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/naver/egjs-axes?branch=master"><img src="https://coveralls.io/repos/github/naver/egjs-axes/badge.svg?branch=master" alt="Coverage Status"></a></h1><p>A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.</p>
-<p><img src="https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif" alt="car360 using egjs-axes"></p>
-<h2>Documents</h2><ul>
-<li><a href="https://naver.github.io/egjs-axes/">Get Started and Demos</a></li>
-<li><a href="https://naver.github.io/egjs-axes/release/latest/doc/">API documentation</a></li>
-</ul>
-<h2>Download and Installation</h2><p>Download dist files from repo directly or install it via npm. </p>
-<h3>For development (Uncompressed)</h3><p>You can download the uncompressed files for development</p>
-<ul>
-<li>Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.js</li>
-<li>Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.js</li>
-</ul>
-<h3>For production (Compressed)</h3><p>You can download the compressed files for production</p>
-<ul>
-<li>Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.min.js</li>
-<li>Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.min.js</li>
-</ul>
-<h3>Packaged version (with Dependencies)</h3><blockquote>
-<p>Packaged version is not an official distribution.<br>Is just to provide for ease use of 'egjs-axes' with dependency.</p>
-</blockquote>
-<ul>
-<li><p><strong>Latest</strong></p>
-<ul>
-<li>https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js</li>
-<li>https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.min.js</li>
-</ul>
-</li>
-<li><p><strong>Specific version</strong></p>
-<ul>
-<li>https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.js</li>
-<li>https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.min.js</li>
-</ul>
-</li>
-</ul>
-<h3>Installation with npm</h3><p>The following command shows how to install egjs-axes using npm.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm install @egjs/axes</code></pre><h2>Supported Browsers</h2><p>The following are the supported browsers.</p>
-<table>
-<thead>
-<tr>
-<th>Internet Explorer</th>
-<th>Chrome</th>
-<th>Firefox</th>
-<th>Safari</th>
-<th>iOS</th>
-<th>Android</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>10+</td>
-<td>Latest</td>
-<td>Latest</td>
-<td>Latest</td>
-<td>7+</td>
-<td>2.3+(except 3.x)</td>
-</tr>
-</tbody>
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="disable">
+            
+            disable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Axes.PinchInput.html">eg.Axes.PinchInput</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PinchInput.js.html">PinchInput.js</a>, <a href="outjs_inputType_PinchInput.js.html#line143">line 143</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Disables input devices</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용할 수 없게 한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Axes.PinchInput.html">eg.Axes.PinchInput</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself </div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
 </table>
-<h2>Dependency</h2><p>egjs-axes has the dependencies for the following libraries:</p>
-<table>
-<thead>
-<tr>
-<th><a href="http://github.com/naver/egjs/egjs-component">egjs-component</a></th>
-<th><a href="http://hammerjs.github.io/">Hammer.JS</a></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2.0.0+</td>
-<td>2.0.4+</td>
-</tr>
-</tbody>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="enable">
+            
+            enable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Axes.PinchInput.html">eg.Axes.PinchInput</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PinchInput.js.html">PinchInput.js</a>, <a href="outjs_inputType_PinchInput.js.html#line133">line 133</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Enables input devices</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용할 수 있게 한다</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Axes.PinchInput.html">eg.Axes.PinchInput</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself </div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
 </table>
-<h2>How to start developing egjs-axes?</h2><p>For anyone interested to develop egjs-axes, follow the instructions below.</p>
-<h3>Development Environment</h3><h4>1. Clone the repository</h4><p>Clone the egjs-axes repository and install the dependency modules.</p>
-<pre class="prettyprint source lang-bash"><code># Clone the repository.
-$ git clone https://github.com/naver/egjs-axes.git</code></pre><h4>2. Install dependencies</h4><p><code>npm</code> is supported.</p>
-<pre class="prettyprint source"><code># Install the dependency modules.
-$ npm install</code></pre><h4>3. Build</h4><p>Use npm script to build billboard.js</p>
-<pre class="prettyprint source lang-bash"><code># Run webpack-dev-server for development
-$ npm start
 
-# Build
-$ npm run build
+    
+    
+    
 
-# Generate jsdoc
-$ npm run jsdoc</code></pre><p>Two folders will be created after complete build is completed.</p>
-<ul>
-<li><strong>dist</strong> folder: Includes the <strong>axes.js</strong> and <strong>axes.min.js</strong> files.</li>
-<li><strong>doc</strong> folder: Includes API documentation. The home page for the documentation is <strong>doc/index.html</strong>.</li>
-</ul>
-<h3>Linting</h3><p>To keep the same code style, we adopted <a href="https://palantir.github.io/tslint/">TSLint</a> to maintain our code quality.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm run lint</code></pre><h3>Test</h3><p>Once you created a branch and done with development, you must perform a test running <code>npm run test</code> command before you push code to a remote repository.</p>
-<pre class="prettyprint source lang-bash"><code>$ npm run test</code></pre><p>Running a <code>npm run test</code> command will start <a href="https://mochajs.org/">Mocha</a> tests via <a href="https://karma-runner.github.io/">Karma-runner</a>.</p>
-<h2>Bug Report</h2><p>If you find a bug, please report it to us using the <a href="https://github.com/naver/egjs-axes/issues">Issues</a> page on GitHub.</p>
-<h2>License</h2><p>egjs-axes is released under the <a href="http://naver.github.io/egjs/license.txt">MIT license</a>.</p>
-<pre class="prettyprint source"><code>Copyright (c) 2015 NAVER Corp.
+    
+<dl class="details">
+    
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &quot;Software&quot;), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+    
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+    
 
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.</code></pre></article>
-    </section>
+    
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="isEnable">
+            
+            isEnable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PinchInput.js.html">PinchInput.js</a>, <a href="outjs_inputType_PinchInput.js.html#line153">line 153</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Returns whether to use an input device</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용 여부를 반환한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        Boolean
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">Whether to use an input device </div>
+                <div class="ko"><p>입력장치 사용여부</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
