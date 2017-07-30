@@ -399,12 +399,12 @@ var AnimationManager = (function () {
         var destPos = this.axm.map(pos, function (v, k, opt) {
             return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
         });
-        // const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
+        var delta = this.axm.map(destPos, function (v, k) { return v - depaPos[k]; });
         return {
             depaPos: depaPos,
             destPos: destPos,
             duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
-            // distance,
+            delta: delta,
             inputEvent: inputEvent,
             done: this.animationEnd
         };
@@ -475,7 +475,8 @@ var AnimationManager = (function () {
             this.animateLoop({
                 depaPos: depaPos,
                 destPos: userWish.destPos,
-                duration: userWish.duration
+                duration: userWish.duration,
+                delta: this.axm.map(userWish.destPos, function (v, k) { return v - depaPos[k]; })
             }, function () { return _this.animationEnd(); });
         }
     };
@@ -637,6 +638,7 @@ var const_1 = __webpack_require__(6);
  * @extends eg.Component
  *
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
+ * @param {Object.<string, number>} startPos The coordinates to be moved when creating an instance<ko>인스턴스 생성시 이동할 좌표</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  * @example
@@ -684,7 +686,7 @@ var const_1 = __webpack_require__(6);
  */
 var Axes = (function (_super) {
     __extends(Axes, _super);
-    function Axes(options) {
+    function Axes(options, startPos) {
         var _this = _super.call(this) || this;
         _this._inputs = [];
         _this.options = __assign({
@@ -702,6 +704,7 @@ var Axes = (function (_super) {
         _this._itm = new InterruptManager_1.InterruptManager(_this.options);
         _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
         _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
+        startPos && _this.setTo(startPos);
         return _this;
     }
     /**
@@ -1108,6 +1111,7 @@ var EventManager = (function () {
      * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
      * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
+     * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
      * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
      *
@@ -1124,7 +1128,8 @@ var EventManager = (function () {
      * @event
      *
      * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-     * @param {Object.<string, number>} param.pos  departure coordinate <ko>좌표</ko>
+     * @param {Object.<string, number>} param.pos  The coordinate <ko>좌표</ko>
+     * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
      * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
      * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
@@ -1152,6 +1157,7 @@ var EventManager = (function () {
      * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
         * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+        * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
         * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
       * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
@@ -1312,10 +1318,12 @@ var InputObserver = (function () {
             return Coordinate_1["default"].getInsidePosition(pos[k] + v, opt.range, opt.circular, opt.bounce);
         });
         // prepare params
+        destPos = __assign({}, depaPos, destPos);
         var param = {
             depaPos: depaPos,
-            destPos: __assign({}, depaPos, destPos),
+            destPos: destPos,
             duration: this.am.getDuration(destPos, pos, inputDuration),
+            delta: this.axm.map(destPos, function (v, k) { return v - depaPos[k]; }),
             inputEvent: event
         };
         this.em.triggerRelease(param);
@@ -1532,8 +1540,13 @@ var PanInput = (function () {
         return !!(this.hammer && this.hammer.get("pan").options.enable);
     };
     PanInput.prototype.onHammerInput = function (event) {
-        if (this.isEnable() && event.isFirst) {
-            this.observer.hold(this, event);
+        if (this.isEnable()) {
+            if (event.isFirst) {
+                this.observer.hold(this, event);
+            }
+            else if (event.isFinal) {
+                this.onPanend(event);
+            }
         }
     };
     PanInput.prototype.onPanmove = function (event) {
@@ -1575,13 +1588,11 @@ var PanInput = (function () {
     PanInput.prototype.attachEvent = function (observer) {
         this.observer = observer;
         this.hammer.on("hammer.input", this.onHammerInput)
-            .on("panstart panmove", this.onPanmove)
-            .on("panend", this.onPanend);
+            .on("panstart panmove", this.onPanmove);
     };
     PanInput.prototype.dettachEvent = function () {
         this.hammer.off("hammer.input", this.onHammerInput)
-            .off("panstart panmove", this.onPanmove)
-            .off("panend", this.onPanend);
+            .off("panstart panmove", this.onPanmove);
         this.observer = null;
     };
     PanInput.prototype.getOffset = function (properties, useDirection) {
@@ -1853,8 +1864,9 @@ var WheelInput = (function () {
         }
         clearTimeout(this._timer);
         this._timer = setTimeout(function () {
+            _this.observer.hold(_this, event);
             var offset = (event.deltaY < 0 ? -1 : 1) * _this.options.scale;
-            _this.observer.change(_this, event, InputType_1.toAxis(_this.axes, [offset]));
+            _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [offset]));
         }, 200);
     };
     WheelInput.prototype.attachEvent = function (observer) {

@@ -41,6 +41,7 @@ import {IInputType} from "./inputType/InputType";
  * @extends eg.Component
  *
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
+ * @param {Object.<string, number>} startPos The coordinates to be moved when creating an instance<ko>인스턴스 생성시 이동할 좌표</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  * @example
@@ -160,7 +161,7 @@ export default class Axes extends Component {
 	private _io: InputObserver;
 	private _inputs: IInputType[] = [];
 
-	constructor(options: AxesOption) {
+	constructor(options: AxesOption, startPos?: Axis) {
 		super();
 		this.options = { ...{
 			easing: function easeOutCubic(x) {
@@ -178,6 +179,7 @@ export default class Axes extends Component {
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
 		this._io = new InputObserver(this.options, this._itm, this._em, this._axm, this._am);
+		startPos && this.setTo(startPos);
 	}
 
 	/**

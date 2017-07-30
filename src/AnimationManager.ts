@@ -7,7 +7,7 @@ export interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
-	// distance: Axis;
+	delta: Axis;
 	setTo?: (destPos?: Axis, duration?: number) => { destPos: Axis, duration: number };
 	done?: () => void;
 	startTime?: number;
@@ -46,8 +46,6 @@ export class AnimationManager {
 		return AnimationManager.getDuration(duration, this.options.maximumDuration);
 	}
 
-
-
 	private createAnimationParam(pos: Axis, duration: number, inputEvent = null): AnimationParam {
 		const depaPos: Axis = this.axm.get(Object.keys(pos));
 		const destPos: Axis = this.axm.map(pos, (v, k, opt) => {
@@ -58,13 +56,13 @@ export class AnimationManager {
 				opt.bounce,
 			);
 		});
-		// const distance: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
+		const delta: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
 
 		return {
 			depaPos,
 			destPos,
 			duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
-			// distance,
+			delta,
 			inputEvent,
 			done: this.animationEnd
 		};
@@ -151,7 +149,8 @@ export class AnimationManager {
 			this.animateLoop({
 				depaPos,
 				destPos: userWish.destPos,
-				duration: userWish.duration
+				duration: userWish.duration,
+				delta: this.axm.map(userWish.destPos, (v, k) => v - depaPos[k]),
 			}, () => this.animationEnd());
 		}
 	}

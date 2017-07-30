@@ -84,8 +84,9 @@ export class WheelInput implements IInputType {
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
+			this.observer.hold(this, event);
 			const offset = (event.deltaY < 0 ? -1 : 1) * this.options.scale;
-    	this.observer.change(this, event, toAxis(this.axes, [offset]));
+			this.observer.release(this, event, toAxis(this.axes, [offset]));
 		}, 200);
   }
 

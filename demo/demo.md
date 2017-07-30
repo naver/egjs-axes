@@ -1,5 +1,6 @@
 ### What is eg.Axes?
 
+{% include_relative assets/html/axes.html %}
 
 ### Car 360º viewer
 
@@ -128,9 +129,11 @@ var axes = new eg.Axes({
 
 ### Controll Video
 
+{% include_relative assets/html/video.html %}
 
 ### Pull-Down Refresh
 
+{% include_relative assets/html/pulldownrefresh.html %}
 
 ### Carousel
 
@@ -201,3 +204,5 @@ const axes = new eg.Axes({
 ```
 
 ### 3D Carousel
+
+{% include_relative assets/html/3dcarousel.html %}

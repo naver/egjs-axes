@@ -204,8 +204,12 @@ export class PanInput implements IInputType {
 	}
 
 	private onHammerInput(event) {
-		if (this.isEnable() && event.isFirst) {
-			this.observer.hold(this, event);
+		if (this.isEnable()) {
+			if (event.isFirst) {
+				this.observer.hold(this, event);
+			} else if (event.isFinal) {
+				this.onPanend(event);
+			}
 		}
 	}
 
@@ -256,14 +260,12 @@ export class PanInput implements IInputType {
 	private attachEvent(observer: IInputTypeObserver) {
 		this.observer = observer;
 		this.hammer.on("hammer.input", this.onHammerInput)
-			.on("panstart panmove", this.onPanmove)
-			.on("panend", this.onPanend);
+			.on("panstart panmove", this.onPanmove);
 	}
 
 	private dettachEvent() {
 		this.hammer.off("hammer.input", this.onHammerInput)
-			.off("panstart panmove", this.onPanmove)
-			.off("panend", this.onPanend);
+			.off("panstart panmove", this.onPanmove);
 		this.observer = null;
 	}
 

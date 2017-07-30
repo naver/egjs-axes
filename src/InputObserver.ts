@@ -81,7 +81,7 @@ export class InputObserver implements IInputTypeObserver {
     }
     const pos: Axis = this.axm.get(inputType.axes);
     const depaPos: Axis = this.axm.get();
-    const destPos: Axis = this.axm.map(offset, (v, k, opt) => {
+    let destPos: Axis = this.axm.map(offset, (v, k, opt) => {
       return Coordinate.getInsidePosition(
         pos[k] + v,
         opt.range,
@@ -90,10 +90,12 @@ export class InputObserver implements IInputTypeObserver {
       );
     });
     // prepare params
+    destPos = { ...depaPos, ...destPos};
     const param: AnimationParam = {
       depaPos,
-      destPos: { ...depaPos, ...destPos},
+      destPos,
       duration: this.am.getDuration(destPos, pos, inputDuration),
+      delta: this.axm.map(destPos, (v, k) => v - depaPos[k]),
       inputEvent: event,
     };
     this.em.triggerRelease(param);

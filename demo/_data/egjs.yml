@@ -8,16 +8,25 @@ github:
   user: naver
   repo: egjs-axes 
 js:
+- assets/js/common/AxesGridView.js
+- assets/js/axes.js
 - assets/js/car360viewer.js
 - assets/js/cardinhand.js
 - assets/js/cube.js
 - assets/js/minimap.js
 - assets/js/subway.js
+- assets/js/video.js
+- assets/js/pulldownrefresh.js
 - assets/js/carousel.js
+- assets/js/3dcarousel.js
 css:
+- assets/css/axes.css
 - assets/css/car360viewer.css
 - assets/css/cardinhand.css
 - assets/css/cube.css
 - assets/css/minimap.css
 - assets/css/subway.css
+- assets/css/video.css
+- assets/css/pulldownrefresh.css
 - assets/css/carousel.css
+- assets/css/3dcarousel.css
