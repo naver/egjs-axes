@@ -7,8 +7,8 @@ const Coordinate = {
 		circular: boolean[],
 		bounce?: number[],
 		): number {
-		let toDestPos = destPos;
-		const targetRange = [
+		let toDestPos: number = destPos;
+		const targetRange: number[] = [
 			circular[0] ? range[0] : (bounce ? range[0] - bounce[0] : range[0]),
 			circular[1] ? range[1] : (bounce ? range[1] + bounce[1] : range[1])
 		];
@@ -16,7 +16,7 @@ const Coordinate = {
 		toDestPos = Math.max(targetRange[0], toDestPos);
 		toDestPos = Math.min(targetRange[1], toDestPos);
 
-		return Math.min(targetRange[1], Math.max(targetRange[0], toDestPos));
+		return +Math.min(targetRange[1], Math.max(targetRange[0], toDestPos)).toFixed(5);
   },
 
 
@@ -47,7 +47,7 @@ const Coordinate = {
 		if (circular[0] && pos < min) { // left
 			toPos = (toPos - min) % length + max;
 		}
-		return +toPos;
+		return +toPos.toFixed(5);
 	},
 };
 

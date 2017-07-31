@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -102,7 +102,7 @@ var Coordinate = {
         ];
         toDestPos = Math.max(targetRange[0], toDestPos);
         toDestPos = Math.min(targetRange[1], toDestPos);
-        return Math.min(targetRange[1], Math.max(targetRange[0], toDestPos));
+        return +Math.min(targetRange[1], Math.max(targetRange[0], toDestPos)).toFixed(5);
     },
     // determine outside
     isOutside: function (pos, range) {
@@ -128,7 +128,7 @@ var Coordinate = {
         if (circular[0] && pos < min) {
             toPos = (toPos - min) % length + max;
         }
-        return +toPos;
+        return +toPos.toFixed(5);
     }
 };
 exports["default"] = Coordinate;
@@ -167,6 +167,10 @@ var AxisManager = (function () {
             }
         }
         return true;
+    };
+    AxisManager.prototype.getDelta = function (depaPos, destPos) {
+        var fullDepaPos = this.get(depaPos);
+        return this.map(this.get(destPos), function (v, k) { return v - fullDepaPos[k]; });
     };
     AxisManager.prototype.get = function (axes) {
         var _this = this;
@@ -3007,187 +3011,6 @@ exports.convertInputType = convertInputType;
 
 "use strict";
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
-exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
-var AxisManager_1 = __webpack_require__(1);
-var AnimationManager = (function () {
-    function AnimationManager(options, itm, em, axm) {
-        this.options = options;
-        this.itm = itm;
-        this.em = em;
-        this.axm = axm;
-        this.animationEnd = this.animationEnd.bind(this);
-    }
-    AnimationManager.getDuration = function (duration, maximum) {
-        return maximum > duration ? duration : maximum;
-    };
-    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
-        var _this = this;
-        var duration;
-        if (typeof wishDuration !== "undefined") {
-            duration = wishDuration;
-        }
-        else {
-            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1["default"].getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
-            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
-        }
-        return AnimationManager.getDuration(duration, this.options.maximumDuration);
-    };
-    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get(Object.keys(pos));
-        var destPos = this.axm.map(pos, function (v, k, opt) {
-            return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
-        });
-        var delta = this.axm.map(destPos, function (v, k) { return v - depaPos[k]; });
-        return {
-            depaPos: depaPos,
-            destPos: destPos,
-            duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
-            delta: delta,
-            inputEvent: inputEvent,
-            done: this.animationEnd
-        };
-    };
-    AnimationManager.prototype.grab = function (axes, event) {
-        if (this._animateParam && !axes.length) {
-            var orgPos_1 = this.axm.get(axes);
-            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
-            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
-                this.em.triggerChange(this.axm.moveTo(pos), event);
-            }
-            this._animateParam = null;
-            this._raf && window.cancelAnimationFrame(this._raf);
-            this._raf = null;
-            this.em.triggerAnimationEnd();
-        }
-    };
-    AnimationManager.prototype.restore = function (inputEvent) {
-        if (inputEvent === void 0) { inputEvent = null; }
-        var pos = this.axm.get();
-        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
-        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
-    };
-    AnimationManager.prototype.animationEnd = function () {
-        this._animateParam = null;
-        // for Circular
-        var circularTargets = this.axm.filter(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); });
-        Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(circularTargets, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); }));
-        this.itm.setInterrupt(false);
-        this.em.triggerAnimationEnd();
-        this.axm.isOutside() && this.restore();
-    };
-    AnimationManager.prototype.animateLoop = function (param, complete) {
-        this._animateParam = __assign({}, param);
-        this._animateParam.startTime = new Date().getTime();
-        if (param.duration) {
-            var info_1 = this._animateParam;
-            var self_1 = this;
-            (function loop() {
-                self_1._raf = null;
-                if (self_1.frame(info_1) >= 1) {
-                    complete();
-                    return;
-                } // animationEnd
-                self_1._raf = window.requestAnimationFrame(loop);
-            })();
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(param.destPos));
-            complete();
-        }
-    };
-    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
-        var _this = this;
-        if (inputEvent === void 0) { inputEvent = null; }
-        var depaPos = this.axm.get();
-        var param = this.createAnimationParam(destPos, duration, inputEvent);
-        var retTrigger = this.em.triggerAnimationStart(param);
-        // to control
-        var userWish = param.setTo();
-        userWish.destPos = this.axm.get(userWish.destPos);
-        userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
-        // You can't stop the 'animationStart' event when 'circular' is true.
-        if (!retTrigger && this.axm.every(userWish.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
-            console.warn("You can't stop the 'animation' event when 'circular' is true.");
-        }
-        if (retTrigger && !AxisManager_1.AxisManager.equal(userWish.destPos, depaPos)) {
-            this.animateLoop({
-                depaPos: depaPos,
-                destPos: userWish.destPos,
-                duration: userWish.duration,
-                delta: this.axm.map(userWish.destPos, function (v, k) { return v - depaPos[k]; })
-            }, function () { return _this.animationEnd(); });
-        }
-    };
-    // animation frame (0~1)
-    AnimationManager.prototype.frame = function (param) {
-        var curTime = new Date().getTime() - param.startTime;
-        var easingPer = this.easing(curTime / param.duration);
-        var toPos = param.depaPos;
-        toPos = this.axm.map(toPos, function (v, k, opt) {
-            v += (param.destPos[k] - v) * easingPer;
-            return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
-        });
-        this.em.triggerChange(this.axm.moveTo(toPos));
-        return easingPer;
-    };
-    AnimationManager.prototype.easing = function (p) {
-        return p > 1 ? 1 : this.options.easing(p);
-    };
-    AnimationManager.prototype.setTo = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        var axes = Object.keys(pos);
-        this.grab(axes);
-        var orgPos = this.axm.get(axes);
-        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
-            return this;
-        }
-        this.itm.setInterrupt(true);
-        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
-        if (!Object.keys(movedPos).length) {
-            return;
-        }
-        movedPos = this.axm.map(movedPos, function (v, k, opt) {
-            v = Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular);
-            return duration ? v : Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
-        });
-        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
-            return this;
-        }
-        else if (duration) {
-            this.animateTo(movedPos, duration);
-        }
-        else {
-            this.em.triggerChange(this.axm.moveTo(movedPos));
-            this.itm.setInterrupt(false);
-        }
-        return this;
-    };
-    AnimationManager.prototype.setBy = function (pos, duration) {
-        if (duration === void 0) { duration = 0; }
-        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
-    };
-    return AnimationManager;
-}());
-exports.AnimationManager = AnimationManager;
-;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 exports.__esModule = true;
 var DIRECTION;
 (function (DIRECTION) {
@@ -3213,17 +3036,17 @@ exports.TRANSFORM = (function () {
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var Axes_1 = __webpack_require__(8);
+var Axes_1 = __webpack_require__(7);
 module.exports = Axes_1["default"];
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3247,8 +3070,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Component = __webpack_require__(9);
-var AnimationManager_1 = __webpack_require__(5);
+var Component = __webpack_require__(8);
+var AnimationManager_1 = __webpack_require__(9);
 var EventManager_1 = __webpack_require__(10);
 var InterruptManager_1 = __webpack_require__(11);
 var AxisManager_1 = __webpack_require__(1);
@@ -3256,7 +3079,7 @@ var InputObserver_1 = __webpack_require__(12);
 var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
 var WheelInput_1 = __webpack_require__(15);
-var const_1 = __webpack_require__(6);
+var const_1 = __webpack_require__(5);
 /**
  * @typedef {Object} AxisOption The Axis information
  * @ko 축 정보
@@ -3275,6 +3098,7 @@ var const_1 = __webpack_require__(6);
  * @ko eg.Axes 모듈의 옵션 객체
  * @property {Function} [easing=easing.easeOutCubic] The easing function to apply to an animation <ko>애니메이션에 적용할 easing 함수</ko>
  * @property {Number} [maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
+ * @property {Number} [minimumDuration=0] Minimum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최소 좌표 이동 시간</ko>
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
  * @property {Object.<string, AxisOption>} [axis={}] Axis information managed by eg.Axes <ko>eg.Axes가 관리하는 축 정보</ko>
  * @property {Boolean} [interruptable=true] Indicates whether an animation is interruptible.<br>- true: It can be paused or stopped by user action or the API.<br>- false: It cannot be paused or stopped by user action or the API while it is running.<ko>진행 중인 애니메이션 중지 가능 여부.<br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.<br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다</ko>
@@ -3343,6 +3167,7 @@ var Axes = (function (_super) {
             },
             interruptable: true,
             maximumDuration: Infinity,
+            minimumDuration: 0,
             deceleration: 0.0006,
             axis: {}
         }, options);
@@ -3671,7 +3496,7 @@ exports["default"] = Axes;
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -4090,6 +3915,193 @@ module.exports = _Component2["default"];
 //# sourceMappingURL=component.js.map
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+exports.__esModule = true;
+var Coordinate_1 = __webpack_require__(0);
+var AxisManager_1 = __webpack_require__(1);
+var AnimationManager = (function () {
+    function AnimationManager(options, itm, em, axm) {
+        this.options = options;
+        this.itm = itm;
+        this.em = em;
+        this.axm = axm;
+        this.animationEnd = this.animationEnd.bind(this);
+    }
+    AnimationManager.getDuration = function (duration, min, max) {
+        return Math.max(Math.min(duration, max), min);
+    };
+    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
+        var _this = this;
+        var duration;
+        if (typeof wishDuration !== "undefined") {
+            duration = wishDuration;
+        }
+        else {
+            var durations_1 = this.axm.map(destPos, function (v, k) { return Coordinate_1["default"].getDuration(Math.abs(Math.abs(v) - Math.abs(depaPos[k])), _this.options.deceleration); });
+            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
+        }
+        return AnimationManager.getDuration(duration, this.options.minimumDuration, this.options.maximumDuration);
+    };
+    AnimationManager.prototype.createAnimationParam = function (pos, duration, inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var depaPos = this.axm.get();
+        var destPos = this.axm.get(this.axm.map(pos, function (v, k, opt) {
+            return Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular, opt.bounce);
+        }));
+        return {
+            depaPos: depaPos,
+            destPos: destPos,
+            duration: AnimationManager.getDuration(duration, this.options.minimumDuration, this.options.maximumDuration),
+            delta: this.axm.getDelta(depaPos, destPos),
+            inputEvent: inputEvent,
+            done: this.animationEnd
+        };
+    };
+    AnimationManager.prototype.grab = function (axes, event) {
+        if (this._animateParam && !axes.length) {
+            var orgPos_1 = this.axm.get(axes);
+            var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
+            if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
+                this.em.triggerChange(this.axm.moveTo(pos), event);
+            }
+            this._animateParam = null;
+            this._raf && window.cancelAnimationFrame(this._raf);
+            this._raf = null;
+            this.em.triggerAnimationEnd();
+        }
+    };
+    AnimationManager.prototype.restore = function (inputEvent) {
+        if (inputEvent === void 0) { inputEvent = null; }
+        var pos = this.axm.get();
+        var destPos = this.axm.map(pos, function (v, k, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
+        this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
+    };
+    AnimationManager.prototype.animationEnd = function () {
+        this._animateParam = null;
+        // for Circular
+        var circularTargets = this.axm.filter(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); });
+        Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(circularTargets, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); }));
+        this.itm.setInterrupt(false);
+        this.em.triggerAnimationEnd();
+        this.axm.isOutside() && this.restore();
+    };
+    AnimationManager.prototype.animateLoop = function (param, complete) {
+        this._animateParam = __assign({}, param);
+        this._animateParam.startTime = new Date().getTime();
+        if (param.duration) {
+            var info_1 = this._animateParam;
+            var self_1 = this;
+            (function loop() {
+                self_1._raf = null;
+                if (self_1.frame(info_1) >= 1) {
+                    if (!AxisManager_1.AxisManager.equal(param.destPos, self_1.axm.get(Object.keys(param.destPos)))) {
+                        self_1.em.triggerChange(self_1.axm.moveTo(param.destPos));
+                    }
+                    complete();
+                    return;
+                } // animationEnd
+                self_1._raf = window.requestAnimationFrame(loop);
+            })();
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(param.destPos));
+            complete();
+        }
+    };
+    AnimationManager.prototype.getUserControll = function (param) {
+        var userWish = param.setTo();
+        userWish.destPos = this.axm.get(userWish.destPos);
+        userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.minimumDuration, this.options.maximumDuration);
+        return userWish;
+    };
+    AnimationManager.prototype.animateTo = function (destPos, duration, inputEvent) {
+        var _this = this;
+        if (inputEvent === void 0) { inputEvent = null; }
+        var param = this.createAnimationParam(destPos, duration, inputEvent);
+        var depaPos = __assign({}, param.depaPos);
+        var retTrigger = this.em.triggerAnimationStart(param);
+        // to control
+        var userWish = this.getUserControll(param);
+        // You can't stop the 'animationStart' event when 'circular' is true.
+        if (!retTrigger && this.axm.every(userWish.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
+            console.warn("You can't stop the 'animation' event when 'circular' is true.");
+        }
+        if (retTrigger && !AxisManager_1.AxisManager.equal(userWish.destPos, depaPos)) {
+            this.animateLoop({
+                depaPos: depaPos,
+                destPos: userWish.destPos,
+                duration: userWish.duration,
+                delta: this.axm.getDelta(depaPos, userWish.destPos)
+            }, function () { return _this.animationEnd(); });
+        }
+    };
+    // animation frame (0~1)
+    AnimationManager.prototype.frame = function (param) {
+        var curTime = new Date().getTime() - param.startTime;
+        var easingPer = this.easing(curTime / param.duration);
+        var toPos = param.depaPos;
+        toPos = this.axm.map(toPos, function (v, k, opt) {
+            v += (param.destPos[k] - v) * easingPer;
+            return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
+        });
+        this.em.triggerChange(this.axm.moveTo(toPos));
+        return easingPer;
+    };
+    AnimationManager.prototype.easing = function (p) {
+        return p > 1 ? 1 : this.options.easing(p);
+    };
+    AnimationManager.prototype.setTo = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        var axes = Object.keys(pos);
+        this.grab(axes);
+        var orgPos = this.axm.get(axes);
+        if (AxisManager_1.AxisManager.equal(pos, orgPos)) {
+            return this;
+        }
+        this.itm.setInterrupt(true);
+        var movedPos = this.axm.filter(pos, function (v, k) { return orgPos[k] !== v; });
+        if (!Object.keys(movedPos).length) {
+            return;
+        }
+        movedPos = this.axm.map(movedPos, function (v, k, opt) {
+            v = Coordinate_1["default"].getInsidePosition(v, opt.range, opt.circular);
+            return duration ? v : Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
+        });
+        if (AxisManager_1.AxisManager.equal(movedPos, orgPos)) {
+            return this;
+        }
+        else if (duration) {
+            this.animateTo(movedPos, duration);
+        }
+        else {
+            this.em.triggerChange(this.axm.moveTo(movedPos));
+            this.itm.setInterrupt(false);
+        }
+        return this;
+    };
+    AnimationManager.prototype.setBy = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        return this.setTo(this.axm.map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
+    };
+    return AnimationManager;
+}());
+exports.AnimationManager = AnimationManager;
+;
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4172,7 +4184,7 @@ var EventManager = (function () {
      * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Object.<string, number>} param.depaPos The coordinates when releasing an element<ko>손을 뗐을 때의 좌표 </ko>
      * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
-     * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
+     * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
      * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
      *
@@ -4190,7 +4202,7 @@ var EventManager = (function () {
      *
      * @param {Object} param The object of data to be sent when the event is fired <ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Object.<string, number>} param.pos  The coordinate <ko>좌표</ko>
-     * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
+     * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
      * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
      * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
@@ -4218,7 +4230,7 @@ var EventManager = (function () {
      * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
      * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
         * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
-        * @param {Object.<string, number>} param.deta  The movement variation of coordinate <ko>좌표의 변화량</ko>
+        * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
         * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
         * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
       * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
@@ -4292,17 +4304,8 @@ exports.InterruptManager = InterruptManager;
 
 "use strict";
 
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 exports.__esModule = true;
 var AxisManager_1 = __webpack_require__(1);
-var AnimationManager_1 = __webpack_require__(5);
 var Coordinate_1 = __webpack_require__(0);
 var InputObserver = (function () {
     function InputObserver(options, itm, em, axm, am) {
@@ -4375,28 +4378,28 @@ var InputObserver = (function () {
         }
         var pos = this.axm.get(inputType.axes);
         var depaPos = this.axm.get();
-        var destPos = this.axm.map(offset, function (v, k, opt) {
+        var destPos = this.axm.get(this.axm.map(offset, function (v, k, opt) {
             return Coordinate_1["default"].getInsidePosition(pos[k] + v, opt.range, opt.circular, opt.bounce);
-        });
+        }));
         // prepare params
-        destPos = __assign({}, depaPos, destPos);
         var param = {
             depaPos: depaPos,
             destPos: destPos,
             duration: this.am.getDuration(destPos, pos, inputDuration),
-            delta: this.axm.map(destPos, function (v, k) { return v - depaPos[k]; }),
+            delta: this.axm.getDelta(depaPos, destPos),
             inputEvent: event
         };
         this.em.triggerRelease(param);
         // to contol
-        var userWish = param.setTo();
-        userWish.destPos = this.axm.get(userWish.destPos);
-        userWish.duration = AnimationManager_1.AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
-        if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos)) {
+        var userWish = this.am.getUserControll(param);
+        if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
+            this.em.triggerChange(this.axm.moveTo(userWish.destPos));
             this.itm.setInterrupt(false);
+            console.log("그냥 이동", userWish);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
+            console.log("애니메이션 이동", userWish);
             this.am.animateTo(userWish.destPos, userWish.duration);
         }
         this.moveDistance = null;
@@ -4423,7 +4426,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var Hammer = __webpack_require__(2);
-var const_1 = __webpack_require__(6);
+var const_1 = __webpack_require__(5);
 var utils_1 = __webpack_require__(3);
 var InputType_1 = __webpack_require__(4);
 /**
@@ -4864,6 +4867,7 @@ var InputType_1 = __webpack_require__(4);
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [throttle=100]
 **/
 /**
  * @class eg.Axes.WheelInput
@@ -4889,7 +4893,7 @@ var WheelInput = (function () {
         this.element = utils_1.$(el);
         this.options = __assign({
             scale: 1,
-            throttle: 200
+            throttle: 100
         }, options);
         this.onWheel = this.onWheel.bind(this);
     }

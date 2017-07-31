@@ -20,6 +20,10 @@ export class AxisManager {
       return acc;
     }, {});
   }
+  getDelta(depaPos: Axis, destPos: Axis): Axis {
+    const fullDepaPos = this.get(depaPos);
+    return this.map(this.get(destPos), (v, k) => v - fullDepaPos[k]);
+  }
   get(axes?: string[] | Axis): Axis {
     if (axes && Array.isArray(axes)) {
       return axes.reduce((acc, v) => {

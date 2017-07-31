@@ -13,6 +13,7 @@ export interface WheelInputOption {
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [throttle=100]
 **/
 
 /**
@@ -42,7 +43,7 @@ export class WheelInput implements IInputType {
 		this.options = {
 			...{
 				scale: 1,
-				throttle: 200
+				throttle: 100
 			}, ...options
     };
 		this.onWheel = this.onWheel.bind(this);

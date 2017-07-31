@@ -14,6 +14,7 @@ declare interface AxisOption {
 declare interface AxesOption {
   easing?: (x: number) => number;
   maximumDuration?: number;
+  minimumDuration?: number;
   deceleration?: number;
   axis?: {
     [key: string]: AxisOption

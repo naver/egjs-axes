@@ -28,14 +28,14 @@
 				bounce: 1
 			}
 		},
-		interruptable: false
+		minimumDuration: 300
 	}).on({
 		"hold": function(event) {
 			pan.className = "blinking pan";
 		},
 		"change": function(event) {
 			if (event.delta.panX || event.delta.panY) {
-				pan.textContent = "panX: " + event.pos.panX.toFixed(0) + ", panY: " + event.pos.panY.toFixed(0);
+				pan.textContent = "panX: " + (+event.pos.panX.toFixed(0)) + ", panY: " + (+event.pos.panY.toFixed(0));
 			}
 			if (event.delta.zoom) {
 				zoom.textContent = "zoom: " + event.pos.zoom.toFixed(2);
@@ -50,18 +50,12 @@
 			if (!event.delta.panX && !event.delta.panY) {
 				pan.className = "pan";
 			}
-			if (!event.delta.zoom) {
-				zoom.className = "zoom";
-			}
 		},
-		// "animationStart": function(event) {
-		// 	console.log("animationStart", event.depaPos, event.destPos, event.duration);
-		// },
 		"animationEnd": function(event) {
 			pan.className = "pan";
 			setTimeout(function() {
 				zoom.className = "zoom";
-			}, 200);
+			}, 300);
 		}
 	});
 	

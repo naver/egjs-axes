@@ -18,8 +18,8 @@ export class AnimationManager {
 	private _raf;
 	private _animateParam: AnimationParam;
 
-	static getDuration(duration: number, maximum: number): number {
-		return maximum > duration ? duration : maximum;
+	static getDuration(duration: number, min: number, max: number): number {
+		return Math.max(Math.min(duration, max), min);
 	}
 
 	constructor(
@@ -43,26 +43,30 @@ export class AnimationManager {
 			);
 			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
 		}
-		return AnimationManager.getDuration(duration, this.options.maximumDuration);
+		return AnimationManager.getDuration(
+			duration,
+			this.options.minimumDuration,
+			this.options.maximumDuration);
 	}
 
 	private createAnimationParam(pos: Axis, duration: number, inputEvent = null): AnimationParam {
-		const depaPos: Axis = this.axm.get(Object.keys(pos));
-		const destPos: Axis = this.axm.map(pos, (v, k, opt) => {
+		const depaPos: Axis = this.axm.get();
+		const destPos: Axis = this.axm.get(this.axm.map(pos, (v, k, opt) => {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
 				opt.circular,
 				opt.bounce,
 			);
-		});
-		const delta: Axis = this.axm.map(destPos, (v, k) => v - depaPos[k]);
-
+		}));
 		return {
 			depaPos,
 			destPos,
-			duration: AnimationManager.getDuration(duration, this.options.maximumDuration),
-			delta,
+			duration: AnimationManager.getDuration(
+				duration,
+				this.options.minimumDuration,
+				this.options.maximumDuration),
+			delta: this.axm.getDelta(depaPos, destPos),
 			inputEvent,
 			done: this.animationEnd
 		};
@@ -117,6 +121,9 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				if (self.frame(info) >= 1) {
+					if (!AxisManager.equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
+						self.em.triggerChange(self.axm.moveTo(param.destPos));
+					}
 					complete();
 					return;
 				} // animationEnd
@@ -128,15 +135,23 @@ export class AnimationManager {
 		}
 	}
 
+	getUserControll(param: AnimationParam) {
+		const userWish = param.setTo();
+		userWish.destPos = this.axm.get(userWish.destPos);
+		userWish.duration = AnimationManager.getDuration(
+			userWish.duration,
+			this.options.minimumDuration,
+			this.options.maximumDuration);
+		return userWish;
+	}
+
 	animateTo(destPos: Axis, duration: number, inputEvent = null) {
-		const depaPos = this.axm.get();
 		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
+		const depaPos = { ...param.depaPos };
 		const retTrigger = this.em.triggerAnimationStart(param);
 
 		// to control
-		const userWish = param.setTo();
-		userWish.destPos = this.axm.get(userWish.destPos);
-		userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
+		const userWish = this.getUserControll(param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
@@ -150,7 +165,7 @@ export class AnimationManager {
 				depaPos,
 				destPos: userWish.destPos,
 				duration: userWish.duration,
-				delta: this.axm.map(userWish.destPos, (v, k) => v - depaPos[k]),
+				delta: this.axm.getDelta(depaPos, userWish.destPos),
 			}, () => this.animationEnd());
 		}
 	}

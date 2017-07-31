@@ -81,34 +81,34 @@ export class InputObserver implements IInputTypeObserver {
     }
     const pos: Axis = this.axm.get(inputType.axes);
     const depaPos: Axis = this.axm.get();
-    let destPos: Axis = this.axm.map(offset, (v, k, opt) => {
+    const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
       return Coordinate.getInsidePosition(
         pos[k] + v,
         opt.range,
         opt.circular,
         opt.bounce,
       );
-    });
+    }));
     // prepare params
-    destPos = { ...depaPos, ...destPos};
     const param: AnimationParam = {
       depaPos,
       destPos,
       duration: this.am.getDuration(destPos, pos, inputDuration),
-      delta: this.axm.map(destPos, (v, k) => v - depaPos[k]),
+      delta: this.axm.getDelta(depaPos, destPos),
       inputEvent: event,
     };
     this.em.triggerRelease(param);
 
     // to contol
-    const userWish = param.setTo();
-    userWish.destPos = this.axm.get(userWish.destPos);
-    userWish.duration = AnimationManager.getDuration(userWish.duration, this.options.maximumDuration);
+    const userWish = this.am.getUserControll(param);
 
-    if (AxisManager.equal(userWish.destPos, depaPos)) {
+    if (AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
+      this.em.triggerChange(this.axm.moveTo(userWish.destPos));
       this.itm.setInterrupt(false);
+      // console.log("그냥 이동", userWish);
       this.axm.isOutside() && this.am.restore(event);
     } else {
+      // console.log("애니메이션 이동", userWish);
       this.am.animateTo(userWish.destPos, userWish.duration);
     }
     this.moveDistance = null;
