@@ -1,71 +1,79 @@
-(function () {
-	var SUPPORT_TOUCH = "ontouchstart" in window
-	var delegateTarget = document.getElementById("delegateTarget");
-	var grid = document.getElementById("grid");
-	var gridRect = grid.getBoundingClientRect();
-	var size = [gridRect.width - 40, (gridRect.width/3*2) - 40];
-	var uiWrapper = document.getElementById("uiWrapper");
-	var ui = uiWrapper.querySelector(".ui");
-	var inputType = document.getElementById("inputType");
-	inputType.className = SUPPORT_TOUCH ? "touch" : "mouse";
-	var pan = inputType.querySelector(".pan");
-	var zoom = inputType.querySelector(".zoom");
-	
-	uiWrapper.style.width = (size[0] + 40)+ "px";
-	uiWrapper.style.height = size[1] + "px";
-	var axes = new eg.Axes({
-		axis: {
-			panX: {
-				range: [0, size[0]],
-				bounce: 20
-			},
-			panY: {
-				range: [0, size[1]],
-				bounce: 20
-			},
-			zoom: {
-				range: [1, 10],
-				bounce: 1
-			}
-		},
-		minimumDuration: 300
-	}).on({
-		"hold": function(event) {
-			pan.className = "blinking pan";
-		},
-		"change": function(event) {
-			if (event.delta.panX || event.delta.panY) {
-				pan.textContent = "panX: " + (+event.pos.panX.toFixed(0)) + ", panY: " + (+event.pos.panY.toFixed(0));
-			}
-			if (event.delta.zoom) {
-				zoom.textContent = "zoom: " + event.pos.zoom.toFixed(2);
-				if (!/blinking/.test(zoom.className)) {
-					zoom.className = "blinking zoom";
-				}
-			}
-			gridView.render(event.pos.panX, event.pos.panY, event.pos.zoom);
-			ui.style[eg.Axes.TRANSFORM] = "translate(" + event.pos.panX + "px, " + event.pos.panY + "px) scale(" + event.pos.zoom + ")";
-		},
-		"release": function(event) {
-			if (!event.delta.panX && !event.delta.panY) {
-				pan.className = "pan";
-			}
-		},
-		"animationEnd": function(event) {
-			pan.className = "pan";
-			setTimeout(function() {
-				zoom.className = "zoom";
-			}, 300);
-		}
-	});
-	
-	var gridView = new AxesGridView(grid, axes.options.axis.panX, axes.options.axis.panY, axes.options.axis.zoom);
+$(function () {
+  const SUPPORT_TOUCH = "ontouchstart" in window
+  const delegateTarget = document.getElementById("delegateTarget");
 
-	var panInput = new eg.Axes.PanInput(delegateTarget);
-	var zoomInput = SUPPORT_TOUCH ? new eg.Axes.PinchInput(delegateTarget) : new eg.Axes.WheelInput(delegateTarget);
+  const grid = document.getElementById("grid");
+  const gridRect = grid.getBoundingClientRect();
+  const size = [gridRect.width - 40, (gridRect.width/3*2) - 40];
 
+  const uiWrapper = document.getElementById("uiWrapper");
+  uiWrapper.style.width = (size[0] + 40)+ "px";
+  uiWrapper.style.height = size[1] + "px";
+  const ui = uiWrapper.querySelector(".ui");
 
-	axes.connect("panX panY", panInput)
-		.connect("zoom", zoomInput)
-		.setTo({panX: size[0]/2 + 20, panY: size[1]/2});
-})();
+  const inputType = document.getElementById("inputType");
+  inputType.className = SUPPORT_TOUCH ? "touch" : "mouse";
+  const pan = inputType.querySelector(".pan");
+  const zoom = inputType.querySelector(".zoom");
+
+  function stopBlinking(event) {
+    if (event) {
+      if (!event.delta.panX && !event.delta.panY) {
+        pan.classList.remove("blinking");
+      }
+      if (!event.delta.zoom) {
+        setTimeout(() => zoom.classList.remove("blinking"), 300);
+      }
+    } else {
+      pan.classList.remove("blinking");
+      setTimeout(() => zoom.classList.remove("blinking"), 300);
+    }
+  }
+
+  const axes = new eg.Axes({
+    axis: {
+      panX: {
+        range: [0, size[0]],
+        bounce: 20
+      },
+      panY: {
+        range: [0, size[1]],
+        bounce: 20
+      },
+      zoom: {
+        range: [1, 5],
+        bounce: 1
+      }
+    },
+    minimumDuration: 300
+  }).on({
+    "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
+    "change": ({pos, delta, holding}) => {
+      if (delta.panX || delta.panY) {
+        pan.textContent = 
+          `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
+        if (holding && !pan.classList.contains("blinking")) {
+          pan.classList.add("blinking");
+        }
+      }
+      if (delta.zoom) {
+        zoom.textContent = `zoom: ${pos.zoom.toFixed(2)}`;
+        !zoom.classList.contains("blinking") && zoom.classList.add("blinking");
+      }
+      gridView.render(pos.panX, pos.panY, pos.zoom);
+      ui.style[eg.Axes.TRANSFORM] = 
+        `translate(${pos.panX}px, ${pos.panY}px) scale(${pos.zoom})`;
+    },
+    "release": event => stopBlinking(event),
+    "animationEnd": () => stopBlinking()
+  });
+  const gridView = new AxesGridView(grid,
+    axes.options.axis.panX,
+    axes.options.axis.panY,
+    axes.options.axis.zoom);
+  axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
+    .connect("zoom", SUPPORT_TOUCH ?
+      new eg.Axes.PinchInput(delegateTarget) :
+      new eg.Axes.WheelInput(delegateTarget))
+    .setTo({panX: size[0]/2 + 20, panY: size[1]/2});
+});

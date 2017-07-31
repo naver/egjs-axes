@@ -24,8 +24,8 @@ export interface PanInputOption {
 **/
 /**
  * @class eg.Axes.PanInput
- * @classdesc A module that transfers the change of the user's Pan operation to eg.Axes
- * @ko 사용자의 Pan 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's Pan(when the pointer is down and moved) operation  to eg.Axes
+ * @ko 사용자의 Pan 동작(pointer를 누르거나 이동하는 동작) 변화량을 eg.Axes에 전달하는 모듈
  *
  * @example
  * const pan = new eg.Axes.PanInput("#area", {

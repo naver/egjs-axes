@@ -18,8 +18,8 @@ export interface WheelInputOption {
 
 /**
  * @class eg.Axes.WheelInput
- * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
- * @ko 사용자의 Wheel 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's MouseWheel operation to eg.Axes
+ * @ko 사용자의 MouseWheel 동작 변화량을 eg.Axes에 전달하는 모듈
  *
  * @example
  * const wheel = new eg.Axes.WheelInput("#area", {
@@ -87,7 +87,8 @@ export class WheelInput implements IInputType {
 		this._timer = setTimeout(() => {
 			this.observer.hold(this, event);
 			const offset = (event.deltaY < 0 ? -1 : 1) * this.options.scale;
-			this.observer.release(this, event, toAxis(this.axes, [offset]));
+			this.observer.change(this, event, toAxis(this.axes, [offset]));
+			this.observer.release(this, event, toAxis(this.axes, [0]));
 		}, 200);
   }
 

@@ -4,13 +4,13 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 ### Quick steps to use:
 
 
-#### Set up your HTML
+#### 1. Set up your HTML
 
 ``` html
-<div id="area">
+<div id="area"></div>
 ```
 
-#### Load files or import library
+#### 2. Load files or import library
 
 
 ##### ES5
@@ -25,42 +25,44 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 import Axes from "@egjs/axes";
 ```
 
-### Initialize
+#### 3. Initialize eg.Axes
 
-#### ES5
+Initialize eg.Axes. specify the axis to be used.
+
 ```js
 // create eg.Axes with option
 var axes = new eg.Axes("#area", {
   axis: {
-		left: { range: [0, 100] },
-		top: { range: [0, 100] }
-	}
+    left: { range: [0, 100] },
+    top: { range: [0, 100] },
+    something: { range: [-200, 200] }
+  }
 });
-
-// create InputType
-var hammerType = new eg.Axes.HammerInputType("#area", {
-  scale: [1, 1.5]
-});
-
-// add innputType at axes
-axes.connect(["left", "top"], hammerType);
 ```
 
-#### ES6
+#### 4. Initialize InputTypes
+Create an InputType to associate with the axis of eg.Axes.
+
+Axes provides three inputTypes.
+- [eg.Axes.PanInput](./release/latest/doc/eg.Axes.PanInput.html)
+- [eg.Axes.PinchInput](./release/latest/doc/eg.Axes.PinchInput.html)
+- [eg.Axes.WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
+
 ```js
-// create eg.Axes with option
-const axes = new Axes("#area", {
-  axis: {
-		left: { range: [0, 100] },
-		top: { range: [0, 100] }
-	}
-});
-
-// create InputType
-const hammerType = new Axes.HammerInputType("#area", {
+// create InputTypes
+const panInput = new eg.Axes.PanInput("#area", {
   scale: [1, 1.5]
 });
-
-// add innputType at axes
-axes.connect(["left", "top"], hammerType);
+const wheelInput = new eg.Axes.WheelInput("#area");
 ```
+
+#### 5. Connect eg.Axes and InputTypes 
+
+```js
+// add innputType at axes
+axes.connect("left top", panInput);
+axes.connect("something", wheelInput);
+```
+
+#### 6. Enjoy!
+You can change the value of the axis through touch, mouse or anything else.

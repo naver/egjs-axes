@@ -11,7 +11,7 @@
     "lint": "tslint src",
     "jsdoc": "rm -rf ./doc && rm -rf .outjs && tsc && jsdoc -c jsdoc.json",
     "coverage": "karma start --coverage",
-    "demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve -s demo",
+    "demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve --host=0.0.0.0 -s demo",
     "demo:build": "npm run demo:updateVersion && jekyll build -s demo",
     "demo:prebuild-version": "cpx 'dist/**/*' demo/release/$npm_package_version/dist --clean && cpx 'doc/**/*' demo/release/$npm_package_version/doc --clean",
     "demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",

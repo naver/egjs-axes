@@ -1,17 +1,14 @@
 (function() {
-  var IMAGE_SIZE = 4500;
-  var wrapper = document.getElementById("zoomWrapper");
-  var wrapperSize = wrapper.getBoundingClientRect().width;
+  const IMAGE_SIZE = 4500;
+  const wrapper = document.getElementById("zoomWrapper");
+  const wrapperSize = wrapper.getBoundingClientRect().width;
   wrapper.style.height = wrapperSize + "px";
-  var imageView = document.getElementById("subway");
-  var imageViewRect = imageView.getBoundingClientRect();
-  var scale = wrapperSize / IMAGE_SIZE;
-  imageView.style[eg.Axes.TRANSFORM] = "scale(" + scale + ")";
+  const imageView = document.getElementById("subway");
 
-  var xLast = 0;
-  var yLast = 0;
+  const baseScale = wrapperSize / IMAGE_SIZE;
+  let basePos = -(IMAGE_SIZE/(2 * baseScale) - IMAGE_SIZE/2);
 
-  var axes = new eg.Axes({
+  const axes = new eg.Axes({
 		axis: {
 			x: {
         range: [0, 0],
@@ -22,29 +19,30 @@
 				bounce: 50
       },
       zoom: {
-        range: [scale, 1]
+        range: [baseScale, 1]
       }
-		},
-		deceleration: 0.0024
+    },
+    deceleration: 0.003
+    // minimumDuration: 300
   })
-  .on("release", function(e) {
-    console.info(e.depaPos, "=>", e.destPos);
-  })
-  .on("change", function(e) {
-    // console.log(e);
-    if(e.delta.zoom) {
-      // imageView.style[eg.Axes.TRANSFORM] = "translate(" +  newX + "px, " +  newY + "px) scale(" + e.pos.zoom + ")";
-      // e.set({x: newX, y: newY});
+  .on("change", ({pos, delta, inputEvent, set}) => {
+    if(inputEvent && delta.zoom) {
+      // https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
+      const beforeZoom = pos.zoom - delta.zoom;
+      const newX = pos.x - (inputEvent.layerX/pos.zoom - inputEvent.layerX/beforeZoom);
+      const newY = pos.y - (inputEvent.layerY/pos.zoom - inputEvent.layerY/beforeZoom);
+      set({x: newX, y: newY});
+      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-newX}px, ${-newY}px) `;
 
       // change view
-      // imageViewRect = imageView.getBoundingClientRect();
-      // this.options.axis.x.range[1] = this.options.axis.y.range[1] = imageViewRect.width - wrapperSize;
-    } else if(e.delta.x || e.delta.y) {
-      imageView.style[eg.Axes.TRANSFORM] = "translate(" +  (-e.pos.x) + "px, " + (-e.pos.y) + "px) scale(" + e.pos.zoom + ")";
+      axes.options.axis.x.range[1] = axes.options.axis.y.range[1] = parseInt(imageView.getBoundingClientRect().width + wrapperSize, 10);
+    } else {
+      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-pos.x}px, ${-pos.y}px) `;
     }
-  }).connect("zoom", new eg.Axes.WheelInput(wrapper, {
-    scale: Math.abs(scale)
-  })).connect("x y", new eg.Axes.PanInput(imageView, {
+  });
+  axes.connect("zoom", new eg.Axes.WheelInput(wrapper, {
+    scale: -Math.abs(baseScale)
+  })).connect("x y", new eg.Axes.PanInput(wrapper, {
     scale: [-1, -1]
   }));
 })();

@@ -8,7 +8,7 @@ import Coordinate from "./Coordinate";
 
 export class InputObserver implements IInputTypeObserver {
   isOutside = false;
-  moveDistance: Axis;
+  moveDistance: Axis = null;
   constructor(
     public options: AxesOption,
     private itm: InterruptManager,
@@ -50,7 +50,9 @@ export class InputObserver implements IInputTypeObserver {
     }
     this.itm.setInterrupt(true);
     this.am.grab(inputType.axes, event);
-    this.em.triggerHold(this.axm.get(), event);
+    if (!this.moveDistance) {
+      this.em.triggerHold(this.axm.get(), event);
+    }
     this.isOutside = this.axm.isOutside(inputType.axes);
     this.moveDistance = this.axm.get(inputType.axes);
   }
@@ -79,6 +81,9 @@ export class InputObserver implements IInputTypeObserver {
     if (!this.itm.isInterrupting()) {
       return;
     }
+    if (!this.moveDistance) {
+      return;
+    }
     const pos: Axis = this.axm.get(inputType.axes);
     const depaPos: Axis = this.axm.get();
     const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
@@ -98,19 +103,18 @@ export class InputObserver implements IInputTypeObserver {
       inputEvent: event,
     };
     this.em.triggerRelease(param);
+    this.moveDistance = null;
 
     // to contol
     const userWish = this.am.getUserControll(param);
-
     if (AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
       this.em.triggerChange(this.axm.moveTo(userWish.destPos));
       this.itm.setInterrupt(false);
-      // console.log("그냥 이동", userWish);
+      // console.log("그냥 이동", this.axm.get(), "=>", userWish);
       this.axm.isOutside() && this.am.restore(event);
     } else {
-      // console.log("애니메이션 이동", userWish);
+      // console.log("애니메이션 이동", this.axm.get(), "=>", userWish);
       this.am.animateTo(userWish.destPos, userWish.duration);
     }
-    this.moveDistance = null;
   }
 };

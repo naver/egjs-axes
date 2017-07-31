@@ -19,8 +19,8 @@ export interface PinchInputOption {
 
 /**
  * @class eg.Axes.PinchInput
- * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
- * @ko 사용자의 Pinch 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's Pinch(when two pointers are moving toward (zoom-in) or away from each other (zoom-out)) operation to eg.Axes
+ * @ko 사용자의 Pinch 동작(2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작) 변화량을 eg.Axes에 전달하는 모듈.
  *
  * @example
  * const pan = new eg.Axes.PinchInput("#area", {

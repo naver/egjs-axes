@@ -4315,6 +4315,7 @@ var InputObserver = (function () {
         this.axm = axm;
         this.am = am;
         this.isOutside = false;
+        this.moveDistance = null;
     }
     // when move pointer is held in outside
     InputObserver.prototype.atOutside = function (pos) {
@@ -4350,7 +4351,9 @@ var InputObserver = (function () {
         }
         this.itm.setInterrupt(true);
         this.am.grab(inputType.axes, event);
-        this.em.triggerHold(this.axm.get(), event);
+        if (!this.moveDistance) {
+            this.em.triggerHold(this.axm.get(), event);
+        }
         this.isOutside = this.axm.isOutside(inputType.axes);
         this.moveDistance = this.axm.get(inputType.axes);
     };
@@ -4376,6 +4379,9 @@ var InputObserver = (function () {
         if (!this.itm.isInterrupting()) {
             return;
         }
+        if (!this.moveDistance) {
+            return;
+        }
         var pos = this.axm.get(inputType.axes);
         var depaPos = this.axm.get();
         var destPos = this.axm.get(this.axm.map(offset, function (v, k, opt) {
@@ -4390,19 +4396,19 @@ var InputObserver = (function () {
             inputEvent: event
         };
         this.em.triggerRelease(param);
+        this.moveDistance = null;
         // to contol
         var userWish = this.am.getUserControll(param);
         if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
             this.em.triggerChange(this.axm.moveTo(userWish.destPos));
             this.itm.setInterrupt(false);
-            console.log("그냥 이동", userWish);
+            // console.log("그냥 이동", this.axm.get(), "=>", userWish);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            console.log("애니메이션 이동", userWish);
+            // console.log("애니메이션 이동", this.axm.get(), "=>", userWish);
             this.am.animateTo(userWish.destPos, userWish.duration);
         }
-        this.moveDistance = null;
     };
     return InputObserver;
 }());
@@ -4441,8 +4447,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.PanInput
- * @classdesc A module that transfers the change of the user's Pan operation to eg.Axes
- * @ko 사용자의 Pan 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's Pan(when the pointer is down and moved) operation  to eg.Axes
+ * @ko 사용자의 Pan 동작(pointer를 누르거나 이동하는 동작) 변화량을 eg.Axes에 전달하는 모듈
  *
  * @example
  * const pan = new eg.Axes.PanInput("#area", {
@@ -4701,8 +4707,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.PinchInput
- * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
- * @ko 사용자의 Pinch 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's Pinch(when two pointers are moving toward (zoom-in) or away from each other (zoom-out)) operation to eg.Axes
+ * @ko 사용자의 Pinch 동작(2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작) 변화량을 eg.Axes에 전달하는 모듈.
  *
  * @example
  * const pan = new eg.Axes.PinchInput("#area", {
@@ -4871,8 +4877,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.WheelInput
- * @classdesc A module that transfers the change of the user's Pinch operation to eg.Axes
- * @ko 사용자의 Wheel 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that transfers the change of the user's MouseWheel operation to eg.Axes
+ * @ko 사용자의 MouseWheel 동작 변화량을 eg.Axes에 전달하는 모듈
  *
  * @example
  * const wheel = new eg.Axes.WheelInput("#area", {
@@ -4931,7 +4937,8 @@ var WheelInput = (function () {
         this._timer = setTimeout(function () {
             _this.observer.hold(_this, event);
             var offset = (event.deltaY < 0 ? -1 : 1) * _this.options.scale;
-            _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [offset]));
+            _this.observer.change(_this, event, InputType_1.toAxis(_this.axes, [offset]));
+            _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [0]));
         }, 200);
     };
     WheelInput.prototype.attachEvent = function (observer) {
