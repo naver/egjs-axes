@@ -8,6 +8,9 @@
   margin-bottom: 20px;
   border-radius: 4px;
 }
+.img_cont img {
+  touch-action: none; user-select: none; -webkit-user-drag: none;
+}
 .car_rotate {
   position:absolute;
   left:0;
@@ -26,6 +29,7 @@
   background:url(../image/car360/bg_rotate.png) no-repeat;
   background-size:304px 50px;
   -webkit-background-size:304px 50px;
+  touch-action: none; user-select: none; -webkit-user-drag: none;
   color:transparent;
 }
 

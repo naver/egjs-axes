@@ -52,7 +52,7 @@
 		<div class="container">
 			<div class="docs-inner">
 				
-				<h3 id="what-is-egaxes">What is eg.Axes?</h3>
+				<h3 id="what-is-the-egaxes">What is the eg.Axes?</h3>
 
 <div class="demobox" codepen="axes">
   <div class="inputTypeWrapper">
@@ -69,7 +69,55 @@
     </div>
     <div id="grid"></div>
   </div>
-  
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">panX</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
+    <span class="p">},</span>
+    <span class="na">panY</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
+    <span class="p">},</span>
+    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">minimumDuration</span><span class="p">:</span> <span class="mi">300</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">({</span>
+  <span class="s2">"hold"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">SUPPORT_TOUCH</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">pan</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s2">"blinking pan"</span><span class="p">),</span>
+  <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span> <span class="nx">holding</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">panX</span> <span class="o">||</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">panY</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">pan</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> 
+        <span class="err">`</span><span class="na">panX</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))},</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))}</span><span class="err">`</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">zoom</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="err">`</span><span class="na">zoom</span><span class="p">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">)}</span><span class="err">`</span><span class="p">;</span>
+      <span class="o">!</span><span class="nx">zoom</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">zoom</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">gridView</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">);</span>
+    <span class="nx">ui</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
+      <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span><span class="err">`</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="s2">"release"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span>
+  <span class="s2">"animationEnd"</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">()</span>
+<span class="p">});</span>
+<span class="kr">const</span> <span class="nx">gridView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">AxesGridView</span><span class="p">(</span><span class="nx">grid</span><span class="p">,</span>
+  <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">panX</span><span class="p">,</span>
+  <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">panY</span><span class="p">,</span>
+  <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">zoom</span><span class="p">);</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">))</span>
+  <span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"zoom"</span><span class="p">,</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span>
+    <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">))</span>
+  <span class="p">.</span><span class="nx">setTo</span><span class="p">({</span><span class="na">panX</span><span class="p">:</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">});</span>
+</code></pre>
 </div>
 
 <h3 id="car-360º-viewer">Car 360º viewer</h3>
@@ -118,21 +166,21 @@
   </div>
 </div>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-		<span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-		<span class="p">}</span>
-	<span class="p">},</span>
-	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.01</span>
-<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">trace</span><span class="p">(</span><span class="s2">"change"</span><span class="p">);</span>
-	<span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">/</span> <span class="nx">ape</span><span class="p">),</span> <span class="nx">imagesNum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="nx">images</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">index</span> <span class="p">?</span> <span class="s2">"inline-block"</span> <span class="p">:</span> <span class="s2">"none"</span><span class="p">;</span>
-	<span class="p">});</span>
-<span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.01</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">index</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">/</span> <span class="nx">ape</span><span class="p">),</span> <span class="nx">imagesNum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="nx">images</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">v</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">index</span> <span class="p">?</span> <span class="s2">"inline-block"</span> <span class="p">:</span> <span class="s2">"none"</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
 </code></pre>
 </div>
 
@@ -158,43 +206,39 @@
   <div class="codepen"></div>
 </div>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-		<span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
-			<span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
-		<span class="p">},</span>
-		<span class="na">top</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-			<span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
-		<span class="p">},</span>
-	<span class="p">},</span>
-	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.00034</span>
-<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">cardDistance</span><span class="p">;</span>
-	<span class="kd">var</span> <span class="nx">cardOffset</span><span class="p">;</span>
-	<span class="kd">var</span> <span class="nx">currentRotateZ</span><span class="p">;</span>
-	<span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">pos</span><span class="p">;</span>
-
-	<span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="s2">"bottom"</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.4</span> <span class="o">*</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span> <span class="o">+</span> <span class="s2">"px"</span><span class="p">;</span>
-	<span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translateX("</span> <span class="o">+</span> <span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">*</span> <span class="mf">2.3</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px)"</span><span class="p">;</span>
-	<span class="nx">hand</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rotateZ("</span> <span class="o">+</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
-	<span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">cardDistance</span> <span class="o">=</span> <span class="nx">getCardDistance</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">hand</span><span class="p">).</span><span class="nx">distance</span><span class="p">;</span>
-		<span class="nx">cardOffset</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">;</span>
-		<span class="nx">currentRotateZ</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s2">"translateY"</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
-		<span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="nx">currentRotateZ</span> <span class="o">+</span>
-			<span class="s2">"translateY("</span> <span class="o">+</span> <span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"data-cardOffset"</span><span class="p">))</span> <span class="o">+</span>
-				<span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px)"</span><span class="p">;</span>
-	<span class="p">});</span>
-<span class="p">}).</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"hand"</span><span class="p">,</span> <span class="s2">"top"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
-	<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
+    <span class="p">},</span>
+    <span class="na">top</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.00034</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">cardDistance</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">cardOffset</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">currentRotateZ</span><span class="p">;</span>
+  <span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="s2">"bottom"</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="mf">1.4</span> <span class="o">*</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">}</span><span class="nx">px</span><span class="err">`</span><span class="p">;</span>
+  <span class="nx">movableDot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">*</span> <span class="mf">2.3</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+  <span class="nx">hand</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">rotateZ</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+  <span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">v</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">cardDistance</span> <span class="o">=</span> <span class="nx">getCardDistance</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">hand</span><span class="p">).</span><span class="nx">distance</span><span class="p">;</span>
+    <span class="nx">cardOffset</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">;</span>
+    <span class="nx">currentRotateZ</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s2">"translateY"</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span>
+      <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">currentRotateZ</span><span class="p">}</span> <span class="nx">translateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"data-cardOffset"</span><span class="p">))</span> <span class="o">+</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"hand top"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
 <span class="p">})).</span><span class="nx">setTo</span><span class="p">({</span>
-	<span class="na">hand</span><span class="p">:</span> <span class="p">(</span><span class="nx">handRotMin</span> <span class="o">+</span> <span class="nx">handRotMax</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+  <span class="na">hand</span><span class="p">:</span> <span class="p">(</span><span class="nx">handRotMin</span> <span class="o">+</span> <span class="nx">handRotMax</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="p">});</span>
 </code></pre>
 </div>
-
 <h3 id="rotate-a-cube">Rotate a Cube</h3>
 
 <div id="area" codepen="cube">
@@ -208,25 +252,26 @@
   </div>
 </div>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"box"</span><span class="p">);</span>
-<span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-		<span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-		<span class="p">},</span>
-		<span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-			<span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-		<span class="p">}</span>
-	<span class="p">},</span>
-	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
-<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rotateY("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateX</span> <span class="o">+</span> <span class="s2">"deg) rotateX("</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateY</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
-<span class="p">}).</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"rotateX"</span><span class="p">,</span> <span class="s2">"rotateY"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">));</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">box</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"box"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+    <span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span>
+    <span class="err">`</span><span class="nx">rotateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateX</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span> <span class="nx">rotateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateY</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rotateX rotateY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">))</span>
 <span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
-	<span class="s2">"rotateX"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
-	<span class="s2">"rotateY"</span><span class="p">:</span> <span class="mi">315</span>
+  <span class="s2">"rotateX"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+  <span class="s2">"rotateY"</span><span class="p">:</span> <span class="mi">315</span>
 <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
 </code></pre>
 </div>
@@ -244,27 +289,22 @@
   </div>
 </div>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="p">(</span><span class="nx">minimapRect</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="nx">pointerRect</span><span class="p">.</span><span class="nx">width</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">),</span>
-  <span class="p">(</span><span class="nx">minimapRect</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="nx">pointerRect</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span>
-<span class="p">];</span>
-<span class="kd">var</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
   <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
     <span class="na">rawX</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">50</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
     <span class="p">},</span>
     <span class="na">rawY</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">50</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
     <span class="p">}</span>
   <span class="p">},</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
-<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">rawX</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span><span class="p">;</span>
-  <span class="kd">var</span> <span class="nx">rawY</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span><span class="p">;</span>
-  <span class="nx">painting</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translate3d("</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="nx">rawX</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px,"</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="nx">rawY</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px, 0)"</span><span class="p">;</span>
-  <span class="nx">pointer</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translate3d("</span> <span class="o">+</span> <span class="p">(</span><span class="nx">rawX</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"px,"</span> <span class="o">+</span> <span class="p">(</span><span class="nx">rawY</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">"px, 0)"</span><span class="p">;</span>
+<span class="p">}).</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">painting</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+  <span class="nx">pointer</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span>
+    <span class="o">=</span> <span class="err">`</span><span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
 <span class="p">}).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rawX rawY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="p">}));</span>
@@ -280,50 +320,6 @@
 </div>
 
 <h3 id="controll-video">Controll Video</h3>
-
-<div class="car_spot" codepen="car360viewer">
-  <div class="car_rotate">
-    <div class="img_cont" style="position:relative;z-index:10">
-      <img height="150" src="./assets/image/car360/beatle (1).png" />
-      <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;" />
-      <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none" />
-      <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none" />
-    </div>
-    <div class="ratate_bg"></div>
-  </div>
-</div>
 
 <h3 id="pull-down-refresh">Pull-Down Refresh</h3>
 
@@ -400,65 +396,65 @@
 </div>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-	<span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-		<span class="na">detailX</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
-		<span class="p">},</span>
-		<span class="na">detailY</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
-		<span class="p">},</span>
-		<span class="na">carousel</span><span class="p">:</span> <span class="p">{</span>
-			<span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="p">(</span><span class="nx">LAST_PANEL_IDX</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)),</span> <span class="nx">BASE</span><span class="p">],</span>
-		<span class="p">},</span>
-	<span class="p">},</span>
-	<span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.007</span><span class="p">,</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">detailX</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="na">detailY</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">DEFAULT_DETAIL_X</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="na">carousel</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="p">(</span><span class="nx">LAST_PANEL_IDX</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)),</span> <span class="nx">BASE</span><span class="p">],</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.007</span><span class="p">,</span>
 <span class="p">}).</span><span class="nx">on</span><span class="p">({</span>
-	<span class="s2">"hold"</span><span class="p">:</span> <span class="p">({</span><span class="nx">inputEvent</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="p">(</span><span class="nx">inputEvent</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="s2">"carousel-area"</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">axes</span><span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
-				<span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-				<span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-			<span class="p">},</span> <span class="mi">300</span><span class="p">);</span>
-			<span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-			<span class="nx">scaleRatio</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-			<span class="nx">adjustRangeOfDVAxes</span><span class="p">();</span>
-		<span class="p">}</span>
-	<span class="p">},</span>
-	<span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-		<span class="kr">const</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">;</span>
-		<span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">move</span><span class="p">);</span>
-		<span class="nx">carouselArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">move</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-		<span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">FIRST_PANEL_IDX</span><span class="p">,</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">);</span>
-		<span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&gt;=</span> <span class="nx">FIRST_PANEL_IDX</span> <span class="o">&amp;&amp;</span> <span class="nx">idx</span> <span class="o">&lt;=</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-			<span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">"box-inactive"</span><span class="p">);</span>
-			<span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-			<span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">imgSrcCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
-			<span class="k">if</span> <span class="p">(</span><span class="nx">scaleRatio</span> <span class="o">&gt;</span> <span class="nx">MIN_SACLE</span><span class="p">)</span> <span class="p">{</span>
-				<span class="nx">detailViewArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
-				<span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailX</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="nx">translateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-			<span class="p">}</span>
-		<span class="p">}</span>
-	<span class="p">},</span>
-	<span class="s2">"release"</span><span class="p">:</span> <span class="p">({</span><span class="nx">destPos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-		<span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">);</span>
-		<span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span> <span class="o">=</span> <span class="p">((</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">BASE</span><span class="p">;</span>
-	<span class="p">},</span>
+  <span class="s2">"hold"</span><span class="p">:</span> <span class="p">({</span><span class="nx">inputEvent</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">inputEvent</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="s2">"carousel-area"</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">axes</span><span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
+        <span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="p">},</span> <span class="mi">300</span><span class="p">);</span>
+      <span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+      <span class="nx">scaleRatio</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="nx">adjustRangeOfDVAxes</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">;</span>
+    <span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">move</span><span class="p">);</span>
+    <span class="nx">carouselArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">move</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+    <span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">FIRST_PANEL_IDX</span><span class="p">,</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&gt;=</span> <span class="nx">FIRST_PANEL_IDX</span> <span class="o">&amp;&amp;</span> <span class="nx">idx</span> <span class="o">&lt;=</span> <span class="nx">LAST_PANEL_IDX</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+      <span class="nx">boxElmCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">"box-inactive"</span><span class="p">);</span>
+      <span class="nx">removeSpotlight</span><span class="p">(</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="nx">detailViewImg</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">imgSrcCache</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">scaleRatio</span> <span class="o">&gt;</span> <span class="nx">MIN_SACLE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">detailViewArea</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
+        <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailX</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="nx">translateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">detailY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s2">"release"</span><span class="p">:</span> <span class="p">({</span><span class="nx">destPos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nx">getIdx</span><span class="p">(</span><span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span><span class="p">);</span>
+    <span class="nx">destPos</span><span class="p">.</span><span class="nx">carousel</span> <span class="o">=</span> <span class="p">((</span><span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">BASE</span><span class="p">;</span>
+  <span class="p">},</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="nx">connect</span><span class="p">(</span>
-	<span class="p">[</span><span class="s2">"detailX"</span><span class="p">,</span> <span class="s2">"detailY"</span><span class="p">],</span>
-	<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#detail-view-carousel-container"</span><span class="p">,</span> <span class="p">{</span>
-		<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">],</span>
-	<span class="p">}))</span>
+  <span class="p">[</span><span class="s2">"detailX"</span><span class="p">,</span> <span class="s2">"detailY"</span><span class="p">],</span>
+  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#detail-view-carousel-container"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="o">-</span><span class="nx">AXES_SCALE</span><span class="p">],</span>
+  <span class="p">}))</span>
 <span class="p">.</span><span class="nx">connect</span><span class="p">(</span>
-	<span class="s2">"carousel"</span><span class="p">,</span>
-	<span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#carousel-container"</span><span class="p">,</span> <span class="p">{</span>
-		<span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-	<span class="p">}))</span>
+  <span class="s2">"carousel"</span><span class="p">,</span>
+  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">HammerInput</span><span class="p">(</span><span class="s2">"#carousel-container"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="nx">AXES_SCALE</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+  <span class="p">}))</span>
 <span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
-	<span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-	<span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-	<span class="na">carousel</span><span class="p">:</span> <span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">INITIAL_POS</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span><span class="p">),</span>
+  <span class="na">detailX</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_X</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="na">detailY</span><span class="p">:</span> <span class="nx">DEFAULT_DETAIL_Y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="na">carousel</span><span class="p">:</span> <span class="nx">BASE</span> <span class="o">-</span> <span class="p">(</span><span class="nx">INITIAL_POS</span> <span class="o">*</span> <span class="nx">PANEL_WIDTH</span><span class="p">),</span>
 <span class="p">});</span>
 </code></pre>
 </div>
