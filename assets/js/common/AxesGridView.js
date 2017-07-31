@@ -85,6 +85,7 @@ AxesGridView.prototype._renderGrid = function() {
 };
 
 AxesGridView.prototype._renderPoint = function(x, y, zoom) {
+  zoom = Number(zoom);
   var ctx = this.ctx;
   ctx.globalAlpha = 0.7;
   ctx.arc(
@@ -98,7 +99,7 @@ AxesGridView.prototype._renderPoint = function(x, y, zoom) {
   ctx.font = "bolder " + (zoom * 10) + "px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "bottom";
-  ctx.fillText("(panX: " + x.toFixed(0) + ", panY: " + y.toFixed(0) + ", zoom: " + zoom + ")", 
+  ctx.fillText("(panX: " + x.toFixed(0) + ", panY: " + y.toFixed(0) + ", zoom: " + zoom.toFixed(2) + ")", 
     this.axisX.bounce[0] + x,
     this.axisY.bounce[0] + y - 10 * zoom);
 };
