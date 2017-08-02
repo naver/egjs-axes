@@ -79,7 +79,7 @@ export class AnimationManager {
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(this.axm.moveTo(pos), event);
+				this.em.triggerChange(pos, event);
 			}
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
@@ -123,7 +123,7 @@ export class AnimationManager {
 				self._raf = null;
 				if (self.frame(info) >= 1) {
 					if (!AxisManager.equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
-						self.em.triggerChange(self.axm.moveTo(param.destPos));
+						self.em.triggerChange(param.destPos);
 					}
 					complete();
 					return;
@@ -131,7 +131,7 @@ export class AnimationManager {
 				self._raf = requestAnimationFrame(loop);
 			})();
 		} else {
-			this.em.triggerChange(this.axm.moveTo(param.destPos));
+			this.em.triggerChange(param.destPos);
 			complete();
 		}
 	}
@@ -180,7 +180,7 @@ export class AnimationManager {
 			v += (param.destPos[k] - v) * easingPer;
 			return Coordinate.getCirculatedPos(v, opt.range, opt.circular);
 		});
-		this.em.triggerChange(this.axm.moveTo(toPos));
+		this.em.triggerChange(toPos);
 		return easingPer;
 	}
 
@@ -210,7 +210,7 @@ export class AnimationManager {
 		} else if (duration) {
 			this.animateTo(movedPos, duration);
 		} else {
-			this.em.triggerChange(this.axm.moveTo(movedPos));
+			this.em.triggerChange(movedPos);
 			this.itm.setInterrupt(false);
 		}
 		return this;

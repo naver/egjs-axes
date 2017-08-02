@@ -93,7 +93,8 @@ export class EventManager {
 	 * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
 	 *
 	 */
-	triggerChange(moveTo: { [key: string]: Axis }, event = null) {
+	triggerChange(pos: Axis, event = null) {
+		const moveTo = this.axes._axm.moveTo(pos);
 		const param = {
 			pos: moveTo.pos,
 			delta: moveTo.delta,

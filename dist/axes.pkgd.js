@@ -3225,7 +3225,7 @@ var Axes = (function (_super) {
         _this._itm = new InterruptManager_1.InterruptManager(_this.options);
         _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
         _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
-        startPos && _this.setTo(startPos);
+        startPos && setTimeout(function () { return _this._em.triggerChange(startPos); }, 0);
         return _this;
     }
     /**
@@ -4023,7 +4023,7 @@ var AnimationManager = (function () {
             var orgPos_1 = this.axm.get(axes);
             var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
             if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
-                this.em.triggerChange(this.axm.moveTo(pos), event);
+                this.em.triggerChange(pos, event);
             }
             this._animateParam = null;
             this._raf && utils_1.cancelAnimationFrame(this._raf);
@@ -4056,7 +4056,7 @@ var AnimationManager = (function () {
                 self_1._raf = null;
                 if (self_1.frame(info_1) >= 1) {
                     if (!AxisManager_1.AxisManager.equal(param.destPos, self_1.axm.get(Object.keys(param.destPos)))) {
-                        self_1.em.triggerChange(self_1.axm.moveTo(param.destPos));
+                        self_1.em.triggerChange(param.destPos);
                     }
                     complete();
                     return;
@@ -4065,7 +4065,7 @@ var AnimationManager = (function () {
             })();
         }
         else {
-            this.em.triggerChange(this.axm.moveTo(param.destPos));
+            this.em.triggerChange(param.destPos);
             complete();
         }
     };
@@ -4105,7 +4105,7 @@ var AnimationManager = (function () {
             v += (param.destPos[k] - v) * easingPer;
             return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
         });
-        this.em.triggerChange(this.axm.moveTo(toPos));
+        this.em.triggerChange(toPos);
         return easingPer;
     };
     AnimationManager.prototype.easing = function (p) {
@@ -4135,7 +4135,7 @@ var AnimationManager = (function () {
             this.animateTo(movedPos, duration);
         }
         else {
-            this.em.triggerChange(this.axm.moveTo(movedPos));
+            this.em.triggerChange(movedPos);
             this.itm.setInterrupt(false);
         }
         return this;
@@ -4257,8 +4257,9 @@ var EventManager = (function () {
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
      *
      */
-    EventManager.prototype.triggerChange = function (moveTo, event) {
+    EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
+        var moveTo = this.axes._axm.moveTo(pos);
         var param = {
             pos: moveTo.pos,
             delta: moveTo.delta,
@@ -4422,7 +4423,7 @@ var InputObserver = (function () {
             this.isOutside = false;
         }
         destPos = this.atOutside(destPos);
-        this.em.triggerChange(this.axm.moveTo(destPos), event);
+        this.em.triggerChange(destPos, event);
     };
     InputObserver.prototype.release = function (inputType, event, offset, inputDuration) {
         if (!this.itm.isInterrupting()) {
@@ -4449,13 +4450,11 @@ var InputObserver = (function () {
         // to contol
         var userWish = this.am.getUserControll(param);
         if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-            this.em.triggerChange(this.axm.moveTo(userWish.destPos));
+            this.em.triggerChange(userWish.destPos);
             this.itm.setInterrupt(false);
-            // console.log("그냥 이동", this.axm.get(), "=>", userWish);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            // console.log("애니메이션 이동", this.axm.get(), "=>", userWish);
             this.am.animateTo(userWish.destPos, userWish.duration);
         }
     };

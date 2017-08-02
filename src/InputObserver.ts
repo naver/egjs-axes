@@ -75,7 +75,7 @@ export class InputObserver implements IInputTypeObserver {
     }
     destPos = this.atOutside(destPos);
 
-    this.em.triggerChange(this.axm.moveTo(destPos), event);
+    this.em.triggerChange(destPos, event);
   }
   release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
@@ -108,12 +108,10 @@ export class InputObserver implements IInputTypeObserver {
     // to contol
     const userWish = this.am.getUserControll(param);
     if (AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-      this.em.triggerChange(this.axm.moveTo(userWish.destPos));
+      this.em.triggerChange(userWish.destPos);
       this.itm.setInterrupt(false);
-      // console.log("그냥 이동", this.axm.get(), "=>", userWish);
       this.axm.isOutside() && this.am.restore(event);
     } else {
-      // console.log("애니메이션 이동", this.axm.get(), "=>", userWish);
       this.am.animateTo(userWish.destPos, userWish.duration);
     }
   }

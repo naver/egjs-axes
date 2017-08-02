@@ -181,7 +181,7 @@ export default class Axes extends Component {
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
 		this._io = new InputObserver(this.options, this._itm, this._em, this._axm, this._am);
-		startPos && this.setTo(startPos);
+		startPos && setTimeout(() => this._em.triggerChange(startPos), 0);
 	}
 
 	/**
