@@ -1923,7 +1923,7 @@ var WheelInput = (function () {
         clearTimeout(this._timer);
         this._timer = setTimeout(function () {
             _this.observer.hold(_this, event);
-            var offset = (event.deltaY < 0 ? -1 : 1) * _this.options.scale;
+            var offset = (event.deltaY > 0 ? -1 : 1) * _this.options.scale;
             _this.observer.change(_this, event, InputType_1.toAxis(_this.axes, [offset]));
             _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [0]));
         }, 200);

@@ -1,5 +1,5 @@
 $(function () {
-  const SUPPORT_TOUCH = "ontouchstart" in window
+  const SUPPORT_TOUCH = "ontouchstart" in window;
   const delegateTarget = document.getElementById("delegateTarget");
 
   const grid = document.getElementById("grid");

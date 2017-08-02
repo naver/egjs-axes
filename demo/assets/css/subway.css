@@ -2,6 +2,9 @@
   overflow:hidden;
   width: 100%;
   height: 100%;
+  margin: 1px;
+  border: 1px solid #eee;
+  border-radius: 5px;
 }
 
 #subway {
