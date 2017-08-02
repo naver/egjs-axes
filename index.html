@@ -226,12 +226,12 @@
   <span class="p">},</span>
   <span class="na">minimumDuration</span><span class="p">:</span> <span class="mi">300</span>
 <span class="p">}).</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"hold"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">SUPPORT_TOUCH</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">pan</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s2">"blinking pan"</span><span class="p">),</span>
+  <span class="s2">"hold"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">SUPPORT_TOUCH</span> <span class="o">&amp;&amp;</span> <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">),</span>
   <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span> <span class="nx">holding</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">panX</span> <span class="o">||</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">panY</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">pan</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> 
         <span class="err">`</span><span class="na">panX</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))},</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))}</span><span class="err">`</span><span class="p">;</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">))</span> <span class="p">{</span>
         <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
       <span class="p">}</span>
     <span class="p">}</span>
@@ -457,9 +457,90 @@
   </div>
 </div>
 
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">x</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
+    <span class="p">},</span>
+    <span class="na">y</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
+    <span class="p">},</span>
+    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">baseScale</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.003</span>
+<span class="p">},</span> <span class="p">{</span>
+  <span class="na">zoom</span><span class="p">:</span> <span class="nx">baseScale</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span> <span class="nx">inputEvent</span><span class="p">,</span> <span class="nx">set</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">inputEvent</span> <span class="o">&amp;&amp;</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">center</span> <span class="o">=</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">center</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="na">x</span><span class="p">:</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">layerX</span><span class="p">,</span>
+      <span class="na">y</span><span class="p">:</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">layerY</span>
+    <span class="p">};</span>
+    <span class="c1">// https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate</span>
+    <span class="kr">const</span> <span class="nx">beforeZoom</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
+    <span class="kr">const</span> <span class="nx">newX</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="p">(</span><span class="nx">center</span><span class="p">.</span><span class="nx">x</span><span class="o">/</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">center</span><span class="p">.</span><span class="nx">x</span><span class="o">/</span><span class="nx">beforeZoom</span><span class="p">);</span>
+    <span class="kr">const</span> <span class="nx">newY</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">y</span> <span class="o">-</span> <span class="p">(</span><span class="nx">center</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">center</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="nx">beforeZoom</span><span class="p">);</span>
+    <span class="nx">set</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="nx">newX</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="nx">newY</span><span class="p">});</span>
+    <span class="nx">imageView</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newY</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="err">`</span><span class="p">;</span>
+
+    <span class="c1">// change view</span>
+    <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">beforeZoom</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">imageView</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span> <span class="err">`</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"zoom"</span><span class="p">,</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span> 
+  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">)</span> <span class="p">:</span>
+  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">baseScale</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"x y"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">}));</span>
+</code></pre>
+</div>
 <h3 id="controll-video">Controll Video</h3>
 
 <h3 id="pull-down-refresh">Pull-Down Refresh</h3>
+
+<div class="demobox" codepen="pulldownrefresh">
+  <div id="pull-contentWrapper">
+    <div id="prepend">Pull to prepend</div>
+    <ul id="pull-content">
+      <li>#1</li>
+      <li>#2</li>
+      <li>#3</li>
+      <li>#4</li>
+      <li>#5</li>
+      <li>#6</li>
+      <li>#7</li>
+      <li>#8</li>
+      <li>#9</li>
+      <li>#10</li>
+      <li>#11</li>
+      <li>#12</li>
+      <li>#13</li>
+      <li>#14</li>
+      <li>#15</li>
+      <li>#16</li>
+      <li>#17</li>
+      <li>#18</li>
+      <li>#19</li>
+      <li>#20</li>
+      <li>#21</li>
+      <li>#22</li>
+      <li>#22</li>
+      <li>#23</li>
+      <li>#24</li>
+    </ul>
+    <div id="append">Pull to append</div>
+  </div>
+</div>
 
 <h3 id="carousel">Carousel</h3>
 

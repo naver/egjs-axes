@@ -93,6 +93,102 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 exports.__esModule = true;
+function $(param, multi) {
+    if (multi === void 0) { multi = false; }
+    var el;
+    if (typeof param === "string") {
+        // check if string is HTML tag format
+        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+        // creating element
+        if (match) {
+            var dummy = document.createElement("div");
+            dummy.innerHTML = param;
+            el = Array.prototype.slice.call(dummy.childNodes);
+        }
+        else {
+            el = Array.prototype.slice.call(document.querySelectorAll(param));
+        }
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    else if (param === window) {
+        el = param;
+    }
+    else if (param.nodeName &&
+        (param.nodeType === 1 || param.nodeType === 9)) {
+        el = param;
+    }
+    else if (("jQuery" in window && param instanceof jQuery) ||
+        param.constructor.prototype.jquery) {
+        el = multi ? param.toArray() : param.get(0);
+    }
+    else if (Array.isArray(param)) {
+        el = param.map(function (v) { return $(v); });
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    return el;
+}
+exports.$ = $;
+var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+var caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
+if (raf && !caf) {
+    var keyInfo_1 = {};
+    var oldraf_1 = raf;
+    raf = function (callback) {
+        function wrapCallback(timestamp) {
+            if (keyInfo_1[key]) {
+                callback(timestamp);
+            }
+        }
+        var key = oldraf_1(wrapCallback);
+        keyInfo_1[key] = true;
+        return key;
+    };
+    caf = function (key) {
+        delete keyInfo_1[key];
+    };
+}
+else if (!(raf && caf)) {
+    raf = function (callback) {
+        return window.setTimeout(function () {
+            callback(window.performance && window.performance.now());
+        }, 16);
+    };
+    caf = window.clearTimeout;
+}
+/**
+ * A polyfill for the window.requestAnimationFrame() method.
+ * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+ * @private
+ */
+function requestAnimationFrame(fp) {
+    return raf(fp);
+}
+exports.requestAnimationFrame = requestAnimationFrame;
+;
+/**
+* A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
+* @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
+* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+* @private
+*/
+function cancelAnimationFrame(key) {
+    caf(key);
+}
+exports.cancelAnimationFrame = cancelAnimationFrame;
+;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
 var Coordinate = {
     getInsidePosition: function (destPos, range, circular, bounce) {
         var toDestPos = destPos;
@@ -135,7 +231,7 @@ exports["default"] = Coordinate;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -149,7 +245,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
+var Coordinate_1 = __webpack_require__(1);
 ;
 var AxisManager = (function () {
     function AxisManager(options) {
@@ -245,7 +341,7 @@ exports.AxisManager = AxisManager;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -2895,61 +2991,13 @@ if (true) {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
-function $(param, multi) {
-    if (multi === void 0) { multi = false; }
-    var el;
-    if (typeof param === "string") {
-        // check if string is HTML tag format
-        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
-        // creating element
-        if (match) {
-            var dummy = document.createElement("div");
-            dummy.innerHTML = param;
-            el = Array.prototype.slice.call(dummy.childNodes);
-        }
-        else {
-            el = Array.prototype.slice.call(document.querySelectorAll(param));
-        }
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
-    }
-    else if (param === window) {
-        el = param;
-    }
-    else if (param.nodeName &&
-        (param.nodeType === 1 || param.nodeType === 9)) {
-        el = param;
-    }
-    else if (("jQuery" in window && param instanceof jQuery) ||
-        param.constructor.prototype.jquery) {
-        el = multi ? param.toArray() : param.get(0);
-    }
-    else if (Array.isArray(param)) {
-        el = param.map(function (v) { return $(v); });
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
-    }
-    return el;
-}
-exports.$ = $;
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
+var Hammer = __webpack_require__(3);
 exports.SUPPORT_TOUCH = "ontouchstart" in window;
 exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 function toAxis(source, offset) {
@@ -3074,7 +3122,7 @@ var Component = __webpack_require__(8);
 var AnimationManager_1 = __webpack_require__(9);
 var EventManager_1 = __webpack_require__(10);
 var InterruptManager_1 = __webpack_require__(11);
-var AxisManager_1 = __webpack_require__(1);
+var AxisManager_1 = __webpack_require__(2);
 var InputObserver_1 = __webpack_require__(12);
 var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
@@ -3177,7 +3225,7 @@ var Axes = (function (_super) {
         _this._itm = new InterruptManager_1.InterruptManager(_this.options);
         _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
         _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
-        startPos && _this.setTo(startPos);
+        startPos && setTimeout(function () { return _this._em.triggerChange(startPos); }, 0);
         return _this;
     }
     /**
@@ -3929,8 +3977,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
-var AxisManager_1 = __webpack_require__(1);
+var Coordinate_1 = __webpack_require__(1);
+var AxisManager_1 = __webpack_require__(2);
+var utils_1 = __webpack_require__(0);
 var AnimationManager = (function () {
     function AnimationManager(options, itm, em, axm) {
         this.options = options;
@@ -3974,10 +4023,10 @@ var AnimationManager = (function () {
             var orgPos_1 = this.axm.get(axes);
             var pos = this.axm.map(orgPos_1, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
             if (!this.axm.every(pos, function (v, k) { return orgPos_1[k] === v; })) {
-                this.em.triggerChange(this.axm.moveTo(pos), event);
+                this.em.triggerChange(pos, event);
             }
             this._animateParam = null;
-            this._raf && window.cancelAnimationFrame(this._raf);
+            this._raf && utils_1.cancelAnimationFrame(this._raf);
             this._raf = null;
             this.em.triggerAnimationEnd();
         }
@@ -4007,16 +4056,16 @@ var AnimationManager = (function () {
                 self_1._raf = null;
                 if (self_1.frame(info_1) >= 1) {
                     if (!AxisManager_1.AxisManager.equal(param.destPos, self_1.axm.get(Object.keys(param.destPos)))) {
-                        self_1.em.triggerChange(self_1.axm.moveTo(param.destPos));
+                        self_1.em.triggerChange(param.destPos);
                     }
                     complete();
                     return;
                 } // animationEnd
-                self_1._raf = window.requestAnimationFrame(loop);
+                self_1._raf = utils_1.requestAnimationFrame(loop);
             })();
         }
         else {
-            this.em.triggerChange(this.axm.moveTo(param.destPos));
+            this.em.triggerChange(param.destPos);
             complete();
         }
     };
@@ -4056,7 +4105,7 @@ var AnimationManager = (function () {
             v += (param.destPos[k] - v) * easingPer;
             return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular);
         });
-        this.em.triggerChange(this.axm.moveTo(toPos));
+        this.em.triggerChange(toPos);
         return easingPer;
     };
     AnimationManager.prototype.easing = function (p) {
@@ -4086,7 +4135,7 @@ var AnimationManager = (function () {
             this.animateTo(movedPos, duration);
         }
         else {
-            this.em.triggerChange(this.axm.moveTo(movedPos));
+            this.em.triggerChange(movedPos);
             this.itm.setInterrupt(false);
         }
         return this;
@@ -4208,8 +4257,9 @@ var EventManager = (function () {
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
      *
      */
-    EventManager.prototype.triggerChange = function (moveTo, event) {
+    EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
+        var moveTo = this.axes._axm.moveTo(pos);
         var param = {
             pos: moveTo.pos,
             delta: moveTo.delta,
@@ -4305,8 +4355,8 @@ exports.InterruptManager = InterruptManager;
 "use strict";
 
 exports.__esModule = true;
-var AxisManager_1 = __webpack_require__(1);
-var Coordinate_1 = __webpack_require__(0);
+var AxisManager_1 = __webpack_require__(2);
+var Coordinate_1 = __webpack_require__(1);
 var InputObserver = (function () {
     function InputObserver(options, itm, em, axm, am) {
         this.options = options;
@@ -4373,7 +4423,7 @@ var InputObserver = (function () {
             this.isOutside = false;
         }
         destPos = this.atOutside(destPos);
-        this.em.triggerChange(this.axm.moveTo(destPos), event);
+        this.em.triggerChange(destPos, event);
     };
     InputObserver.prototype.release = function (inputType, event, offset, inputDuration) {
         if (!this.itm.isInterrupting()) {
@@ -4400,13 +4450,11 @@ var InputObserver = (function () {
         // to contol
         var userWish = this.am.getUserControll(param);
         if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-            this.em.triggerChange(this.axm.moveTo(userWish.destPos));
+            this.em.triggerChange(userWish.destPos);
             this.itm.setInterrupt(false);
-            // console.log("그냥 이동", this.axm.get(), "=>", userWish);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            // console.log("애니메이션 이동", this.axm.get(), "=>", userWish);
             this.am.animateTo(userWish.destPos, userWish.duration);
         }
     };
@@ -4431,9 +4479,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
+var Hammer = __webpack_require__(3);
 var const_1 = __webpack_require__(5);
-var utils_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
@@ -4696,8 +4744,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
-var utils_1 = __webpack_require__(3);
+var Hammer = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
@@ -4867,7 +4915,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var utils_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
@@ -4936,7 +4984,7 @@ var WheelInput = (function () {
         clearTimeout(this._timer);
         this._timer = setTimeout(function () {
             _this.observer.hold(_this, event);
-            var offset = (event.deltaY < 0 ? -1 : 1) * _this.options.scale;
+            var offset = (event.deltaY > 0 ? -1 : 1) * _this.options.scale;
             _this.observer.change(_this, event, InputType_1.toAxis(_this.axes, [offset]));
             _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [0]));
         }, 200);

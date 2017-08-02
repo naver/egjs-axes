@@ -1,5 +1,5 @@
 $(function () {
-  const SUPPORT_TOUCH = "ontouchstart" in window
+  const SUPPORT_TOUCH = "ontouchstart" in window;
   const delegateTarget = document.getElementById("delegateTarget");
 
   const grid = document.getElementById("grid");
@@ -47,12 +47,12 @@ $(function () {
     },
     minimumDuration: 300
   }).on({
-    "hold": event => !SUPPORT_TOUCH && (pan.className = "blinking pan"),
+    "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
     "change": ({pos, delta, holding}) => {
       if (delta.panX || delta.panY) {
         pan.textContent = 
           `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
-        if (holding && pan.classList.contains("blinking")) {
+        if (holding && !pan.classList.contains("blinking")) {
           pan.classList.add("blinking");
         }
       }

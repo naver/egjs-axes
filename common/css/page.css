@@ -25,7 +25,7 @@ h6 {
   color: #777;
 }
 a {
-  /* color: #fff; */
+   color: #fff; 
   -webkit-transition: all 0.4s ease-in-out;
   -moz-transition: all 0.4s ease-in-out;
   -ms-transition: all 0.4s ease-in-out;
@@ -295,6 +295,9 @@ pre code {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   margin: 0 auto;
+}
+.docs .docs-inner a {
+  color: #337ab7;
 }
 .docs .block {
   margin-bottom: 60px;
