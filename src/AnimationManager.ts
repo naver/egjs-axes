@@ -2,6 +2,7 @@ import Coordinate from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
+import {requestAnimationFrame, cancelAnimationFrame} from "./utils";
 
 export interface AnimationParam {
 	depaPos: Axis;
@@ -81,7 +82,7 @@ export class AnimationManager {
 				this.em.triggerChange(this.axm.moveTo(pos), event);
 			}
 			this._animateParam = null;
-			this._raf && window.cancelAnimationFrame(this._raf);
+			this._raf && cancelAnimationFrame(this._raf);
 			this._raf = null;
 			this.em.triggerAnimationEnd();
 		}
@@ -127,7 +128,7 @@ export class AnimationManager {
 					complete();
 					return;
 				} // animationEnd
-				self._raf = window.requestAnimationFrame(loop);
+				self._raf = requestAnimationFrame(loop);
 			})();
 		} else {
 			this.em.triggerChange(this.axm.moveTo(param.destPos));

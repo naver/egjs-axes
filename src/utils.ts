@@ -35,3 +35,49 @@ export function $(param, multi = false) {
 	}
 	return el;
 }
+
+
+let raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+let caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
+if (raf && !caf) {
+	const keyInfo = {};
+	const oldraf = raf;
+	raf = function(callback) {
+		function wrapCallback(timestamp) {
+			if (keyInfo[key]) {
+				callback(timestamp);
+			}
+		}
+		const key = oldraf(wrapCallback);
+		keyInfo[key] = true;
+		return key;
+	};
+	caf = function(key) {
+		delete keyInfo[key];
+	};
+} else if (!(raf && caf)) {
+	raf = function(callback) {
+		return window.setTimeout(function() {
+			callback(window.performance && window.performance.now());
+		}, 16);
+	};
+	caf = window.clearTimeout;
+}
+
+/**
+ * A polyfill for the window.requestAnimationFrame() method.
+ * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+ * @private
+ */
+export function requestAnimationFrame(fp) {
+	return raf(fp);
+};
+/**
+* A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
+* @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
+* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+* @private
+*/
+export function cancelAnimationFrame(key) {
+	caf(key);
+};

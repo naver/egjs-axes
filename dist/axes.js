@@ -16,7 +16,7 @@
 		exports["Axes"] = factory(require("hammerjs"), require("@egjs/component"));
 	else
 		root["eg"] = root["eg"] || {}, root["eg"]["Axes"] = factory(root["Hammer"], root["eg"]["Component"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_8__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -89,6 +89,102 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 exports.__esModule = true;
+function $(param, multi) {
+    if (multi === void 0) { multi = false; }
+    var el;
+    if (typeof param === "string") {
+        // check if string is HTML tag format
+        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
+        // creating element
+        if (match) {
+            var dummy = document.createElement("div");
+            dummy.innerHTML = param;
+            el = Array.prototype.slice.call(dummy.childNodes);
+        }
+        else {
+            el = Array.prototype.slice.call(document.querySelectorAll(param));
+        }
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    else if (param === window) {
+        el = param;
+    }
+    else if (param.nodeName &&
+        (param.nodeType === 1 || param.nodeType === 9)) {
+        el = param;
+    }
+    else if (("jQuery" in window && param instanceof jQuery) ||
+        param.constructor.prototype.jquery) {
+        el = multi ? param.toArray() : param.get(0);
+    }
+    else if (Array.isArray(param)) {
+        el = param.map(function (v) { return $(v); });
+        if (!multi) {
+            el = el.length >= 1 ? el[0] : undefined;
+        }
+    }
+    return el;
+}
+exports.$ = $;
+var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+var caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
+if (raf && !caf) {
+    var keyInfo_1 = {};
+    var oldraf_1 = raf;
+    raf = function (callback) {
+        function wrapCallback(timestamp) {
+            if (keyInfo_1[key]) {
+                callback(timestamp);
+            }
+        }
+        var key = oldraf_1(wrapCallback);
+        keyInfo_1[key] = true;
+        return key;
+    };
+    caf = function (key) {
+        delete keyInfo_1[key];
+    };
+}
+else if (!(raf && caf)) {
+    raf = function (callback) {
+        return window.setTimeout(function () {
+            callback(window.performance && window.performance.now());
+        }, 16);
+    };
+    caf = window.clearTimeout;
+}
+/**
+ * A polyfill for the window.requestAnimationFrame() method.
+ * @see  https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+ * @private
+ */
+function requestAnimationFrame(fp) {
+    return raf(fp);
+}
+exports.requestAnimationFrame = requestAnimationFrame;
+;
+/**
+* A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
+* @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
+* @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+* @private
+*/
+function cancelAnimationFrame(key) {
+    caf(key);
+}
+exports.cancelAnimationFrame = cancelAnimationFrame;
+;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.__esModule = true;
 var Coordinate = {
     getInsidePosition: function (destPos, range, circular, bounce) {
         var toDestPos = destPos;
@@ -131,7 +227,7 @@ exports["default"] = Coordinate;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -145,7 +241,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
+var Coordinate_1 = __webpack_require__(1);
 ;
 var AxisManager = (function () {
     function AxisManager(options) {
@@ -241,58 +337,10 @@ exports.AxisManager = AxisManager;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.__esModule = true;
-function $(param, multi) {
-    if (multi === void 0) { multi = false; }
-    var el;
-    if (typeof param === "string") {
-        // check if string is HTML tag format
-        var match = param.match(/^<([a-z]+)\s*([^>]*)>/);
-        // creating element
-        if (match) {
-            var dummy = document.createElement("div");
-            dummy.innerHTML = param;
-            el = Array.prototype.slice.call(dummy.childNodes);
-        }
-        else {
-            el = Array.prototype.slice.call(document.querySelectorAll(param));
-        }
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
-    }
-    else if (param === window) {
-        el = param;
-    }
-    else if (param.nodeName &&
-        (param.nodeType === 1 || param.nodeType === 9)) {
-        el = param;
-    }
-    else if (("jQuery" in window && param instanceof jQuery) ||
-        param.constructor.prototype.jquery) {
-        el = multi ? param.toArray() : param.get(0);
-    }
-    else if (Array.isArray(param)) {
-        el = param.map(function (v) { return $(v); });
-        if (!multi) {
-            el = el.length >= 1 ? el[0] : undefined;
-        }
-    }
-    return el;
-}
-exports.$ = $;
-
+module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
 
 /***/ }),
 /* 4 */
@@ -301,7 +349,7 @@ exports.$ = $;
 "use strict";
 
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
+var Hammer = __webpack_require__(3);
 exports.SUPPORT_TOUCH = "ontouchstart" in window;
 exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 function toAxis(source, offset) {
@@ -426,7 +474,7 @@ var Component = __webpack_require__(8);
 var AnimationManager_1 = __webpack_require__(9);
 var EventManager_1 = __webpack_require__(10);
 var InterruptManager_1 = __webpack_require__(11);
-var AxisManager_1 = __webpack_require__(1);
+var AxisManager_1 = __webpack_require__(2);
 var InputObserver_1 = __webpack_require__(12);
 var PanInput_1 = __webpack_require__(13);
 var PinchInput_1 = __webpack_require__(14);
@@ -868,8 +916,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Coordinate_1 = __webpack_require__(0);
-var AxisManager_1 = __webpack_require__(1);
+var Coordinate_1 = __webpack_require__(1);
+var AxisManager_1 = __webpack_require__(2);
+var utils_1 = __webpack_require__(0);
 var AnimationManager = (function () {
     function AnimationManager(options, itm, em, axm) {
         this.options = options;
@@ -916,7 +965,7 @@ var AnimationManager = (function () {
                 this.em.triggerChange(this.axm.moveTo(pos), event);
             }
             this._animateParam = null;
-            this._raf && window.cancelAnimationFrame(this._raf);
+            this._raf && utils_1.cancelAnimationFrame(this._raf);
             this._raf = null;
             this.em.triggerAnimationEnd();
         }
@@ -951,7 +1000,7 @@ var AnimationManager = (function () {
                     complete();
                     return;
                 } // animationEnd
-                self_1._raf = window.requestAnimationFrame(loop);
+                self_1._raf = utils_1.requestAnimationFrame(loop);
             })();
         }
         else {
@@ -1244,8 +1293,8 @@ exports.InterruptManager = InterruptManager;
 "use strict";
 
 exports.__esModule = true;
-var AxisManager_1 = __webpack_require__(1);
-var Coordinate_1 = __webpack_require__(0);
+var AxisManager_1 = __webpack_require__(2);
+var Coordinate_1 = __webpack_require__(1);
 var InputObserver = (function () {
     function InputObserver(options, itm, em, axm, am) {
         this.options = options;
@@ -1370,9 +1419,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
+var Hammer = __webpack_require__(3);
 var const_1 = __webpack_require__(5);
-var utils_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
@@ -1635,8 +1684,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var Hammer = __webpack_require__(2);
-var utils_1 = __webpack_require__(3);
+var Hammer = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
@@ -1806,7 +1855,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 exports.__esModule = true;
-var utils_1 = __webpack_require__(3);
+var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
