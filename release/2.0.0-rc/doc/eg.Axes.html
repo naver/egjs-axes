@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Class: Axes | egjs::axes - API</title>
     
-    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions." />
+    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions." />
     
     
     
@@ -29,7 +29,7 @@
     
     
     <script>
-    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.Axes","disqus":"egjs","googleAnalytics":"UA-70842526-16","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::axes - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-axes/release/latest/doc/"}};
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.Axes","disqus":"egjs","googleAnalytics":"UA-70842526-16","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::axes - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-axes/release/latest/doc/"}};
     </script>
     
 
@@ -308,12 +308,12 @@
     
     
 	<div class="description en">
-		<p>A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.</p>
+		<p>A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.</p>
 	</div>
 	
 	
 	<div class="description ko">
-		<p>터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다.</p>
+		<p>터치 입력 장치나 마우스와 같은 다양한 입력 장치를 통해 전달 받은 사용자의 동작을 논리적인 가상 좌표로 변경하는 모듈이다. 사용자 동작에 반응하는 UI를 손쉽게 만들수 있다.</p>
 	</div>
 	
 
@@ -412,9 +412,13 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>    axis: {<br>        x: {<br>            range: [0, 150],<br>            bounce: 50<br>        },<br>        y: {<br>            range: [0, 200],<br>            bounce: 100<br>        },<br>        z: {<br>            range: [1, 10],<br>        }<br>    },<br> deceleration : 0.0024<br>}).on({<br>    &quot;hold&quot; : function(evt) {<br>    },<br>    &quot;release&quot; : function(evt) {<br>    },<br>    &quot;animationStart&quot; : function(evt) {<br>    },<br>    &quot;animationEnd&quot; : function(evt) {<br>    },<br>    &quot;change&quot; : function(evt) {<br>    }<br>});</p>
-<p>const panInputArea = new eg.Axes.PanInput(&quot;#area&quot;, {<br>    scale: [0.5, 1]<br>});<br>const panInputHmove = new eg.Axes.PanInput(&quot;#hmove&quot;);<br>const panInputVmove = new eg.Axes.PanInput(&quot;#vmove&quot;);<br>const pinchInputArea = new eg.Axes.PinchInput(&quot;#area&quot;, {<br>    scale: 1.5<br>});</p>
-<p>axes.connect(&quot;x y&quot;, panInputArea)<br>    .connect(&quot;x&quot;, panInputHmove)<br>    .connect(&quot; y&quot;, panInputVmove)<br>    .connect(&quot;z&quot;, pinchInputArea);</p></code></pre>
+    <pre class="prettyprint"><code><p>// 1. Initialize eg.Axes<br>const axes = new eg.Axes({<br>    axis: {<br>        something1: {<br>            range: [0, 150],<br>            bounce: 50<br>        },<br>        something2: {<br>            range: [0, 200],<br>            bounce: 100<br>        },<br>        somethingN: {<br>            range: [1, 10],<br>        }<br>    },<br> deceleration : 0.0024<br>});</p>
+<p>// 2. attach event handler<br>axes.on({<br>    &quot;hold&quot; : function(evt) {<br>    },<br>    &quot;release&quot; : function(evt) {<br>    },<br>    &quot;animationStart&quot; : function(evt) {<br>    },<br>    &quot;animationEnd&quot; : function(evt) {<br>    },<br>    &quot;change&quot; : function(evt) {<br>    }<br>});</p>
+<p>// 3. Initialize inputTypes<br>const panInputArea = new eg.Axes.PanInput(&quot;#area&quot;, {<br>    scale: [0.5, 1]<br>});<br>const panInputHmove = new eg.Axes.PanInput(&quot;#hmove&quot;);<br>const panInputVmove = new eg.Axes.PanInput(&quot;#vmove&quot;);<br>const pinchInputArea = new eg.Axes.PinchInput(&quot;#area&quot;, {<br>    scale: 1.5<br>});</p>
+<p>// 4. Connect eg.Axes and InputTypes<br>// [PanInput] When the mouse or touchscreen is down and moved.<br>// Connect the 'something2' axis to the mouse or touchscreen x position and<br>// connect the 'somethingN' axis to the mouse or touchscreen y position.<br>axes.connect([&quot;something2&quot;, &quot;somethingN&quot;], panInputArea); // or axes.connect(&quot;something2 somethingN&quot;, panInputArea);</p>
+<p>// Connect only one 'something1' axis to the mouse or touchscreen x position.<br>axes.connect([&quot;something1&quot;], panInputHmove); // or axes.connect(&quot;something1&quot;, panInputHmove);</p>
+<p>// Connect only one 'something2' axis to the mouse or touchscreen y position.<br>axes.connect([&quot;&quot;, &quot;something2&quot;], panInputVmove); // or axes.connect(&quot; something2&quot;, panInputVmove);</p>
+<p>// [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).<br>axes.connect(&quot;something2&quot;, pinchInputArea);</p></code></pre>
     
 
     
@@ -980,7 +984,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line152">line 152</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line168">line 168</a>
         </div>
         
     </div>
@@ -1171,7 +1175,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line368">line 368</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line384">line 384</a>
         </div>
         
     </div>
@@ -1250,7 +1254,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line202">line 202</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line218">line 218</a>
         </div>
         
     </div>
@@ -1419,7 +1423,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line243">line 243</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line259">line 259</a>
         </div>
         
     </div>
@@ -1747,7 +1751,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line340">line 340</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line356">line 356</a>
         </div>
         
     </div>
@@ -2690,7 +2694,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line305">line 305</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line321">line 321</a>
         </div>
         
     </div>
@@ -2894,7 +2898,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line270">line 270</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line286">line 286</a>
         </div>
         
     </div>
@@ -4364,7 +4368,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 15:16:19 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 22:21:32 GMT+0900 (KST)
         </footer>
     </div>
 </div>

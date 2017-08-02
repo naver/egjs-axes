@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Class: PanInput | egjs::axes - API</title>
     
-    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions." />
+    <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions." />
     
     
     
@@ -29,7 +29,7 @@
     
     
     <script>
-    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.Axes","disqus":"egjs","googleAnalytics":"UA-70842526-16","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::axes - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-axes/release/latest/doc/"}};
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.Axes","disqus":"egjs","googleAnalytics":"UA-70842526-16","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::axes - API","description":"A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.","keyword":""},"linenums":true,"link":{"canonical":"http://naver.github.io/egjs-axes/release/latest/doc/"}};
     </script>
     
 
@@ -310,12 +310,12 @@
     
     
 	<div class="description en">
-		<p>A module that transfers the change of the user's Pan(when the pointer is down and moved) operation  to eg.Axes</p>
+		<p>A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved.</p>
 	</div>
 	
 	
 	<div class="description ko">
-		<p>사용자의 Pan 동작(pointer를 누르거나 이동하는 동작) 변화량을 eg.Axes에 전달하는 모듈</p>
+		<p>마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈.</p>
 	</div>
 	
 
@@ -421,7 +421,9 @@
 
     
     <pre class="prettyprint"><code><p>const pan = new eg.Axes.PanInput(&quot;#area&quot;, {<br>        inputType: [&quot;touch&quot;],<br>        scale: [1, 1.3],<br>});</p>
-<p>axes.connect(&quot;x y&quot;, pan);</p></code></pre>
+<p>// Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.<br>// Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.<br>// axes.connect([&quot;something2&quot;, &quot;somethingN&quot;], pan); // or axes.connect(&quot;something2 somethingN&quot;, pan);</p>
+<p>// Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.<br>axes.connect([&quot;something1&quot;], pan); // or axes.connect(&quot;something1&quot;, pan);</p>
+<p>// Connect only one 'something2' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.<br>axes.connect([&quot;&quot;, &quot;something2&quot;], pan); // or axes.connect(&quot; something2&quot;, pan);</p></code></pre>
     
 
     
@@ -491,7 +493,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line146">line 146</a>
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line154">line 154</a>
         </div>
         
     </div>
@@ -570,7 +572,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line170">line 170</a>
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line178">line 178</a>
         </div>
         
     </div>
@@ -687,7 +689,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line160">line 160</a>
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line168">line 168</a>
         </div>
         
     </div>
@@ -804,7 +806,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line180">line 180</a>
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line188">line 188</a>
         </div>
         
     </div>
@@ -935,7 +937,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 15:16:19 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 22:21:32 GMT+0900 (KST)
         </footer>
     </div>
 </div>

@@ -1,18 +1,12 @@
 $(function () {
-  const movableDot = document.getElementById("dot");
+  const transform = eg.Axes.TRANSFORM;  
+  const dot = document.getElementById("dot");
   const hand = document.querySelector(".hand");
-  const cards = [].slice.apply(document.querySelectorAll(".handcard"));
-  const handRect = hand.getBoundingClientRect();
-  const handCenterY = (handRect.top + handRect.bottom) / 2;
-  const handCenterX = (handRect.left + handRect.right) / 2
+  const cards = Array.prototype.slice.apply(document.querySelectorAll(".handcard"));
   const HAND_RADIUS = parseInt(window.getComputedStyle(hand).width) / 2;
   const CARD_OFFSET = -300;
   let handRotMin = null;
   let handRotMax = null;
-
-  cards.forEach(function (v) {
-    setCardOnHand(v);
-  });
 
   function getCardDistance(card, hand) {
     const handRect = hand.getBoundingClientRect();
@@ -24,15 +18,11 @@ $(function () {
     const deltaX = handCenterX - cardCenterX;
     const deltaY = handCenterY - cardCenterY;
     const cardDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-    const cardTilt = radToDeg(Math.atan(deltaX / deltaY) * -1);
+    const cardTilt = (Math.atan(deltaX / deltaY) * -1)/Math.PI * 180;
     return {
       distance: cardDistance,
       tilt: cardTilt
     };
-  }
-
-  function radToDeg(rad) {
-    return rad / Math.PI * 180;
   }
 
   function setCardOnHand(card) {
@@ -55,7 +45,12 @@ $(function () {
       `rotateZ(${cardTilt}deg) translateY(${cardOffset}px)`;
     card.setAttribute("data-cardOffset", cardOffset);
   }
-  const transform = eg.Axes.TRANSFORM;
+
+  cards.forEach(function (v) {
+    setCardOnHand(v);
+  }); 
+
+  // 1. Initialize eg.Axes
   const axes = new eg.Axes({
     axis: {
       hand: {
@@ -68,23 +63,21 @@ $(function () {
       },
     },
     deceleration: 0.00034
-  }).on("change", ({pos}) => {
-    let cardDistance;
-    let cardOffset;
-    let currentRotateZ;
-    movableDot.style["bottom"] = `${-1.4 * pos.top}px`;
-    movableDot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
+  });
+
+  // 2. attach event handler
+  axes.on("change", ({pos}) => {
+    dot.style["bottom"] = `${-1.4 * pos.top}px`;
+    dot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
     hand.style[transform] = `rotateZ(${pos.hand}deg)`;
     cards.forEach((v) => {
-      cardDistance = getCardDistance(v, hand).distance;
-      cardOffset = pos.top;
-      currentRotateZ = v.style[transform].split("translateY")[0];
       v.style[transform] =
-        `${currentRotateZ} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
+        `${v.style[transform].split("translateY")[0]} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
     });
-  }).connect("hand top", new eg.Axes.PanInput(hand, {
-    scale: [0.3, 0.8]
-  })).setTo({
-    hand: (handRotMin + handRotMax) / 2
   });
+ 
+  // 3. Initialize a inputType and connect it
+  axes.connect("hand top", new eg.Axes.PanInput(hand, {
+    scale: [0.3, 0.8]
+  }));
 });
