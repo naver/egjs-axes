@@ -35,9 +35,9 @@ $(function() {
     },
     deceleration: 0.0024
   }).on("change", ({pos}) => {
-    painting.style[eg.Axes.TRANSFORM] = `translate(${-pos.rawX}px, ${-pos.rawY}px)`;
+    painting.style[eg.Axes.TRANSFORM] = `translate3d(${-pos.rawX}px, ${-pos.rawY}px, 0)`;
     pointer.style[eg.Axes.TRANSFORM]
-      = `translate(${pos.rawX * scale[0]}px, ${pos.rawY * scale[1]}px)`;
+      = `translate3d(${pos.rawX * scale[0]}px, ${pos.rawY * scale[1]}px, 0)`;
   }).connect("rawX rawY", new eg.Axes.PanInput(view, {
     scale: [-1, -1]
   }));

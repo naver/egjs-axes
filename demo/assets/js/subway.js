@@ -35,12 +35,12 @@
       const newX = pos.x - (center.x/pos.zoom - center.x/beforeZoom);
       const newY = pos.y - (center.y/pos.zoom - center.y/beforeZoom);
       set({x: newX, y: newY});
-      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-newX}px, ${-newY}px) `;
+      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
 
       // change view
       axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
     } else {
-      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-pos.x}px, ${-pos.y}px) `;
+      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;
     }
   });
   axes.connect("zoom", SUPPORT_TOUCH ? 
