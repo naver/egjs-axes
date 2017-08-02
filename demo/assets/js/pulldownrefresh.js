@@ -1,29 +1,29 @@
 $(function () {
-  const content = document.getElementById("pull-contentWrapper");
-  const content = document.getElementById("pull-content");
-	const prepend = document.getElementById("prepend");
+  // const content = document.getElementById("pull-contentWrapper");
+  // const content = document.getElementById("pull-content");
+	// const prepend = document.getElementById("prepend");
 
-	var axes = new eg.Axes({
-    axis: {
-      scroll: {
-        range: [0, 200],
-        bounce: 100
-      }
-    }
-		// aMax : [ 0, welContent.$value().clientHeight - wrap.offsetHeight ],
-	}).on({
-    "change": event => {
-      const pos = event.pos;
-      content.style[eg.Axes.TRANSFORM] = `translateY(${-pos.scroll})`;
-      var top = -oCustomEvent.aPos[1];
-			var bottom = -top - this.option('aMax')[1];
+	// var axes = new eg.Axes({
+  //   axis: {
+  //     scroll: {
+  //       range: [0, 200],
+  //       bounce: 100
+  //     }
+  //   }
+	// 	// aMax : [ 0, welContent.$value().clientHeight - wrap.offsetHeight ],
+	// }).on({
+  //   "change": event => {
+  //     const pos = event.pos;
+  //     content.style[eg.Axes.TRANSFORM] = `translateY(${-pos.scroll})`;
+  //     var top = -oCustomEvent.aPos[1];
+	// 		var bottom = -top - this.option('aMax')[1];
 
-    },
-    "release" : event => {
+  //   },
+  //   "release" : event => {
 
-    }
-  });
-  axes.connect(["", "scroll"], new eg.Axes.PanInput());
+  //   }
+  // });
+  // axes.connect(["", "scroll"], new eg.Axes.PanInput());
   
 
 	// var type = 0;

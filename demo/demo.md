@@ -3,6 +3,7 @@
 {% include_relative assets/html/axes.html %}
 
 ```js
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     panX: {
@@ -19,7 +20,10 @@ const axes = new eg.Axes({
     }
   },
   minimumDuration: 300
-}).on({
+});
+
+// 2. attach event handler
+axes.on({
   "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
   "change": ({pos, delta, holding}) => {
     if (delta.panX || delta.panY) {
@@ -35,20 +39,20 @@ const axes = new eg.Axes({
     }
     gridView.render(pos.panX, pos.panY, pos.zoom);
     ui.style[eg.Axes.TRANSFORM] = 
-      `translate(${pos.panX}px, ${pos.panY}px) scale(${pos.zoom})`;
+      `translate3d(${pos.panX}px, ${pos.panY}px, 0) scale(${pos.zoom})`;
   },
   "release": event => stopBlinking(event),
   "animationEnd": () => stopBlinking()
 });
-const gridView = new AxesGridView(grid,
-  axes.options.axis.panX,
-  axes.options.axis.panY,
-  axes.options.axis.zoom);
+
+// 3. Initialize inputTypes and connect it
 axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
   .connect("zoom", SUPPORT_TOUCH ?
     new eg.Axes.PinchInput(delegateTarget) :
-    new eg.Axes.WheelInput(delegateTarget))
-  .setTo({panX: size[0]/2 + 20, panY: size[1]/2});
+    new eg.Axes.WheelInput(delegateTarget));
+
+// 4. move to position 
+axes.setTo({panX: size[0]/2 + 20, panY: size[1]/2});
 ```
 
 ### Car 360º viewer
@@ -56,6 +60,7 @@ axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
 {% include_relative assets/html/car360viewer.html %}
 
 ```js
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     angle: {
@@ -64,12 +69,17 @@ const axes = new eg.Axes({
     }
   },
   deceleration: 0.01
-}).on("change", ({pos}) => {
+});
+
+// 2. attach event handler
+axes.on("change", ({pos}) => {
   const index = Math.min(Math.round(pos.angle % 360 / ape), imagesNum - 1);
   images.map((v, i) => {
     v.style.display = i === index ? "inline-block" : "none";
   });
 });
+
+// 3. Initialize a inputType and connect it
 axes.connect("angle", new eg.Axes.PanInput(".car_rotate"));
 ```
 
@@ -78,6 +88,7 @@ axes.connect("angle", new eg.Axes.PanInput(".car_rotate"));
 {% include_relative assets/html/cardinhand.html %}
 
 ```javascript
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     hand: {
@@ -90,32 +101,30 @@ const axes = new eg.Axes({
     },
   },
   deceleration: 0.00034
-}).on("change", ({pos}) => {
-  let cardDistance;
-  let cardOffset;
-  let currentRotateZ;
-  movableDot.style["bottom"] = `${-1.4 * pos.top}px`;
-  movableDot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
+});
+
+// 2. attach event handler
+axes.on("change", ({pos}) => {
+  dot.style["bottom"] = `${-1.4 * pos.top}px`;
+  dot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
   hand.style[transform] = `rotateZ(${pos.hand}deg)`;
   cards.forEach((v) => {
-    cardDistance = getCardDistance(v, hand).distance;
-    cardOffset = pos.top;
-    currentRotateZ = v.style[transform].split("translateY")[0];
     v.style[transform] =
-      `${currentRotateZ} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
+      `${v.style[transform].split("translateY")[0]} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
   });
-}).connect("hand top", new eg.Axes.PanInput(hand, {
-  scale: [0.3, 0.8]
-})).setTo({
-  hand: (handRotMin + handRotMax) / 2
 });
+
+// 3. Initialize a inputType and connect it
+axes.connect("hand top", new eg.Axes.PanInput(hand, {
+  scale: [0.3, 0.8]
+}));
 ```
 ### Rotate a Cube
 
 {% include_relative assets/html/cube.html %}
 
 ```js
-const box = document.getElementById("box");
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     rotateX: {
@@ -128,11 +137,19 @@ const axes = new eg.Axes({
     }
   },
   deceleration: 0.0024
-}).on("change", ({pos}) => {
+});
+
+// 2. attach event handler
+axes.on("change", ({pos}) => {
   box.style[eg.Axes.TRANSFORM] =
     `rotateY(${pos.rotateX}deg) rotateX(${pos.rotateY}deg)`;
-}).connect("rotateX rotateY", new eg.Axes.PanInput("#area"))
-.setTo({
+});
+  
+// 3. Initialize a inputType and connect it
+axes.connect("rotateX rotateY", new eg.Axes.PanInput("#area"));
+
+// 4. move to position 
+axes.setTo({
   "rotateX": 40,
   "rotateY": 315
 }, 100);
@@ -143,6 +160,7 @@ const axes = new eg.Axes({
 {% include_relative assets/html/minimap.html %}
 
 ```js
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     rawX: {
@@ -155,11 +173,17 @@ const axes = new eg.Axes({
     }
   },
   deceleration: 0.0024
-}).on("change", ({pos}) => {
-  painting.style[eg.Axes.TRANSFORM] = `translate(${-pos.rawX}px, ${-pos.rawY}px)`;
+});
+
+// 2. attach event handler
+axes.on("change", ({pos}) => {
+  painting.style[eg.Axes.TRANSFORM] = `translate3d(${-pos.rawX}px, ${-pos.rawY}px, 0)`;
   pointer.style[eg.Axes.TRANSFORM]
-    = `translate(${pos.rawX * scale[0]}px, ${pos.rawY * scale[1]}px)`;
-}).connect("rawX rawY", new eg.Axes.PanInput(view, {
+    = `translate3d(${pos.rawX * scale[0]}px, ${pos.rawY * scale[1]}px, 0)`;
+});
+  
+// 3. Initialize a inputType and connect it
+axes.connect("rawX rawY", new eg.Axes.PanInput(view, {
   scale: [-1, -1]
 }));
 ```
@@ -169,6 +193,7 @@ const axes = new eg.Axes({
 {% include_relative assets/html/subway.html %}
 
 ```js
+// 1. Initialize eg.Axes
 const axes = new eg.Axes({
   axis: {
     x: {
@@ -183,11 +208,14 @@ const axes = new eg.Axes({
       range: [baseScale, 1]
     }
   },
-  deceleration: 0.003
+  deceleration: 0.003,
+  interrutable: false  
 }, {
   zoom: baseScale
-})
-.on("change", ({pos, delta, inputEvent, set}) => {
+});
+
+// 2. attach event handler
+axes.on("change", ({pos, delta, inputEvent, set}) => {
   if(inputEvent && delta.zoom) {
     const center = SUPPORT_TOUCH ? inputEvent.center : {
       x: inputEvent.layerX,
@@ -198,14 +226,19 @@ const axes = new eg.Axes({
     const newX = pos.x - (center.x/pos.zoom - center.x/beforeZoom);
     const newY = pos.y - (center.y/pos.zoom - center.y/beforeZoom);
     set({x: newX, y: newY});
-    imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-newX}px, ${-newY}px) `;
+    imageView.style[eg.Axes.TRANSFORM] =
+      `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
 
     // change view
-    axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
+    axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = 
+      axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
   } else {
-    imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate(${-pos.x}px, ${-pos.y}px) `;
+    imageView.style[eg.Axes.TRANSFORM] =
+      `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;
   }
 });
+
+// 3. Initialize inputTypes and connect it
 axes.connect("zoom", SUPPORT_TOUCH ? 
   new eg.Axes.PinchInput(wrapper) :
   new eg.Axes.WheelInput(wrapper, {
@@ -226,70 +259,6 @@ axes.connect("zoom", SUPPORT_TOUCH ?
 ### Carousel
 
 {% include_relative assets/html/carousel.html %}
-
-```js
-const axes = new eg.Axes({
-  axis: {
-    detailX: {
-      range: [0, DEFAULT_DETAIL_X]
-    },
-    detailY: {
-      range: [0, DEFAULT_DETAIL_X]
-    },
-    carousel: {
-      range: [BASE - (PANEL_WIDTH * (LAST_PANEL_IDX - 1)), BASE],
-    },
-  },
-  deceleration: 0.007,
-}).on({
-  "hold": ({inputEvent}) => {
-    if (inputEvent.target.parentNode.parentNode.id === "carousel-area") {
-      axes.setTo({
-        detailX: DEFAULT_DETAIL_X / 2,
-        detailY: DEFAULT_DETAIL_Y / 2,
-      }, 300);
-      detailViewImg.style[eg.Axes.TRANSFORM] = `scale(1)`;
-      scaleRatio = 1;
-      adjustRangeOfDVAxes();
-    }
-  },
-  "change": ({pos}) => {
-    const move = pos.carousel;
-    const idx = getIdx(move);
-    carouselArea.style[eg.Axes.TRANSFORM] = `translateX(${move}px)`;
-    removeSpotlight(FIRST_PANEL_IDX, LAST_PANEL_IDX);
-    if (idx >= FIRST_PANEL_IDX && idx <= LAST_PANEL_IDX) {
-      boxElmCache[idx].style[eg.Axes.TRANSFORM] = `scale(1.2)`;
-      boxElmCache[idx].classList.remove("box-inactive");
-      removeSpotlight(idx - 1, idx + 1);
-      detailViewImg.src = imgSrcCache[idx];
-      if (scaleRatio > MIN_SACLE) {
-        detailViewArea.style[eg.Axes.TRANSFORM] = 
-        `translateX(${-pos.detailX}px) translateY(${-pos.detailY}px)`;
-      }
-    }
-  },
-  "release": ({destPos}) => {
-    const idx = getIdx(destPos.carousel);
-    destPos.carousel = ((idx - 1) * PANEL_WIDTH * -1) + BASE;
-  },
-})
-.connect(
-  ["detailX", "detailY"],
-  new eg.Axes.HammerInput("#detail-view-carousel-container", {
-    scale: [-AXES_SCALE, -AXES_SCALE],
-  }))
-.connect(
-  "carousel",
-  new eg.Axes.HammerInput("#carousel-container", {
-    scale: [AXES_SCALE, 0]
-  }))
-.setTo({
-  detailX: DEFAULT_DETAIL_X / 2,
-  detailY: DEFAULT_DETAIL_Y / 2,
-  carousel: BASE - (INITIAL_POS * PANEL_WIDTH),
-});
-```
 
 ### 3D Carousel
 

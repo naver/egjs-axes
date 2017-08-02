@@ -22,6 +22,8 @@ $(function() {
     (minimapRect.width - pointerRect.width) / (RAW_IMAGE_WIDTH - viewRect.width),
     (minimapRect.height - pointerRect.height) / (RAW_IMAGE_HEIGHT - viewRect.height)
   ];
+
+  // 1. Initialize eg.Axes
   const axes = new eg.Axes({
     axis: {
       rawX: {
@@ -34,11 +36,17 @@ $(function() {
       }
     },
     deceleration: 0.0024
-  }).on("change", ({pos}) => {
+  });
+  
+  // 2. attach event handler
+  axes.on("change", ({pos}) => {
     painting.style[eg.Axes.TRANSFORM] = `translate3d(${-pos.rawX}px, ${-pos.rawY}px, 0)`;
     pointer.style[eg.Axes.TRANSFORM]
       = `translate3d(${pos.rawX * scale[0]}px, ${pos.rawY * scale[1]}px, 0)`;
-  }).connect("rawX rawY", new eg.Axes.PanInput(view, {
+  });
+    
+  // 3. Initialize a inputType and connect it
+  axes.connect("rawX rawY", new eg.Axes.PanInput(view, {
     scale: [-1, -1]
   }));
 });

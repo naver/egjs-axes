@@ -1,3 +1,4 @@
+/* AxesGridView for test */
 function AxesGridView(container, axisX, axisY, axisZoom) {
   this.container = container;
   this.axisX = axisX;
@@ -33,8 +34,6 @@ AxesGridView.prototype._renderGrid = function() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#fff";
   ctx.fillRect(range[0], range[1], range[2] - this.axisX.bounce[1], range[3] - this.axisY.bounce[1]);
-
-  // grid
   ctx.beginPath();
   ctx.lineWidth = 0.25;
 
@@ -105,23 +104,24 @@ AxesGridView.prototype._renderPoint = function(x, y, zoom) {
 };
 
 $(function () {
-  const SUPPORT_TOUCH = "ontouchstart" in window;
-  const delegateTarget = document.getElementById("delegateTarget");
+  // fit size
+  function fit() {
+    const baseSize = document.getElementById("inputTypeWrapper").getBoundingClientRect().width;
+    const size = baseSize < 600 ?
+      [baseSize - 40, (baseSize/3*2) - 40] :
+      [baseSize/2 - 50, (baseSize/3*2)/2];
 
-  const grid = document.getElementById("grid");
-  const gridRect = grid.getBoundingClientRect();
-  const size = [gridRect.width - 40, (gridRect.width/3*2) - 40];
+    const uiWrapper = document.getElementById("uiWrapper");
+    uiWrapper.style.width = (size[0] + 40)+ "px";
+    uiWrapper.style.height = size[1] + "px";
+    if (baseSize > 600) {
+      uiWrapper.style.marginRight = "20px";
+      uiWrapper.style.marginTop = "20px";
+    }
+    return size;
+  }
 
-  const uiWrapper = document.getElementById("uiWrapper");
-  uiWrapper.style.width = (size[0] + 40)+ "px";
-  uiWrapper.style.height = size[1] + "px";
-  const ui = uiWrapper.querySelector(".ui");
-
-  const inputType = document.getElementById("inputType");
-  inputType.className = SUPPORT_TOUCH ? "touch" : "mouse";
-  const pan = inputType.querySelector(".pan");
-  const zoom = inputType.querySelector(".zoom");
-
+  // stop blicking
   function stopBlinking(event) {
     if (event) {
       if (!event.delta.panX && !event.delta.panY) {
@@ -136,6 +136,16 @@ $(function () {
     }
   }
 
+  const SUPPORT_TOUCH = "ontouchstart" in window;
+  const delegateTarget = document.getElementById("delegateTarget");
+  const size = fit();
+  const ui = uiWrapper.querySelector(".ui");
+  const inputType = document.getElementById("inputType");
+  inputType.className = SUPPORT_TOUCH ? "touch" : "mouse";
+  const pan = inputType.querySelector(".pan");
+  const zoom = inputType.querySelector(".zoom");
+
+  // 1. Initialize eg.Axes
   const axes = new eg.Axes({
     axis: {
       panX: {
@@ -152,7 +162,16 @@ $(function () {
       }
     },
     minimumDuration: 300
-  }).on({
+  });
+
+  // draw grid
+  const gridView = new AxesGridView(document.getElementById("grid"),
+    axes.options.axis.panX,
+    axes.options.axis.panY,
+    axes.options.axis.zoom);
+  
+  // 2. attach event handler
+  axes.on({
     "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
     "change": ({pos, delta, holding}) => {
       if (delta.panX || delta.panY) {
@@ -173,13 +192,13 @@ $(function () {
     "release": event => stopBlinking(event),
     "animationEnd": () => stopBlinking()
   });
-  const gridView = new AxesGridView(grid,
-    axes.options.axis.panX,
-    axes.options.axis.panY,
-    axes.options.axis.zoom);
+
+  // 3. Initialize inputTypes and connect it
   axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
     .connect("zoom", SUPPORT_TOUCH ?
       new eg.Axes.PinchInput(delegateTarget) :
-      new eg.Axes.WheelInput(delegateTarget))
-    .setTo({panX: size[0]/2 + 20, panY: size[1]/2});
+      new eg.Axes.WheelInput(delegateTarget));
+
+  // 4. move to position 
+  axes.setTo({panX: size[0]/2 + 20, panY: size[1]/2});
 });

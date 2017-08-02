@@ -24,8 +24,8 @@ export interface PanInputOption {
 **/
 /**
  * @class eg.Axes.PanInput
- * @classdesc A module that transfers the change of the user's Pan(when the pointer is down and moved) operation  to eg.Axes
- * @ko 사용자의 Pan 동작(pointer를 누르거나 이동하는 동작) 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved.
+ * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
  *
  * @example
  * const pan = new eg.Axes.PanInput("#area", {
@@ -33,7 +33,15 @@ export interface PanInputOption {
  * 		scale: [1, 1.3],
  * });
  *
- * axes.connect("x y", pan);
+ * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
+ * // Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
+ * // axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
+ *
+ * // Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
+ * axes.connect(["something1"], pan); // or axes.connect("something1", pan);
+ *
+ * // Connect only one 'something2' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
+ * axes.connect(["", "something2"], pan); // or axes.connect(" something2", pan);
  *
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
  * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>

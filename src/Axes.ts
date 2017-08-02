@@ -11,8 +11,8 @@ import {TRANSFORM, DIRECTION} from "./const";
 import {IInputType} from "./inputType/InputType";
 
 /**
- * @typedef {Object} AxisOption The Axis information
- * @ko 축 정보
+ * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
+ * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정합니다.
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @property {Number} [range.1=0] The coordinate of the maximum <ko>최대 좌표</ko>
@@ -37,8 +37,8 @@ import {IInputType} from "./inputType/InputType";
 
 /**
  * @class eg.Axes
- * @classdesc A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
- * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치로 전달 받은 사용자의 동작을 가상 좌표계의 논리적 좌표로 변경하는 모듈. 사용자의 동작으로 애니메이션이 일어나면 시간순으로 변경되는 좌표 정보도 제공한다. 변경된 논리적 좌표를 반영해 UI를 구현할 수 있다.
+ * @classdesc A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.
+ * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치를 통해 전달 받은 사용자의 동작을 논리적인 가상 좌표로 변경하는 모듈이다. 사용자 동작에 반응하는 UI를 손쉽게 만들수 있다.
  * @extends eg.Component
  *
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
@@ -46,22 +46,27 @@ import {IInputType} from "./inputType/InputType";
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  * @example
+ *
+ * // 1. Initialize eg.Axes
  * const axes = new eg.Axes({
  *	axis: {
- *		x: {
+ *		something1: {
  *			range: [0, 150],
  *			bounce: 50
  *		},
- *		y: {
+ *		something2: {
  *			range: [0, 200],
  *			bounce: 100
  *		},
- *		z: {
+ *		somethingN: {
  *			range: [1, 10],
  *		}
  *	},
  *  deceleration : 0.0024
- *}).on({
+ * });
+ *
+ * // 2. attach event handler
+ * axes.on({
  *	"hold" : function(evt) {
  *	},
  *	"release" : function(evt) {
@@ -72,21 +77,32 @@ import {IInputType} from "./inputType/InputType";
  *	},
  *	"change" : function(evt) {
  *	}
- *});
+ * });
  *
- *const panInputArea = new eg.Axes.PanInput("#area", {
+ * // 3. Initialize inputTypes
+ * const panInputArea = new eg.Axes.PanInput("#area", {
  *	scale: [0.5, 1]
- *});
- *const panInputHmove = new eg.Axes.PanInput("#hmove");
- *const panInputVmove = new eg.Axes.PanInput("#vmove");
- *const pinchInputArea = new eg.Axes.PinchInput("#area", {
+ * });
+ * const panInputHmove = new eg.Axes.PanInput("#hmove");
+ * const panInputVmove = new eg.Axes.PanInput("#vmove");
+ * const pinchInputArea = new eg.Axes.PinchInput("#area", {
  *	scale: 1.5
- *});
+ * });
  *
- *axes.connect("x y", panInputArea)
- *	.connect("x", panInputHmove)
- *	.connect(" y", panInputVmove)
- *	.connect("z", pinchInputArea);
+ * // 4. Connect eg.Axes and InputTypes
+ * // [PanInput] When the mouse or touchscreen is down and moved.
+ * // Connect the 'something2' axis to the mouse or touchscreen x position and
+ * // connect the 'somethingN' axis to the mouse or touchscreen y position.
+ * axes.connect(["something2", "somethingN"], panInputArea); // or axes.connect("something2 somethingN", panInputArea);
+ *
+ * // Connect only one 'something1' axis to the mouse or touchscreen x position.
+ * axes.connect(["something1"], panInputHmove); // or axes.connect("something1", panInputHmove);
+ *
+ * // Connect only one 'something2' axis to the mouse or touchscreen y position.
+ * axes.connect(["", "something2"], panInputVmove); // or axes.connect(" something2", panInputVmove);
+ *
+ * // [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+ * axes.connect("something2", pinchInputArea);
  */
 export default class Axes extends Component {
 	static VERSION = "#__VERSION__#";

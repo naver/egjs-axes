@@ -4,6 +4,7 @@ $(function () {
   const imagesNum = images.length;
   const ape = 360 / imagesNum; // angle per each
 
+  // 1. Initialize eg.Axes
   const axes = new eg.Axes({
     axis: {
       angle: {
@@ -12,11 +13,16 @@ $(function () {
       }
     },
     deceleration: 0.01
-  }).on("change", ({pos}) => {
+  });
+  
+  // 2. attach event handler
+  axes.on("change", ({pos}) => {
     const index = Math.min(Math.round(pos.angle % 360 / ape), imagesNum - 1);
     images.map((v, i) => {
       v.style.display = i === index ? "inline-block" : "none";
     });
   });
+  
+  // 3. Initialize a inputType and connect it
   axes.connect("angle", new eg.Axes.PanInput(".car_rotate"));
 });

@@ -19,15 +19,15 @@ export interface PinchInputOption {
 
 /**
  * @class eg.Axes.PinchInput
- * @classdesc A module that transfers the change of the user's Pinch(when two pointers are moving toward (zoom-in) or away from each other (zoom-out)) operation to eg.Axes
- * @ko 사용자의 Pinch 동작(2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작) 변화량을 eg.Axes에 전달하는 모듈.
- *
+ * @classdesc A module that passes the amount of change to eg.Axes when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+ * @ko 2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작의 변화량을 eg.Axes에 전달하는 모듈.
  * @example
- * const pan = new eg.Axes.PinchInput("#area", {
+ * const pinch = new eg.Axes.PinchInput("#area", {
  * 		scale: 1
  * });
  *
- * axes.connect("zoom", pan);
+ * // Connect 'something' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+ * axes.connect("something", pinch);
  *
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</ko>
  * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>

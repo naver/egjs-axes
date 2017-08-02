@@ -28,19 +28,38 @@ import Axes from "@egjs/axes";
 #### 3. Initialize eg.Axes
 
 Initialize eg.Axes. specify the axis to be used.
+The key of the axis specifies the name to use as the logical virtual coordinate system.
 
 ```js
 // create eg.Axes with option
-var axes = new eg.Axes("#area", {
+const axes = new eg.Axes("#area", {
   axis: {
-    left: { range: [0, 100] },
-    top: { range: [0, 100] },
-    something: { range: [-200, 200] }
+    something1: { range: [0, 100] },
+    something2: { range: [0, 100] },
+    somethingN: { range: [-200, 200] }
   }
 });
 ```
 
-#### 4. Initialize InputTypes
+#### 4. Attach event handlers
+eg.Axes provides five events.
+
+- [hold](./release/latest/doc/eg.Axes.html#event:hold) : This event is fired when a user holds an element on the screen of the device.
+- [change](./release/latest/doc/eg.Axes.html#event:change) : This event is fired when coordinate changes.
+- [release](./release/latest/doc/eg.Axes.html#event:release) : This event is fired when a user release an element on the screen of the device.
+- [animationStart](./release/latest/doc/eg.Axes.html#event:animationStart) : This event is fired when animation starts.
+- [animationEnd](./release/latest/doc/eg.Axes.html#event:animationEnd) : This event is fired when animation ends.
+
+```js
+// create InputTypes to use
+axes.on({
+ "animationStart": evt => /* ... */,
+ "animationEnd": evt => /* ... */,
+ "change": evt => /* ... */
+});
+```
+
+#### 5. Initialize InputTypes to use
 Create an InputType to associate with the axis of eg.Axes.
 
 Axes provides three inputTypes.
@@ -49,20 +68,32 @@ Axes provides three inputTypes.
 - [eg.Axes.WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
 
 ```js
-// create InputTypes
+// create InputTypes to use
 const panInput = new eg.Axes.PanInput("#area", {
   scale: [1, 1.5]
 });
 const wheelInput = new eg.Axes.WheelInput("#area");
+const pinchInput = new eg.Axes.PinchInput("#area");
 ```
 
-#### 5. Connect eg.Axes and InputTypes 
+#### 6. Connect eg.Axes and InputTypes 
 
 ```js
-// add innputType at axes
-axes.connect("left top", panInput);
-axes.connect("something", wheelInput);
+// [PanInput] When the mouse or touchscreen is down and moved.
+// Connect the 'something2' axis to the mouse or touchscreen x position and
+// connect the 'somethingN' axis to the mouse or touchscreen y position.
+axes.connect(["something2", "somethingN"], panInput); // or axes.connect("something2 somethingN", panInput);
+// Connect only one 'something1' axis to the mouse or touchscreen x position.
+axes.connect(["something1"], panInput); // or axes.connect("something1", panInput);
+// Connect only one 'something2' axis to the mouse or touchscreen y position.
+axes.connect(["", "something2"], panInput); // or axes.connect(" something2", panInput);
+
+// [WheelInput] Connect 'something1' axis when the mousewheel is moved.
+axes.connect("something1", wheelInput);
+
+// [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+axes.connect("something2", pinchInput);
 ```
 
-#### 6. Enjoy!
+#### 7. Enjoy!
 You can change the value of the axis through touch, mouse or anything else.

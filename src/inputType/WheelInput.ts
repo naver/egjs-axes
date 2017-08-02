@@ -18,15 +18,16 @@ export interface WheelInputOption {
 
 /**
  * @class eg.Axes.WheelInput
- * @classdesc A module that transfers the change of the user's MouseWheel operation to eg.Axes
- * @ko 사용자의 MouseWheel 동작 변화량을 eg.Axes에 전달하는 모듈
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved.
+ * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
  *
  * @example
  * const wheel = new eg.Axes.WheelInput("#area", {
  * 		scale: 1
  * });
  *
- * axes.connect("zoom", wheel);
+ * // Connect 'something' axis when the mousewheel is moved.
+ * axes.connect("something", wheel);
  *
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
  * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>

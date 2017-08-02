@@ -6,25 +6,30 @@
   wrapper.style.height = wrapperSize + "px";
   const imageView = document.getElementById("subway");
   const baseScale = wrapperSize / IMAGE_SIZE;
+
+  // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-		axis: {
-			x: {
+    axis: {
+      x: {
         range: [0, 0],
         bounce: 100
-			},
-			y: {
-				range: [0, 0],
-				bounce: 100
+      },
+      y: {
+        range: [0, 0],
+        bounce: 100
       },
       zoom: {
         range: [baseScale, 1]
       }
     },
-    deceleration: 0.003
+    deceleration: 0.003,
+    interrutable: false  
   }, {
     zoom: baseScale
-  })
-  .on("change", ({pos, delta, inputEvent, set}) => {
+  });
+
+  // 2. attach event handler
+  axes.on("change", ({pos, delta, inputEvent, set}) => {
     if(inputEvent && delta.zoom) {
       const center = SUPPORT_TOUCH ? inputEvent.center : {
         x: inputEvent.layerX,
@@ -35,14 +40,19 @@
       const newX = pos.x - (center.x/pos.zoom - center.x/beforeZoom);
       const newY = pos.y - (center.y/pos.zoom - center.y/beforeZoom);
       set({x: newX, y: newY});
-      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
+      imageView.style[eg.Axes.TRANSFORM] =
+        `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
 
       // change view
-      axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
+      axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = 
+        axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
     } else {
-      imageView.style[eg.Axes.TRANSFORM] = `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;
+      imageView.style[eg.Axes.TRANSFORM] =
+        `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;
     }
   });
+
+  // 3. Initialize inputTypes and connect it
   axes.connect("zoom", SUPPORT_TOUCH ? 
     new eg.Axes.PinchInput(wrapper) :
     new eg.Axes.WheelInput(wrapper, {
