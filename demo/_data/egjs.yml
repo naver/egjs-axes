@@ -15,7 +15,7 @@ js:
 - assets/js/minimap.js
 - assets/js/subway.js
 - assets/js/video.js
-- assets/js/pulldownrefresh.js
+- assets/js/pulltorefresh.js
 - assets/js/carousel.js
 - assets/js/3dcarousel.js
 css:
@@ -26,6 +26,6 @@ css:
 - assets/css/minimap.css
 - assets/css/subway.css
 - assets/css/video.css
-- assets/css/pulldownrefresh.css
+- assets/css/pulltorefresh.css
 - assets/css/carousel.css
 - assets/css/3dcarousel.css

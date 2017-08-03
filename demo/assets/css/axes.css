@@ -88,10 +88,11 @@
 }
 
 
+
 .blinking{
-  -webkit-animation:blink 0.3s ease-in-out infinite alternate;
-  -moz-animation:blink 0.3s ease-in-out infinite alternate;
-  animation:blink 0.3s ease-in-out infinite alternate;
+  -webkit-animation:blink 0.3s ease-in-out 1 alternate;
+  -moz-animation:blink 0.3s ease-in-out 1 alternate;
+  animation:blink 0.3s ease-in-out 1 alternate;
 }
 @-webkit-keyframes blink{
     0% {opacity:0;}

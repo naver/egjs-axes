@@ -58,7 +58,7 @@ $(function () {
     },
     top: {
       range: [0, 0],
-      bounce: [40, 160]
+      bounce: [100, 160]
     },
   }, {
     deceleration: 0.00034

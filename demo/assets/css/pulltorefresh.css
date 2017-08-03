@@ -1,0 +1,110 @@
+#pull-contentWrapper {
+  position:relative;
+  overflow:hidden;
+  padding:10px;
+  background-color:#efefef;
+  width:100%; 
+  height:400px;
+}
+.bottomWapper {
+  height:10px;
+  margin:0;
+  padding:0;
+  background-color:#efefef;
+}
+
+#pull-content {
+  list-style:none;
+  margin:0;
+   padding:0px 5px 5px 5px; 
+  background-color:#fff;
+  position:relative; z-index:1;
+}
+
+#pull-content li {
+  position: relative;
+  border-top: 1px solid #f2f2f2;
+}
+
+#pull-content li:first {
+  border-top: 0;
+}
+
+#pull-content li .thumbnail {
+  width: 50%;
+}
+
+.pull_drw {
+  overflow: hidden; 
+  position: relative; 
+  display: table;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  z-index: 100;
+  height: 75px;
+  padding: 11px 15px;
+  padding-top: 17px;
+}
+
+.pull_im {
+  position: relative;
+  display: table-cell;
+  width: 110px;
+}
+
+.pull_im img {
+  width: 110px;
+  height: 75px;
+  vertical-align: top;
+}
+.pull_tx {
+  display: table-cell;
+  height: 75px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: middle;
+  padding: 3px 0 4px;
+  font-family: HelveticaNeue-Light,AppleSDGothicNeo-Light,sans-serif;
+  letter-spacing: -1px;
+  line-height: 17.5px;
+  padding: 0 0 0 13px;
+}
+.pull_tit {
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.278;
+}
+
+#prepend, #append {
+  position:absolute; width:100%; text-align:center; left:0; top:2em;
+  font-weight:bold; font-size:1.2em;
+  color: #8e8e8f;
+}
+
+#append {
+  top:auto; bottom:2em;
+}
+
+.addblinking{
+  -webkit-animation:addblink 1s ease-in-out 1 alternate;
+  -moz-animation:addblink 1s ease-in-out 1 alternate;
+  animation:addblink 1s ease-in-out 1 alternate;
+}
+@-webkit-keyframes addblink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@-moz-keyframes addblink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
+@keyframes addblink{
+    0% {opacity:0;}
+    100% {opacity:1;}
+}

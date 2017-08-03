@@ -64,9 +64,7 @@ Axes provides three inputTypes.
 
 ```js
 // create inputTypes to use
-const panInput = new eg.Axes.PanInput("#area", {
-  scale: [1, 1.5]
-});
+const panInput = new eg.Axes.PanInput("#area");
 const wheelInput = new eg.Axes.WheelInput("#wArea");
 const pinchInput = new eg.Axes.PinchInput("#pArea");
 ```
@@ -94,4 +92,4 @@ axes.connect(["something2"], pinchInput); // or axes.connect("something2", pinch
 ```
 
 #### 7. Enjoy!
-You can change the value of the axis through touch, mouse or anything else.
+You can change the value of the axis through touch screen, mouse or anything else.

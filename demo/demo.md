@@ -80,41 +80,6 @@ axes.on("change", ({pos}) => {
 axes.connect("angle", new eg.Axes.PanInput(".car_rotate"));
 ```
 
-### Cards in hands
-
-{% include_relative assets/html/cardinhand.html %}
-
-```javascript
-// 1. Initialize eg.Axes
-const axes = new eg.Axes({
-  hand: {
-    range: [handRotMin, handRotMax],
-    bounce: 15
-  },
-  top: {
-    range: [0, 0],
-    bounce: [40, 160]
-  },
-}, {
-  deceleration: 0.00034
-});
-
-// 2. attach event handler
-axes.on("change", ({pos}) => {
-  dot.style["bottom"] = `${-1.4 * pos.top}px`;
-  dot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
-  hand.style[transform] = `rotateZ(${pos.hand}deg)`;
-  cards.forEach((v) => {
-    v.style[transform] =
-      `${v.style[transform].split("translateY")[0]} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
-  });
-});
-
-// 3. Initialize a inputType and connect it
-axes.connect("hand top", new eg.Axes.PanInput(hand, {
-  scale: [0.3, 0.8]
-}));
-```
 ### Rotate a Cube
 
 {% include_relative assets/html/cube.html %}
@@ -150,6 +115,89 @@ axes.setTo({
 }, 100);
 ```
 
+### Cards in hands
+
+{% include_relative assets/html/cardinhand.html %}
+
+```javascript
+// 1. Initialize eg.Axes
+const axes = new eg.Axes({
+  hand: {
+    range: [handRotMin, handRotMax],
+    bounce: 15
+  },
+  top: {
+    range: [0, 0],
+    bounce: [100, 160]
+  },
+}, {
+  deceleration: 0.00034
+});
+
+// 2. attach event handler
+axes.on("change", ({pos}) => {
+  dot.style["bottom"] = `${-1.4 * pos.top}px`;
+  dot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
+  hand.style[transform] = `rotateZ(${pos.hand}deg)`;
+  cards.forEach((v) => {
+    v.style[transform] =
+      `${v.style[transform].split("translateY")[0]} translateY(${parseFloat(v.getAttribute("data-cardOffset")) + pos.top}px)`;
+  });
+});
+
+// 3. Initialize a inputType and connect it
+axes.connect("hand top", new eg.Axes.PanInput(hand, {
+  scale: [0.3, 0.8]
+}));
+```
+
+### Pull to Refresh
+
+{% include_relative assets/html/pulltorefresh.html %}
+
+```js
+// 1. Initialize eg.Axes
+const axes = new eg.Axes({
+  scroll: {
+    range: [0, getMaxRange()],
+    bounce: 100
+  }
+});
+
+// 2. attach event handler
+axes.on({
+  "change": ({pos}) => {
+    content.style[eg.Axes.TRANSFORM] = `translate3d(0, ${-pos.scroll}px, 0)`;
+    if (axes.isBounceArea()) {
+      const info = getInfo(pos.scroll);
+      if (info.isAdd) {
+        info.isTop ? (prepend.innerText = "Release to prepend") :
+          (append.innerText = "Release to append");
+      } else {
+        info.isTop ? (prepend.innerText = "Pull to prepend") :
+          (append.innerText = "Pull to append");
+      }
+    }
+  },
+  "release" : ({depaPos}) => {
+    if (axes.isBounceArea()) {
+      const info = getInfo(depaPos.scroll);
+      if (info.isAdd) {
+        const el = getItem();
+        info.isTop ? 
+          content.insertBefore(el, content.firstChild) :
+          content.appendChild(el);
+        axes.axis.scroll.range[1] = getMaxRange();
+      }
+    }
+  }
+});
+
+// 3. Initialize inputTypes and connect it
+axes.connect(["", "scroll"], new eg.Axes.PanInput(contentWrapper, {
+  scale : [0, -1]
+}));
+```
 ### Mini Map
 
 {% include_relative assets/html/minimap.html %}
@@ -241,18 +289,3 @@ axes.connect("zoom", SUPPORT_TOUCH ?
   scale: [-1, -1]
 }));
 ```
-### Controll Video
-
-{% include_relative assets/html/video.html %}
-
-### Pull-Down Refresh
-
-{% include_relative assets/html/pulldownrefresh.html %}
-
-### Carousel
-
-{% include_relative assets/html/carousel.html %}
-
-### 3D Carousel
-
-{% include_relative assets/html/3dcarousel.html %}
