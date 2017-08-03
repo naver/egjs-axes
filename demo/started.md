@@ -32,29 +32,24 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 ```js
 // create eg.Axes with option
-const axes = new eg.Axes("#area", {
-  axis: {
-    something1: { range: [0, 100] },
-    something2: { range: [0, 100] },
-    somethingN: { range: [-200, 200] }
-  }
+const axes = new eg.Axes({
+  something1: { range: [0, 100] },
+  something2: { range: [0, 100] },
+  somethingN: { range: [-200, 200] }
 });
 ```
 
 #### 4. Attach event handlers
 eg.Axes provides five events.
 
-- [hold](./release/latest/doc/eg.Axes.html#event:hold) : This event is fired when a user holds an element on the screen of the device.
-- [change](./release/latest/doc/eg.Axes.html#event:change) : This event is fired when coordinate changes.
-- [release](./release/latest/doc/eg.Axes.html#event:release) : This event is fired when a user release an element on the screen of the device.
-- [animationStart](./release/latest/doc/eg.Axes.html#event:animationStart) : This event is fired when animation starts.
-- [animationEnd](./release/latest/doc/eg.Axes.html#event:animationEnd) : This event is fired when animation ends.
+- [hold](./release/latest/doc/eg.Axes.html#event:hold)
+- [change](./release/latest/doc/eg.Axes.html#event:change)
+- [release](./release/latest/doc/eg.Axes.html#event:release)
+- [animationStart](./release/latest/doc/eg.Axes.html#event:animationStart)
+- [animationEnd](./release/latest/doc/eg.Axes.html#event:animationEnd)
 
 ```js
-// create InputTypes to use
 axes.on({
- "animationStart": evt => /* ... */,
- "animationEnd": evt => /* ... */,
  "change": evt => /* ... */
 });
 ```
@@ -68,12 +63,12 @@ Axes provides three inputTypes.
 - [eg.Axes.WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
 
 ```js
-// create InputTypes to use
+// create inputTypes to use
 const panInput = new eg.Axes.PanInput("#area", {
   scale: [1, 1.5]
 });
-const wheelInput = new eg.Axes.WheelInput("#area");
-const pinchInput = new eg.Axes.PinchInput("#area");
+const wheelInput = new eg.Axes.WheelInput("#wArea");
+const pinchInput = new eg.Axes.PinchInput("#pArea");
 ```
 
 #### 6. Connect eg.Axes and InputTypes 

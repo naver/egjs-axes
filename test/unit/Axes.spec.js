@@ -24,9 +24,9 @@ describe("Axes", function () {
           return 1 - Math.pow(1 - x, 3);
         },
         interruptable: true,
+        minimumDuration: 0,
         maximumDuration: Infinity,
         deceleration: 0.0006,
-        axis: {}
       }
       
       expect(this.inst).to.be.exist;
@@ -36,51 +36,49 @@ describe("Axes", function () {
       expect(defaultOptions.easing(0.7)).to.be.equal(this.inst.options.easing(0.7));
       expect(defaultOptions.easing(0.9)).to.be.equal(this.inst.options.easing(0.9));
       expect(defaultOptions.interruptable).to.be.equal(this.inst.options.interruptable);
+      expect(defaultOptions.minimumDuration).to.be.equal(this.inst.options.minimumDuration);
       expect(defaultOptions.maximumDuration).to.be.equal(this.inst.options.maximumDuration);
       expect(defaultOptions.deceleration).to.be.equal(this.inst.options.deceleration);
-      expect(defaultOptions.axis).to.be.eql(this.inst.options.axis);
     });
 
     it("should check initialization status", () => {
       // Given
       // When
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [30, 50],
-            circular: true
-          },
-          otherX: {
-            range: [-100, 100],
-            bounce: 40,
-            circular: [false, true]
-          }
+        x: {
+          range: [0, 100],
+          bounce: [30, 50],
+          circular: true
         },
+        otherX: {
+          range: [-100, 100],
+          bounce: 40,
+          circular: [false, true]
+        }
+      }, {
         deceleration: 0.001
       });
 
       // Then
-      expect(this.inst.options.axis.x.bounce).to.deep.equal([30, 50]);
-      expect(this.inst.options.axis.x.circular).to.deep.equal([true, true]);
-      expect(this.inst.options.axis.otherX.bounce).to.deep.equal([40, 40]);
-      expect(this.inst.options.axis.otherX.circular).to.deep.equal([false, true]);
+      expect(this.inst.axis.x.bounce).to.deep.equal([30, 50]);
+      expect(this.inst.axis.x.circular).to.deep.equal([true, true]);
+      expect(this.inst.axis.otherX.bounce).to.deep.equal([40, 40]);
+      expect(this.inst.axis.otherX.circular).to.deep.equal([false, true]);
     });
     it("should check `setTo` method", () => {
       // Given
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [30, 50],
-            circular: true
-          },
-          otherX: {
-            range: [-100, 100],
-            bounce: 40,
-            circular: [false, true]
-          }
+        x: {
+          range: [0, 100],
+          bounce: [30, 50],
+          circular: true
         },
+        otherX: {
+          range: [-100, 100],
+          bounce: 40,
+          circular: [false, true]
+        }
+      }, {
         deceleration: 0.001
       });      
       // When
@@ -103,18 +101,17 @@ describe("Axes", function () {
         done();
       });
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [30, 50],
-            circular: true
-          },
-          otherX: {
-            range: [-100, 100],
-            bounce: 40,
-            circular: [false, true]
-          }
+        x: {
+          range: [0, 100],
+          bounce: [30, 50],
+          circular: true
         },
+        otherX: {
+          range: [-100, 100],
+          bounce: 40,
+          circular: [false, true]
+        }
+      }, {
         deceleration: 0.001
       }).on({
         "animationStart": startHandler,
@@ -130,18 +127,17 @@ describe("Axes", function () {
   describe("Axes Test with InputType", function () {
     beforeEach(() => {
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [30, 50],
-            circular: true
-          },
-          otherX: {
-            range: [-100, 100],
-            bounce: 40,
-            circular: [false, true]
-          }
+        x: {
+          range: [0, 100],
+          bounce: [30, 50],
+          circular: true
         },
+        otherX: {
+          range: [-100, 100],
+          bounce: 40,
+          circular: [false, true]
+        }
+      }, {
         deceleration: 0.001
       });
       sandbox();
@@ -253,16 +249,15 @@ describe("Axes", function () {
   describe("Axes Custom Event Test with interruptable", function () {
     beforeEach(() => {
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 300],
-            bounce: 100
-          },
-          y: {
-            range: [0, 400],
-            bounce: 100
-          }
+        x: {
+          range: [0, 300],
+          bounce: 100
         },
+        y: {
+          range: [0, 400],
+          bounce: 100
+        }
+      }, {
         deceleration: 0.001,
         interruptable: false
       });
@@ -329,16 +324,15 @@ describe("Axes", function () {
   describe("Axes Custom Event Test", function () {
     beforeEach(() => {
       this.inst = new Axes({
-        axis: {
-          x: {
-            range: [0, 300],
-            bounce: 100
-          },
-          y: {
-            range: [0, 400],
-            bounce: 100
-          }
+        x: {
+          range: [0, 300],
+          bounce: 100
         },
+        y: {
+          range: [0, 400],
+          bounce: 100
+        }
+      }, {
         deceleration: 0.001
       });
       this.el = sandbox();

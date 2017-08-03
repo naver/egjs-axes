@@ -3,16 +3,15 @@ $(function () {
   
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      rotateX: {
-        range: [0, 360],
-        circular: true
-      },
-      rotateY: {
-        range: [0, 360],
-        circular: true
-      }
+    rotateX: {
+      range: [0, 360],
+      circular: true
     },
+    rotateY: {
+      range: [0, 360],
+      circular: true
+    }
+  }, {
     deceleration: 0.0024
   });
   

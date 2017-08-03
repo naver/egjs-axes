@@ -5,20 +5,19 @@
 ```js
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    panX: {
-      range: [0, size[0]],
-      bounce: 20
-    },
-    panY: {
-      range: [0, size[1]],
-      bounce: 20
-    },
-    zoom: {
-      range: [1, 5],
-      bounce: 1
-    }
+  panX: {
+    range: [0, size[0]],
+    bounce: 20
   },
+  panY: {
+    range: [0, size[1]],
+    bounce: 20
+  },
+  zoom: {
+    range: [1, 5],
+    bounce: 1
+  }
+}, {
   minimumDuration: 300
 });
 
@@ -29,9 +28,8 @@ axes.on({
     if (delta.panX || delta.panY) {
       pan.textContent = 
         `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
-      if (holding && !pan.classList.contains("blinking")) {
-        pan.classList.add("blinking");
-      }
+      holding && !pan.classList.contains("blinking") &&
+          pan.classList.add("blinking");
     }
     if (delta.zoom) {
       zoom.textContent = `zoom: ${pos.zoom.toFixed(2)}`;
@@ -62,12 +60,11 @@ axes.setTo({panX: size[0]/2 + 20, panY: size[1]/2});
 ```js
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    angle: {
-      range: [0, 360],
-      circular: true
-    }
-  },
+  angle: {
+    range: [0, 360],
+    circular: true
+  }
+}, {
   deceleration: 0.01
 });
 
@@ -90,16 +87,15 @@ axes.connect("angle", new eg.Axes.PanInput(".car_rotate"));
 ```javascript
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    hand: {
-      range: [handRotMin, handRotMax],
-      bounce: 15
-    },
-    top: {
-      range: [0, 0],
-      bounce: [40, 160]
-    },
+  hand: {
+    range: [handRotMin, handRotMax],
+    bounce: 15
   },
+  top: {
+    range: [0, 0],
+    bounce: [40, 160]
+  },
+}, {
   deceleration: 0.00034
 });
 
@@ -126,16 +122,15 @@ axes.connect("hand top", new eg.Axes.PanInput(hand, {
 ```js
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    rotateX: {
-      range: [0, 360],
-      circular: true
-    },
-    rotateY: {
-      range: [0, 360],
-      circular: true
-    }
+  rotateX: {
+    range: [0, 360],
+    circular: true
   },
+  rotateY: {
+    range: [0, 360],
+    circular: true
+  }
+}, {
   deceleration: 0.0024
 });
 
@@ -162,16 +157,15 @@ axes.setTo({
 ```js
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    rawX: {
-      range: [0, RAW_IMAGE_WIDTH - viewRect.width],
-      bounce: 100
-    },
-    rawY: {
-      range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
-      bounce: 100
-    }
+  rawX: {
+    range: [0, RAW_IMAGE_WIDTH - viewRect.width],
+    bounce: 100
   },
+  rawY: {
+    range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
+    bounce: 100
+  }
+}, {
   deceleration: 0.0024
 });
 
@@ -195,19 +189,18 @@ axes.connect("rawX rawY", new eg.Axes.PanInput(view, {
 ```js
 // 1. Initialize eg.Axes
 const axes = new eg.Axes({
-  axis: {
-    x: {
-      range: [0, 0],
-      bounce: 100
-    },
-    y: {
-      range: [0, 0],
-      bounce: 100
-    },
-    zoom: {
-      range: [baseScale, 1]
-    }
+  x: {
+    range: [0, 0],
+    bounce: 100
   },
+  y: {
+    range: [0, 0],
+    bounce: 100
+  },
+  zoom: {
+    range: [baseScale, 1]
+  }
+}, {
   deceleration: 0.003,
   interrutable: false  
 }, {
@@ -230,8 +223,8 @@ axes.on("change", ({pos, delta, inputEvent, set}) => {
       `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
 
     // change view
-    axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = 
-      axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
+    axes.axis.y.range[1] = axes.axis.x.range[1] = 
+      axes.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
   } else {
     imageView.style[eg.Axes.TRANSFORM] =
       `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;

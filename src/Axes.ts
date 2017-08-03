@@ -12,7 +12,7 @@ import {IInputType} from "./inputType/InputType";
 
 /**
  * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
- * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정합니다.
+ * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @property {Number} [range.1=0] The coordinate of the maximum <ko>최대 좌표</ko>
@@ -31,7 +31,6 @@ import {IInputType} from "./inputType/InputType";
  * @property {Number} [maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
  * @property {Number} [minimumDuration=0] Minimum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최소 좌표 이동 시간</ko>
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
- * @property {Object.<string, AxisOption>} [axis={}] Axis information managed by eg.Axes <ko>eg.Axes가 관리하는 축 정보</ko>
  * @property {Boolean} [interruptable=true] Indicates whether an animation is interruptible.<br>- true: It can be paused or stopped by user action or the API.<br>- false: It cannot be paused or stopped by user action or the API while it is running.<ko>진행 중인 애니메이션 중지 가능 여부.<br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.<br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다</ko>
 **/
 
@@ -41,6 +40,7 @@ import {IInputType} from "./inputType/InputType";
  * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치를 통해 전달 받은 사용자의 동작을 논리적인 가상 좌표로 변경하는 모듈이다. 사용자 동작에 반응하는 UI를 손쉽게 만들수 있다.
  * @extends eg.Component
  *
+ * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
  * @param {Object.<string, number>} startPos The coordinates to be moved when creating an instance<ko>인스턴스 생성시 이동할 좌표</ko>
  *
@@ -49,19 +49,18 @@ import {IInputType} from "./inputType/InputType";
  *
  * // 1. Initialize eg.Axes
  * const axes = new eg.Axes({
- *	axis: {
- *		something1: {
- *			range: [0, 150],
- *			bounce: 50
- *		},
- *		something2: {
- *			range: [0, 200],
- *			bounce: 100
- *		},
- *		somethingN: {
- *			range: [1, 10],
- *		}
+ *	something1: {
+ *		range: [0, 150],
+ *		bounce: 50
  *	},
+ *	something2: {
+ *		range: [0, 200],
+ *		bounce: 100
+ *	},
+ *	somethingN: {
+ *		range: [1, 10],
+ *	}
+ * }, {
  *  deceleration : 0.0024
  * });
  *
@@ -178,7 +177,7 @@ export default class Axes extends Component {
 	private _io: InputObserver;
 	private _inputs: IInputType[] = [];
 
-	constructor(options: AxesOption, startPos?: Axis) {
+	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption, startPos?: Axis) {
 		super();
 		this.options = { ...{
 			easing: function easeOutCubic(x) {
@@ -188,12 +187,11 @@ export default class Axes extends Component {
 			maximumDuration: Infinity,
 			minimumDuration: 0,
 			deceleration: 0.0006,
-			axis: {},
 		}, ...options};
 
 		this._complementOptions();
-		this._em = new EventManager(this);
-		this._axm = new AxisManager(this.options);
+		this._axm = new AxisManager(this.axis, this.options);
+		this._em = new EventManager(this, this._axm);
 		this._itm = new InterruptManager(this.options);
 		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
 		this._io = new InputObserver(this.options, this._itm, this._em, this._axm, this._am);
@@ -205,15 +203,15 @@ export default class Axes extends Component {
 	 * @private
 	 */
 	private _complementOptions() {
-		Object.keys(this.options.axis).forEach(axis => {
-			this.options.axis[axis] = { ...{
+		Object.keys(this.axis).forEach(axis => {
+			this.axis[axis] = { ...{
 				range: [0, 100],
 				bounce: [0, 0],
 				circular: [false, false]
-			}, ...this.options.axis[axis]};
+			}, ...this.axis[axis]};
 
 			["bounce", "circular"].forEach(v => {
-				const axisOption = this.options.axis;
+				const axisOption = this.axis;
 				const key = axisOption[axis][v];
 
 				if (/string|number|boolean/.test(typeof key)) {
@@ -232,13 +230,11 @@ export default class Axes extends Component {
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
 	 *   }
 	 * });
 	 *
@@ -282,13 +278,11 @@ export default class Axes extends Component {
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
 	 *   }
 	 * });
 	 *
@@ -323,16 +317,14 @@ export default class Axes extends Component {
 	 * @return {Object.<string, number>} Axis coordinate information <ko>축 좌표 정보</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     },
-	 * 		 "zoom": {
-	 *        range: [50, 30]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
+	 *   },
+	 * 	 "zoom": {
+	 *      range: [50, 30]
 	 *   }
 	 * });
 	 *
@@ -352,16 +344,14 @@ export default class Axes extends Component {
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     },
-	 * 		 "zoom": {
-	 *        range: [50, 30]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
+	 *   },
+	 * 	 "zoom": {
+	 *      range: [50, 30]
 	 *   }
 	 * });
 	 *
@@ -387,16 +377,14 @@ export default class Axes extends Component {
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     },
-	 * 		 "zoom": {
-	 *        range: [50, 30]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
+	 *   },
+	 * 	 "zoom": {
+	 *      range: [50, 30]
 	 *   }
 	 * });
 	 *
@@ -421,16 +409,14 @@ export default class Axes extends Component {
 	 * @return {Boolen} Whether the bounce area exists. <ko>bounce 영역 존재 여부</ko>
 	 * @example
 	 * const axes = new eg.Axes({
-	 *   axis: {
-	 *     "x": {
-	 *        range: [0, 100]
-	 *     },
-	 *     "xOther": {
-	 *        range: [-100, 100]
-	 *     },
-	 *     "zoom": {
-	 *        range: [50, 30]
-	 *     }
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "xOther": {
+	 *      range: [-100, 100]
+	 *   },
+	 * 	 "zoom": {
+	 *      range: [50, 30]
 	 *   }
 	 * });
 	 *

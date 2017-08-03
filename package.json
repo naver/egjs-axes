@@ -1,7 +1,7 @@
 {
   "name": "@egjs/axes",
   "version": "2.0.0-rc",
-  "description": " A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
+  "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
   "main": "dist/axes.js",
   "scripts": {
     "start": "webpack-dev-server --open",

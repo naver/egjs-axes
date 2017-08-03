@@ -13,7 +13,7 @@ export interface PanInputOption {
 }
 
 /**
- * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
  * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
  * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
@@ -24,8 +24,8 @@ export interface PanInputOption {
 **/
 /**
  * @class eg.Axes.PanInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved.
- * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
+ * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
  *
  * @example
  * const pan = new eg.Axes.PanInput("#area", {

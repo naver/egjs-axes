@@ -18,8 +18,8 @@ export interface WheelInputOption {
 
 /**
  * @class eg.Axes.WheelInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved.
- * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved. use one axis.
+ * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
  *
  * @example
  * const wheel = new eg.Axes.WheelInput("#area", {

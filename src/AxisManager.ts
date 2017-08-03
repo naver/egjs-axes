@@ -14,9 +14,9 @@ export class AxisManager {
     }
     return true;
   }
-  constructor(private options: AxesOption) {
-    this._pos = Object.keys(this.options.axis).reduce((acc, v) => {
-      acc[v] = this.options.axis[v].range[0];
+  constructor(private axis, private options: AxesOption) {
+    this._pos = Object.keys(this.axis).reduce((acc, v) => {
+      acc[v] = this.axis[v].range[0];
       return acc;
     }, {});
   }
@@ -57,7 +57,7 @@ export class AxisManager {
   every(
     pos: Axis,
     callback: (value: number, key: string, options: AxisOption) => boolean): boolean {
-    const axisOptions = this.options.axis;
+    const axisOptions = this.axis;
     for (const k in pos) {
       if (k) {
         if (!callback(pos[k], k, axisOptions[k])) {
@@ -71,7 +71,7 @@ export class AxisManager {
     pos: Axis,
     callback: (value: number, key: string, options: AxisOption) => boolean): Axis {
     const filtered: Axis = {};
-    const axisOptions = this.options.axis;
+    const axisOptions = this.axis;
     for (const k in pos) {
       if (k) {
         callback(pos[k], k, axisOptions[k]) && (filtered[k] = pos[k]);
@@ -86,7 +86,7 @@ export class AxisManager {
     pos: Axis,
     callback: (value: number, key: string, options: AxisOption) => number): Axis {
     const tranformed: Axis = {};
-    const axisOptions = this.options.axis;
+    const axisOptions = this.axis;
     for (const k in pos) {
       if (k) {
         tranformed[k] = callback(pos[k], k, axisOptions[k]);

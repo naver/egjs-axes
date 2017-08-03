@@ -7,32 +7,33 @@ import Component from "@egjs/component";
 describe("AnimationManager", function () {
   describe("method test", function() {
     beforeEach(() => {
-      this.options = {
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [50, 50],
-            circular: false
-          },
-          y: {
-            range: [0, 200],
-            bounce: [0, 0],
-            circular: false
-          },
-          z: {
-            range: [-100, 200],
-            bounce: [50, 0],
-            circular: true
-          }
+      this.axis = {
+        x: {
+          range: [0, 100],
+          bounce: [50, 50],
+          circular: false
         },
+        y: {
+          range: [0, 200],
+          bounce: [0, 0],
+          circular: false
+        },
+        z: {
+          range: [-100, 200],
+          bounce: [50, 0],
+          circular: true
+        }
+      };
+      this.options = {
         deceleration: 0.0001,
-        maximumDuration: 2000
+        maximumDuration: 2000,
+        minimumDuration: 0
       };
       this.inst = new AnimationManager(
         this.options, 
         new InterruptManager(this.options), 
         new EventManager(null),
-        new AxisManager(this.options)
+        new AxisManager(this.axis, this.options)
       );
     });
     afterEach(() => {
@@ -82,7 +83,7 @@ describe("AnimationManager", function () {
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
       expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
       expect(param.duration).to.be.eql(1000);
-      // expect(param.distance).to.be.eql({x:150, y:200, z:-50});
+      expect(param.delta).to.be.eql({x:150, y:200, z:-50});
       expect(param.inputEvent).to.be.eql(null);
 
       // When
@@ -94,44 +95,46 @@ describe("AnimationManager", function () {
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
       expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
       expect(param.duration).to.be.eql(500);
-      // expect(param.distance).to.be.eql({x:150, y:200, z:-50});
+      expect(param.delta).to.be.eql({x:150, y:200, z:-50});
       expect(param.inputEvent).to.be.equal(eventValue);
     });
   });
   
   describe("animation test", function() {
     beforeEach(() => {
-      this.options = {
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [50, 50],
-            circular: false
-          },
-          y: {
-            range: [0, 200],
-            bounce: [0, 0],
-            circular: false
-          },
-          z: {
-            range: [-100, 200],
-            bounce: [50, 0],
-            circular: true
-          }
+      this.axis = {
+        x: {
+          range: [0, 100],
+          bounce: [50, 50],
+          circular: false
         },
+        y: {
+          range: [0, 200],
+          bounce: [0, 0],
+          circular: false
+        },
+        z: {
+          range: [-100, 200],
+          bounce: [50, 0],
+          circular: true
+        }
+      };
+      this.options = {
         easing: function easeOutCubic(x) {
           return 1 - Math.pow(1 - x, 3);
         },
         interruptable: true,
         deceleration: 0.0001,
+        minimumDuration: 0,
         maximumDuration: 2000
       };
       this.component = new Component();
+      var axm = new AxisManager(this.axis, this.options);
       this.inst = new AnimationManager(
         this.options, 
         new InterruptManager(this.options), 
-        new EventManager(this.component),
-        new AxisManager(this.options)
+        new EventManager(this.component, axm),
+        axm
       );
     });
     afterEach(() => {

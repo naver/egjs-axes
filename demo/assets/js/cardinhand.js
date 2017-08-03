@@ -52,16 +52,15 @@ $(function () {
 
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      hand: {
-        range: [handRotMin, handRotMax],
-        bounce: 15
-      },
-      top: {
-        range: [0, 0],
-        bounce: [40, 160]
-      },
+    hand: {
+      range: [handRotMin, handRotMax],
+      bounce: 15
     },
+    top: {
+      range: [0, 0],
+      bounce: [40, 160]
+    },
+  }, {
     deceleration: 0.00034
   });
 

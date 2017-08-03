@@ -147,28 +147,27 @@ $(function () {
 
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      panX: {
-        range: [0, size[0]],
-        bounce: 20
-      },
-      panY: {
-        range: [0, size[1]],
-        bounce: 20
-      },
-      zoom: {
-        range: [1, 5],
-        bounce: 1
-      }
+    panX: {
+      range: [0, size[0]],
+      bounce: 20
     },
+    panY: {
+      range: [0, size[1]],
+      bounce: 20
+    },
+    zoom: {
+      range: [1, 5],
+      bounce: 1
+    }
+  }, {
     minimumDuration: 300
   });
 
   // draw grid
   const gridView = new AxesGridView(document.getElementById("grid"),
-    axes.options.axis.panX,
-    axes.options.axis.panY,
-    axes.options.axis.zoom);
+    axes.axis.panX,
+    axes.axis.panY,
+    axes.axis.zoom);
   
   // 2. attach event handler
   axes.on({
@@ -177,9 +176,8 @@ $(function () {
       if (delta.panX || delta.panY) {
         pan.textContent = 
           `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
-        if (holding && !pan.classList.contains("blinking")) {
+        holding && !pan.classList.contains("blinking") &&
           pan.classList.add("blinking");
-        }
       }
       if (delta.zoom) {
         zoom.textContent = `zoom: ${pos.zoom.toFixed(2)}`;

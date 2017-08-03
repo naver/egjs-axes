@@ -16,8 +16,5 @@ declare interface AxesOption {
   maximumDuration?: number;
   minimumDuration?: number;
   deceleration?: number;
-  axis?: {
-    [key: string]: AxisOption
-  }
   interruptable?: boolean;
 }

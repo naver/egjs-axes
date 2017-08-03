@@ -1,6 +1,6 @@
 component: Axes
 home: //naver.github.io/egjs
-desc: A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
+desc: A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.
 dist:
 - release/latest/dist/axes.pkgd.js
 GA: UA-70842526-16

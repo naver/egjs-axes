@@ -25,16 +25,15 @@ $(function() {
 
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      rawX: {
-        range: [0, RAW_IMAGE_WIDTH - viewRect.width],
-        bounce: 100
-      },
-      rawY: {
-        range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
-        bounce: 100
-      }
+    rawX: {
+      range: [0, RAW_IMAGE_WIDTH - viewRect.width],
+      bounce: 100
     },
+    rawY: {
+      range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
+      bounce: 100
+    }
+  }, {
     deceleration: 0.0024
   });
   

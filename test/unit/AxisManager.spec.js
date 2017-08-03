@@ -25,22 +25,20 @@ describe("AxisManager", function() {
   describe("instance method", function() {
     beforeEach(() => {
       this.inst = new AxisManager( {
-        axis: {
-          x: {
-            range: [0, 100],
-            bounce: [50, 50],
-            circular: false
-          },
-          y: {
-            range: [0, 200],
-            bounce: [0, 0],
-            circular: false
-          },
-          z: {
-            range: [-100, 200],
-            bounce: [50, 0],
-            circular: true
-          }
+        x: {
+          range: [0, 100],
+          bounce: [50, 50],
+          circular: false
+        },
+        y: {
+          range: [0, 200],
+          bounce: [0, 0],
+          circular: false
+        },
+        z: {
+          range: [-100, 200],
+          bounce: [50, 0],
+          circular: true
         }
       });
     });
@@ -55,8 +53,13 @@ describe("AxisManager", function() {
       let moved = this.inst.moveTo(moveTo);
       
       // Then
-      expect(moved).to.be.eql(moveTo);
-      expect(moved).to.be.not.equal(moveTo);
+      expect(moved.pos).to.be.eql(moveTo);
+      expect(moved.pos).to.be.not.equal(moveTo);
+      expect(moved.delta).to.be.eql({
+        x: 10,
+        y: 20,
+        z: 130
+      });
 
       // When (single) 
       moveTo = {x: 30};
@@ -64,8 +67,13 @@ describe("AxisManager", function() {
 
       // Then
       orgPos = this.inst.get();
-      expect(moved).to.be.eql(orgPos);
-      expect(moved).to.be.not.equal(orgPos);
+      expect(moved.pos).to.be.eql(orgPos);
+      expect(moved.pos).to.be.not.equal(orgPos);
+      expect(moved.delta).to.be.eql({
+        x: 20,
+        y: 0,
+        z: 0
+      });
 
       // When (not included)
       moveTo = {notX: 30};
@@ -74,8 +82,13 @@ describe("AxisManager", function() {
       // Then
       orgPos = this.inst.get();
       expect(orgPos.notX).to.be.undefined;
-      expect(moved).to.be.eql(orgPos);
-      expect(moved).to.be.not.equal(orgPos);
+      expect(moved.pos).to.be.eql(orgPos);
+      expect(moved.pos).to.be.not.equal(orgPos);
+      expect(moved.delta).to.be.eql({
+        x: 0,
+        y: 0,
+        z: 0
+      });
     });
 
     it("should check 'get' method", () => {

@@ -1,6 +1,6 @@
 (function() {
   const SUPPORT_TOUCH = "ontouchstart" in window;
-  const IMAGE_SIZE = 4312;
+  const IMAGE_SIZE = 3000;
   const wrapper = document.getElementById("zoomWrapper");
   const wrapperSize = wrapper.getBoundingClientRect().width;
   wrapper.style.height = wrapperSize + "px";
@@ -9,19 +9,18 @@
 
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      x: {
-        range: [0, 0],
-        bounce: 100
-      },
-      y: {
-        range: [0, 0],
-        bounce: 100
-      },
-      zoom: {
-        range: [baseScale, 1]
-      }
+    x: {
+      range: [0, 0],
+      bounce: 100
     },
+    y: {
+      range: [0, 0],
+      bounce: 100
+    },
+    zoom: {
+      range: [baseScale, 1]
+    }
+  }, {
     deceleration: 0.003,
     interrutable: false  
   }, {
@@ -44,8 +43,8 @@
         `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
 
       // change view
-      axes.options.axis.y.range[1] = axes.options.axis.x.range[1] = 
-        axes.options.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
+      axes.axis.y.range[1] = axes.axis.x.range[1] = 
+        axes.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
     } else {
       imageView.style[eg.Axes.TRANSFORM] =
         `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;

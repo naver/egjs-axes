@@ -108,11 +108,11 @@ export class InputObserver implements IInputTypeObserver {
     // to contol
     const userWish = this.am.getUserControll(param);
     if (AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-      this.em.triggerChange(userWish.destPos);
+      this.em.triggerChange(userWish.destPos, event);
       this.itm.setInterrupt(false);
       this.axm.isOutside() && this.am.restore(event);
     } else {
-      this.am.animateTo(userWish.destPos, userWish.duration);
+      this.am.animateTo(userWish.destPos, userWish.duration, event);
     }
   }
 };

@@ -12,19 +12,18 @@ document.getElementById("clear").addEventListener("click", function(e) {
 var dot = document.getElementById("dot");
 var areaContent = document.getElementById("area-content");
 var axes = new eg.Axes({
-	axis: {
-		x: {
-			range: [0, 150],
-			bounce: 50
-		},
-		y: {
-			range: [0, 200],
-			bounce: 100
-		},
-		z: {
-			range: [1, 10],
-		}
+	x: {
+		range: [0, 150],
+		bounce: 50
 	},
+	y: {
+		range: [0, 200],
+		bounce: 100
+	},
+	z: {
+		range: [1, 10],
+	}
+}, {
   deceleration : 0.0024
 }).on({
 	"hold" : function(evt) {
