@@ -1468,8 +1468,9 @@ var InputObserver = (function () {
         this.moveDistance = null;
         // to contol
         var userWish = this.am.getUserControll(param);
-        if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-            this.em.triggerChange(userWish.destPos, event);
+        var isEqual = AxisManager_1.AxisManager.equal(userWish.destPos, depaPos);
+        if (isEqual || userWish.duration === 0) {
+            !isEqual && this.em.triggerChange(userWish.destPos, event);
             this.itm.setInterrupt(false);
             this.axm.isOutside() && this.am.restore(event);
         }
@@ -1525,7 +1526,7 @@ var InputType_1 = __webpack_require__(4);
  *
  * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * // Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
- * // axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
+ * axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
  *
  * // Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * axes.connect(["something1"], pan); // or axes.connect("something1", pan);
