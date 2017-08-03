@@ -1,29 +1,60 @@
 $(function () {
-  // const content = document.getElementById("pull-contentWrapper");
-  // const content = document.getElementById("pull-content");
-	// const prepend = document.getElementById("prepend");
+  const contentWrapper = document.getElementById("pull-contentWrapper");
+  const content = document.getElementById("pull-content");
+	const prepend = document.getElementById("prepend");
+	const append = document.getElementById("append");
 
-	// var axes = new eg.Axes({
-  //   axis: {
-  //     scroll: {
-  //       range: [0, 200],
-  //       bounce: 100
-  //     }
-  //   }
-	// 	// aMax : [ 0, welContent.$value().clientHeight - wrap.offsetHeight ],
-	// }).on({
-  //   "change": event => {
-  //     const pos = event.pos;
-  //     content.style[eg.Axes.TRANSFORM] = `translateY(${-pos.scroll})`;
-  //     var top = -oCustomEvent.aPos[1];
-	// 		var bottom = -top - this.option('aMax')[1];
+	function getInfo(pos) {
+		const state = pos > 0 ? (pos - axes.axis.scroll.range[1])/100 : -pos/100;
+		return {
+			isAdd: state > 0.8,
+			isTop: pos < 0,
+		}
 
-  //   },
-  //   "release" : event => {
+	}
 
-  //   }
-  // });
-  // axes.connect(["", "scroll"], new eg.Axes.PanInput());
+	const axes = new eg.Axes({
+		scroll: {
+			range: [0, content.getBoundingClientRect().height - contentWrapper.getBoundingClientRect().height],
+			bounce: 100
+		}
+	}).on({
+    "change": event => {
+      const y = event.pos.scroll;
+			content.style[eg.Axes.TRANSFORM] = `translate3d(0, ${-y}px, 0)`;
+			
+			if (axes.isBounceArea()) {
+				const info = getInfo(y);
+				if (info.isAdd) {
+					info.isTop ? (prepend.innerText = "Release to prepend") :
+						(append.innerText = "Release to append");
+				} else {
+					info.isTop ? (prepend.innerText = "Pull to prepend") :
+						(append.innerText = "Pull to append");
+				}
+			}
+    },
+    "release" : event => {
+			const y = event.depaPos.scroll;
+			if (axes.isBounceArea()) {
+				const info = getInfo(y);
+				if (info.isAdd > 0) {
+					// content.inn.prependHTML([
+	// 				'<li>prepend #1</li>',
+	// 				'<li>prepend #2</li>',
+	// 				'<li>prepend #3</li>',
+	// 				'<li>prepend #4</li>',
+	// 				'<li>prepend #5</li>'
+	// 			].join(''));
+
+
+				}
+			}
+    }
+  });
+  axes.connect(["", "scroll"], new eg.Axes.PanInput(contentWrapper, {
+		scale : [ 0, -1 ]
+	}));
   
 
 	// var type = 0;

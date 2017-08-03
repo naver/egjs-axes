@@ -3223,6 +3223,7 @@ var const_1 = __webpack_require__(5);
 var Axes = (function (_super) {
     __extends(Axes, _super);
     function Axes(axis, options, startPos) {
+        if (axis === void 0) { axis = {}; }
         var _this = _super.call(this) || this;
         _this.axis = axis;
         _this._inputs = [];
@@ -3236,8 +3237,8 @@ var Axes = (function (_super) {
             deceleration: 0.0006
         }, options);
         _this._complementOptions();
-        _this._em = new EventManager_1.EventManager(_this);
         _this._axm = new AxisManager_1.AxisManager(_this.axis, _this.options);
+        _this._em = new EventManager_1.EventManager(_this, _this._axm);
         _this._itm = new InterruptManager_1.InterruptManager(_this.options);
         _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
         _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
@@ -4170,8 +4171,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var EventManager = (function () {
-    function EventManager(axes) {
+    function EventManager(axes, axm) {
         this.axes = axes;
+        this.axm = axm;
     }
     /**
      * This event is fired when a user holds an element on the screen of the device.
@@ -4308,7 +4310,7 @@ var EventManager = (function () {
      */
     EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
-        var moveTo = this.axes._axm.moveTo(pos);
+        var moveTo = this.axm.moveTo(pos);
         var param = {
             pos: moveTo.pos,
             delta: moveTo.delta,
@@ -4317,8 +4319,7 @@ var EventManager = (function () {
             set: event ? this.createUserControll(moveTo.pos) : function () { }
         };
         this.axes.trigger("change", param);
-        // @todo refactoring
-        event && this.axes._axm.set(param.set()["destPos"]);
+        event && this.axm.set(param.set()["destPos"]);
     };
     /**
        * This event is fired when animation starts.
@@ -4528,13 +4529,14 @@ var InputObserver = (function () {
         this.moveDistance = null;
         // to contol
         var userWish = this.am.getUserControll(param);
-        if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-            this.em.triggerChange(userWish.destPos);
+        var isEqual = AxisManager_1.AxisManager.equal(userWish.destPos, depaPos);
+        if (isEqual || userWish.duration === 0) {
+            !isEqual && this.em.triggerChange(userWish.destPos, event);
             this.itm.setInterrupt(false);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            this.am.animateTo(userWish.destPos, userWish.duration);
+            this.am.animateTo(userWish.destPos, userWish.duration, event);
         }
     };
     return InputObserver;
@@ -4585,7 +4587,7 @@ var InputType_1 = __webpack_require__(4);
  *
  * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * // Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
- * // axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
+ * axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
  *
  * // Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * axes.connect(["something1"], pan); // or axes.connect("something1", pan);

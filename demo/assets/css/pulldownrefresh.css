@@ -20,7 +20,7 @@
 
 #prepend, #append {
   position:absolute; width:100%; text-align:center; left:0; top:2em;
-  color:#fff; font-weight:bold; font-size:1.2em;
+  font-weight:bold; font-size:1.2em;
 }
 
 #append {
