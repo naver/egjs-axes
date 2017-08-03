@@ -35,7 +35,7 @@ export interface PanInputOption {
  *
  * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * // Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
- * // axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
+ * axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
  *
  * // Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
  * axes.connect(["something1"], pan); // or axes.connect("something1", pan);

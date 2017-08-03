@@ -74,9 +74,12 @@ const pinchInput = new eg.Axes.PinchInput("#pArea");
 #### 6. Connect eg.Axes and InputTypes 
 
 ```js
-// [PanInput] When the mouse or touchscreen is down and moved.
-// Connect the 'something2' axis to the mouse or touchscreen x position and
-// connect the 'somethingN' axis to the mouse or touchscreen y position.
+/** 
+ * [PanInput] When the mouse or touchscreen is down and moved.
+ *
+ * Connect the 'something2' axis to the mouse or touchscreen x position and
+ * connect the 'somethingN' axis to the mouse or touchscreen y position.
+ **/
 axes.connect(["something2", "somethingN"], panInput); // or axes.connect("something2 somethingN", panInput);
 // Connect only one 'something1' axis to the mouse or touchscreen x position.
 axes.connect(["something1"], panInput); // or axes.connect("something1", panInput);
@@ -84,10 +87,10 @@ axes.connect(["something1"], panInput); // or axes.connect("something1", panInpu
 axes.connect(["", "something2"], panInput); // or axes.connect(" something2", panInput);
 
 // [WheelInput] Connect 'something1' axis when the mousewheel is moved.
-axes.connect("something1", wheelInput);
+axes.connect(["something1"], wheelInput); // or axes.connect("something1", wheelInput);
 
 // [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
-axes.connect("something2", pinchInput);
+axes.connect(["something2"], pinchInput); // or axes.connect("something2", pinchInput);
 ```
 
 #### 7. Enjoy!
