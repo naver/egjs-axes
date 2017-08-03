@@ -6,12 +6,11 @@ $(function () {
 
   // 1. Initialize eg.Axes
   const axes = new eg.Axes({
-    axis: {
-      angle: {
-        range: [0, 360],
-        circular: true
-      }
-    },
+    angle: {
+      range: [0, 360],
+      circular: true
+    }
+  }, {
     deceleration: 0.01
   });
   

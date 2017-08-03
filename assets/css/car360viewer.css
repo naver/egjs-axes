@@ -10,6 +10,7 @@
 }
 .img_cont img {
   touch-action: none; user-select: none; -webkit-user-drag: none;
+  transform: translate3d(0,0,0);
 }
 .car_rotate {
   position:absolute;

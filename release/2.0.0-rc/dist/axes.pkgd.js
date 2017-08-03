@@ -248,11 +248,12 @@ exports.__esModule = true;
 var Coordinate_1 = __webpack_require__(1);
 ;
 var AxisManager = (function () {
-    function AxisManager(options) {
+    function AxisManager(axis, options) {
         var _this = this;
+        this.axis = axis;
         this.options = options;
-        this._pos = Object.keys(this.options.axis).reduce(function (acc, v) {
-            acc[v] = _this.options.axis[v].range[0];
+        this._pos = Object.keys(this.axis).reduce(function (acc, v) {
+            acc[v] = _this.axis[v].range[0];
             return acc;
         }, {});
     }
@@ -301,7 +302,7 @@ var AxisManager = (function () {
         }
     };
     AxisManager.prototype.every = function (pos, callback) {
-        var axisOptions = this.options.axis;
+        var axisOptions = this.axis;
         for (var k in pos) {
             if (k) {
                 if (!callback(pos[k], k, axisOptions[k])) {
@@ -313,7 +314,7 @@ var AxisManager = (function () {
     };
     AxisManager.prototype.filter = function (pos, callback) {
         var filtered = {};
-        var axisOptions = this.options.axis;
+        var axisOptions = this.axis;
         for (var k in pos) {
             if (k) {
                 callback(pos[k], k, axisOptions[k]) && (filtered[k] = pos[k]);
@@ -323,7 +324,7 @@ var AxisManager = (function () {
     };
     AxisManager.prototype.map = function (pos, callback) {
         var tranformed = {};
-        var axisOptions = this.options.axis;
+        var axisOptions = this.axis;
         for (var k in pos) {
             if (k) {
                 tranformed[k] = callback(pos[k], k, axisOptions[k]);
@@ -3130,7 +3131,7 @@ var WheelInput_1 = __webpack_require__(15);
 var const_1 = __webpack_require__(5);
 /**
  * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
- * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정합니다.
+ * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.
  * @property {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @property {Number} [range.0=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @property {Number} [range.1=0] The coordinate of the maximum <ko>최대 좌표</ko>
@@ -3148,7 +3149,6 @@ var const_1 = __webpack_require__(5);
  * @property {Number} [maximumDuration=Infinity] Maximum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최대 좌표 이동 시간</ko>
  * @property {Number} [minimumDuration=0] Minimum duration of the animation <ko>가속도에 의해 애니메이션이 동작할 때의 최소 좌표 이동 시간</ko>
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
- * @property {Object.<string, AxisOption>} [axis={}] Axis information managed by eg.Axes <ko>eg.Axes가 관리하는 축 정보</ko>
  * @property {Boolean} [interruptable=true] Indicates whether an animation is interruptible.<br>- true: It can be paused or stopped by user action or the API.<br>- false: It cannot be paused or stopped by user action or the API while it is running.<ko>진행 중인 애니메이션 중지 가능 여부.<br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.<br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다</ko>
 **/
 /**
@@ -3157,6 +3157,7 @@ var const_1 = __webpack_require__(5);
  * @ko 터치 입력 장치나 마우스와 같은 다양한 입력 장치를 통해 전달 받은 사용자의 동작을 논리적인 가상 좌표로 변경하는 모듈이다. 사용자 동작에 반응하는 UI를 손쉽게 만들수 있다.
  * @extends eg.Component
  *
+ * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
  * @param {AxesOption} [options] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
  * @param {Object.<string, number>} startPos The coordinates to be moved when creating an instance<ko>인스턴스 생성시 이동할 좌표</ko>
  *
@@ -3165,19 +3166,18 @@ var const_1 = __webpack_require__(5);
  *
  * // 1. Initialize eg.Axes
  * const axes = new eg.Axes({
- *	axis: {
- *		something1: {
- *			range: [0, 150],
- *			bounce: 50
- *		},
- *		something2: {
- *			range: [0, 200],
- *			bounce: 100
- *		},
- *		somethingN: {
- *			range: [1, 10],
- *		}
+ *	something1: {
+ *		range: [0, 150],
+ *		bounce: 50
  *	},
+ *	something2: {
+ *		range: [0, 200],
+ *		bounce: 100
+ *	},
+ *	somethingN: {
+ *		range: [1, 10],
+ *	}
+ * }, {
  *  deceleration : 0.0024
  * });
  *
@@ -3222,8 +3222,10 @@ var const_1 = __webpack_require__(5);
  */
 var Axes = (function (_super) {
     __extends(Axes, _super);
-    function Axes(options, startPos) {
+    function Axes(axis, options, startPos) {
+        if (axis === void 0) { axis = {}; }
         var _this = _super.call(this) || this;
+        _this.axis = axis;
         _this._inputs = [];
         _this.options = __assign({
             easing: function easeOutCubic(x) {
@@ -3232,12 +3234,11 @@ var Axes = (function (_super) {
             interruptable: true,
             maximumDuration: Infinity,
             minimumDuration: 0,
-            deceleration: 0.0006,
-            axis: {}
+            deceleration: 0.0006
         }, options);
         _this._complementOptions();
-        _this._em = new EventManager_1.EventManager(_this);
-        _this._axm = new AxisManager_1.AxisManager(_this.options);
+        _this._axm = new AxisManager_1.AxisManager(_this.axis, _this.options);
+        _this._em = new EventManager_1.EventManager(_this, _this._axm);
         _this._itm = new InterruptManager_1.InterruptManager(_this.options);
         _this._am = new AnimationManager_1.AnimationManager(_this.options, _this._itm, _this._em, _this._axm);
         _this._io = new InputObserver_1.InputObserver(_this.options, _this._itm, _this._em, _this._axm, _this._am);
@@ -3250,14 +3251,14 @@ var Axes = (function (_super) {
      */
     Axes.prototype._complementOptions = function () {
         var _this = this;
-        Object.keys(this.options.axis).forEach(function (axis) {
-            _this.options.axis[axis] = __assign({
+        Object.keys(this.axis).forEach(function (axis) {
+            _this.axis[axis] = __assign({
                 range: [0, 100],
                 bounce: [0, 0],
                 circular: [false, false]
-            }, _this.options.axis[axis]);
+            }, _this.axis[axis]);
             ["bounce", "circular"].forEach(function (v) {
-                var axisOption = _this.options.axis;
+                var axisOption = _this.axis;
                 var key = axisOption[axis][v];
                 if (/string|number|boolean/.test(typeof key)) {
                     axisOption[axis][v] = [key, key];
@@ -3274,13 +3275,11 @@ var Axes = (function (_super) {
      * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
      *   }
      * });
      *
@@ -3323,13 +3322,11 @@ var Axes = (function (_super) {
      * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
      *   }
      * });
      *
@@ -3364,16 +3361,14 @@ var Axes = (function (_super) {
      * @return {Object.<string, number>} Axis coordinate information <ko>축 좌표 정보</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
+     *   },
+     * 	 "zoom": {
+     *      range: [50, 30]
      *   }
      * });
      *
@@ -3392,16 +3387,14 @@ var Axes = (function (_super) {
      * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
+     *   },
+     * 	 "zoom": {
+     *      range: [50, 30]
      *   }
      * });
      *
@@ -3427,16 +3420,14 @@ var Axes = (function (_super) {
      * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
+     *   },
+     * 	 "zoom": {
+     *      range: [50, 30]
      *   }
      * });
      *
@@ -3461,16 +3452,14 @@ var Axes = (function (_super) {
      * @return {Boolen} Whether the bounce area exists. <ko>bounce 영역 존재 여부</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     *     "xOther": {
-     *        range: [-100, 100]
-     *     },
-     *     "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "xOther": {
+     *      range: [-100, 100]
+     *   },
+     * 	 "zoom": {
+     *      range: [50, 30]
      *   }
      * });
      *
@@ -4182,8 +4171,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var EventManager = (function () {
-    function EventManager(axes) {
+    function EventManager(axes, axm) {
         this.axes = axes;
+        this.axm = axm;
     }
     /**
      * This event is fired when a user holds an element on the screen of the device.
@@ -4194,6 +4184,18 @@ var EventManager = (function () {
      * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
      * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("hold", function(event) {
+     *   // event.pos
+     *   // event.inputEvent
+     * });
      */
     EventManager.prototype.triggerHold = function (pos, event) {
         this.axes.trigger("hold", {
@@ -4208,13 +4210,11 @@ var EventManager = (function () {
      * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
      *   }
      * }).on("change", function(event) {
      *   event.holding && event.set({x: 10});
@@ -4228,13 +4228,11 @@ var EventManager = (function () {
      * @param {Number} [duration] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
      *   }
      * }).on("animationStart", function(event) {
      *   event.setTo({x: 10}, 2000);
@@ -4253,6 +4251,24 @@ var EventManager = (function () {
      * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("release", function(event) {
+     *   // event.depaPos
+     *   // event.destPos
+     *   // event.delta
+     *   // event.inputEvent
+     *   // event.setTo
+     *
+     *   // if you want to change the animation coordinates to move after the 'release' event.
+     *   event.setTo({x: 10}, 2000);
+     * });
      */
     EventManager.prototype.triggerRelease = function (param, event) {
         if (event === void 0) { event = null; }
@@ -4272,10 +4288,29 @@ var EventManager = (function () {
      * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("change", function(event) {
+     *   // event.pos
+     *   // event.delta
+     *   // event.inputEvent
+     *   // event.holding
+     *   // event.set
+     *
+     *   // if you want to change the coordinates to move after the 'change' event.
+     *   // it works when the holding value of the change event is true.
+     *   event.holding && event.set({x: 10});
+     * });
      */
     EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
-        var moveTo = this.axes._axm.moveTo(pos);
+        var moveTo = this.axm.moveTo(pos);
         var param = {
             pos: moveTo.pos,
             delta: moveTo.delta,
@@ -4284,23 +4319,41 @@ var EventManager = (function () {
             set: event ? this.createUserControll(moveTo.pos) : function () { }
         };
         this.axes.trigger("change", param);
-        // @todo refactoring
-        event && this.axes._axm.set(param.set()["destPos"]);
+        event && this.axm.set(param.set()["destPos"]);
     };
     /**
-     * This event is fired when animation starts.
-     * @ko 에니메이션이 시작할 때 발생한다.
-     * @name eg.Axes#animationStart
-     * @event
-     *
-     * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-     * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
-        * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
-        * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
-        * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
-        * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
-        */
+       * This event is fired when animation starts.
+       * @ko 에니메이션이 시작할 때 발생한다.
+       * @name eg.Axes#animationStart
+       * @event
+       *
+       * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+       * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
+       * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+       * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
+       * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
+       * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+       * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
+       *
+       * @example
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       *   "zoom": {
+       *      range: [50, 30]
+       *   }
+       * }).on("release", function(event) {
+       *   // event.depaPos
+       *   // event.destPos
+       *   // event.delta
+       *   // event.inputEvent
+       *   // event.setTo
+       *
+       *   // if you want to change the animation coordinates to move after the 'animationStart' event.
+       *   event.setTo({x: 10}, 2000);
+       * });
+       */
     EventManager.prototype.triggerAnimationStart = function (param) {
         param.setTo = this.createUserControll(param.destPos, param.duration);
         return this.axes.trigger("animationStart", param);
@@ -4310,6 +4363,17 @@ var EventManager = (function () {
      * @ko 에니메이션이 끝났을 때 발생한다.
      * @name eg.Axes#animationEnd
      * @event
+     *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("animationEnd", function() {
+     * });
      */
     EventManager.prototype.triggerAnimationEnd = function () {
         this.axes.trigger("animationEnd");
@@ -4466,12 +4530,12 @@ var InputObserver = (function () {
         // to contol
         var userWish = this.am.getUserControll(param);
         if (AxisManager_1.AxisManager.equal(userWish.destPos, depaPos) || userWish.duration === 0) {
-            this.em.triggerChange(userWish.destPos);
+            this.em.triggerChange(userWish.destPos, event);
             this.itm.setInterrupt(false);
             this.axm.isOutside() && this.am.restore(event);
         }
         else {
-            this.am.animateTo(userWish.destPos, userWish.duration);
+            this.am.animateTo(userWish.destPos, userWish.duration, event);
         }
     };
     return InputObserver;
@@ -4500,7 +4564,7 @@ var const_1 = __webpack_require__(5);
 var utils_1 = __webpack_require__(0);
 var InputType_1 = __webpack_require__(4);
 /**
- * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module
+ * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
  * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
  * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
@@ -4511,8 +4575,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.PanInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved.
- * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
+ * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
  *
  * @example
  * const pan = new eg.Axes.PanInput("#area", {
@@ -4779,8 +4843,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.PinchInput
- * @classdesc A module that passes the amount of change to eg.Axes when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
- * @ko 2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작의 변화량을 eg.Axes에 전달하는 모듈.
+ * @classdesc A module that passes the amount of change to eg.Axes when two pointers are moving toward (zoom-in) or away from each other (zoom-out). use one axis.
+ * @ko 2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
  * @example
  * const pinch = new eg.Axes.PinchInput("#area", {
  * 		scale: 1
@@ -4949,8 +5013,8 @@ var InputType_1 = __webpack_require__(4);
 **/
 /**
  * @class eg.Axes.WheelInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved.
- * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈.
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved. use one axis.
+ * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
  *
  * @example
  * const wheel = new eg.Axes.WheelInput("#area", {

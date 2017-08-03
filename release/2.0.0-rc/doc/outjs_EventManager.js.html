@@ -280,8 +280,9 @@ var __assign = (this &amp;&amp; this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var EventManager = (function () {
-    function EventManager(axes) {
+    function EventManager(axes, axm) {
         this.axes = axes;
+        this.axm = axm;
     }
     /**
      * This event is fired when a user holds an element on the screen of the device.
@@ -292,6 +293,18 @@ var EventManager = (function () {
      * @param {Object.&lt;string, number>} param.pos coordinate &lt;ko>좌표 정보&lt;/ko>
      * @param {Object} param.inputEvent The event object received from inputType &lt;ko>inputType으로 부터 받은 이벤트 객체&lt;/ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("hold", function(event) {
+     *   // event.pos
+     *   // event.inputEvent
+     * });
      */
     EventManager.prototype.triggerHold = function (pos, event) {
         this.axes.trigger("hold", {
@@ -306,13 +319,11 @@ var EventManager = (function () {
      * @param {Object.&lt;string, number>} pos The coordinate to move to &lt;ko>이동할 좌표&lt;/ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
      *   }
      * }).on("change", function(event) {
      *   event.holding &amp;&amp; event.set({x: 10});
@@ -326,13 +337,11 @@ var EventManager = (function () {
      * @param {Number} [duration] Duration of the animation (unit: ms) &lt;ko>애니메이션 진행 시간(단위: ms)&lt;/ko>
      * @example
      * const axes = new eg.Axes({
-     *   axis: {
-     *     "x": {
-     *        range: [0, 100]
-     *     },
-     * 		 "zoom": {
-     *        range: [50, 30]
-     *     }
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
      *   }
      * }).on("animationStart", function(event) {
      *   event.setTo({x: 10}, 2000);
@@ -351,6 +360,24 @@ var EventManager = (function () {
      * @param {Object} param.inputEvent The event object received from inputType &lt;ko>inputType으로 부터 받은 이벤트 객체&lt;/ko>
      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event &lt;ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다&lt;/ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("release", function(event) {
+     *   // event.depaPos
+     *   // event.destPos
+     *   // event.delta
+     *   // event.inputEvent
+     *   // event.setTo
+     *
+     *   // if you want to change the animation coordinates to move after the 'release' event.
+     *   event.setTo({x: 10}, 2000);
+     * });
      */
     EventManager.prototype.triggerRelease = function (param, event) {
         if (event === void 0) { event = null; }
@@ -370,10 +397,29 @@ var EventManager = (function () {
      * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.&lt;ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.&lt;/ko>
      * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true &lt;ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.&lt;/ko>
      *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("change", function(event) {
+     *   // event.pos
+     *   // event.delta
+     *   // event.inputEvent
+     *   // event.holding
+     *   // event.set
+     *
+     *   // if you want to change the coordinates to move after the 'change' event.
+     *   // it works when the holding value of the change event is true.
+     *   event.holding &amp;&amp; event.set({x: 10});
+     * });
      */
     EventManager.prototype.triggerChange = function (pos, event) {
         if (event === void 0) { event = null; }
-        var moveTo = this.axes._axm.moveTo(pos);
+        var moveTo = this.axm.moveTo(pos);
         var param = {
             pos: moveTo.pos,
             delta: moveTo.delta,
@@ -382,23 +428,41 @@ var EventManager = (function () {
             set: event ? this.createUserControll(moveTo.pos) : function () { }
         };
         this.axes.trigger("change", param);
-        // @todo refactoring
-        event &amp;&amp; this.axes._axm.set(param.set()["destPos"]);
+        event &amp;&amp; this.axm.set(param.set()["destPos"]);
     };
     /**
-     * This event is fired when animation starts.
-     * @ko 에니메이션이 시작할 때 발생한다.
-     * @name eg.Axes#animationStart
-     * @event
-     *
-     * @param {Object} param The object of data to be sent when the event is fired&lt;ko>이벤트가 발생할 때 전달되는 데이터 객체&lt;/ko>
-     * @param {Object.&lt;string, number>} param.depaPos The coordinates when animation starts&lt;ko>애니메이션이 시작 되었을 때의 좌표 &lt;/ko>
-        * @param {Object.&lt;string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation&lt;ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다&lt;/ko>
-        * @param {Object.&lt;string, number>} param.delta  The movement variation of coordinate &lt;ko>좌표의 변화량&lt;/ko>
-        * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.&lt;ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.&lt;/ko>
-        * @param {Object} param.inputEvent The event object received from inputType &lt;ko>inputType으로 부터 받은 이벤트 객체&lt;/ko>
-      * @param {setTo} param.setTo Specifies the animation coordinates to move after the event &lt;ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다&lt;/ko>
-        */
+       * This event is fired when animation starts.
+       * @ko 에니메이션이 시작할 때 발생한다.
+       * @name eg.Axes#animationStart
+       * @event
+       *
+       * @param {Object} param The object of data to be sent when the event is fired&lt;ko>이벤트가 발생할 때 전달되는 데이터 객체&lt;/ko>
+       * @param {Object.&lt;string, number>} param.depaPos The coordinates when animation starts&lt;ko>애니메이션이 시작 되었을 때의 좌표 &lt;/ko>
+       * @param {Object.&lt;string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation&lt;ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다&lt;/ko>
+       * @param {Object.&lt;string, number>} param.delta  The movement variation of coordinate &lt;ko>좌표의 변화량&lt;/ko>
+       * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.&lt;ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.&lt;/ko>
+       * @param {Object} param.inputEvent The event object received from inputType &lt;ko>inputType으로 부터 받은 이벤트 객체&lt;/ko>
+       * @param {setTo} param.setTo Specifies the animation coordinates to move after the event &lt;ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다&lt;/ko>
+       *
+       * @example
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       *   "zoom": {
+       *      range: [50, 30]
+       *   }
+       * }).on("release", function(event) {
+       *   // event.depaPos
+       *   // event.destPos
+       *   // event.delta
+       *   // event.inputEvent
+       *   // event.setTo
+       *
+       *   // if you want to change the animation coordinates to move after the 'animationStart' event.
+       *   event.setTo({x: 10}, 2000);
+       * });
+       */
     EventManager.prototype.triggerAnimationStart = function (param) {
         param.setTo = this.createUserControll(param.destPos, param.duration);
         return this.axes.trigger("animationStart", param);
@@ -408,6 +472,17 @@ var EventManager = (function () {
      * @ko 에니메이션이 끝났을 때 발생한다.
      * @name eg.Axes#animationEnd
      * @event
+     *
+     * @example
+     * const axes = new eg.Axes({
+     *   "x": {
+     *      range: [0, 100]
+     *   },
+     *   "zoom": {
+     *      range: [50, 30]
+     *   }
+     * }).on("animationEnd", function() {
+     * });
      */
     EventManager.prototype.triggerAnimationEnd = function () {
         this.axes.trigger("animationEnd");
@@ -450,7 +525,7 @@ exports.EventManager = EventManager;
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 22:21:32 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Thu Aug 03 2017 12:21:32 GMT+0900 (KST)
         </footer>
     </div>
 </div>

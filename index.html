@@ -88,7 +88,7 @@
 <section id="promo" class="promo section offset-header" style="padding-top:90px">
     <div class="container text-center">
         <h2 class="title"><span class="highlight">Axes</span></h2>
-        <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.</p>
+        <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.</p>
         <div class="btns">
             <!--<a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">Github</a>-->
             <a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">API Document</a>
@@ -144,12 +144,10 @@
 The key of the axis specifies the name to use as the logical virtual coordinate system.</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create eg.Axes with option</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">something1</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
-    <span class="na">something2</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
-    <span class="na">somethingN</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span> <span class="p">}</span>
-  <span class="p">}</span>
+<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+  <span class="na">something1</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
+  <span class="na">something2</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
+  <span class="na">somethingN</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span> <span class="p">}</span>
 <span class="p">});</span>
 </code></pre>
 </div>
@@ -158,17 +156,14 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 <p>eg.Axes provides five events.</p>
 
 <ul>
-  <li><a href="./release/latest/doc/eg.Axes.html#event:hold">hold</a> : This event is fired when a user holds an element on the screen of the device.</li>
-  <li><a href="./release/latest/doc/eg.Axes.html#event:change">change</a> : This event is fired when coordinate changes.</li>
-  <li><a href="./release/latest/doc/eg.Axes.html#event:release">release</a> : This event is fired when a user release an element on the screen of the device.</li>
-  <li><a href="./release/latest/doc/eg.Axes.html#event:animationStart">animationStart</a> : This event is fired when animation starts.</li>
-  <li><a href="./release/latest/doc/eg.Axes.html#event:animationEnd">animationEnd</a> : This event is fired when animation ends.</li>
+  <li><a href="./release/latest/doc/eg.Axes.html#event:hold">hold</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.html#event:change">change</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.html#event:release">release</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.html#event:animationStart">animationStart</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.html#event:animationEnd">animationEnd</a></li>
 </ul>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create InputTypes to use</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
- <span class="s2">"animationStart"</span><span class="p">:</span> <span class="nx">evt</span> <span class="o">=&gt;</span> <span class="cm">/* ... */</span><span class="p">,</span>
- <span class="s2">"animationEnd"</span><span class="p">:</span> <span class="nx">evt</span> <span class="o">=&gt;</span> <span class="cm">/* ... */</span><span class="p">,</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
  <span class="s2">"change"</span><span class="p">:</span> <span class="nx">evt</span> <span class="o">=&gt;</span> <span class="cm">/* ... */</span>
 <span class="p">});</span>
 </code></pre>
@@ -184,12 +179,12 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
   <li><a href="./release/latest/doc/eg.Axes.WheelInput.html">eg.Axes.WheelInput</a></li>
 </ul>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create InputTypes to use</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create inputTypes to use</span>
 <span class="kr">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
 <span class="p">});</span>
-<span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
 </code></pre>
 </div>
 
@@ -245,20 +240,19 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">panX</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
-    <span class="p">},</span>
-    <span class="na">panY</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
-    <span class="p">},</span>
-    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">1</span>
-    <span class="p">}</span>
+  <span class="na">panX</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
   <span class="p">},</span>
+  <span class="na">panY</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
+  <span class="p">},</span>
+  <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">minimumDuration</span><span class="p">:</span> <span class="mi">300</span>
 <span class="p">});</span>
 
@@ -269,9 +263,8 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
     <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">panX</span> <span class="o">||</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">panY</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">pan</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> 
         <span class="err">`</span><span class="na">panX</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))},</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))}</span><span class="err">`</span><span class="p">;</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">))</span> <span class="p">{</span>
-        <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
-      <span class="p">}</span>
+      <span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+          <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">zoom</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="err">`</span><span class="na">zoom</span><span class="p">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">)}</span><span class="err">`</span><span class="p">;</span>
@@ -344,12 +337,11 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
+  <span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.01</span>
 <span class="p">});</span>
 
@@ -390,16 +382,15 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
-    <span class="p">},</span>
-    <span class="na">top</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
-    <span class="p">},</span>
+  <span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
   <span class="p">},</span>
+  <span class="na">top</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
+  <span class="p">},</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.00034</span>
 <span class="p">});</span>
 
@@ -435,16 +426,15 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-    <span class="p">},</span>
-    <span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-      <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-    <span class="p">}</span>
+  <span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
   <span class="p">},</span>
+  <span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
+    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
 <span class="p">});</span>
 
@@ -480,16 +470,15 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">rawX</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-    <span class="p">},</span>
-    <span class="na">rawY</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-    <span class="p">}</span>
+  <span class="na">rawX</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
   <span class="p">},</span>
+  <span class="na">rawY</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
+  <span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
 <span class="p">});</span>
 
@@ -517,19 +506,18 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">axis</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">x</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-    <span class="p">},</span>
-    <span class="na">y</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-      <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-    <span class="p">},</span>
-    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">baseScale</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="p">}</span>
+  <span class="na">x</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
   <span class="p">},</span>
+  <span class="na">y</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
+  <span class="p">},</span>
+  <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">baseScale</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span>
   <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.003</span><span class="p">,</span>
   <span class="na">interrutable</span><span class="p">:</span> <span class="kc">false</span>  
 <span class="p">},</span> <span class="p">{</span>
@@ -552,8 +540,8 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
       <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newY</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="err">`</span><span class="p">;</span>
 
     <span class="c1">// change view</span>
-    <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> 
-      <span class="nx">axes</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">beforeZoom</span><span class="p">);</span>
+    <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> 
+      <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">wrapperSize</span><span class="o">/</span><span class="nx">beforeZoom</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="nx">imageView</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span>
       <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="err">`</span><span class="p">;</span>

@@ -292,12 +292,12 @@
     <div class="nameContainer">
         <h4 class="name" id="Axes">
             
-            new eg.Axes<span class="signature">(<span class="optional">options</span>, startPos)</span>
+            new eg.Axes<span class="signature">(axis, <span class="optional">options</span>, startPos)</span>
         </h4>
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line54">line 54</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line53">line 53</a>
         </div>
         
     </div>
@@ -325,6 +325,39 @@
         
 
 <ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>axis</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">Object.&lt;string, <a href="global.html#AxisOption">AxisOption</a>></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  </p></div>
+            <div class="description ko"><p>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
     
     <li>
         <!-- parameter name -->
@@ -412,7 +445,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>// 1. Initialize eg.Axes<br>const axes = new eg.Axes({<br>    axis: {<br>        something1: {<br>            range: [0, 150],<br>            bounce: 50<br>        },<br>        something2: {<br>            range: [0, 200],<br>            bounce: 100<br>        },<br>        somethingN: {<br>            range: [1, 10],<br>        }<br>    },<br> deceleration : 0.0024<br>});</p>
+    <pre class="prettyprint"><code><p>// 1. Initialize eg.Axes<br>const axes = new eg.Axes({<br>    something1: {<br>        range: [0, 150],<br>        bounce: 50<br>    },<br>    something2: {<br>        range: [0, 200],<br>        bounce: 100<br>    },<br>    somethingN: {<br>        range: [1, 10],<br>    }<br>}, {<br> deceleration : 0.0024<br>});</p>
 <p>// 2. attach event handler<br>axes.on({<br>    &quot;hold&quot; : function(evt) {<br>    },<br>    &quot;release&quot; : function(evt) {<br>    },<br>    &quot;animationStart&quot; : function(evt) {<br>    },<br>    &quot;animationEnd&quot; : function(evt) {<br>    },<br>    &quot;change&quot; : function(evt) {<br>    }<br>});</p>
 <p>// 3. Initialize inputTypes<br>const panInputArea = new eg.Axes.PanInput(&quot;#area&quot;, {<br>    scale: [0.5, 1]<br>});<br>const panInputHmove = new eg.Axes.PanInput(&quot;#hmove&quot;);<br>const panInputVmove = new eg.Axes.PanInput(&quot;#vmove&quot;);<br>const pinchInputArea = new eg.Axes.PinchInput(&quot;#area&quot;, {<br>    scale: 1.5<br>});</p>
 <p>// 4. Connect eg.Axes and InputTypes<br>// [PanInput] When the mouse or touchscreen is down and moved.<br>// Connect the 'something2' axis to the mouse or touchscreen x position and<br>// connect the 'somethingN' axis to the mouse or touchscreen y position.<br>axes.connect([&quot;something2&quot;, &quot;somethingN&quot;], panInputArea); // or axes.connect(&quot;something2 somethingN&quot;, panInputArea);</p>
@@ -1128,7 +1161,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  }<br>});</p>
 <p>axes.connect(&quot;x&quot;, new eg.Axes.PanInput(&quot;#area1&quot;))<br>   .connect(&quot;x xOther&quot;, new eg.Axes.PanInput(&quot;#area2&quot;))<br>   .connect(&quot; xOther&quot;, new eg.Axes.PanInput(&quot;#area3&quot;))<br>   .connect([&quot;x&quot;], new eg.Axes.PanInput(&quot;#area4&quot;))<br>   .connect([&quot;xOther&quot;, &quot;x&quot;], new eg.Axes.PanInput(&quot;#area5&quot;))<br>   .connect([&quot;&quot;, &quot;xOther&quot;], new eg.Axes.PanInput(&quot;#area6&quot;));</p></code></pre>
     
 
@@ -1175,7 +1208,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line384">line 384</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line372">line 372</a>
         </div>
         
     </div>
@@ -1254,7 +1287,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line218">line 218</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line216">line 216</a>
         </div>
         
     </div>
@@ -1374,7 +1407,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  }<br>});</p>
 <p>const input1 = new eg.Axes.PanInput(&quot;#area1&quot;);<br>const input2 = new eg.Axes.PanInput(&quot;#area2&quot;);<br>const input3 = new eg.Axes.PanInput(&quot;#area3&quot;);</p>
 <p>axes.connect(&quot;x&quot;, input1);<br>   .connect(&quot;x xOther&quot;, input2)<br>   .connect([&quot;xOther&quot;, &quot;x&quot;], input3);</p>
 <p>axes.disconnect(input1); // disconnects input1<br>axes.disconnect(); // disconnects all of them</p></code></pre>
@@ -1423,7 +1456,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line259">line 259</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line255">line 255</a>
         </div>
         
     </div>
@@ -1543,7 +1576,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    },<br>         &quot;zoom&quot;: {<br>       range: [50, 30]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  },<br>     &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>});</p>
 <p>axes.get(); // {&quot;x&quot;: 0, &quot;xOther&quot;: -100, &quot;zoom&quot;: 50}<br>axes.get([&quot;x&quot;, &quot;zoom&quot;]); // {&quot;x&quot;: 0, &quot;zoom&quot;: 50}</p></code></pre>
     
 
@@ -1751,7 +1784,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line356">line 356</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line346">line 346</a>
         </div>
         
     </div>
@@ -1871,7 +1904,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    },<br>    &quot;zoom&quot;: {<br>       range: [50, 30]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  },<br>     &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>});</p>
 <p>axes.isBounceArea([&quot;x&quot;]);<br>axes.isBounceArea([&quot;x&quot;, &quot;zoom&quot;]);<br>axes.isBounceArea();</p></code></pre>
     
 
@@ -2694,7 +2727,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line321">line 321</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line313">line 313</a>
         </div>
         
     </div>
@@ -2849,7 +2882,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    },<br>         &quot;zoom&quot;: {<br>       range: [50, 30]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  },<br>     &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>});</p>
 <p>axes.setBy({&quot;x&quot;: 30, &quot;zoom&quot;: 10});<br>axes.get(); // {&quot;x&quot;: 30, &quot;xOther&quot;: -100, &quot;zoom&quot;: 60}</p>
 <p>axes.setBy({&quot;x&quot;: 70, &quot;xOther&quot;: 60}, 1000); // animatation</p>
 <p>// after 1000 ms<br>axes.get(); // {&quot;x&quot;: 100, &quot;xOther&quot;: -40, &quot;zoom&quot;: 60}</p></code></pre>
@@ -2898,7 +2931,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line286">line 286</a>
+            <a href="outjs_Axes.js.html">Axes.js</a>, <a href="outjs_Axes.js.html#line280">line 280</a>
         </div>
         
     </div>
@@ -3053,7 +3086,7 @@
         
 
     
-    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  axis: {<br>    &quot;x&quot;: {<br>       range: [0, 100]<br>    },<br>    &quot;xOther&quot;: {<br>       range: [-100, 100]<br>    },<br>         &quot;zoom&quot;: {<br>       range: [50, 30]<br>    }<br>  }<br>});</p>
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;xOther&quot;: {<br>     range: [-100, 100]<br>  },<br>     &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>});</p>
 <p>axes.setTo({&quot;x&quot;: 30, &quot;zoom&quot;: 60});<br>axes.get(); // {&quot;x&quot;: 30, &quot;xOther&quot;: -100, &quot;zoom&quot;: 60}</p>
 <p>axes.setTo({&quot;x&quot;: 100, &quot;xOther&quot;: 60}, 1000); // animatation</p>
 <p>// after 1000 ms<br>axes.get(); // {&quot;x&quot;: 100, &quot;xOther&quot;: 60, &quot;zoom&quot;: 60}</p></code></pre>
@@ -3299,7 +3332,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line135">line 135</a>
+            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line199">line 199</a>
         </div>
         
     </div>
@@ -3335,6 +3368,14 @@
     
     
     
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>}).on(&quot;animationEnd&quot;, function() {<br>});</p></code></pre>
+    
+
     
 
     
@@ -3378,7 +3419,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line117">line 117</a>
+            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line162">line 162</a>
         </div>
         
     </div>
@@ -3623,6 +3664,15 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>}).on(&quot;release&quot;, function(event) {<br>  // event.depaPos<br>  // event.destPos<br>  // event.delta<br>  // event.inputEvent<br>  // event.setTo</p>
+<p>  // if you want to change the animation coordinates to move after the 'animationStart' event.<br>  event.setTo({x: 10}, 2000);<br>});</p></code></pre>
+    
+
+    
 
     
 <dl class="details">
@@ -3665,7 +3715,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line89">line 89</a>
+            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line116">line 116</a>
         </div>
         
     </div>
@@ -3882,6 +3932,15 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>}).on(&quot;change&quot;, function(event) {<br>  // event.pos<br>  // event.delta<br>  // event.inputEvent<br>  // event.holding<br>  // event.set</p>
+<p>  // if you want to change the coordinates to move after the 'change' event.<br>  // it works when the holding value of the change event is true.<br>  event.holding &amp;&amp; event.set({x: 10});<br>});</p></code></pre>
+    
+
+    
 
     
 <dl class="details">
@@ -3924,7 +3983,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line15">line 15</a>
+            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line16">line 16</a>
         </div>
         
     </div>
@@ -4057,6 +4116,14 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>}).on(&quot;hold&quot;, function(event) {<br>  // event.pos<br>  // event.inputEvent<br>});</p></code></pre>
+    
+
+    
 
     
 <dl class="details">
@@ -4099,7 +4166,7 @@
     
         
         <div class="tag-source">
-            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line70">line 70</a>
+            <a href="outjs_EventManager.js.html">EventManager.js</a>, <a href="outjs_EventManager.js.html#line79">line 79</a>
         </div>
         
     </div>
@@ -4316,6 +4383,15 @@
     
     
     
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const axes = new eg.Axes({<br>  &quot;x&quot;: {<br>     range: [0, 100]<br>  },<br>  &quot;zoom&quot;: {<br>     range: [50, 30]<br>  }<br>}).on(&quot;release&quot;, function(event) {<br>  // event.depaPos<br>  // event.destPos<br>  // event.delta<br>  // event.inputEvent<br>  // event.setTo</p>
+<p>  // if you want to change the animation coordinates to move after the 'release' event.<br>  event.setTo({x: 10}, 2000);<br>});</p></code></pre>
+    
+
+    
 
     
 <dl class="details">
@@ -4368,7 +4444,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Wed Aug 02 2017 22:21:32 GMT+0900 (KST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Thu Aug 03 2017 12:21:32 GMT+0900 (KST)
         </footer>
     </div>
 </div>
