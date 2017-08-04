@@ -1,4 +1,8 @@
 (function() {
+  // https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
+  function getZoomedOffset(value, zoom, beforeZoom) {
+    return -(value/zoom - value/beforeZoom);
+  }
   const SUPPORT_TOUCH = "ontouchstart" in window;
   const IMAGE_SIZE = 3000;
   const wrapper = document.getElementById("zoomWrapper");
@@ -34,20 +38,20 @@
         x: inputEvent.layerX,
         y: inputEvent.layerY
       };
-      // https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
+      
       const beforeZoom = pos.zoom - delta.zoom;
-      const newX = pos.x - (center.x/pos.zoom - center.x/beforeZoom);
-      const newY = pos.y - (center.y/pos.zoom - center.y/beforeZoom);
+      const newX = pos.x + getZoomedOffset(center.x, pos.zoom, beforeZoom);
+      const newY = pos.y + getZoomedOffset(center.y, pos.zoom, beforeZoom);
       set({x: newX, y: newY});
       imageView.style[eg.Axes.TRANSFORM] =
-        `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0) `;
+        `scale(${pos.zoom}) translate3d(${-newX}px, ${-newY}px, 0)`;
 
       // change view
       axes.axis.y.range[1] = axes.axis.x.range[1] = 
-        axes.axis.x.range[1] - (wrapperSize/pos.zoom - wrapperSize/beforeZoom);
+        axes.axis.x.range[1] + getZoomedOffset(wrapperSize, pos.zoom, beforeZoom);
     } else {
       imageView.style[eg.Axes.TRANSFORM] =
-        `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0) `;
+        `scale(${pos.zoom}) translate3d(${-pos.x}px, ${-pos.y}px, 0)`;
     }
   });
 
