@@ -5,7 +5,7 @@
  * @egjs/axes JavaScript library
  * 
  * 
- * @version 2.0.0-rc
+ * @version 2.0.0
  * 
  * All-in-one packaged file for ease use of '@egjs/axes' with below dependencies.
  * NOTE: This is not an official distribution file and is only for user convenience.

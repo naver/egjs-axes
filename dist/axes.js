@@ -5,7 +5,7 @@
  * @egjs/axes JavaScript library
  * 
  * 
- * @version 2.0.0-rc
+ * @version 2.0.0
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
