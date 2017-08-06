@@ -93,8 +93,8 @@
 }
 
 @media only screen and (max-width: 480px) {
-    .carouselWrapper {
-        height: 240px;
+    #carouselWrapper {
+        height: 210px;
     }
     .list_container {
         width: 150px;
