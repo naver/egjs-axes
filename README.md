@@ -1,6 +1,9 @@
 # egjs-axes [![npm version](https://badge.fury.io/js/%40egjs%2Faxes.svg)](https://badge.fury.io/js/%40egjs%2Faxes) [![Build Status](https://travis-ci.org/naver/egjs-axes.svg?branch=master)](https://travis-ci.org/naver/egjs-axes) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-axes/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-axes?branch=master)
 
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
+
+![structure](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/structure.png)
+
 You can easily create a UI that responds to user actions.
 
 ![car360 using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif)
