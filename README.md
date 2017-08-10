@@ -1,12 +1,14 @@
 # egjs-axes [![npm version](https://badge.fury.io/js/%40egjs%2Faxes.svg)](https://badge.fury.io/js/%40egjs%2Faxes) [![Build Status](https://travis-ci.org/naver/egjs-axes.svg?branch=master)](https://travis-ci.org/naver/egjs-axes) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-axes/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-axes?branch=master)
 
-A module used to change the information of user action entered by various input devices such as touch screen or mouse into logical coordinates within the virtual coordinate system. The coordinate information sorted by time events occurred is provided if animations are made by user actions.
+A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
+You can easily create a UI that responds to user actions.
 
 ![car360 using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif)
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-axes/)
 - [API documentation](https://naver.github.io/egjs-axes/release/latest/doc/)
+- [How to create a custom InputType](https://github.com/naver/egjs-axes/wiki/How-to-create-a-custom-InputType)
 
 ## Download and Installation
 
