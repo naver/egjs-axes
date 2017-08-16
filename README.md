@@ -11,6 +11,7 @@ You can easily create a UI that responds to user actions.
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-axes/)
 - [API documentation](https://naver.github.io/egjs-axes/release/latest/doc/)
+- [How to create an ui that responds to user actions using eg.axes](https://medium.com/@sculove/how-to-create-a-ui-that-responds-to-user-actions-using-eg-axes-5037d180d5ab)
 - [How to create a custom InputType](https://github.com/naver/egjs-axes/wiki/How-to-create-a-custom-InputType)
 
 ## Download and Installation
