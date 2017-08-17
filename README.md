@@ -2,7 +2,7 @@
 
 A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
 
-![structure](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/structure.png)
+<img src="https://github.com/naver/egjs-axes/raw/master/demo/assets/image/structure.png" style="width:100%">
 
 You can easily create a UI that responds to user actions.
 
