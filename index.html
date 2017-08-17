@@ -6,8 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700">
-    <link rel="stylesheet" href="./common/css/font-awesome.min.css">
     <link rel="stylesheet" href="./common/css/bootstrap.min.css">
     <link rel="stylesheet" href="./common/css/page.css">
     <link rel="stylesheet" href="./common/css/monokai.css">
@@ -91,33 +89,35 @@
         </div>
     </header><!--//header-->
 
-<section id="promo" class="promo section offset-header" style="padding-top:90px">
-    <div class="container text-center">
-        <h2 class="title"><span class="highlight">Axes</span></h2>
-        <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.</p>
-        <div class="btns">
-            <!--<a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">Github</a>-->
-            <a class="btn btn-cta-primary" href="release/latest/doc" target="_blank">API Document</a>
-            <a class="btn btn-cta-primary" href="//github.com/naver/egjs-axes/releases" target="_blank">v2.0.0</a>
+<section id="promo" class="promo section">
+    <div class="container">
+        <div class="hero-image" style="background-image: url(//naver.github.io/egjs/img/Axes.png)">
         </div>
-    </div>
-    <div class="social-media">
-        <div class="social-media-inner container text-center">
-            <ul class="list-inline">
-                <li class="facebook-like">
-                     <div class="fb-like" data-href="//naver.github.io/egjs-axes/" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
-                </li>
-                <li class="github-fork"><iframe src="//ghbtns.com/github-btn.html?user=naver&repo=egjs-axes&type=fork" allowtransparency="true" frameborder="0" scrolling="0" width="53" height="20"></iframe></li>
-                <li class="github-star"><iframe src="//ghbtns.com/github-btn.html?user=naver&repo=egjs-axes&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100" height="20"></iframe></li>
-            </ul>
-        </div>
+        <h2 class="title">
+            <span class="highlight">Axes</span><a href="https://github.com/naver/egjs-axes/releases/tag/2.0.0"><span class="version">v2.0.0</span></a>
+        </h2>
+        <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.<br/>
+            <span class="hashtag">#interaction #virtual-scroll</span>
+        </p>
     </div>
 </section>
 <div>
-	<section id="about" class="docs section">
+	<section id="index" class="section">
+			<div class="container">
+				<div class="docs-inner">
+					<p class="text-center">
+						<a href="#getting-started">Getting Started </a>/ 
+						<a href="#demos"> Demos </a>/
+						<a target="_blank" href="//naver.github.io/egjs-axes/release/latest/doc/"> Documentation </a>/ 
+						<a target="_blank" href="//github.com/naver/egjs-axes"> Source </a>
+					</p>
+				</div>
+			</div>
+		</section>
+	<section id="getting-started" class="docs section">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Get Started</h2>
+				<h2 class="title text-center">Getting Started</h2>
 				
 				<h3 id="browser-support">Browser support</h3>
 <p>IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)</p>
@@ -220,7 +220,7 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 			</div>
 		</div>
 	</section>
-	<section id="docs" class="docs section demos">
+	<section id="demos" class="docs section demos">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title text-center">Demos</h2>
@@ -814,12 +814,20 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 	</section>
 </div>
     <!-- ******FOOTER****** -->
-    <footer class="footer">
-        <div class="container text-center">
-            <small class="copyright"><img style="width:40px;" src="common/image/type_white.svg"/> by <a href="//navercorp.com/" target="_blank">© NAVER Corp.</a></small>
-        </div><!--//container-->
-    </footer><!--//footer-->
-
+    <footer>
+            <div id="footerContent">
+              <div class="left">
+                <ul>
+                    <li><a target="_blank" href="https://naver.github.io/">
+                        <img class="naver_opensource" src="https://naver.github.io/egjs/img/n_opensource.png" />
+                        </a></li>
+                    <li><a target="_blank" href="https://naver.github.io/egjs/">egjs</a>
+                    </li>
+                    <li><a target="_blank" href="https://naver.github.io/billboard.js/">billboard.js</a></li>
+                </ul>
+              </div>
+            </div>
+          </footer>
     <!-- Javascript -->
     <script type="text/javascript" src="./common/js/app.js"></script>
     <script>
