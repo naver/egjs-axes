@@ -1,14 +1,22 @@
 import * as Component from "@egjs/component";
-import {AnimationManager} from "./AnimationManager";
-import {EventManager} from "./EventManager";
-import {InterruptManager} from "./InterruptManager";
-import {AxisManager, Axis} from "./AxisManager";
-import {InputObserver} from "./InputObserver";
-import {PanInput} from "./inputType/PanInput";
-import {PinchInput} from "./inputType/PinchInput";
-import {WheelInput} from "./inputType/WheelInput";
-import {TRANSFORM, DIRECTION} from "./const";
-import {IInputType} from "./inputType/InputType";
+import { AnimationManager } from "./AnimationManager";
+import { EventManager } from "./EventManager";
+import { InterruptManager } from "./InterruptManager";
+import { AxisManager, AxisOption, Axis } from "./AxisManager";
+import { InputObserver } from "./InputObserver";
+import { PanInput } from "./inputType/PanInput";
+import { PinchInput } from "./inputType/PinchInput";
+import { WheelInput } from "./inputType/WheelInput";
+import { TRANSFORM, DIRECTION } from "./const";
+import { IInputType } from "./inputType/InputType";
+
+export interface AxesOption {
+  easing?: (x: number) => number;
+  maximumDuration?: number;
+  minimumDuration?: number;
+  deceleration?: number;
+  interruptable?: boolean;
+}
 
 /**
  * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
@@ -179,15 +187,17 @@ export default class Axes extends Component {
 
 	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption, startPos?: Axis) {
 		super();
-		this.options = { ...{
-			easing: function easeOutCubic(x) {
-				return 1 - Math.pow(1 - x, 3);
-			},
-			interruptable: true,
-			maximumDuration: Infinity,
-			minimumDuration: 0,
-			deceleration: 0.0006,
-		}, ...options};
+		this.options = {
+			...{
+				easing: function easeOutCubic(x) {
+					return 1 - Math.pow(1 - x, 3);
+				},
+				interruptable: true,
+				maximumDuration: Infinity,
+				minimumDuration: 0,
+				deceleration: 0.0006,
+			}, ...options
+		};
 
 		this._complementOptions();
 		this._axm = new AxisManager(this.axis, this.options);
@@ -204,11 +214,13 @@ export default class Axes extends Component {
 	 */
 	private _complementOptions() {
 		Object.keys(this.axis).forEach(axis => {
-			this.axis[axis] = { ...{
-				range: [0, 100],
-				bounce: [0, 0],
-				circular: [false, false]
-			}, ...this.axis[axis]};
+			this.axis[axis] = {
+				...{
+					range: [0, 100],
+					bounce: [0, 0],
+					circular: [false, false]
+				}, ...this.axis[axis]
+			};
 
 			["bounce", "circular"].forEach(v => {
 				const axisOption = this.axis;
