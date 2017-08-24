@@ -44,7 +44,9 @@ export class InputObserver implements IInputTypeObserver {
       });
     }
   }
-
+  get(inputType: IInputType): Axis {
+    return this.axm.get(inputType.axes);
+  }
   hold(inputType: IInputType, event) {
     if (this.itm.isInterrupted() || !inputType.axes.length) {
       return;
