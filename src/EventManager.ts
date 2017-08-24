@@ -2,7 +2,7 @@ import { Axis } from "./AxisManager";
 import { AnimationParam } from "./AnimationManager";
 
 export class EventManager {
-  constructor(private axes, private axm) {
+	constructor(private axes, private axm) {
 	}
 	/**
 	 * This event is fired when a user holds an element on the screen of the device.
@@ -145,47 +145,47 @@ export class EventManager {
 			delta: moveTo.delta,
 			holding: event !== null,
 			inputEvent: event,
-			set: event ? this.createUserControll(moveTo.pos) : () => {},
+			set: event ? this.createUserControll(moveTo.pos) : () => { },
 		};
 		this.axes.trigger("change", param);
 
 		event && this.axm.set(param.set()["destPos"]);
 	}
 
- /**
-	* This event is fired when animation starts.
-	* @ko 에니메이션이 시작할 때 발생한다.
-	* @name eg.Axes#animationStart
-	* @event
-	*
-	* @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
-	* @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
-	* @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
-	* @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
-	* @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
-	* @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
-	* @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
-	*
-	* @example
-	* const axes = new eg.Axes({
-	*   "x": {
-	*      range: [0, 100]
-	*   },
-	*   "zoom": {
-	*      range: [50, 30]
-	*   }
-	* }).on("release", function(event) {
-	*   // event.depaPos
-	*   // event.destPos
-	*   // event.delta
-	*   // event.inputEvent
-	*   // event.setTo
-	*
-	*   // if you want to change the animation coordinates to move after the 'animationStart' event.
-	*   event.setTo({x: 10}, 2000);
-	* });
-	*/
-	triggerAnimationStart(param: AnimationParam): Boolean  {
+	/**
+	 * This event is fired when animation starts.
+	 * @ko 에니메이션이 시작할 때 발생한다.
+	 * @name eg.Axes#animationStart
+	 * @event
+	 *
+	 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
+	 * @param {Object.<string, number>} param.depaPos The coordinates when animation starts<ko>애니메이션이 시작 되었을 때의 좌표 </ko>
+	 * @param {Object.<string, number>} param.destPos The coordinates to move to. If you change this value, you can run the animation<ko>이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다</ko>
+	 * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
+	 * @param {Number} duration Duration of the animation (unit: ms). If you change this value, you can control the animation duration time.<ko>애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.</ko>
+	 * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+	 * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
+	 *
+	 * @example
+	 * const axes = new eg.Axes({
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 *   "zoom": {
+	 *      range: [50, 30]
+	 *   }
+	 * }).on("release", function(event) {
+	 *   // event.depaPos
+	 *   // event.destPos
+	 *   // event.delta
+	 *   // event.inputEvent
+	 *   // event.setTo
+	 *
+	 *   // if you want to change the animation coordinates to move after the 'animationStart' event.
+	 *   event.setTo({x: 10}, 2000);
+	 * });
+	 */
+	triggerAnimationStart(param: AnimationParam): Boolean {
 		param.setTo = this.createUserControll(param.destPos, param.duration);
 		return this.axes.trigger("animationStart", param);
 	}
@@ -214,10 +214,10 @@ export class EventManager {
 	private createUserControll(pos: Axis, duration: number = 0) {
 		// to controll
 		const userControl = {
-			destPos: {...pos},
-			duration : duration
+			destPos: { ...pos },
+			duration: duration
 		};
-		return function(toPos?: Axis, userDuration?: number): { destPos: Axis, duration: number } {
+		return function (toPos?: Axis, userDuration?: number): { destPos: Axis, duration: number } {
 			toPos && (userControl.destPos = { ...toPos });
 			(userDuration !== undefined) && (userControl.duration = userDuration);
 			return userControl;

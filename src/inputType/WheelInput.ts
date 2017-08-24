@@ -39,7 +39,7 @@ export class WheelInput implements IInputType {
 	private _isEnabled = false;
 	private _timer = null;
   private observer: IInputTypeObserver;
-	constructor(el, options: WheelInputOption) {
+	constructor(el, options?: WheelInputOption) {
 		this.element = $(el);
 		this.options = {
 			...{
