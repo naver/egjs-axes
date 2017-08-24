@@ -39,7 +39,7 @@ export class PinchInput implements IInputType {
   element: HTMLElement = null;
   private observer: IInputTypeObserver;
   private _prev: number = null;
-	constructor(el, options: PinchInputOption) {
+	constructor(el, options?: PinchInputOption) {
 		/**
 		 * Hammer helps you add support for touch gestures to your page
 		 *

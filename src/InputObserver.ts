@@ -67,7 +67,7 @@ export class InputObserver implements IInputTypeObserver {
     // for outside logic
     destPos = this.axm.map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
     this.moveDistance && (this.moveDistance = destPos);
-    destPos = this.axm.map(destPos, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
+    destPos = this.axm.map(destPos, (v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 
     // from outside to inside
     if (this.isOutside &&
@@ -91,8 +91,8 @@ export class InputObserver implements IInputTypeObserver {
       return Coordinate.getInsidePosition(
         pos[k] + v,
         opt.range,
-        opt.circular,
-        opt.bounce,
+        opt.circular as boolean[],
+        opt.bounce as number[],
       );
     }));
     // prepare params

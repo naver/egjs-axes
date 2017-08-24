@@ -57,8 +57,8 @@ export class AnimationManager {
 			return Coordinate.getInsidePosition(
 				v,
 				opt.range,
-				opt.circular,
-				opt.bounce,
+				opt.circular as boolean[],
+				opt.bounce as number[]
 			);
 		}));
 		return {
@@ -78,7 +78,7 @@ export class AnimationManager {
 		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
-				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular));
+				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
 				this.em.triggerChange(pos, event);
 			}
@@ -102,11 +102,11 @@ export class AnimationManager {
 		// for Circular
 		const circularTargets = this.axm.filter(
 			this.axm.get(),
-			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular)
+			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular as boolean[])
 		);
 		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
 			circularTargets,
-			(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular)
+			(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[])
 		));
 		this.itm.setInterrupt(false);
 		this.em.triggerAnimationEnd();
@@ -158,7 +158,7 @@ export class AnimationManager {
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
 			userWish.destPos,
-			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular))) {
+			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular as boolean[]))) {
 			console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
 
@@ -179,7 +179,7 @@ export class AnimationManager {
 		let toPos: Axis = param.depaPos;
 		toPos = this.axm.map(toPos, (v, k, opt) => {
 			v += (param.destPos[k] - v) * easingPer;
-			return Coordinate.getCirculatedPos(v, opt.range, opt.circular);
+			return Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 		});
 		this.em.triggerChange(toPos);
 		return easingPer;
@@ -203,8 +203,8 @@ export class AnimationManager {
 			return;
 		}
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			v = Coordinate.getInsidePosition(v, opt.range, opt.circular);
-			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular);
+			v = Coordinate.getInsidePosition(v, opt.range, opt.circular as boolean[]);
+			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 		});
 		if (AxisManager.equal(movedPos, orgPos)) {
 			return this;

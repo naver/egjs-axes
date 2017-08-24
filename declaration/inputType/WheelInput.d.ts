@@ -10,7 +10,7 @@ export declare class WheelInput implements IInputType {
     private _isEnabled;
     private _timer;
     private observer;
-    constructor(el: any, options: WheelInputOption);
+    constructor(el: any, options?: WheelInputOption);
     mapAxes(axes: string[]): void;
     connect(observer: IInputTypeObserver): IInputType;
     disconnect(): this;

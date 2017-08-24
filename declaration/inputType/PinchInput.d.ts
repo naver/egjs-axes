@@ -10,7 +10,7 @@ export declare class PinchInput implements IInputType {
     element: HTMLElement;
     private observer;
     private _prev;
-    constructor(el: any, options: PinchInputOption);
+    constructor(el: any, options?: PinchInputOption);
     mapAxes(axes: string[]): void;
     connect(observer: IInputTypeObserver): IInputType;
     disconnect(): this;

@@ -88,7 +88,7 @@ export class PanInput implements IInputType {
 		}
 	}
 
-	constructor(el: string | HTMLElement, options: PanInputOption) {
+	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		/**
 		 * Hammer helps you add support for touch gestures to your page
 		 *
