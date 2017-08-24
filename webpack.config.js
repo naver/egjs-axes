@@ -28,6 +28,7 @@ var config = {
 			root: pkg.namespace.Hammer,
 		},
 	},
+	devtool: "cheap-source-map",
 	resolve: {
     extensions: [".ts", ".js"]
   },
