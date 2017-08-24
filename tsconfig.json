@@ -2,12 +2,13 @@
   "compilerOptions": {
     "target": "es3",
     "module": "commonjs",
-    "removeComments": false,
-    "outDir": "outjs",
-    "lib": ["es5", "dom"]
+    "lib": ["es5", "dom"],
+    "removeComments": false
   },
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules"
   ]
 }

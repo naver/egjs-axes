@@ -1,8 +1,15 @@
 import Coordinate from "./Coordinate";
+import { AxesOption } from "./Axes";
 
 export interface Axis {
   [key: string]: number
 };
+
+export interface AxisOption {
+  range?: number[];
+  bounce?: number[];
+  circular?: boolean[];
+}
 
 export class AxisManager {
   private _pos: Axis;

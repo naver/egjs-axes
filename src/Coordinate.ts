@@ -1,12 +1,12 @@
-import {Axis} from "./AxisManager";
+import { Axis } from "./AxisManager";
 
 const Coordinate = {
-  getInsidePosition(
+	getInsidePosition(
 		destPos: number,
 		range: number[],
 		circular: boolean[],
 		bounce?: number[],
-		): number {
+	): number {
 		let toDestPos: number = destPos;
 		const targetRange: number[] = [
 			circular[0] ? range[0] : (bounce ? range[0] - bounce[0] : range[0]),
@@ -17,7 +17,7 @@ const Coordinate = {
 		toDestPos = Math.min(targetRange[1], toDestPos);
 
 		return +Math.min(targetRange[1], Math.max(targetRange[0], toDestPos)).toFixed(5);
-  },
+	},
 
 
 	// determine outside
@@ -33,12 +33,12 @@ const Coordinate = {
 	},
 	isCircularable(destPos: number, range: number[], circular: boolean[]): boolean {
 		return (circular[1] && destPos > range[1]) ||
-				(circular[0] && destPos < range[0]);
+			(circular[0] && destPos < range[0]);
 	},
 	getCirculatedPos(pos: number, range: number[], circular: boolean[]): number {
-    let toPos = pos;
-    const min = range[0];
-    const max = range[1];
+		let toPos = pos;
+		const min = range[0];
+		const max = range[1];
 		const length = max - min;
 
 		if (circular[1] && pos > max) { // right

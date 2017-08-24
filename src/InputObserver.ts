@@ -4,6 +4,7 @@ import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { EventManager } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
+import { AxesOption } from "./Axes";
 import Coordinate from "./Coordinate";
 
 export class InputObserver implements IInputTypeObserver {

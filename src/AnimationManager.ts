@@ -2,7 +2,8 @@ import Coordinate from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
-import {requestAnimationFrame, cancelAnimationFrame} from "./utils";
+import { requestAnimationFrame, cancelAnimationFrame } from "./utils";
+import { AxesOption } from "./Axes";
 
 export interface AnimationParam {
 	depaPos: Axis;
@@ -156,9 +157,9 @@ export class AnimationManager {
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
-				userWish.destPos,
-				(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular))) {
-				console.warn("You can't stop the 'animation' event when 'circular' is true.");
+			userWish.destPos,
+			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular))) {
+			console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
 
 		if (retTrigger && !AxisManager.equal(userWish.destPos, depaPos)) {
