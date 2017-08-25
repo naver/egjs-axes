@@ -38,6 +38,7 @@ export class PinchInput implements IInputType {
 	hammer = null;
   element: HTMLElement = null;
   private observer: IInputTypeObserver;
+  private _base: number = null;
   private _prev: number = null;
 	constructor(el, options?: PinchInputOption) {
 		/**
@@ -55,7 +56,7 @@ export class PinchInput implements IInputType {
 		this.options = {
 			...{
 				scale: 1,
-				threshold: 0
+				threshold: 0,
 			}, ...options
     };
 		this.onPinchStart = this.onPinchStart.bind(this);
@@ -114,16 +115,23 @@ export class PinchInput implements IInputType {
 	}
 
   private onPinchStart(event) {
-    this._prev = event.scale;
-    this.observer.hold(this, event);
+		this._prev = 1;
+		this._base = this.observer.get(this)[this.axes[0]];
+		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		this.observer.hold(this, event);
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
+		this._prev = event.scale;		
   }
   private onPinchMove(event) {
-    const offset = (event.scale - this._prev) * this.options.scale;
-    this.observer.change(this, event, toAxis(this.axes, [offset]));
+		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
     this._prev = event.scale;
   }
   private onPinchEnd(event) {
+		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
     this.observer.release(this, event, toAxis(this.axes, [0]), 0);
+		this._base = null;
     this._prev = null;
   }
 

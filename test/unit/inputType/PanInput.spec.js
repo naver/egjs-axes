@@ -13,6 +13,11 @@ describe("PanInput", () => {
       this.inst1.mapAxes(["x1","y1"]);
       this.inst2.mapAxes(["x2"]);
       const observer = {
+        get() {
+          return {
+            x: 10
+          }
+        },
         release() {},
         hold() {},
         change() {},
@@ -183,6 +188,11 @@ describe("PanInput", () => {
       this.inst = new PanInput(this.el);
       this.inst.mapAxes(["x1","y1"]);
       this.observer = {
+        get() {
+          return {
+            x: 10
+          }
+        },
         release() {},
         hold() {},
         change() {},
