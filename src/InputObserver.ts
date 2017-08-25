@@ -52,14 +52,14 @@ export class InputObserver implements IInputTypeObserver {
       return;
     }
     this.itm.setInterrupt(true);
-    this.am.grab(inputType.axes, event);
+    this.am.grab(inputType.axes, inputType, event);
     if (!this.moveDistance) {
-      this.em.triggerHold(this.axm.get(), event);
+      this.em.triggerHold(this.axm.get(), inputType, event);
     }
     this.isOutside = this.axm.isOutside(inputType.axes);
     this.moveDistance = this.axm.get(inputType.axes);
   }
-  change(inputType, event, offset: Axis) {
+  change(inputType: IInputType, event, offset: Axis) {
     if (!this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
       return;
     }
@@ -78,7 +78,7 @@ export class InputObserver implements IInputTypeObserver {
     }
     destPos = this.atOutside(destPos);
 
-    this.em.triggerChange(destPos, event);
+    this.em.triggerChange(destPos, inputType, event);
   }
   release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
@@ -104,6 +104,7 @@ export class InputObserver implements IInputTypeObserver {
       duration: this.am.getDuration(destPos, pos, inputDuration),
       delta: this.axm.getDelta(depaPos, destPos),
       inputEvent: event,
+      input: inputType,
     };
     this.em.triggerRelease(param);
     this.moveDistance = null;
@@ -112,7 +113,7 @@ export class InputObserver implements IInputTypeObserver {
     const userWish = this.am.getUserControll(param);
     const isEqual = AxisManager.equal(userWish.destPos, depaPos);
     if (isEqual || userWish.duration === 0) {
-      !isEqual && this.em.triggerChange(userWish.destPos, event);
+      !isEqual && this.em.triggerChange(userWish.destPos, inputType, event);
       this.itm.setInterrupt(false);
       this.axm.isOutside() && this.am.restore(event);
     } else {

@@ -1,3 +1,4 @@
+import { IInputType } from "./inputType/InputType";
 import Coordinate from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
@@ -14,6 +15,7 @@ export interface AnimationParam {
 	done?: () => void;
 	startTime?: number;
 	inputEvent?;
+	input?: IInputType
 }
 
 export class AnimationManager {
@@ -74,13 +76,13 @@ export class AnimationManager {
 		};
 	}
 
-	grab(axes: string[], event?) {
+	grab(axes: string[], inputType?: IInputType, event?) {
 		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(pos, event);
+				this.em.triggerChange(pos, inputType, event);
 			}
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);

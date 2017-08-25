@@ -14,7 +14,8 @@ export declare class InputObserver implements IInputTypeObserver {
     moveDistance: Axis;
     constructor(options: AxesOption, itm: InterruptManager, em: EventManager, axm: AxisManager, am: AnimationManager);
     private atOutside(pos);
+    get(inputType: IInputType): Axis;
     hold(inputType: IInputType, event: any): void;
-    change(inputType: any, event: any, offset: Axis): void;
+    change(inputType: IInputType, event: any, offset: Axis): void;
     release(inputType: IInputType, event: any, offset: Axis, inputDuration?: number): void;
 }

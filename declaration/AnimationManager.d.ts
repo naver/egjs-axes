@@ -1,3 +1,4 @@
+import { IInputType } from "./inputType/InputType";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager } from "./EventManager";
@@ -14,6 +15,7 @@ export interface AnimationParam {
     done?: () => void;
     startTime?: number;
     inputEvent?: any;
+    input?: IInputType;
 }
 export declare class AnimationManager {
     private options;
@@ -26,7 +28,7 @@ export declare class AnimationManager {
     constructor(options: AxesOption, itm: InterruptManager, em: EventManager, axm: AxisManager);
     getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number): number;
     private createAnimationParam(pos, duration, inputEvent?);
-    grab(axes: string[], event?: any): void;
+    grab(axes: string[], inputType?: IInputType, event?: any): void;
     restore(inputEvent?: any): void;
     animationEnd(): void;
     private animateLoop(param, complete);
