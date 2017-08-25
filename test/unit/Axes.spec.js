@@ -389,9 +389,15 @@ describe("Axes", function () {
         expect(holdEvent.inputEvent.isFirst).to.be.true;
         expect(changeHandler.called).to.be.true;
         for(let i=0, len = changeHandler.callCount; i <len; i++) {
-          expect(changeHandler.getCall(i).args[0].holding).to.be.true;
+          const changeEvent = changeHandler.getCall(i).args[0];
+          expect(changeEvent.holding).to.be.true;
+          expect(changeEvent.input).to.be.equal(this.input);
+          expect(changeEvent.inputEvent).to.be.not.equal(null);
         }
+        const releaseEvent = this.releaseHandler.getCall(0).args[0];
         expect(this.releaseHandler.calledOnce).to.be.true;
+        expect(releaseEvent.inputEvent.isFinal).to.be.true;
+        expect(releaseEvent.input).to.be.equal(this.input);
         expect(this.inst.get()).to.be.eql({x: 10, y: 10});
         expect(this.animationStartHandler.called).to.be.false;
         expect(this.animationEndHandler.called).to.be.false;
@@ -404,8 +410,12 @@ describe("Axes", function () {
       this.inst.on("change", (e) => {
         if(this.animationStartHandler.called) {
           expect(e.holding).to.be.false;
+          expect(e.input).to.be.equal(null);
+          expect(e.inputEvent).to.be.equal(null);
         } else {
           expect(e.holding).to.be.true;
+          expect(e.input).to.be.equal(this.input);
+          expect(e.inputEvent).to.be.not.equal(null);
         }
       });
       this.inst.options.maximumDuration = 200;
@@ -426,7 +436,11 @@ describe("Axes", function () {
           expect(holdEvent.pos.x).to.be.equal(0);
           expect(holdEvent.pos.y).to.be.equal(0);
           expect(holdEvent.inputEvent.isFirst).to.be.true;
+          expect(holdEvent.input).to.be.equal(this.input);
+          const releaseEvent = this.releaseHandler.getCall(0).args[0];
           expect(this.releaseHandler.calledOnce).to.be.true;
+          expect(releaseEvent.inputEvent.isFinal).to.be.true;
+          expect(releaseEvent.input).to.be.equal(this.input);
           expect(this.inst.get()).to.be.eql({x: 0, y: 10});
           expect(this.animationStartHandler.called).to.be.true;
           expect(this.animationEndHandler.called).to.be.true;

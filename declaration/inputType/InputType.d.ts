@@ -14,6 +14,7 @@ export interface IInputType {
 }
 export interface IInputTypeObserver {
     options: AxesOption;
+    get(inputType: IInputType): Axis;
     change(inputType: IInputType, event: any, offset: Axis): any;
     hold(inputType: IInputType, event: any): any;
     release(inputType: IInputType, event: any, offset: Axis, duration?: number): any;

@@ -1,3 +1,4 @@
+import { IInputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AnimationParam } from "./AnimationManager";
 
@@ -11,6 +12,7 @@ export class EventManager {
 	 * @event
 	 * @param {Object} param The object of data to be sent when the event is fired<ko>이벤트가 발생할 때 전달되는 데이터 객체</ko>
 	 * @param {Object.<string, number>} param.pos coordinate <ko>좌표 정보</ko>
+	 * @param {Object} param.input The instance of inputType where the event occurred<ko>이벤트가 발생한 inputType 인스턴스</ko>
 	 * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
 	 *
 	 * @example
@@ -23,12 +25,14 @@ export class EventManager {
 	 *   }
 	 * }).on("hold", function(event) {
 	 *   // event.pos
+	 *   // event.input
 	 *   // event.inputEvent
 	 * });
 	 */
-	triggerHold(pos: Axis, event) {
+	triggerHold(pos: Axis, input: IInputType, event) {
 		this.axes.trigger("hold", {
 			pos,
+			input,
 			inputEvent: event,
 		});
 	}
@@ -79,6 +83,7 @@ export class EventManager {
 	 * @param {Object.<string, number>} param.destPos The coordinates to move to after releasing an element<ko>손을 뗀 뒤에 이동할 좌표</ko>
 	 * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
 	 * @param {Object} param.inputEvent The event object received from inputType <ko>inputType으로 부터 받은 이벤트 객체</ko>
+	 * @param {Object} param.input The instance of inputType where the event occurred<ko>이벤트가 발생한 inputType 인스턴스</ko>
 	 * @param {setTo} param.setTo Specifies the animation coordinates to move after the event <ko>이벤트 이후 이동할 애니메이션 좌표를 지정한다</ko>
 	 *
 	 * @example
@@ -93,6 +98,7 @@ export class EventManager {
 	 *   // event.depaPos
 	 *   // event.destPos
 	 *   // event.delta
+	 *   // event.input
 	 *   // event.inputEvent
 	 *   // event.setTo
 	 *
@@ -100,7 +106,7 @@ export class EventManager {
 	 *   event.setTo({x: 10}, 2000);
 	 * });
 	 */
-	triggerRelease(param: AnimationParam, event = null) {
+	triggerRelease(param: AnimationParam) {
 		param.setTo = this.createUserControll(param.destPos, param.duration);
 		this.axes.trigger("release", param);
 	}
@@ -115,7 +121,8 @@ export class EventManager {
 	 * @param {Object.<string, number>} param.pos  The coordinate <ko>좌표</ko>
 	 * @param {Object.<string, number>} param.delta  The movement variation of coordinate <ko>좌표의 변화량</ko>
 	 * @param {Boolean} param.holding Indicates whether a user holds an element on the screen of the device.<ko>사용자가 기기의 화면을 누르고 있는지 여부</ko>
-	 * @param {Object} param.inputEvent The event object received from inputType. It returns null if the event is fired through a call to the setTo() or setBy() method.<ko>inputType으로 부터 받은 이벤트 객체. setTo() 메서드나 setBy() 메서드를 호출해 이벤트가 발생했을 때는 'null'을 반환한다.</ko>
+	 * @param {Object} param.input The instance of inputType where the event occurred. If the value is changed by animation, it returns 'null'.<ko>이벤트가 발생한 inputType 인스턴스. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.</ko>
+	 * @param {Object} param.inputEvent The event object received from inputType. If the value is changed by animation, it returns 'null'.<ko>inputType으로 부터 받은 이벤트 객체. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.</ko>
 	 * @param {set} param.set Specifies the coordinates to move after the event. It works when the holding value is true <ko>이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.</ko>
 	 *
 	 * @example
@@ -129,6 +136,7 @@ export class EventManager {
 	 * }).on("change", function(event) {
 	 *   // event.pos
 	 *   // event.delta
+	 *   // event.input
 	 *   // event.inputEvent
 	 *   // event.holding
 	 *   // event.set
@@ -138,13 +146,14 @@ export class EventManager {
 	 *   event.holding && event.set({x: 10});
 	 * });
 	 */
-	triggerChange(pos: Axis, event = null) {
+	triggerChange(pos: Axis, input: IInputType = null, event = null) {
 		const moveTo = this.axm.moveTo(pos);
 		const param = {
 			pos: moveTo.pos,
 			delta: moveTo.delta,
-			holding: event !== null,
+			holding: !!event,
 			inputEvent: event,
+			input,
 			set: event ? this.createUserControll(moveTo.pos) : () => { },
 		};
 		this.axes.trigger("change", param);
