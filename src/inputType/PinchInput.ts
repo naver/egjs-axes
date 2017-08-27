@@ -115,25 +115,27 @@ export class PinchInput implements IInputType {
 	}
 
   private onPinchStart(event) {
-		this._prev = 1;
 		this._base = this.observer.get(this)[this.axes[0]];
-		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		const offset = this.getOffset(event.scale);		
 		this.observer.hold(this, event);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
 		this._prev = event.scale;		
   }
   private onPinchMove(event) {
-		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		const offset = this.getOffset(event.scale, this._prev);		
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
     this._prev = event.scale;
   }
   private onPinchEnd(event) {
-		const offset = this._base * (event.scale - this._prev) * this.options.scale;		
+		const offset = this.getOffset(event.scale, this._prev);		
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
     this.observer.release(this, event, toAxis(this.axes, [0]), 0);
 		this._base = null;
     this._prev = null;
-  }
+	}
+	private getOffset(pinchScale: number, prev: number = 1): number {
+    return this._base * (pinchScale - prev) * this.options.scale;	
+	}
 
 	private attachEvent(observer: IInputTypeObserver) {
     this.observer = observer;

@@ -178,7 +178,6 @@ describe("PinchInput", () => {
         duration: 500,
         scale: 1.1
       }, () => {
-        debugger;
           // Then
           expect(this.inst.get(['x']).x).to.be.equal(55);
           done();
