@@ -6,6 +6,7 @@ function shell(cmd, ignore = false) {
   let result = exec(cmd);
   if (!result.stderr) {
     !ignore && console.log(result.stdout);
+    console.log(chalk.gray(`  # ${cmd}`));
   } else {
     if (!ignore) {
       console.error(result.stderr);
@@ -36,29 +37,21 @@ if (isRcBranch && hasUpstream && hasDistfolder) {
       fs.writeJsonSync(__dirname + "/../package.json", pkg, {spaces: "\t"});
       
       console.log(chalk.green("2. Build"));
-      console.log(chalk.gray(`  # npm run build`));
       shell("npm run build");
 
       console.log(chalk.green("3. Commit"));
-      console.log(chalk.gray("  # git add --all"));
       shell(`git add --all`);
-      console.log(chalk.gray(`  # git commit -m "chore(release): Release ${newVersion}"`));
       shell(`git commit -m "chore(release): Release ${newVersion}"`);
 
       console.log(chalk.green(`4. Create local tag '${newVersion}'`));
-      console.log(chalk.gray(`  # git tag -d ${newVersion}`));
       shell(`git tag -d ${newVersion}`, true);
-      console.log(chalk.gray(`  # git tag ${newVersion}`));
       shell(`git tag ${newVersion}`);
       
       console.log(chalk.green(`5. Push tag '${newVersion}'`));
-      console.log(chalk.gray(`  # git push upstream :${newVersion}`));
       shell(`git push upstream :${newVersion}`, true);
-      console.log(chalk.gray(`  # git push upstream ${newVersion}`));
       shell(`git push upstream ${newVersion}`);
       
       console.log(chalk.green(`6. Deploy demo: '${newVersion}'`));
-      console.log(chalk.gray(`  # npm run demo:deploy`));
       shell(`npm run demo:deploy`);
       
       console.log(chalk.green(`7. Register npm with ${newVersion}. The registration procedure is as follows.`));
