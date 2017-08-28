@@ -1,4 +1,5 @@
 import Hammer from "hammerjs";
+import Axes from "../../../src/Axes.ts";
 import {PinchInput} from "../../../src/inputType/PinchInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
@@ -51,6 +52,11 @@ describe("PinchInput", () => {
       this.inst = new PinchInput(this.el);
       this.inst.mapAxes(["x"]);
       this.observer = {
+        get() {
+          return {
+            x: 10
+          }
+        },
         release() {},
         hold() {},
         change() {},
@@ -138,4 +144,59 @@ describe("PinchInput", () => {
       });
     });  
   });
+
+  describe("offset value", function () {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.input = new PinchInput(this.el); 
+      this.inst = new Axes({
+        x: {
+          range: [10, 120]
+        }
+      }, {}, {
+        x: 50
+      });
+      this.inst.connect(["x"], this.input);
+    });
+    afterEach(() => {
+      if (this.ins) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
+      }
+      cleanup();
+    });
+
+    it("The offset value should be returned using the position value when the hold event is triggered.", (done) => {
+      // Given
+      this.input.options.scale = 1; 
+      // When
+      Simulator.gestures.pinch(this.el, {
+        duration: 500,
+        scale: 1.1
+      }, () => {
+          // Then
+          expect(this.inst.get(['x']).x).to.be.equal(55);
+          done();
+      });
+    });
+
+    it("The offset value should apply scale option", (done) => {
+      // Given
+      this.input.options.scale = 1; 
+      // When
+      Simulator.gestures.pinch(this.el, {
+        duration: 500,
+        scale: 0.9
+      }, () => {
+          // Then
+          expect(this.inst.get(['x']).x).to.be.equal(45);
+          done();
+      });
+    });
+  });
+
 });
