@@ -15,7 +15,7 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("Axes", [], factory);
+		define([], factory);
 	else if(typeof exports === 'object')
 		exports["Axes"] = factory();
 	else

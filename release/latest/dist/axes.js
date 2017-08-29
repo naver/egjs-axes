@@ -11,7 +11,7 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("hammerjs"), require("@egjs/component"));
 	else if(typeof define === 'function' && define.amd)
-		define("Axes", ["hammerjs", "@egjs/component"], factory);
+		define(["hammerjs", "@egjs/component"], factory);
 	else if(typeof exports === 'object')
 		exports["Axes"] = factory(require("hammerjs"), require("@egjs/component"));
 	else
