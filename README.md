@@ -64,7 +64,7 @@ The following are the supported browsers.
 
 egjs-axes has the dependencies for the following libraries:
 
-|[egjs-component](http://github.com/naver/egjs/egjs-component)|[Hammer.JS](http://hammerjs.github.io/)|
+|[egjs-component](http://github.com/naver/egjs-component)|[Hammer.JS](http://hammerjs.github.io/)|
 |----|----|
 |2.0.0+|2.0.4+|
 
