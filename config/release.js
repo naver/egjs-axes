@@ -36,8 +36,7 @@ const hasUpstream = (function() {
 })();
 const hasDistfolder = (function() {
   const result = fs.readFileSync(__dirname + "/../.gitignore",{encoding: "utf8"});
-  console.log(result.split("\n").indexOf("dist/"), result.split("\n").indexOf("dist"))
-  return result.split("\n").indexOf("dist/") === -1 && result.split("\n").indexOf("dist") === -1;
+  return result.split("\n").indexOf("dist/") === -1 || result.split("\n").indexOf("dist") === -1;
 })();
 
 if (isRcBranch && hasUpstream && hasDistfolder) {

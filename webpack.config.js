@@ -11,8 +11,7 @@ var config = {
 		path: path.resolve(__dirname, "dist"),
 		filename: "[name].js",
 		library: [pkg.namespace.eg, "Axes"],
-		libraryTarget: "umd",
-		umdNamedDefine: true
+		libraryTarget: "umd"
 	},
 	externals: {
 		"@egjs/component" : {
