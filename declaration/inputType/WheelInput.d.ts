@@ -1,7 +1,6 @@
 import { IInputType, IInputTypeObserver } from "./InputType";
 export interface WheelInputOption {
     scale?: number;
-    throttle?: number;
 }
 export declare class WheelInput implements IInputType {
     options: WheelInputOption;
