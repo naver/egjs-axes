@@ -8,6 +8,7 @@ export declare class WheelInput implements IInputType {
     axes: string[];
     element: HTMLElement;
     private _isEnabled;
+    private _isHolded;
     private _timer;
     private observer;
     constructor(el: any, options?: WheelInputOption);

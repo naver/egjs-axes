@@ -37,6 +37,7 @@ export class WheelInput implements IInputType {
 	axes: string[] = [];
   element: HTMLElement = null;
 	private _isEnabled = false;
+	private _isHolded = false;
 	private _timer = null;
   private observer: IInputTypeObserver;
 	constructor(el, options?: WheelInputOption) {
@@ -84,13 +85,21 @@ export class WheelInput implements IInputType {
 		if (event.deltaY === 0) {
 			return;
 		}
+
+		if (!this._isHolded) {
+			this.observer.hold(this, event);
+			this._isHolded = true;
+		}
+		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
+
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
-			this.observer.hold(this, event);
-			const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
-			this.observer.change(this, event, toAxis(this.axes, [offset]));
-			this.observer.release(this, event, toAxis(this.axes, [0]));
-		}, 200);
+			if (this._isHolded) {
+				this.observer.release(this, event, toAxis(this.axes, [0]));
+				this._isHolded = false;
+			}
+		}, 50);
   }
 
 	private attachEvent(observer: IInputTypeObserver) {
