@@ -57,6 +57,9 @@ describe("Axes", function () {
         }
       }, {
         deceleration: 0.001
+      }, {
+        x: 50,
+        otherX: 0,
       });
 
       // Then
@@ -64,6 +67,8 @@ describe("Axes", function () {
       expect(this.inst.axis.x.circular).to.deep.equal([true, true]);
       expect(this.inst.axis.otherX.bounce).to.deep.equal([40, 40]);
       expect(this.inst.axis.otherX.circular).to.deep.equal([false, true]);
+      expect(this.inst.get().x).to.equal(50);
+      expect(this.inst.get().otherX).to.equal(0);
     });
     it("should check `setTo` method", () => {
       // Given
