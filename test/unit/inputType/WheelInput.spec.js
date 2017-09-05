@@ -1,4 +1,6 @@
 import Hammer from "hammerjs";
+import TestHeler from "./TestHeler";
+import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
@@ -87,6 +89,63 @@ describe("WheelInput", () => {
 
       // Then
       expect(this.inst.isEnable()).to.be.true;
-    });    
+    }); 
+  });
+
+  describe("wheel event test", function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.input = new WheelInput(this.el); 
+      this.inst = new Axes({
+        x: {
+          range: [10, 120]
+        }
+      }, {}, {
+        x: 50
+      });
+      this.inst.connect(["x"], this.input);
+    });
+
+    afterEach(() => {
+      if (this.ins) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
+      }
+      cleanup();
+    });
+
+    it("event triggering order test", () => {
+      // Given
+      const deltaY = 1;
+      const eventLog = [];
+      const eventLogAnswer = ["hold", "change", "change", "release"];
+
+      this.inst
+      .on("hold", () => {
+        eventLog.push("hold");
+      }).on("change", () => {
+        eventLog.push("change");
+      }).on("release", () => {
+        eventLog.push("release");
+      });
+
+      // When
+      TestHeler.wheelVertical(document.body, deltaY, () => {
+        setTimeout(()=> {
+          TestHeler.wheelVertical(document.body, deltaY, () => {
+            setTimeout(()=> {
+              // Then
+				      expect(eventLog).to.be.deep.equal(eventLogAnswer);
+              done();
+            }, 60);
+          });
+        }, 20);		
+			});
+    });
   });
 });
+
