@@ -1,4 +1,6 @@
 import Hammer from "hammerjs";
+import TestHeler from "./TestHeler";
+import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
@@ -87,6 +89,98 @@ describe("WheelInput", () => {
 
       // Then
       expect(this.inst.isEnable()).to.be.true;
-    });    
+    }); 
+  });
+
+  describe("wheel event test", function() {
+    beforeEach(() => {
+      this.el = sandbox();
+      this.input = new WheelInput(this.el); 
+      this.inst = new Axes({
+        x: {
+          range: [10, 120]
+        }
+      });
+      this.inst.connect(["x"], this.input);
+    });
+
+    afterEach(() => {
+      if (this.ins) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
+      }
+      cleanup();
+    });
+
+    it("no event triggering when disconnected", (done) => {
+      // Given
+      const deltaY = 1;
+      let changeTriggered = false;
+
+      this.inst
+      .on("change", () => {
+        changeTriggered = true;
+      });
+      this.inst.disconnect();
+
+      // When
+      TestHeler.wheelVertical(this.el, deltaY, () => {
+        // Then
+        expect(changeTriggered).to.be.false;
+        done();
+			});
+    });
+
+    it("no event triggering when offset is 0", (done) => {
+      // Given
+      const deltaY = 0;
+      let changeTriggered = false;
+
+      this.inst
+      .on("change", () => {
+        changeTriggered = true;
+      });
+
+      // When
+      TestHeler.wheelVertical(this.el, deltaY, () => {
+        // Then
+        expect(changeTriggered).to.be.false;
+        done();
+			});
+    });
+
+    it("triggering order test", (done) => {
+      // Given
+      const deltaY = 1;
+      const eventLog = [];
+      const eventLogAnswer = ["hold", "change", "change", "release"];
+
+      this.inst
+      .on("hold", () => {
+        eventLog.push("hold");
+      }).on("change", () => {
+        eventLog.push("change");
+      }).on("release", () => {
+        eventLog.push("release");
+      });
+
+      // When
+      TestHeler.wheelVertical(this.el, deltaY, () => {
+        setTimeout(()=> {
+          TestHeler.wheelVertical(this.el, deltaY, () => {
+            setTimeout(()=> {
+              // Then
+				      expect(eventLog).to.be.deep.equal(eventLogAnswer);
+              done();
+            }, 60);
+          });
+        }, 20);		
+			});
+    });
   });
 });
+

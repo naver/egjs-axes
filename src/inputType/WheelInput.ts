@@ -6,14 +6,12 @@ import { Axis } from "../AxisManager";
 
 export interface WheelInputOption {
 	scale?: number;
-	throttle?: number;
 }
 
 /**
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [throttle=100]
 **/
 
 /**
@@ -37,14 +35,14 @@ export class WheelInput implements IInputType {
 	axes: string[] = [];
   element: HTMLElement = null;
 	private _isEnabled = false;
+	private _isHolded = false;
 	private _timer = null;
   private observer: IInputTypeObserver;
 	constructor(el, options?: WheelInputOption) {
 		this.element = $(el);
 		this.options = {
 			...{
-				scale: 1,
-				throttle: 100
+				scale: 1
 			}, ...options
     };
 		this.onWheel = this.onWheel.bind(this);
@@ -84,13 +82,21 @@ export class WheelInput implements IInputType {
 		if (event.deltaY === 0) {
 			return;
 		}
+
+		if (!this._isHolded) {
+			this.observer.hold(this, event);
+			this._isHolded = true;
+		}
+		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
+
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
-			this.observer.hold(this, event);
-			const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
-			this.observer.change(this, event, toAxis(this.axes, [offset]));
-			this.observer.release(this, event, toAxis(this.axes, [0]));
-		}, 200);
+			if (this._isHolded) {
+				this.observer.release(this, event, toAxis(this.axes, [0]));
+				this._isHolded = false;
+			}
+		}, 50);
   }
 
 	private attachEvent(observer: IInputTypeObserver) {
