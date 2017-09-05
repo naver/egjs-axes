@@ -4,7 +4,7 @@ import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
-describe.only("WheelInput", () => {
+describe("WheelInput", () => {
   describe("instance method", function() {
     beforeEach(() => {
       this.inst = new WheelInput(sandbox());
