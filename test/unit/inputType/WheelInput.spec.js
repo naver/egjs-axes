@@ -4,7 +4,7 @@ import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
-describe("WheelInput", () => {
+describe.only("WheelInput", () => {
   describe("instance method", function() {
     beforeEach(() => {
       this.inst = new WheelInput(sandbox());
@@ -100,8 +100,6 @@ describe("WheelInput", () => {
         x: {
           range: [10, 120]
         }
-      }, {}, {
-        x: 50
       });
       this.inst.connect(["x"], this.input);
     });
@@ -118,7 +116,44 @@ describe("WheelInput", () => {
       cleanup();
     });
 
-    it("event triggering order test", () => {
+    it("no event triggering when disconnected", (done) => {
+      // Given
+      const deltaY = 1;
+      let changeTriggered = false;
+
+      this.inst
+      .on("change", () => {
+        changeTriggered = true;
+      });
+      this.inst.disconnect();
+
+      // When
+      TestHeler.wheelVertical(this.el, deltaY, () => {
+        // Then
+        expect(changeTriggered).to.be.false;
+        done();
+			});
+    });
+
+    it("no event triggering when offset is 0", (done) => {
+      // Given
+      const deltaY = 0;
+      let changeTriggered = false;
+
+      this.inst
+      .on("change", () => {
+        changeTriggered = true;
+      });
+
+      // When
+      TestHeler.wheelVertical(this.el, deltaY, () => {
+        // Then
+        expect(changeTriggered).to.be.false;
+        done();
+			});
+    });
+
+    it("triggering order test", (done) => {
       // Given
       const deltaY = 1;
       const eventLog = [];
@@ -134,9 +169,9 @@ describe("WheelInput", () => {
       });
 
       // When
-      TestHeler.wheelVertical(document.body, deltaY, () => {
+      TestHeler.wheelVertical(this.el, deltaY, () => {
         setTimeout(()=> {
-          TestHeler.wheelVertical(document.body, deltaY, () => {
+          TestHeler.wheelVertical(this.el, deltaY, () => {
             setTimeout(()=> {
               // Then
 				      expect(eventLog).to.be.deep.equal(eventLogAnswer);
