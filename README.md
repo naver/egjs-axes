@@ -136,11 +136,11 @@ If you find a bug, please report it to us using the [Issues](https://github.com/
 
 
 ## License
-egjs-axes is released under the [MIT license](http://naver.github.io/egjs/license.txt).
+egjs-axes is released under the [MIT license](https://github.com/naver/egjs-axes/blob/master/LICENSE).
 
 
 ```
-Copyright (c) 2015 NAVER Corp.
+Copyright (c) 2017 NAVER Corp.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
