@@ -16,7 +16,7 @@ const Coordinate = {
 		toDestPos = Math.max(targetRange[0], toDestPos);
 		toDestPos = Math.min(targetRange[1], toDestPos);
 
-		return +Math.min(targetRange[1], Math.max(targetRange[0], toDestPos)).toFixed(5);
+		return +toDestPos.toFixed(5);
 	},
 
 
