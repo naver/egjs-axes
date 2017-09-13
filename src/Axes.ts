@@ -312,8 +312,11 @@ export default class Axes extends Component {
 	disconnect(inputType?: IInputType) {
 		if (inputType) {
 			const index = this._inputs.indexOf(inputType);
-			this._inputs[index].disconnect();
-			~index && this._inputs.splice(index, 1);
+
+			if (index >= 0) {
+				this._inputs[index].disconnect();
+				this._inputs.splice(index, 1);
+			}
 		} else {
 			this._inputs.forEach(v => v.disconnect());
 			this._inputs = [];

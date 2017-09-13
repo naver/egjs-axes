@@ -28,7 +28,7 @@ describe("Axes", function () {
         maximumDuration: Infinity,
         deceleration: 0.0006,
       }
-      
+
       expect(this.inst).to.be.exist;
       expect(defaultOptions.easing(0.5)).to.be.equal(this.inst.options.easing(0.5));
       expect(defaultOptions.easing(0.3)).to.be.equal(this.inst.options.easing(0.3));
@@ -85,7 +85,7 @@ describe("Axes", function () {
         }
       }, {
         deceleration: 0.001
-      });      
+      });
       // When
       let ret = this.inst.setTo({x: 20});
 
@@ -126,7 +126,7 @@ describe("Axes", function () {
 
       // When
       this.inst.setTo({x: 20}, 200);
-    });    
+    });
   });
 
   describe("Axes Test with InputType", function () {
@@ -169,7 +169,7 @@ describe("Axes", function () {
 
       // When
       ret = this.inst.connect(["x"], input);
-      
+
       // Then
       expect(input.axes).to.be.eql(["x"]);
       expect(this.inst._inputs.length).to.be.equal(1);
@@ -177,7 +177,7 @@ describe("Axes", function () {
 
       // When
       ret = this.inst.connect(["x", "y"], input);
-      
+
       // Then
       expect(input.axes).to.be.eql(["x", "y"]);
       expect(this.inst._inputs.length).to.be.equal(1);
@@ -185,7 +185,7 @@ describe("Axes", function () {
 
       // When
       ret = this.inst.connect("x y", input);
-      
+
       // Then
       expect(input.axes).to.be.eql(["x", "y"]);
       expect(this.inst._inputs.length).to.be.equal(1);
@@ -206,7 +206,7 @@ describe("Axes", function () {
       // When
       expect(this.inst._inputs.length).to.be.equal(3);
       let ret = this.inst.disconnect(input1);
-      
+
       // Then
       expect(this.inst._inputs.indexOf(input1)).to.be.equal(-1);
       expect(this.inst._inputs.length).to.be.equal(2);
@@ -214,11 +214,17 @@ describe("Axes", function () {
 
       // When
       ret = this.inst.disconnect();
-      
+
       // Then
       expect(this.inst._inputs).to.be.eql([]);
       expect(ret).to.be.equal(this.inst);
       expect(this.inst._inputs.length).to.be.equal(0);
+
+      // When no input, it should not make script error
+      ret = this.inst.disconnect(input1);
+
+      // Then
+      expect(ret).to.be.equal(this.inst);
 
       input1.destroy();
       input2.destroy();
@@ -236,7 +242,7 @@ describe("Axes", function () {
 
       // When
       expect(this.inst._inputs.length).to.be.equal(3);
-      
+
       // Then
       expect(input1.hammer).to.be.equal(input2.hammer);
       expect(input3.hammer).to.be.equal(input2.hammer);
@@ -295,8 +301,8 @@ describe("Axes", function () {
       const holdHandler = sinon.spy(this.preventedFn);
       const changeHandler = sinon.spy(this.preventedFn);
       const releaseHandler = sinon.spy(this.preventedFn);
-      const animationStartHandler = sinon.spy(this.preventedFn);       
-      const animationEndHandler = sinon.spy(this.notPreventedFn);       
+      const animationStartHandler = sinon.spy(this.preventedFn);
+      const animationEndHandler = sinon.spy(this.notPreventedFn);
       this.inst.on({
           "hold": holdHandler,
           "change": changeHandler,
@@ -322,8 +328,8 @@ describe("Axes", function () {
             expect(animationStartHandler.calledOnce).to.be.true;
             expect(animationEndHandler.calledOnce).to.be.true;
             done();
-          }, 1000);    
-      }); 
+          }, 1000);
+      });
     });
   });
   describe("Axes Custom Event Test", function () {
@@ -453,7 +459,7 @@ describe("Axes", function () {
         }, 500);
       });
     });
-    
+
     it("should check fast movement test (velocity)", (done) => {
       // Given
       this.inst.on("change", (e) => {
@@ -499,8 +505,8 @@ describe("Axes", function () {
           setTimeout(function() {
             e.done();
           }, e.duration);
-      });       
-      const animationEndHandler = sinon.spy(this.notPreventedFn);       
+      });
+      const animationEndHandler = sinon.spy(this.notPreventedFn);
       this.inst.on({
           "hold": holdHandler,
           "change": changeHandler,
@@ -525,8 +531,8 @@ describe("Axes", function () {
               expect(animationStartHandler.calledOnce).to.be.true;
               expect(animationEndHandler.calledOnce).to.be.true;
               done();
-          }, 1000);    
-      }); 
-    });     
-  });  
+          }, 1000);
+      });
+    });
+  });
 });
