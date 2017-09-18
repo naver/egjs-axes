@@ -7,6 +7,7 @@ import { InputObserver } from "./InputObserver";
 import { PanInput } from "./inputType/PanInput";
 import { PinchInput } from "./inputType/PinchInput";
 import { WheelInput } from "./inputType/WheelInput";
+import { MoveKeyInput } from "./inputType/MoveKeyInput";
 import { TRANSFORM, DIRECTION } from "./const";
 import { IInputType } from "./inputType/InputType";
 
@@ -116,6 +117,7 @@ export default class Axes extends Component {
 	static PanInput = PanInput;
 	static PinchInput = PinchInput;
 	static WheelInput = WheelInput;
+	static MoveKeyInput = MoveKeyInput;
 
 	/**
 	 * @name eg.Axes.TRANSFORM

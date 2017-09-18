@@ -3,6 +3,7 @@ import { AxisOption, Axis } from "./AxisManager";
 import { PanInput } from "./inputType/PanInput";
 import { PinchInput } from "./inputType/PinchInput";
 import { WheelInput } from "./inputType/WheelInput";
+import { MoveKeyInput } from "./inputType/MoveKeyInput";
 import { DIRECTION } from "./const";
 import { IInputType } from "./inputType/InputType";
 export interface AxesOption {
@@ -20,6 +21,7 @@ export default class Axes extends Component {
     static PanInput: typeof PanInput;
     static PinchInput: typeof PinchInput;
     static WheelInput: typeof WheelInput;
+    static MoveKeyInput: typeof MoveKeyInput;
     static TRANSFORM: string;
     static DIRECTION_NONE: DIRECTION;
     static DIRECTION_LEFT: DIRECTION;
