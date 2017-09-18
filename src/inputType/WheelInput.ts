@@ -1,5 +1,4 @@
 import { InputObserver } from "./../InputObserver";
-import * as Hammer from "hammerjs";
 import { $ } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, createHammer, IInputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";

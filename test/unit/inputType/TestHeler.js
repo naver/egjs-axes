@@ -21,6 +21,58 @@ export default class TestHelper {
 		target.addEventListener("wheel", callbackOnce);
 		target.dispatchEvent(wheelEvent);
 	}
+	static keyDown(target, value, callback) {
+		if (target instanceof Element === false) {
+			return;
+		}
+		let keyboardEvent;
+
+		try {
+			keyboardEvent = new KeyboardEvent("keydown", value);
+			delete keyboardEvent.keyCode;
+			Object.defineProperty(keyboardEvent, "keyCode", {
+				"value": value.keyCode,
+				"writable": true,
+			});
+		} catch (e) {
+			keyboardEvent = document.createEvent("KeyboardEvent");
+			keyboardEvent.initKeyboardEvent("keydown", true, false, null, 0, false, 0, false, value.keyCode, 0);
+		}
+
+		function callbackOnce() {
+			callback && callback();
+			target.removeEventListener("keydown", callbackOnce);// Is this posible??
+		}
+
+		target.addEventListener("keydown", callbackOnce);
+		target.dispatchEvent(keyboardEvent);
+	}
+	static keyUp(target, value, callback) {
+		if (target instanceof Element === false) {
+			return;
+		}
+		let keyboardEvent;
+
+		try {
+			keyboardEvent = new KeyboardEvent("keyup", value);
+			delete keyboardEvent.keyCode;
+			Object.defineProperty(keyboardEvent, "keyCode", {
+				"value": value.keyCode,
+				"writable": true,
+			});
+		} catch (e) {
+			keyboardEvent = document.createEvent("KeyboardEvent");
+			keyboardEvent.initKeyboardEvent("keyup", true, false, null, 0, false, 0, false, value.keyCode, 0);
+		}
+
+		function callbackOnce() {
+			callback && callback();
+			target.removeEventListener("keyup", callbackOnce);// Is this posible??
+		}
+
+		target.addEventListener("keyup", callbackOnce);
+		target.dispatchEvent(keyboardEvent);
+	}
 	/**
 	 * looping async function
 	 *
