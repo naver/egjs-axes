@@ -1,5 +1,5 @@
 import Hammer from "hammerjs";
-import TestHeler from "./TestHeler";
+import TestHelper from "./TestHelper";
 import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
@@ -128,7 +128,7 @@ describe("WheelInput", () => {
       this.inst.disconnect();
 
       // When
-      TestHeler.wheelVertical(this.el, deltaY, () => {
+      TestHelper.wheelVertical(this.el, deltaY, () => {
         // Then
         expect(changeTriggered).to.be.false;
         done();
@@ -146,7 +146,7 @@ describe("WheelInput", () => {
       });
 
       // When
-      TestHeler.wheelVertical(this.el, deltaY, () => {
+      TestHelper.wheelVertical(this.el, deltaY, () => {
         // Then
         expect(changeTriggered).to.be.false;
         done();
@@ -169,9 +169,9 @@ describe("WheelInput", () => {
       });
 
       // When
-      TestHeler.wheelVertical(this.el, deltaY, () => {
+      TestHelper.wheelVertical(this.el, deltaY, () => {
         setTimeout(()=> {
-          TestHeler.wheelVertical(this.el, deltaY, () => {
+          TestHelper.wheelVertical(this.el, deltaY, () => {
             setTimeout(()=> {
               // Then
 				      expect(eventLog).to.be.deep.equal(eventLogAnswer);
