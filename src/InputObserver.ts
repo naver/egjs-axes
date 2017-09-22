@@ -44,26 +44,26 @@ export class InputObserver implements IInputTypeObserver {
       });
     }
   }
-  get(inputType: IInputType): Axis {
-    return this.axm.get(inputType.axes);
+  get(input: IInputType): Axis {
+    return this.axm.get(input.axes);
   }
-  hold(inputType: IInputType, event) {
-    if (this.itm.isInterrupted() || !inputType.axes.length) {
+  hold(input: IInputType, event) {
+    if (this.itm.isInterrupted() || !input.axes.length) {
       return;
     }
     this.itm.setInterrupt(true);
-    this.am.grab(inputType.axes, inputType, event);
+    this.am.grab(input.axes, input, event);
     if (!this.moveDistance) {
-      this.em.triggerHold(this.axm.get(), inputType, event);
+      this.em.triggerHold(this.axm.get(), input, event);
     }
-    this.isOutside = this.axm.isOutside(inputType.axes);
-    this.moveDistance = this.axm.get(inputType.axes);
+    this.isOutside = this.axm.isOutside(input.axes);
+    this.moveDistance = this.axm.get(input.axes);
   }
-  change(inputType: IInputType, event, offset: Axis) {
+  change(input: IInputType, event, offset: Axis) {
     if (!this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
       return;
     }
-    const depaPos: Axis = this.axm.get(inputType.axes);
+    const depaPos: Axis = this.axm.get(input.axes);
     let destPos: Axis;
 
     // for outside logic
@@ -78,16 +78,16 @@ export class InputObserver implements IInputTypeObserver {
     }
     destPos = this.atOutside(destPos);
 
-    this.em.triggerChange(destPos, inputType, event);
+    this.em.triggerChange(destPos, input, event, true);
   }
-  release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
+  release(input: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
       return;
     }
     if (!this.moveDistance) {
       return;
     }
-    const pos: Axis = this.axm.get(inputType.axes);
+    const pos: Axis = this.axm.get(input.axes);
     const depaPos: Axis = this.axm.get();
     const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
       return Coordinate.getInsidePosition(
@@ -104,7 +104,8 @@ export class InputObserver implements IInputTypeObserver {
       duration: this.am.getDuration(destPos, pos, inputDuration),
       delta: this.axm.getDelta(depaPos, destPos),
       inputEvent: event,
-      input: inputType,
+      input,
+      isTrusted: true,
     };
     this.em.triggerRelease(param);
     this.moveDistance = null;
@@ -113,11 +114,11 @@ export class InputObserver implements IInputTypeObserver {
     const userWish = this.am.getUserControll(param);
     const isEqual = AxisManager.equal(userWish.destPos, depaPos);
     if (isEqual || userWish.duration === 0) {
-      !isEqual && this.em.triggerChange(userWish.destPos, inputType, event);
+      !isEqual && this.em.triggerChange(userWish.destPos, input, event, true);
       this.itm.setInterrupt(false);
-      this.axm.isOutside() && this.am.restore(event);
+      this.axm.isOutside() && this.am.restore(input, event);
     } else {
-      this.am.animateTo(userWish.destPos, userWish.duration, event);
+      this.am.animateTo(userWish.destPos, userWish.duration, input, event);
     }
   }
 };

@@ -11,11 +11,12 @@ export interface AnimationParam {
 	destPos: Axis;
 	duration: number;
 	delta: Axis;
+	isTrusted: boolean;
 	setTo?: (destPos?: Axis, duration?: number) => { destPos: Axis, duration: number };
 	done?: () => void;
 	startTime?: number;
 	inputEvent?;
-	input?: IInputType
+	input?: IInputType,
 }
 
 export class AnimationManager {
@@ -53,7 +54,8 @@ export class AnimationManager {
 			this.options.maximumDuration);
 	}
 
-	private createAnimationParam(pos: Axis, duration: number, inputEvent = null): AnimationParam {
+	private createAnimationParam(pos: Axis, duration: number,
+		input: IInputType = null, event = null): AnimationParam {
 		const depaPos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.get(this.axm.map(pos, (v, k, opt) => {
 			return Coordinate.getInsidePosition(
@@ -71,34 +73,37 @@ export class AnimationManager {
 				this.options.minimumDuration,
 				this.options.maximumDuration),
 			delta: this.axm.getDelta(depaPos, destPos),
-			inputEvent,
+			inputEvent: event,
+			input,
+			isTrusted: !!event,
 			done: this.animationEnd
 		};
 	}
 
-	grab(axes: string[], inputType?: IInputType, event?) {
+	grab(axes: string[], input?: IInputType, event?) {
 		if (this._animateParam && !axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(pos, inputType, event);
+				this.em.triggerChange(pos, input, event, !!event);
 			}
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
 			this._raf = null;
-			this.em.triggerAnimationEnd();
+			this.em.triggerAnimationEnd(!!event);
 		}
 	}
 
-	restore(inputEvent = null) {
+	restore(input: IInputType = null, event = null) {
 		const pos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.map(pos,
 			(v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
-		this.animateTo(destPos, this.getDuration(pos, destPos), inputEvent);
+		this.animateTo(destPos, this.getDuration(pos, destPos), input, event);
 	}
 
 	animationEnd() {
+		const beforeParam: AnimationParam = this._animateParam;
 		this._animateParam = null;
 
 		// for Circular
@@ -111,8 +116,14 @@ export class AnimationManager {
 			(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[])
 		));
 		this.itm.setInterrupt(false);
-		this.em.triggerAnimationEnd();
-		this.axm.isOutside() && this.restore();
+		this.em.triggerAnimationEnd(beforeParam && beforeParam.isTrusted);
+		if (this.axm.isOutside()) {
+			if (beforeParam) {
+				this.restore();
+			} else {
+				this.restore(beforeParam.input, beforeParam.inputEvent);
+			}
+		}
 	}
 
 	private animateLoop(param: AnimationParam, complete: () => void) {
@@ -126,7 +137,7 @@ export class AnimationManager {
 				self._raf = null;
 				if (self.frame(info) >= 1) {
 					if (!AxisManager.equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
-						self.em.triggerChange(param.destPos);
+						self.em.triggerChange(param.destPos, param.input, param.inputEvent);
 					}
 					complete();
 					return;
@@ -134,7 +145,7 @@ export class AnimationManager {
 				self._raf = requestAnimationFrame(loop);
 			})();
 		} else {
-			this.em.triggerChange(param.destPos);
+			this.em.triggerChange(param.destPos, param.input, param.inputEvent);
 			complete();
 		}
 	}
@@ -149,8 +160,8 @@ export class AnimationManager {
 		return userWish;
 	}
 
-	animateTo(destPos: Axis, duration: number, inputEvent = null) {
-		const param: AnimationParam = this.createAnimationParam(destPos, duration, inputEvent);
+	animateTo(destPos: Axis, duration: number, input: IInputType = null, event = null) {
+		const param: AnimationParam = this.createAnimationParam(destPos, duration, input, event);
 		const depaPos = { ...param.depaPos };
 		const retTrigger = this.em.triggerAnimationStart(param);
 
@@ -165,11 +176,15 @@ export class AnimationManager {
 		}
 
 		if (retTrigger && !AxisManager.equal(userWish.destPos, depaPos)) {
+			const isTrusted = !!event;
 			this.animateLoop({
 				depaPos,
 				destPos: userWish.destPos,
 				duration: userWish.duration,
 				delta: this.axm.getDelta(depaPos, userWish.destPos),
+				isTrusted,
+				inputEvent: event,
+				input,
 			}, () => this.animationEnd());
 		}
 	}
@@ -183,7 +198,7 @@ export class AnimationManager {
 			v += (param.destPos[k] - v) * easingPer;
 			return Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 		});
-		this.em.triggerChange(toPos);
+		this.em.triggerChange(toPos, param.input, param.inputEvent);
 		return easingPer;
 	}
 
