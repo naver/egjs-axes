@@ -1,5 +1,16 @@
 declare var jQuery: any;
 
+export function toArray(nodes: NodeList): Array<HTMLElement> {
+	// const el = Array.prototype.slice.call(nodes);
+	// for IE8
+	const el = [];
+	for (let i = 0, len = nodes.length;
+		i < len; i++) {
+			el.push(nodes[i]);
+	}
+	return el;
+}
+
 export function $(param, multi = false) {
 	let el;
 
@@ -12,9 +23,9 @@ export function $(param, multi = false) {
 			const dummy = document.createElement("div");
 
 			dummy.innerHTML = param;
-			el = Array.prototype.slice.call(dummy.childNodes);
+			el = toArray(dummy.childNodes);
 		} else {	// Selector
-			el = Array.prototype.slice.call(document.querySelectorAll(param));
+			el = toArray(document.querySelectorAll(param));
 		}
 		if (!multi) {
 			el = el.length >= 1 ? el[0] : undefined;
@@ -58,7 +69,7 @@ if (raf && !caf) {
 } else if (!(raf && caf)) {
 	raf = function(callback) {
 		return window.setTimeout(function() {
-			callback(window.performance && window.performance.now());
+			callback(window.performance && window.performance.now && window.performance.now());
 		}, 16);
 	};
 	caf = window.clearTimeout;
