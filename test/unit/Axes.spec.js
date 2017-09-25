@@ -277,10 +277,10 @@ describe("Axes", function () {
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
       const self = this.inst;
       this.preventedFn = function() {
-        expect(self._itm._prevented).to.be.true;
+        expect(self.itm._prevented).to.be.true;
       };
       this.notPreventedFn = function() {
-        expect(self._itm._prevented).to.be.false;
+        expect(self.itm._prevented).to.be.false;
       };
       this.input = new PanInput(this.el);
       this.inst.connect(["x", "y"], this.input);
@@ -424,6 +424,7 @@ describe("Axes", function () {
       this.inst.on("change", (e) => {
         if(this.animationStartHandler.called) {
           expect(e.holding).to.be.false;
+          expect(this.inst.am.getEventInfo().input).to.be.equal(e.input);
         } else {
           expect(e.holding).to.be.true;
         }
@@ -472,6 +473,7 @@ describe("Axes", function () {
       this.inst.on("change", (e) => {
         if(this.animationStartHandler.called) {
           expect(e.holding).to.be.false;
+          expect(this.inst.am.getEventInfo().input).to.be.equal(e.input);
         } else {
           expect(e.holding).to.be.true;
         }

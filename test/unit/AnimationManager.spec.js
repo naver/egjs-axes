@@ -29,12 +29,12 @@ describe("AnimationManager", function () {
         maximumDuration: 2000,
         minimumDuration: 0
       };
-      this.inst = new AnimationManager(
-        this.options, 
-        new InterruptManager(this.options), 
-        new EventManager(null),
-        new AxisManager(this.axis, this.options)
-      );
+      this.inst = new AnimationManager({
+        options: this.options, 
+        itm: new InterruptManager(this.options), 
+        em: new EventManager(null),
+        axm: new AxisManager(this.axis, this.options)
+      });
     });
     afterEach(() => {
     });
@@ -90,7 +90,9 @@ describe("AnimationManager", function () {
       // When
       this.options.maximumDuration = 500;
       const eventValue = { event: "i'm inputEvent"};
-      param = this.inst.createAnimationParam(pos, 1000, null, eventValue);
+      param = this.inst.createAnimationParam(pos, 1000, {
+        event: eventValue
+      });
 
       // Then
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
@@ -131,12 +133,14 @@ describe("AnimationManager", function () {
       };
       this.component = new Component();
       var axm = new AxisManager(this.axis, this.options);
-      this.inst = new AnimationManager(
-        this.options, 
-        new InterruptManager(this.options), 
-        new EventManager(this.component, axm),
+      var em = new EventManager(this.component);
+      this.inst = new AnimationManager({
+        options: this.options, 
+        itm : new InterruptManager(this.options), 
+        em,
         axm
-      );
+      });
+      em.setAnimationManager(this.inst);
     });
     afterEach(() => {
       this.component.off();
@@ -177,12 +181,19 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
+        "change": changeHandler,
         "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
         }
@@ -200,12 +211,19 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
+        "change": changeHandler,
         "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: depaPos.x + byPos.x, y: 0, z:depaPos.z + byPos.z});
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
         }
@@ -223,12 +241,19 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
+        "change": changeHandler,
         "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: 90, y: 0, z:-80});
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;          
           done();
         }

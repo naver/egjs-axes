@@ -179,12 +179,12 @@ export default class Axes extends Component {
 	*/
 	static DIRECTION_ALL = DIRECTION.DIRECTION_ALL;
 
-	options: AxesOption;
-	private _em: EventManager;
-	private _axm: AxisManager;
-	private _itm: InterruptManager;
-	private _am: AnimationManager;
-	private _io: InputObserver;
+	public options: AxesOption;
+	public em: EventManager;
+	public axm: AxisManager;
+	public itm: InterruptManager;
+	public am: AnimationManager;
+	public io: InputObserver;
 	private _inputs: IInputType[] = [];
 
 	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption, startPos?: Axis) {
@@ -202,12 +202,13 @@ export default class Axes extends Component {
 		};
 
 		this._complementOptions();
-		this._axm = new AxisManager(this.axis, this.options);
-		this._em = new EventManager(this, this._axm);
-		this._itm = new InterruptManager(this.options);
-		this._am = new AnimationManager(this.options, this._itm, this._em, this._axm);
-		this._io = new InputObserver(this.options, this._itm, this._em, this._axm, this._am);
-		startPos && this._em.triggerChange(startPos);
+		this.itm = new InterruptManager(this.options);
+		this.axm = new AxisManager(this.axis, this.options);
+		this.em = new EventManager(this);
+		this.am = new AnimationManager(this);
+		this.io = new InputObserver(this);
+		this.em.setAnimationManager(this.am);
+		startPos && this.em.triggerChange(startPos);
 	}
 
 	/**
@@ -280,7 +281,7 @@ export default class Axes extends Component {
 			}
 		}
 		inputType.mapAxes(mapped);
-		inputType.connect(this._io);
+		inputType.connect(this.io);
 		this._inputs.push(inputType);
 		return this;
 	}
@@ -349,7 +350,7 @@ export default class Axes extends Component {
 	 * axes.get(["x", "zoom"]); // {"x": 0, "zoom": 50}
 	 */
 	get(axes?: string[]) {
-		return this._axm.get(axes);
+		return this.axm.get(axes);
 	}
 
 	/**
@@ -381,7 +382,7 @@ export default class Axes extends Component {
 	 * axes.get(); // {"x": 100, "xOther": 60, "zoom": 60}
 	 */
 	setTo(pos: Axis, duration = 0) {
-		this._am.setTo(pos, duration);
+		this.am.setTo(pos, duration);
 		return this;
 	}
 
@@ -414,7 +415,7 @@ export default class Axes extends Component {
 	 * axes.get(); // {"x": 100, "xOther": -40, "zoom": 60}
 	 */
 	setBy(pos: Axis, duration = 0) {
-		this._am.setBy(pos, duration);
+		this.am.setBy(pos, duration);
 		return this;
 	}
 
@@ -442,7 +443,7 @@ export default class Axes extends Component {
 	 * axes.isBounceArea();
 	 */
 	isBounceArea(axes?: string[]) {
-		return this._axm.isOutside(axes);
+		return this.axm.isOutside(axes);
 	}
 
 	/**
@@ -452,6 +453,6 @@ export default class Axes extends Component {
 	*/
 	destroy() {
 		this.disconnect();
-		this._em.destroy();
+		this.em.destroy();
 	}
 };

@@ -1,21 +1,24 @@
-import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
-import { EventManager } from "./EventManager";
-import { AxisManager, Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
+import { Axis } from "./AxisManager";
 import { AxesOption } from "./Axes";
 export declare class InputObserver implements IInputTypeObserver {
+    isOutside: boolean;
+    moveDistance: Axis;
     options: AxesOption;
     private itm;
     private em;
     private axm;
     private am;
-    isOutside: boolean;
-    moveDistance: Axis;
-    constructor(options: AxesOption, itm: InterruptManager, em: EventManager, axm: AxisManager, am: AnimationManager);
+    constructor({options, itm, em, axm, am}: {
+        options: any;
+        itm: any;
+        em: any;
+        axm: any;
+        am: any;
+    });
     private atOutside(pos);
-    get(inputType: IInputType): Axis;
-    hold(inputType: IInputType, event: any): void;
-    change(inputType: IInputType, event: any, offset: Axis): void;
-    release(inputType: IInputType, event: any, offset: Axis, inputDuration?: number): void;
+    get(input: IInputType): Axis;
+    hold(input: IInputType, event: any): void;
+    change(input: IInputType, event: any, offset: Axis): void;
+    release(input: IInputType, event: any, offset: Axis, inputDuration?: number): void;
 }

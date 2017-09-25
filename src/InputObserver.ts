@@ -1,7 +1,7 @@
 import Axes from "./Axes";
 import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
-import { EventManager } from "./EventManager";
+import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
@@ -10,13 +10,17 @@ import Coordinate from "./Coordinate";
 export class InputObserver implements IInputTypeObserver {
   isOutside = false;
   moveDistance: Axis = null;
-  constructor(
-    public options: AxesOption,
-    private itm: InterruptManager,
-    private em: EventManager,
-    private axm: AxisManager,
-    private am: AnimationManager,
-  ) {
+  public options: AxesOption;
+  private itm: InterruptManager;
+  private em: EventManager;
+  private axm: AxisManager;
+  private am: AnimationManager;
+  constructor({options, itm, em, axm, am}) {
+    this.options = options;
+    this.itm = itm;
+    this.em = em;
+    this.axm = axm;
+    this.am = am;
   }
 
   // when move pointer is held in outside
@@ -51,11 +55,13 @@ export class InputObserver implements IInputTypeObserver {
     if (this.itm.isInterrupted() || !input.axes.length) {
       return;
     }
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
     this.itm.setInterrupt(true);
-    this.am.grab(input.axes, input, event);
-    if (!this.moveDistance) {
-      this.em.triggerHold(this.axm.get(), input, event);
-    }
+    this.am.grab(input.axes, changeOption);
+    !this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
     this.isOutside = this.axm.isOutside(input.axes);
     this.moveDistance = this.axm.get(input.axes);
   }
@@ -78,7 +84,10 @@ export class InputObserver implements IInputTypeObserver {
     }
     destPos = this.atOutside(destPos);
 
-    this.em.triggerChange(destPos, input, event, true);
+    this.em.triggerChange(destPos, {
+      input,
+      event,
+    }, true);
   }
   release(input: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
@@ -113,12 +122,16 @@ export class InputObserver implements IInputTypeObserver {
     // to contol
     const userWish = this.am.getUserControll(param);
     const isEqual = AxisManager.equal(userWish.destPos, depaPos);
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
     if (isEqual || userWish.duration === 0) {
-      !isEqual && this.em.triggerChange(userWish.destPos, input, event, true);
+      !isEqual && this.em.triggerChange(userWish.destPos, changeOption, true);
       this.itm.setInterrupt(false);
-      this.axm.isOutside() && this.am.restore(input, event);
+      this.axm.isOutside() && this.am.restore(changeOption);
     } else {
-      this.am.animateTo(userWish.destPos, userWish.duration, input, event);
+      this.am.animateTo(userWish.destPos, userWish.duration, changeOption);
     }
   }
 };
