@@ -65,7 +65,7 @@ export class MoveKeyInput implements IInputType {
 
 	connect(observer: IInputTypeObserver): IInputType {
 		this.dettachEvent();
-		
+
 		// add tabindex="0" to the container for making it focusable
 		if (this.element.getAttribute("tabindex") !== "0") {
 			this.element.setAttribute("tabindex", "0");
@@ -130,12 +130,12 @@ export class MoveKeyInput implements IInputType {
 
 	private attachEvent(observer: IInputTypeObserver) {
 		this.observer = observer;
-		this.element.addEventListener("keydown", this.onKeydown, false);		
+		this.element.addEventListener("keydown", this.onKeydown, false);
     this._isEnabled = true;
 	}
 
 	private dettachEvent() {
-		this.element.removeEventListener("keydown", this.onKeydown, false);		
+		this.element.removeEventListener("keydown", this.onKeydown, false);
     this._isEnabled = false;
     this.observer = null;
 	}
