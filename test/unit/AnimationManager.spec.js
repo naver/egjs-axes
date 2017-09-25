@@ -29,12 +29,12 @@ describe("AnimationManager", function () {
         maximumDuration: 2000,
         minimumDuration: 0
       };
-      this.inst = new AnimationManager(
-        this.options, 
-        new InterruptManager(this.options), 
-        new EventManager(null),
-        new AxisManager(this.axis, this.options)
-      );
+      this.inst = new AnimationManager({
+        options: this.options, 
+        itm: new InterruptManager(this.options), 
+        em: new EventManager(null),
+        axm: new AxisManager(this.axis, this.options)
+      });
     });
     afterEach(() => {
     });
@@ -85,11 +85,14 @@ describe("AnimationManager", function () {
       expect(param.duration).to.be.eql(1000);
       expect(param.delta).to.be.eql({x:150, y:200, z:-50});
       expect(param.inputEvent).to.be.eql(null);
+      expect(param.input).to.be.eql(null);
 
       // When
       this.options.maximumDuration = 500;
       const eventValue = { event: "i'm inputEvent"};
-      param = this.inst.createAnimationParam(pos, 1000, eventValue);
+      param = this.inst.createAnimationParam(pos, 1000, {
+        event: eventValue
+      });
 
       // Then
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
@@ -130,12 +133,14 @@ describe("AnimationManager", function () {
       };
       this.component = new Component();
       var axm = new AxisManager(this.axis, this.options);
-      this.inst = new AnimationManager(
-        this.options, 
-        new InterruptManager(this.options), 
-        new EventManager(this.component, axm),
+      var em = new EventManager(this.component);
+      this.inst = new AnimationManager({
+        options: this.options, 
+        itm : new InterruptManager(this.options), 
+        em,
         axm
-      );
+      });
+      em.setAnimationManager(this.inst);
     });
     afterEach(() => {
       this.component.off();
@@ -164,6 +169,7 @@ describe("AnimationManager", function () {
       expect(startHandler.called).to.be.false;
       expect(endHandler.called).to.be.false;
       expect(changeHandler.called).to.be.true;
+      expect(changeHandler.getCall(0).args[0].isTrusted).to.be.false;
       expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
     });
     it("should check 'setTo' method (outside, duration)", (done) => {
@@ -175,11 +181,20 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
-        "animationEnd": function() {
+        "change": changeHandler,
+        "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
           expect(startHandler.callCount).to.be.equal(1);
+          expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
+          expect(event.isTrusted).to.be.false;
           done();
         }
       });
@@ -196,11 +211,20 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
-        "animationEnd": function() {
+        "change": changeHandler,
+        "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: depaPos.x + byPos.x, y: 0, z:depaPos.z + byPos.z});
           expect(startHandler.callCount).to.be.equal(1);
+          expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
+          expect(event.isTrusted).to.be.false;
           done();
         }
       });
@@ -217,11 +241,20 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+      });
       this.component.on({
         "animationStart": startHandler,
-        "animationEnd": function() {
+        "change": changeHandler,
+        "animationEnd": function(event) {
           expect(self.axm.get()).to.be.eql({x: 90, y: 0, z:-80});
           expect(startHandler.callCount).to.be.equal(1);
+          expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
+          expect(event.isTrusted).to.be.false;          
           done();
         }
       });
@@ -238,15 +271,19 @@ describe("AnimationManager", function () {
       };
       const self = this.inst;
       const startHandler = sinon.spy();
-      const endHandler = sinon.spy(function() {
+      const endHandler = sinon.spy(function(event) {
         if(endHandler.callCount === 1) {
           // first destPos
           expect(self.axm.get()).to.be.eql({x: 150, y: 0, z:-150});
           expect(startHandler.callCount).to.be.equal(1);
+          expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(event.isTrusted).to.be.false;
         } else if(endHandler.callCount === 2) {
           // Then
           expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
+          expect(startHandler.getCall(1).args[0].isTrusted).to.be.false;
           expect(startHandler.callCount).to.be.equal(2);
+          expect(event.isTrusted).to.be.false;
           done();
         }
       });

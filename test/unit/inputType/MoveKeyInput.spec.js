@@ -1,4 +1,4 @@
-import TestHeler from "./TestHeler";
+import TestHelper from "./TestHelper";
 import Axes from "../../../src/Axes.ts";
 import {MoveKeyInput, KEYMAP} from "../../../src/inputType/MoveKeyInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
@@ -132,7 +132,7 @@ describe("MoveKeyInput", () => {
         this.inst.disconnect();
 
         // When
-        TestHeler.keyDown(this.el, rightArrayKeyCode, () => {
+        TestHelper.key(this.el, "keydown", rightArrayKeyCode, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -150,7 +150,7 @@ describe("MoveKeyInput", () => {
       });
 
       // When
-      TestHeler.keyDown(this.el, bKeyCode, () => {
+      TestHelper.key(this.el, "keydown", bKeyCode, () => {
         // Then
         expect(changeTriggered).to.be.false;
         done();
@@ -174,7 +174,7 @@ describe("MoveKeyInput", () => {
             });
 
             // When
-            TestHeler.keyDown(this.el, leftKeyCode);
+            TestHelper.key(this.el, "keydown", leftKeyCode);
 
             // Then
             expect(changeTriggered).to.be.true;
@@ -199,7 +199,7 @@ describe("MoveKeyInput", () => {
             });
 
             // When
-            TestHeler.keyDown(this.el, rightKeyCode);
+            TestHelper.key(this.el, "keydown", rightKeyCode);
 
             // Then
             expect(changeTriggered).to.be.true;
@@ -223,7 +223,7 @@ describe("MoveKeyInput", () => {
             });
 
             // When
-            TestHeler.keyDown(this.el, upKeyCode);
+            TestHelper.key(this.el, "keydown", upKeyCode);
 
             // Then
             expect(changeTriggered).to.be.true;
@@ -248,7 +248,7 @@ describe("MoveKeyInput", () => {
             this.input.options.scale[1] = -1;
             
             // When
-            TestHeler.keyDown(this.el, downKeyCode);
+            TestHelper.key(this.el, "keydown", downKeyCode);
 
             // Then
             expect(changeTriggered).to.be.true;

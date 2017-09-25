@@ -1,7 +1,7 @@
 import Axes from "./Axes";
 import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
-import { EventManager } from "./EventManager";
+import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
@@ -10,13 +10,17 @@ import Coordinate from "./Coordinate";
 export class InputObserver implements IInputTypeObserver {
   isOutside = false;
   moveDistance: Axis = null;
-  constructor(
-    public options: AxesOption,
-    private itm: InterruptManager,
-    private em: EventManager,
-    private axm: AxisManager,
-    private am: AnimationManager,
-  ) {
+  public options: AxesOption;
+  private itm: InterruptManager;
+  private em: EventManager;
+  private axm: AxisManager;
+  private am: AnimationManager;
+  constructor({options, itm, em, axm, am}) {
+    this.options = options;
+    this.itm = itm;
+    this.em = em;
+    this.axm = axm;
+    this.am = am;
   }
 
   // when move pointer is held in outside
@@ -44,26 +48,28 @@ export class InputObserver implements IInputTypeObserver {
       });
     }
   }
-  get(inputType: IInputType): Axis {
-    return this.axm.get(inputType.axes);
+  get(input: IInputType): Axis {
+    return this.axm.get(input.axes);
   }
-  hold(inputType: IInputType, event) {
-    if (this.itm.isInterrupted() || !inputType.axes.length) {
+  hold(input: IInputType, event) {
+    if (this.itm.isInterrupted() || !input.axes.length) {
       return;
     }
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
     this.itm.setInterrupt(true);
-    this.am.grab(inputType.axes, inputType, event);
-    if (!this.moveDistance) {
-      this.em.triggerHold(this.axm.get(), inputType, event);
-    }
-    this.isOutside = this.axm.isOutside(inputType.axes);
-    this.moveDistance = this.axm.get(inputType.axes);
+    this.am.grab(input.axes, changeOption);
+    !this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
+    this.isOutside = this.axm.isOutside(input.axes);
+    this.moveDistance = this.axm.get(input.axes);
   }
-  change(inputType: IInputType, event, offset: Axis) {
+  change(input: IInputType, event, offset: Axis) {
     if (!this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
       return;
     }
-    const depaPos: Axis = this.axm.get(inputType.axes);
+    const depaPos: Axis = this.axm.get(input.axes);
     let destPos: Axis;
 
     // for outside logic
@@ -78,16 +84,19 @@ export class InputObserver implements IInputTypeObserver {
     }
     destPos = this.atOutside(destPos);
 
-    this.em.triggerChange(destPos, inputType, event);
+    this.em.triggerChange(destPos, {
+      input,
+      event,
+    }, true);
   }
-  release(inputType: IInputType, event, offset: Axis, inputDuration?: number) {
+  release(input: IInputType, event, offset: Axis, inputDuration?: number) {
     if (!this.itm.isInterrupting()) {
       return;
     }
     if (!this.moveDistance) {
       return;
     }
-    const pos: Axis = this.axm.get(inputType.axes);
+    const pos: Axis = this.axm.get(input.axes);
     const depaPos: Axis = this.axm.get();
     const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
       return Coordinate.getInsidePosition(
@@ -104,7 +113,8 @@ export class InputObserver implements IInputTypeObserver {
       duration: this.am.getDuration(destPos, pos, inputDuration),
       delta: this.axm.getDelta(depaPos, destPos),
       inputEvent: event,
-      input: inputType,
+      input,
+      isTrusted: true,
     };
     this.em.triggerRelease(param);
     this.moveDistance = null;
@@ -112,12 +122,16 @@ export class InputObserver implements IInputTypeObserver {
     // to contol
     const userWish = this.am.getUserControll(param);
     const isEqual = AxisManager.equal(userWish.destPos, depaPos);
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
     if (isEqual || userWish.duration === 0) {
-      !isEqual && this.em.triggerChange(userWish.destPos, inputType, event);
+      !isEqual && this.em.triggerChange(userWish.destPos, changeOption, true);
       this.itm.setInterrupt(false);
-      this.axm.isOutside() && this.am.restore(event);
+      this.axm.isOutside() && this.am.restore(changeOption);
     } else {
-      this.am.animateTo(userWish.destPos, userWish.duration, event);
+      this.am.animateTo(userWish.destPos, userWish.duration, changeOption);
     }
   }
 };

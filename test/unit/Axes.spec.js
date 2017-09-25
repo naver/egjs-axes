@@ -277,10 +277,10 @@ describe("Axes", function () {
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
       const self = this.inst;
       this.preventedFn = function() {
-        expect(self._itm._prevented).to.be.true;
+        expect(self.itm._prevented).to.be.true;
       };
       this.notPreventedFn = function() {
-        expect(self._itm._prevented).to.be.false;
+        expect(self.itm._prevented).to.be.false;
       };
       this.input = new PanInput(this.el);
       this.inst.connect(["x", "y"], this.input);
@@ -398,17 +398,20 @@ describe("Axes", function () {
         expect(holdEvent.pos.x).to.be.equal(0);
         expect(holdEvent.pos.y).to.be.equal(0);
         expect(holdEvent.inputEvent.isFirst).to.be.true;
+        expect(holdEvent.isTrusted).to.be.true;
         expect(changeHandler.called).to.be.true;
         for(let i=0, len = changeHandler.callCount; i <len; i++) {
           const changeEvent = changeHandler.getCall(i).args[0];
           expect(changeEvent.holding).to.be.true;
           expect(changeEvent.input).to.be.equal(this.input);
+          expect(changeEvent.isTrusted).to.be.true;
           expect(changeEvent.inputEvent).to.be.not.equal(null);
         }
         const releaseEvent = this.releaseHandler.getCall(0).args[0];
         expect(this.releaseHandler.calledOnce).to.be.true;
         expect(releaseEvent.inputEvent.isFinal).to.be.true;
         expect(releaseEvent.input).to.be.equal(this.input);
+        expect(releaseEvent.isTrusted).to.be.true;
         expect(this.inst.get()).to.be.eql({x: 10, y: 10});
         expect(this.animationStartHandler.called).to.be.false;
         expect(this.animationEndHandler.called).to.be.false;
@@ -421,13 +424,13 @@ describe("Axes", function () {
       this.inst.on("change", (e) => {
         if(this.animationStartHandler.called) {
           expect(e.holding).to.be.false;
-          expect(e.input).to.be.equal(null);
-          expect(e.inputEvent).to.be.equal(null);
+          expect(this.inst.am.getEventInfo().input).to.be.equal(e.input);
         } else {
           expect(e.holding).to.be.true;
-          expect(e.input).to.be.equal(this.input);
-          expect(e.inputEvent).to.be.not.equal(null);
         }
+        expect(e.input).to.be.equal(this.input);
+        expect(e.inputEvent).to.be.not.equal(null);
+        expect(e.isTrusted).to.be.true;
       });
       this.inst.options.maximumDuration = 200;
 
@@ -448,13 +451,18 @@ describe("Axes", function () {
           expect(holdEvent.pos.y).to.be.equal(0);
           expect(holdEvent.inputEvent.isFirst).to.be.true;
           expect(holdEvent.input).to.be.equal(this.input);
+          expect(holdEvent.isTrusted).to.be.true;
           const releaseEvent = this.releaseHandler.getCall(0).args[0];
           expect(this.releaseHandler.calledOnce).to.be.true;
           expect(releaseEvent.inputEvent.isFinal).to.be.true;
           expect(releaseEvent.input).to.be.equal(this.input);
+          expect(releaseEvent.isTrusted).to.be.true;
           expect(this.inst.get()).to.be.eql({x: 0, y: 10});
+          const animationStartEvent = this.animationStartHandler.getCall(0).args[0];
           expect(this.animationStartHandler.called).to.be.true;
-          expect(this.animationEndHandler.called).to.be.true;
+          expect(animationStartEvent.isTrusted).to.be.true;
+          const animationEndEvent = this.animationEndHandler.getCall(0).args[0];
+          expect(animationEndEvent.isTrusted).to.be.true;
           done();
         }, 500);
       });
@@ -465,9 +473,13 @@ describe("Axes", function () {
       this.inst.on("change", (e) => {
         if(this.animationStartHandler.called) {
           expect(e.holding).to.be.false;
+          expect(this.inst.am.getEventInfo().input).to.be.equal(e.input);
         } else {
           expect(e.holding).to.be.true;
         }
+        expect(e.input).to.be.equal(this.input);
+        expect(e.inputEvent).to.be.not.equal(null);
+        expect(e.isTrusted).to.be.true;
       });
 
       // When

@@ -30,19 +30,19 @@ describe("InputObserver", function () {
         maximumDuration: 2000,
         minimumDuration: 0
       };
-      this.am = new AnimationManager(
-        this.options, 
-        new InterruptManager(this.options), 
-        new EventManager(null),
-        new AxisManager(this.axis, this.options)
-      );
-      this.inst = new InputObserver(
-        this.options, 
-        this.am.itm,
-        this.am.em,
-        this.am.axm,
-        this.am
-      );
+      this.am = new AnimationManager({
+        options: this.options, 
+        itm: new InterruptManager(this.options), 
+        em: new EventManager(null),
+        axm: new AxisManager(this.axis, this.options)
+      });
+      this.inst = new InputObserver({
+        options: this.options, 
+        itm: this.am.itm,
+        em: this.am.em,
+        axm: this.am.axm,
+        am: this.am
+      });
     });
     afterEach(() => {
     });

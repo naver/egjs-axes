@@ -1,13 +1,13 @@
 import { IInputType } from "./inputType/InputType";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
-import { EventManager } from "./EventManager";
-import { AxesOption } from "./Axes";
+import { EventManager, ChangeEventOption } from "./EventManager";
 export interface AnimationParam {
     depaPos: Axis;
     destPos: Axis;
     duration: number;
     delta: Axis;
+    isTrusted?: boolean;
     setTo?: (destPos?: Axis, duration?: number) => {
         destPos: Axis;
         duration: number;
@@ -18,25 +18,31 @@ export interface AnimationParam {
     input?: IInputType;
 }
 export declare class AnimationManager {
-    private options;
-    private itm;
-    private em;
-    private axm;
     private _raf;
     private _animateParam;
+    private options;
+    itm: InterruptManager;
+    em: EventManager;
+    axm: AxisManager;
     static getDuration(duration: number, min: number, max: number): number;
-    constructor(options: AxesOption, itm: InterruptManager, em: EventManager, axm: AxisManager);
+    constructor({options, itm, em, axm}: {
+        options: any;
+        itm: any;
+        em: any;
+        axm: any;
+    });
     getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number): number;
-    private createAnimationParam(pos, duration, inputEvent?);
-    grab(axes: string[], inputType?: IInputType, event?: any): void;
-    restore(inputEvent?: any): void;
+    private createAnimationParam(pos, duration, option?);
+    grab(axes: string[], option?: ChangeEventOption): void;
+    getEventInfo(): ChangeEventOption;
+    restore(option: ChangeEventOption): void;
     animationEnd(): void;
     private animateLoop(param, complete);
     getUserControll(param: AnimationParam): {
         destPos: Axis;
         duration: number;
     };
-    animateTo(destPos: Axis, duration: number, inputEvent?: any): void;
+    animateTo(destPos: Axis, duration: number, option?: ChangeEventOption): void;
     private frame(param);
     easing(p: any): number;
     setTo(pos: Axis, duration?: number): this;
