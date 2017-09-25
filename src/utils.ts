@@ -69,7 +69,7 @@ if (raf && !caf) {
 } else if (!(raf && caf)) {
 	raf = function(callback) {
 		return window.setTimeout(function() {
-			callback(window.performance && window.performance.now && window.performance.now());
+			callback(window.performance && window.performance.now && window.performance.now() || new Date().getTime());
 		}, 16);
 	};
 	caf = window.clearTimeout;
