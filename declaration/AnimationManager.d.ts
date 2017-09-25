@@ -32,7 +32,7 @@ export declare class AnimationManager {
         axm: any;
     });
     getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number): number;
-    private createAnimationParam(pos, duration, option);
+    private createAnimationParam(pos, duration, option?);
     grab(axes: string[], option?: ChangeEventOption): void;
     getEventInfo(): ChangeEventOption;
     restore(option: ChangeEventOption): void;

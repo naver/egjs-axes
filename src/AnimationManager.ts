@@ -57,7 +57,7 @@ export class AnimationManager {
 			this.options.maximumDuration);
 	}
 
-	private createAnimationParam(pos: Axis, duration: number, option: ChangeEventOption): AnimationParam {
+	private createAnimationParam(pos: Axis, duration: number, option?: ChangeEventOption): AnimationParam {
 		const depaPos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.get(this.axm.map(pos, (v, k, opt) => {
 			return Coordinate.getInsidePosition(
