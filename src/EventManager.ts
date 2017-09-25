@@ -163,7 +163,7 @@ export class EventManager {
 		const param = {
 			pos: moveTo.pos,
 			delta: moveTo.delta,
-			holding: holding,
+			holding,
 			inputEvent,
 			isTrusted: !!inputEvent,
 			input: option && option.input || eventInfo && eventInfo.input || null,
