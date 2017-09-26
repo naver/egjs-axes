@@ -118,7 +118,10 @@
 <span class="p">});</span>
 
 <span class="c1">// 3. Initialize inputTypes and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">))</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">))</span>  
+  <span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+  <span class="p">}))</span>
   <span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"zoom"</span><span class="p">,</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span>
     <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">)</span> <span class="p">:</span>
     <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">));</span>

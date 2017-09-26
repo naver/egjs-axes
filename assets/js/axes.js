@@ -193,6 +193,9 @@ $(function () {
 
   // 3. Initialize inputTypes and connect it
   axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
+  axes.connect("panX panY", new eg.Axes.MoveKeyInput(delegateTarget, {
+    scale: [5, -5]
+  }))
     .connect("zoom", SUPPORT_TOUCH ?
       new eg.Axes.PinchInput(delegateTarget) :
       new eg.Axes.WheelInput(delegateTarget));
