@@ -45,7 +45,6 @@ export default class Axes extends Component {
     constructor(axis: {
         [key: string]: AxisOption;
     }, options: AxesOption, startPos?: Axis);
-    private _complementOptions();
     connect(axes: string[] | string, inputType: IInputType): this;
     disconnect(inputType?: IInputType): this;
     get(axes?: string[]): Axis;
