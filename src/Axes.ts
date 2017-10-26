@@ -201,7 +201,6 @@ export default class Axes extends Component {
 			}, ...options
 		};
 
-		this._complementOptions();
 		this.itm = new InterruptManager(this.options);
 		this.axm = new AxisManager(this.axis, this.options);
 		this.em = new EventManager(this);
@@ -210,32 +209,7 @@ export default class Axes extends Component {
 		this.em.setAnimationManager(this.am);
 		startPos && this.em.triggerChange(startPos);
 	}
-
-	/**
-	 * set up 'css' expression
-	 * @private
-	 */
-	private _complementOptions() {
-		Object.keys(this.axis).forEach(axis => {
-			this.axis[axis] = {
-				...{
-					range: [0, 100],
-					bounce: [0, 0],
-					circular: [false, false]
-				}, ...this.axis[axis]
-			};
-
-			["bounce", "circular"].forEach(v => {
-				const axisOption = this.axis;
-				const key = axisOption[axis][v];
-
-				if (/string|number|boolean/.test(typeof key)) {
-					axisOption[axis][v] = [key, key];
-				}
-			});
-		});
-	}
-
+	
 	/**
 	 * Connect the axis of eg.Axes to the inputType.
 	 * @ko eg.Axes의 축과 inputType을 연결한다

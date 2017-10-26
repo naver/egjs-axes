@@ -22,11 +22,39 @@ export class AxisManager {
     return true;
   }
   constructor(private axis, private options: AxesOption) {
+    this._complementOptions();
+    
     this._pos = Object.keys(this.axis).reduce((acc, v) => {
       acc[v] = this.axis[v].range[0];
       return acc;
     }, {});
   }
+  
+  /**
+	 * set up 'css' expression
+	 * @private
+	 */
+	private _complementOptions() {
+		Object.keys(this.axis).forEach(axis => {
+			this.axis[axis] = {
+				...{
+					range: [0, 100],
+					bounce: [0, 0],
+					circular: [false, false]
+				}, ...this.axis[axis]
+			};
+
+			["bounce", "circular"].forEach(v => {
+				const axisOption = this.axis;
+				const key = axisOption[axis][v];
+
+				if (/string|number|boolean/.test(typeof key)) {
+					axisOption[axis][v] = [key, key];
+				}
+			});
+		});
+  }
+  
   getDelta(depaPos: Axis, destPos: Axis): Axis {
     const fullDepaPos = this.get(depaPos);
     return this.map(this.get(destPos), (v, k) => v - fullDepaPos[k]);
