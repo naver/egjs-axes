@@ -28,10 +28,10 @@ describe("AnimationManager", function () {
         deceleration: 0.0001,
         maximumDuration: 2000,
         minimumDuration: 0
-      };
+			};
       this.inst = new AnimationManager({
-        options: this.options, 
-        itm: new InterruptManager(this.options), 
+        options: this.options,
+        itm: new InterruptManager(this.options),
         em: new EventManager(null),
         axm: new AxisManager(this.axis, this.options)
       });
@@ -66,7 +66,7 @@ describe("AnimationManager", function () {
       // When/Then
       expect(this.inst.getDuration(depaPos, destPos, 2000)).to.be.equal(1200);
     });
-    
+
     it("should check 'createAnimationParam' method", () => {
       // Given
       // When
@@ -76,50 +76,51 @@ describe("AnimationManager", function () {
         z: -155
       };
 
-      // When
-      let param = this.inst.createAnimationParam(pos, 1000);
+			// When
+			// createAnimationParam does not change the 'pos' param since 2017.10.27
+			let param = this.inst.createAnimationParam(pos, 1000);
 
       // Then
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
-      expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
+      expect(param.destPos).to.be.eql({x:200, y:210, z: -155}); // do not change destPos.
       expect(param.duration).to.be.eql(1000);
-      expect(param.delta).to.be.eql({x:150, y:200, z:-50});
+      expect(param.delta).to.be.eql({x:200, y:210, z:-55});
       expect(param.inputEvent).to.be.eql(null);
       expect(param.input).to.be.eql(null);
 
       // When
       this.options.maximumDuration = 500;
       const eventValue = { event: "i'm inputEvent"};
-      param = this.inst.createAnimationParam(pos, 1000, {
-        event: eventValue
-      });
+			param = this.inst.createAnimationParam(pos, 1000, {
+				event: eventValue
+			});
 
       // Then
       expect(param.depaPos).to.be.eql({x:0, y:0, z: -100});
-      expect(param.destPos).to.be.eql({x:150, y:200, z: -150});
+      expect(param.destPos).to.be.eql({x:200, y:210, z: -155});
       expect(param.duration).to.be.eql(500);
-      expect(param.delta).to.be.eql({x:150, y:200, z:-50});
+      expect(param.delta).to.be.eql({x:200, y:210, z:-55});
       expect(param.inputEvent).to.be.equal(eventValue);
     });
   });
-  
+
   describe("animation test", function() {
     beforeEach(() => {
       this.axis = {
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false
+          circular: false/*[false, false]*/
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false
+          circular: false/*[false, false]*/
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true
+          circular: true/*[true, true]*/
         }
       };
       this.options = {
@@ -135,8 +136,8 @@ describe("AnimationManager", function () {
       var axm = new AxisManager(this.axis, this.options);
       var em = new EventManager(this.component);
       this.inst = new AnimationManager({
-        options: this.options, 
-        itm : new InterruptManager(this.options), 
+        options: this.options,
+        itm : new InterruptManager(this.options),
         em,
         axm
       });
@@ -161,7 +162,7 @@ describe("AnimationManager", function () {
         "change": changeHandler,
         "animationEnd": endHandler
       });
-      
+
       // When
       this.inst.setTo(destPos, 0);
 
@@ -198,10 +199,117 @@ describe("AnimationManager", function () {
           done();
         }
       });
-      
+
       // When
       this.inst.setTo(destPos, 1000);
-    });
+		});
+
+		it("should check 'setTo' method (same position #1)", (done) => {
+      // Given
+      const depaPos = this.inst.axm.get();
+      const destPos = {
+        x: 0,
+        z: -100
+      };
+      const self = this.inst;
+			const changeHandler = sinon.spy();
+      this.component.on({
+        "change": changeHandler,
+      });
+
+      // When
+			const ret = this.inst.setTo(destPos);
+
+			// Then
+			setTimeout(() => {
+				expect(changeHandler.called).to.be.false;
+				expect(ret).to.be.eq(self);
+				done();
+      }, 100);
+		});
+
+		it("should check 'setTo' method (same position #2 - completely same)", (done) => {
+      // Given
+      const depaPos = this.inst.axm.get();
+      const destPos = {
+				x: 0,
+        z: -100
+      };
+      const self = this.inst;
+			const changeHandler = sinon.spy();
+      this.component.on({
+        "change": changeHandler,
+      });
+
+      // When
+			const ret = this.inst.setTo(destPos);
+
+			// Then
+			setTimeout(() => {
+				expect(changeHandler.called).to.be.false;
+				expect(ret).to.be.eq(self);
+				done();
+      }, 100);
+		});
+
+		it("should check 'setTo' method (circular, no duration)", (done) => {
+      // Given
+      const depaPos = this.inst.axm.get();
+      const destPos = {z: -200};
+      const self = this.inst;
+			const changeHandler = sinon.spy(function(event) {
+				// Then
+				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z:100});
+				done();
+			});
+      this.component.on({
+        "change": changeHandler,
+      });
+
+      // When
+			const ret = this.inst.setTo(destPos, 0, true);
+		});
+
+		it("should check 'setTo' method (same position after range limit, useCircular)", (done) => {
+      // Given
+      const depaPos = this.inst.axm.get();
+      const destPos = {x: -100, z: 500};
+      const self = this.inst;
+			const changeHandler = sinon.spy();
+      this.component.on({
+        "change": changeHandler,
+      });
+
+      // When
+			const ret = this.inst.setTo(destPos, 0, true); // last (useCircular) param makes invalidating z-pos change(500)
+
+			// Then
+			setTimeout(() => {
+				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: -100});
+				expect(changeHandler.called).to.be.false;
+				expect(ret).to.be.eq(self);
+				done();
+			}, 100);
+		});
+
+		it("should check 'setTo' method (diff position after range limit)", (done) => {
+      // Given
+      const depaPos = this.inst.axm.get();
+      const destPos = {x: -100, z: 500};
+      const self = this.inst;
+			const changeHandler = sinon.spy(function(event) {
+				// Then
+				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: 200});
+				done();
+			});
+      this.component.on({
+        "change": changeHandler,
+      });
+
+      // When
+			const ret = this.inst.setTo(destPos);
+		});
+
     it("should check 'setBy' method (inside, duration)", (done) => {
       // Given
       const depaPos = this.inst.axm.get();
@@ -228,7 +336,40 @@ describe("AnimationManager", function () {
           done();
         }
       });
-      
+
+      // When
+      this.inst.setBy(byPos, 1000);
+		});
+		it("should check 'setBy' method (outside, duration)", (done) => {
+      // Given
+			const depaPos = this.inst.axm.get();
+			const minZ = this.axis.z.range[0];
+			const rangeLength = this.axis.z.range[1] - this.axis.z.range[0];
+      const byPos = {
+        x: 200,
+        z: 500
+      };
+      const self = this.inst;
+      const startHandler = sinon.spy();
+      const changeHandler = sinon.spy(function(event) {
+				// console.log("change handler", self.axm.get());
+        expect(event.input).to.be.null;
+        expect(event.inputEvent).to.be.null;
+        expect(self.getEventInfo()).to.be.null;
+			});
+      this.component.on({
+        "animationStart": startHandler,
+        "change": changeHandler,
+        "animationEnd": function(event) {
+          expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:100});
+          expect(startHandler.callCount).to.be.equal(1);
+          expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
+          expect(changeHandler.called).to.be.true;
+          expect(event.isTrusted).to.be.false;
+          done();
+        }
+      });
+
       // When
       this.inst.setBy(byPos, 1000);
     });
@@ -254,11 +395,11 @@ describe("AnimationManager", function () {
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
           expect(changeHandler.called).to.be.true;
-          expect(event.isTrusted).to.be.false;          
+          expect(event.isTrusted).to.be.false;
           done();
         }
       });
-      
+
       // When
       this.inst.setTo(destPos, 500);
     });
@@ -274,13 +415,13 @@ describe("AnimationManager", function () {
       const endHandler = sinon.spy(function(event) {
         if(endHandler.callCount === 1) {
           // first destPos
-          expect(self.axm.get()).to.be.eql({x: 150, y: 0, z:-150});
+					expect(self.axm.get()).to.be.eql({x: 200, y: 0, z:145});
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
           expect(event.isTrusted).to.be.false;
         } else if(endHandler.callCount === 2) {
           // Then
-          expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
+          expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:145});
           expect(startHandler.getCall(1).args[0].isTrusted).to.be.false;
           expect(startHandler.callCount).to.be.equal(2);
           expect(event.isTrusted).to.be.false;
@@ -291,7 +432,7 @@ describe("AnimationManager", function () {
         "animationStart": startHandler,
         "animationEnd": endHandler
       });
-      
+
       // When
       this.inst.animateTo(destPos, 1000);
     });
@@ -305,14 +446,14 @@ describe("AnimationManager", function () {
         "animationStart": startHandler,
         "animationEnd": endHandler
       });
-      
+
       // When
       this.inst.setTo({x:80, y: 150}, 200);
-      
+
       // Then
       setTimeout(() => {
         expect(startHandler.calledOnce).to.be.true;
-        expect(changeHandler.called).to.be.true;  
+        expect(changeHandler.called).to.be.true;
         expect(endHandler.called).to.be.false;
 
         // When
@@ -320,12 +461,12 @@ describe("AnimationManager", function () {
         expect(this.inst.axm.get()).to.not.eql({x:80, y:150, z:-100});
       }, 100);
       setTimeout(() => {
-        expect(startHandler.calledTwice).to.be.true;  
-        expect(changeHandler.called).to.be.true;    
+        expect(startHandler.calledTwice).to.be.true;
+        expect(changeHandler.called).to.be.true;
         expect(endHandler.calledTwice).to.be.true;
         expect(this.inst.axm.get()).to.eql({x:0, y:0, z:-100});
         done();
-      }, 500);   
-    });      
+      }, 500);
+    });
   });
 });
