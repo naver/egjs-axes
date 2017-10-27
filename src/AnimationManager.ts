@@ -77,7 +77,7 @@ export class AnimationManager {
 	}
 
 	grab(axes: string[], option?: ChangeEventOption) {
-		if (this._animateParam && !axes.length) {
+		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
