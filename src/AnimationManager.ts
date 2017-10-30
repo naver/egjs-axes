@@ -59,14 +59,7 @@ export class AnimationManager {
 
 	private createAnimationParam(pos: Axis, duration: number, option?: ChangeEventOption): AnimationParam {
 		const depaPos: Axis = this.axm.get();
-		const destPos: Axis = this.axm.get(this.axm.map(pos, (v, k, opt) => {
-			return Coordinate.getInsidePosition(
-				v,
-				opt.range,
-				opt.circular as boolean[],
-				opt.bounce as number[]
-			);
-		}));
+		const destPos: Axis = pos;
 		const inputEvent = option && option.event || null;
 		return {
 			depaPos,
@@ -84,7 +77,7 @@ export class AnimationManager {
 	}
 
 	grab(axes: string[], option?: ChangeEventOption) {
-		if (this._animateParam && !axes.length) {
+		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
@@ -205,7 +198,7 @@ export class AnimationManager {
 		const easingPer = this.easing(curTime / param.duration);
 		let toPos: Axis = param.depaPos;
 		toPos = this.axm.map(toPos, (v, k, opt) => {
-			v += (param.destPos[k] - v) * easingPer;
+			v += param.delta[k] * easingPer;
 			return Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 		});
 		this.em.triggerChange(toPos);
@@ -227,20 +220,28 @@ export class AnimationManager {
 		this.itm.setInterrupt(true);
 		let movedPos = this.axm.filter(pos, (v, k) => orgPos[k] !== v);
 		if (!Object.keys(movedPos).length) {
-			return;
+			return this;
 		}
+
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			v = Coordinate.getInsidePosition(v, opt.range, opt.circular as boolean[]);
-			return duration ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
+			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
+				return duration > 0 ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
+			} else {
+				return Coordinate.getInsidePosition(v, opt.range, opt.circular as boolean[]);
+			}
 		});
+
 		if (AxisManager.equal(movedPos, orgPos)) {
 			return this;
-		} else if (duration) {
+		}
+
+		if (duration > 0) {
 			this.animateTo(movedPos, duration);
 		} else {
 			this.em.triggerChange(movedPos);
 			this.itm.setInterrupt(false);
 		}
+
 		return this;
 	}
 

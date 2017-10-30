@@ -99,12 +99,16 @@ export class InputObserver implements IInputTypeObserver {
     const pos: Axis = this.axm.get(input.axes);
     const depaPos: Axis = this.axm.get();
     const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
-      return Coordinate.getInsidePosition(
-        pos[k] + v,
-        opt.range,
-        opt.circular as boolean[],
-        opt.bounce as number[],
-      );
+      if (opt.circular && (opt.circular[0] || opt.circular[1])) {
+        return pos[k] + v;
+      } else {
+        return Coordinate.getInsidePosition(
+          pos[k] + v,
+          opt.range,
+          opt.circular as boolean[],
+          opt.bounce as number[],
+        );
+      }
     }));
     // prepare params
     const param: AnimationParam = {
