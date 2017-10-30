@@ -171,7 +171,7 @@ describe("AnimationManager", function () {
       expect(endHandler.called).to.be.false;
       expect(changeHandler.called).to.be.true;
       expect(changeHandler.getCall(0).args[0].isTrusted).to.be.false;
-      expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
+      expect(self.axm.get()).to.be.eql({x: 100, y: 0, z: 145});
     });
     it("should check 'setTo' method (outside, duration)", (done) => {
       // Given
@@ -191,7 +191,7 @@ describe("AnimationManager", function () {
         "animationStart": startHandler,
         "change": changeHandler,
         "animationEnd": function(event) {
-          expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:-100});
+          expect(self.axm.get()).to.be.eql({x: 100, y: 0, z:145});
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
           expect(changeHandler.called).to.be.true;
@@ -281,7 +281,7 @@ describe("AnimationManager", function () {
       });
 
       // When
-			const ret = this.inst.setTo(destPos, 0, true); // last (useCircular) param makes invalidating z-pos change(500)
+			const ret = this.inst.setTo(destPos, 0); // last (useCircular) param makes invalidating z-pos change(500)
 
 			// Then
 			setTimeout(() => {
@@ -295,11 +295,11 @@ describe("AnimationManager", function () {
 		it("should check 'setTo' method (diff position after range limit)", (done) => {
       // Given
       const depaPos = this.inst.axm.get();
-      const destPos = {x: -100, z: 500};
+      const destPos = {x: -100, z: 450};
       const self = this.inst;
 			const changeHandler = sinon.spy(function(event) {
 				// Then
-				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: 200});
+				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: 150});
 				done();
 			});
       this.component.on({

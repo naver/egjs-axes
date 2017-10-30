@@ -45,6 +45,6 @@ export declare class AnimationManager {
     animateTo(destPos: Axis, duration: number, option?: ChangeEventOption): void;
     private frame(param);
     easing(p: any): number;
-    setTo(pos: Axis, duration?: number, useCircular?: boolean): this;
+    setTo(pos: Axis, duration?: number): this;
     setBy(pos: Axis, duration?: number): this;
 }

@@ -209,7 +209,7 @@ export class AnimationManager {
 		return p > 1 ? 1 : this.options.easing(p);
 	}
 
-	setTo(pos: Axis, duration: number = 0, useCircular: boolean = false) {
+	setTo(pos: Axis, duration: number = 0) {
 		const axes: string[] = Object.keys(pos);
 		this.grab(axes);
 		const orgPos: Axis = this.axm.get(axes);
@@ -224,7 +224,7 @@ export class AnimationManager {
 		}
 
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
-			if (useCircular && opt.circular && (opt.circular[0] || opt.circular[1])) {
+			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
 				return duration > 0 ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 			} else {
 				return Coordinate.getInsidePosition(v, opt.range, opt.circular as boolean[]);
@@ -248,8 +248,7 @@ export class AnimationManager {
 	setBy(pos: Axis, duration = 0) {
 		return this.setTo(
 			this.axm.map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),
-			duration,
-			true
+			duration
 		);
 	}
 };
