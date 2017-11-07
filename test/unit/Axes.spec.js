@@ -301,12 +301,14 @@ describe("Axes", function () {
       const holdHandler = sinon.spy(this.preventedFn);
       const changeHandler = sinon.spy(this.preventedFn);
       const releaseHandler = sinon.spy(this.preventedFn);
+      const finishHandler = sinon.spy(this.notPreventedFn);
       const animationStartHandler = sinon.spy(this.preventedFn);
       const animationEndHandler = sinon.spy(this.notPreventedFn);
       this.inst.on({
           "hold": holdHandler,
           "change": changeHandler,
           "release": releaseHandler,
+          "finish": finishHandler,
           "animationStart": animationStartHandler,
           "animationEnd": animationEndHandler
       });
@@ -325,6 +327,7 @@ describe("Axes", function () {
             expect(holdHandler.calledOnce).to.be.true;
             expect(changeHandler.called).to.be.true;
             expect(releaseHandler.calledOnce).to.be.true;
+            expect(finishHandler.calledOnce).to.be.true;
             expect(animationStartHandler.calledOnce).to.be.true;
             expect(animationEndHandler.calledOnce).to.be.true;
             done();
@@ -352,6 +355,7 @@ describe("Axes", function () {
 
       this.holdHandler = sinon.spy();
       this.releaseHandler = sinon.spy();
+      this.finishHandler = sinon.spy();
       this.animationStartHandler = sinon.spy();
       this.animationEndHandler = sinon.spy();
 
@@ -359,6 +363,7 @@ describe("Axes", function () {
       this.inst.on({
         "hold": this.holdHandler,
         "release": this.releaseHandler,
+        "finish": this.finishHandler,
         "animationStart": this.animationStartHandler,
         "animationEnd": this.animationEndHandler
       }).connect(["x", "y"], this.input);
@@ -374,6 +379,7 @@ describe("Axes", function () {
       }
       this.holdHandler.reset();
       this.releaseHandler.reset();
+      this.finishHandler.reset();
       this.animationStartHandler.reset();
       this.animationEndHandler.reset();
       cleanup();
@@ -413,6 +419,11 @@ describe("Axes", function () {
         expect(releaseEvent.input).to.be.equal(this.input);
         expect(releaseEvent.isTrusted).to.be.true;
         expect(this.inst.get()).to.be.eql({x: 10, y: 10});
+
+        const finishEvent = this.finishHandler.getCall(0).args[0];
+        expect(this.finishHandler.calledOnce).to.be.true;
+        expect(finishEvent.isTrusted).to.be.true;
+
         expect(this.animationStartHandler.called).to.be.false;
         expect(this.animationEndHandler.called).to.be.false;
         done();
@@ -463,6 +474,10 @@ describe("Axes", function () {
           expect(animationStartEvent.isTrusted).to.be.true;
           const animationEndEvent = this.animationEndHandler.getCall(0).args[0];
           expect(animationEndEvent.isTrusted).to.be.true;
+
+          const finishEvent = this.finishHandler.getCall(0).args[0];
+          expect(this.finishHandler.called).to.be.true;
+          expect(finishEvent.isTrusted).to.be.true;
           done();
         }, 500);
       });
@@ -497,6 +512,7 @@ describe("Axes", function () {
           expect(this.releaseHandler.calledOnce).to.be.true;
           expect(this.animationStartHandler.calledOnce).to.be.true;
           expect(this.animationEndHandler.calledOnce).to.be.true;
+          expect(this.finishHandler.calledOnce).to.be.true;
           done();
         }, 2000);
       });
@@ -512,6 +528,7 @@ describe("Axes", function () {
         }
       });
       const releaseHandler = sinon.spy();
+      const finishHandler = sinon.spy();
       const animationStartHandler = sinon.spy(e => {
           e.stop();
           setTimeout(function() {
@@ -523,6 +540,7 @@ describe("Axes", function () {
           "hold": holdHandler,
           "change": changeHandler,
           "release": releaseHandler,
+          "finish": finishHandler,
           "animationStart": animationStartHandler,
           "animationEnd": animationEndHandler
       });
@@ -542,6 +560,7 @@ describe("Axes", function () {
               expect(releaseHandler.calledOnce).to.be.true;
               expect(animationStartHandler.calledOnce).to.be.true;
               expect(animationEndHandler.calledOnce).to.be.true;
+              expect(finishHandler.calledOnce).to.be.true;
               done();
           }, 1000);
       });

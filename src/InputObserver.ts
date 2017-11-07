@@ -113,7 +113,7 @@ export class InputObserver implements IInputTypeObserver {
     const duration = this.am.getDuration(destPos, pos, inputDuration);
 
     if (duration === 0) {
-      destPos = depaPos;
+      destPos = {...depaPos};
     }
     // prepare params
     const param: AnimationParam = {
@@ -141,7 +141,7 @@ export class InputObserver implements IInputTypeObserver {
       if (this.axm.isOutside()) {
         this.am.restore(changeOption);
       } else {
-        this.em.triggerFinish(false);
+        this.em.triggerFinish(true);
       }
     } else {
       this.am.animateTo(userWish.destPos, userWish.duration, changeOption);
