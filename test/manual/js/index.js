@@ -39,8 +39,12 @@ var axes = new eg.Axes({
 	"animationEnd" : function(evt) {
 		addLog("[==> animationEnd] " + JSON.stringify(this.get()));
 	},
+	"finish": function(evt) {
+		addLog("[finish] " + JSON.stringify(this.get()));
+	},
 	"change" : function(evt) {
 		var pos = evt.pos;
+		console.log(pos);
 		if(evt.holding && evt.delta.z) {
 			areaContent.style[eg.Axes.TRANSFORM] = "scale(" +  evt.pos.z + ")";
 		} else {

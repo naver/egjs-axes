@@ -98,7 +98,7 @@ export class InputObserver implements IInputTypeObserver {
     }
     const pos: Axis = this.axm.get(input.axes);
     const depaPos: Axis = this.axm.get();
-    const destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
+    let destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
       if (opt.circular && (opt.circular[0] || opt.circular[1])) {
         return pos[k] + v;
       } else {
@@ -110,11 +110,16 @@ export class InputObserver implements IInputTypeObserver {
         );
       }
     }));
+    const duration = this.am.getDuration(destPos, pos, inputDuration);
+
+    if (duration === 0) {
+      destPos = depaPos;
+    }
     // prepare params
     const param: AnimationParam = {
       depaPos,
       destPos,
-      duration: this.am.getDuration(destPos, pos, inputDuration),
+      duration,
       delta: this.axm.getDelta(depaPos, destPos),
       inputEvent: event,
       input,
@@ -133,7 +138,11 @@ export class InputObserver implements IInputTypeObserver {
     if (isEqual || userWish.duration === 0) {
       !isEqual && this.em.triggerChange(userWish.destPos, changeOption, true);
       this.itm.setInterrupt(false);
-      this.axm.isOutside() && this.am.restore(changeOption);
+      if (this.axm.isOutside()) {
+        this.am.restore(changeOption);
+      } else {
+        this.em.triggerFinish(false);
+      }
     } else {
       this.am.animateTo(userWish.destPos, userWish.duration, changeOption);
     }

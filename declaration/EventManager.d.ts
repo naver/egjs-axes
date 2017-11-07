@@ -14,6 +14,7 @@ export declare class EventManager {
     triggerChange(pos: Axis, option?: ChangeEventOption, holding?: boolean): void;
     triggerAnimationStart(param: AnimationParam): Boolean;
     triggerAnimationEnd(isTrusted?: boolean): void;
+    triggerFinish(isTrusted?: boolean): void;
     private createUserControll(pos, duration?);
     setAnimationManager(am: AnimationManager): void;
     destroy(): void;
