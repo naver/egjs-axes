@@ -126,6 +126,8 @@ export class AnimationManager {
 		this.em.triggerAnimationEnd(!!beforeParam);
 		if (this.axm.isOutside()) {
 			this.restore(beforeParam);
+		} else {
+			this.em.triggerFinish(!!beforeParam);
 		}
 	}
 
