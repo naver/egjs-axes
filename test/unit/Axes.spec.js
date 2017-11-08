@@ -469,6 +469,8 @@ describe("Axes", function () {
           expect(releaseEvent.input).to.be.equal(this.input);
           expect(releaseEvent.isTrusted).to.be.true;
           expect(this.inst.get()).to.be.eql({x: 0, y: 10});
+          expect(releaseEvent.duration).to.be.equal(0);
+          expect(releaseEvent.depaPos).to.deep.equal(releaseEvent.destPos);
           const animationStartEvent = this.animationStartHandler.getCall(0).args[0];
           expect(this.animationStartHandler.called).to.be.true;
           expect(animationStartEvent.isTrusted).to.be.true;
@@ -509,10 +511,13 @@ describe("Axes", function () {
         // for test animation event
         setTimeout(() => {
           expect(this.holdHandler.calledOnce).to.be.true;
+          const releaseEvent = this.releaseHandler.getCall(0).args[0];
           expect(this.releaseHandler.calledOnce).to.be.true;
           expect(this.animationStartHandler.calledOnce).to.be.true;
           expect(this.animationEndHandler.calledOnce).to.be.true;
           expect(this.finishHandler.calledOnce).to.be.true;
+          expect(releaseEvent.duration).to.not.equal(0);
+          expect(releaseEvent.depaPos).to.not.equal(releaseEvent.destPos);
           done();
         }, 2000);
       });
