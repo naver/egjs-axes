@@ -256,7 +256,7 @@ export class EventManager {
 	 *   "zoom": {
 	 *      range: [50, 30]
 	 *   }
-	 * }).on("animationEnd", function(event) {
+	 * }).on("finish", function(event) {
 	 *   // event.isTrusted
 	 * });
 	 */
