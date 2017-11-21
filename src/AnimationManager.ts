@@ -87,7 +87,7 @@ export class AnimationManager {
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
 			this._raf = null;
-			this.em.triggerAnimationEnd(!!event);
+			this.em.triggerAnimationEnd(!!(option && option.event));
 		}
 	}
 
