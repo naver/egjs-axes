@@ -569,6 +569,34 @@ describe("Axes", function () {
               done();
           }, 1000);
       });
-    });
+		});
+
+		it("should fire animationEnd event with isTrusted-true flag if grab while animating.", (done) => {
+			// Given
+			// When
+			let destPos;
+
+			Simulator.gestures.pan(this.el, {
+				pos: [0, 0],
+				deltaX: 300,
+				deltaY: 50,
+				duration: 100,
+				easing: "linear"
+			});
+
+			// grab while animating
+			this.inst.on("animationStart", (e) => {
+				destPos = e.destPos;
+				Simulator.gestures.tap(this.el);
+			});
+
+			// Then
+			this.inst.on("animationEnd", (e) => {
+				let endPos = this.inst.get();
+				expect(e.isTrusted).to.be.true;
+				expect(endPos.x !== destPos.x || endPos.y !== destPos.y ).to.be.true;
+				done();
+			})
+		});
   });
 });
