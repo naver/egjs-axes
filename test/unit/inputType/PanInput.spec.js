@@ -357,4 +357,43 @@ describe("PanInput", () => {
       expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL)).to.be.true;
     });
   });
+  describe("options test", function() {
+    beforeEach(() => {
+      this.inst = new PanInput(sandbox());
+    });
+    afterEach(() => {
+      if (this.inst) {
+        this.inst.destroy();
+        this.inst = null;
+      }
+      cleanup();
+    });
+    it("should check hammerManager default Options", () => {
+      // Given
+      expect(this.inst.options.hammerManagerOptions).to.be.eql({
+        cssProps: {
+          userSelect: "none",
+          touchSelect: "none",
+          touchCallout: "none",
+          userDrag: "none",
+        }
+      });
+      
+      // When
+      this.inst.connect({});
+
+      // Then
+      expect(this.inst.element.style.userSelect).to.be.equal("none");
+    });
+    it("should check hammerManager Options", () => {
+      // Given
+      this.inst.options.hammerManagerOptions.cssProps.userSelect = "auto";
+      
+      // When
+      this.inst.connect({});
+
+      // Then
+      expect(this.inst.element.style.userSelect).to.be.equal("auto");
+    });
+  });
 });
