@@ -114,10 +114,11 @@ export interface AxesOption {
  */
 export default class Axes extends Component {
 	static VERSION = "#__VERSION__#";
-	static PanInput = PanInput;
-	static PinchInput = PinchInput;
-	static WheelInput = WheelInput;
-	static MoveKeyInput = MoveKeyInput;
+	// for tree shaking
+	static PanInput;
+	static PinchInput;
+	static WheelInput;
+	static MoveKeyInput;
 
 	/**
 	 * @name eg.Axes.TRANSFORM
@@ -209,7 +210,6 @@ export default class Axes extends Component {
 		this.em.setAnimationManager(this.am);
 		startPos && this.em.triggerChange(startPos);
 	}
-	
 	/**
 	 * Connect the axis of eg.Axes to the inputType.
 	 * @ko eg.Axes의 축과 inputType을 연결한다
