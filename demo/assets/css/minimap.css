@@ -14,6 +14,7 @@
   width: 1280px;
   height: 1677px;
   touch-action: none; user-select: none; -webkit-user-drag: none;
+  background:url("../image/minimap/sunflower.jpeg");
 }
 
 #minimap {
