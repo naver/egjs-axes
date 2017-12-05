@@ -167,11 +167,11 @@ export class EventManager {
 			inputEvent,
 			isTrusted: !!inputEvent,
 			input: option && option.input || eventInfo && eventInfo.input || null,
-			set: event ? this.createUserControll(moveTo.pos) : () => { },
+			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
 		};
 		this.axes.trigger("change", param);
 
-		event && this.am.axm.set(param.set()["destPos"]);
+		inputEvent && this.am.axm.set(param.set()["destPos"]);
 	}
 
 	/**
@@ -256,7 +256,7 @@ export class EventManager {
 	 *   "zoom": {
 	 *      range: [50, 30]
 	 *   }
-	 * }).on("animationEnd", function(event) {
+	 * }).on("finish", function(event) {
 	 *   // event.isTrusted
 	 * });
 	 */
