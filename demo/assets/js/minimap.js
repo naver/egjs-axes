@@ -47,5 +47,5 @@ $(function() {
   // 3. Initialize a inputType and connect it
   axes.connect("rawX rawY", new eg.Axes.PanInput(view, {
     scale: [-1, -1]
-  }));
+  })).connect("rawX rawY", new eg.Axes.MoveKeyInput(view, {scale: [10, -10]}));
 });

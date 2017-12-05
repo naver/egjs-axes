@@ -15,9 +15,7 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ##### ES5
 ``` html
-{% for dist in site.data.egjs.dist %}
-<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>
-{% endfor %}
+{% for dist in site.data.egjs.dist %}<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>{% endfor %}
 ```
 
 ##### ES6+
@@ -61,12 +59,14 @@ Axes provides three inputTypes.
 - [eg.Axes.PanInput](./release/latest/doc/eg.Axes.PanInput.html)
 - [eg.Axes.PinchInput](./release/latest/doc/eg.Axes.PinchInput.html)
 - [eg.Axes.WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
+- [eg.Axes.MoveKeyInput](./release/latest/doc/eg.Axes.MoveKeyInput.html)
 
 ```js
 // create inputTypes to use
 const panInput = new eg.Axes.PanInput("#area");
 const wheelInput = new eg.Axes.WheelInput("#wArea");
 const pinchInput = new eg.Axes.PinchInput("#pArea");
+const movekeyInput = new eg.Axes.MoveKeyInput("#mArea");
 ```
 
 #### 6. Connect eg.Axes and InputTypes 
@@ -89,6 +89,9 @@ axes.connect(["something1"], wheelInput); // or axes.connect("something1", wheel
 
 // [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
 axes.connect(["something2"], pinchInput); // or axes.connect("something2", pinchInput);
+
+// Connect 'something1' axis to left-right arrow key and 'something2' axis to top-bottom key
+axes.connect(["something1", "something2"], movekeyInput); // or axes.connect("something1 something2", panInput);
 ```
 
 #### 7. Enjoy!

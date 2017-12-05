@@ -7,6 +7,10 @@
 {% for dist in site.data.egjs.dist %}
 	<script src="{{ dist }}"></script>
 {% endfor %}
+{% for input in site.data.egjs.inputs %}
+<link rel="stylesheet" href="./assets/css/logo/{{input.name}}.css">
+{% endfor %}
+<link rel="stylesheet" href="./common/css/input.css">
 <script>
 	var homeUrl = window.location.href;
 	if (homeUrl.indexOf("#") !== -1) {
@@ -34,9 +38,8 @@
 				<div class="docs-inner">
 					<p class="text-center">
 						<a href="#getting-started">Getting Started </a>/ 
-						<a href="#demos"> Demos </a>/
-						<a target="_blank" href="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/release/latest/doc/"> Documentation </a>/ 
-						<a target="_blank" href="//github.com/{{ site.data.egjs.github.user }}/{{ site.data.egjs.github.repo }}"> Source </a>
+						<a href="#inputs"> Inputs &amp; Demos </a>/
+						<a href="#projects"> Projects </a>
 					</p>
 				</div>
 			</div>
@@ -50,19 +53,66 @@
 			</div>
 		</div>
 	</section>
-	<section id="demos" class="docs section demos">
+	<section id="inputs" class="docs section inputs">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Demos</h2>
-				{% capture demo %}{% include_relative demo.md %}{% endcapture %}
-				{{ demo | markdownify }}
+				<h2 class="title text-center">Inputs</h2>
+				<ul class="input-list">
+					{% for input in site.data.egjs.inputs %}
+					 <li class="input-item" onclick="showInput('{{input.name}}', this)">
+						<div class="logo {{input.name}}">
+							<div class="logo-input-area">
+							{% include_relative assets/html/logo/{{input.name}}.html %}
+							</div>
+						</div>
+						<p>{{input.name}}</p>
+					</li>
+					{% endfor %}
+				</ul>
 			</div>
 		</div>
 	</section>
+	<section id="input" class="docs section input">
+		<div class="container">
+			{% for input in site.data.egjs.inputs %}
+				{% include input.html input=input %}
+			{% endfor %}
+		</div>
+	</section>
+	<section id="projects" class="docs section projects">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Projects</h2>
+				<ul class="project-list">
+					{% for project in site.data.egjs.projects %}
+					<li class="project-item">
+						<a target="blank" href="{{project.url}}"><p>
+							<img src="{{project.image}}">
+						</p>
+						<p>{{project.name}}</p></a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</section>	
 </div>
 {% include footer.html %}
 {% for js in site.data.egjs.js %}
 	<script src="{{ js }}"></script>
 {% endfor %}
+<script>
+	var inputs = $(".input-list .input-item");
+	var docs = $("#input .docs-inner");
+
+	function showInput(name, self) {
+		docs.css("display", "none");
+		inputs.removeClass("checked");
+
+		$(self).addClass("checked");
+		$("#input .docs-inner." + name).css("display", "block");
+	}
+	showInput("{{site.data.egjs.inputs[0].name}}", inputs[0]);
+</script>
 </body>
 </html>
