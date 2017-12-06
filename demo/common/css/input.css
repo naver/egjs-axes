@@ -39,6 +39,7 @@
 .logo {
     width: 600px;
     margin: 0px auto;
+    text-align: center;
 }
 .logo-input-area, .logo-view-area {
     position: relative;
@@ -113,7 +114,7 @@
     padding: 0;
     text-align: center;
     padding-top: 50px;
-    width: 660px;
+    max-npmwidth: 660px;
 }
 .demo-item {
     display: inline-block;
@@ -130,4 +131,28 @@
 }
 .demo-item p {
     text-align: center;
+}
+
+
+@media (max-width: 650px) {
+    .logo {
+        width: 100%;
+    }
+    .logo-input-area, .logo-view-area {
+        width: 180px;
+        height: 180px;
+    }
+    .logo-input-area {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 460px) {
+    .logo .logo-input-area {
+        width: 100px;
+        height: 100px;
+    }
+    .logo .logo-input-area, .logo .logo-view-area {
+        vertical-align: middle;
+    }
 }
