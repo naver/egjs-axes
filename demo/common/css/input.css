@@ -1,6 +1,12 @@
 /* ======== input ======= */
 #inputs.docs {
-    padding: 20px 0px;
+    padding: 20px 0px 0px;
+}
+#inputs .docs-inner {
+    padding : 0;
+}
+#inputs .docs-inner .checked {
+    background: #fff;
 }
 .input-list {
     position: relative;
@@ -23,7 +29,8 @@
 }
 .input-item {
     width: 150px;
-    margin: 5px;
+    margin: 5px 5px 0px;
+    padding-top: 5px;
     display: inline-block;
     list-style: none;
     vertical-align: top;
@@ -32,6 +39,7 @@
 }
 .input-item.checked p {
     font-weight: bold;
+    /* color: #5a5; */
 }
 
 
@@ -82,6 +90,10 @@
     height: 20px;
     background: #f55;
 
+}
+#input.docs {
+    background: #f5f5f5;
+    padding: 0 0 40px;
 }
 #input .example {
     margin: 10px 0px;
