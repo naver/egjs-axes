@@ -70,7 +70,7 @@ describe("Axes", function () {
       expect(this.inst.get().x).to.equal(50);
       expect(this.inst.get().otherX).to.equal(0);
     });
-    it("should check `setTo` method", () => {
+    it("should check `setTo/setBy` method", () => {
       // Given
       this.inst = new Axes({
         x: {
@@ -92,6 +92,12 @@ describe("Axes", function () {
       // Then
       expect(this.inst.get()).to.be.eql({x: 20, otherX: -100});
       expect(ret).to.be.equal(this.inst);
+
+      // When
+      this.inst.setBy({x: 10});
+      
+      // Then
+      expect(this.inst.get()).to.be.eql({x: 30, otherX: -100});
     });
 
     it("should check `setTo` method (with duration)", () => {
@@ -127,6 +133,45 @@ describe("Axes", function () {
       // When
       this.inst.setTo({x: 20}, 200);
     });
+
+    it("should check `setBy` method (with duration)", () => {
+      // Given
+      this.inst = new Axes({
+        x: {
+          range: [0, 100],
+          bounce: [30, 50],
+          circular: true
+        },
+        otherX: {
+          range: [-100, 100],
+          bounce: 40,
+          circular: [false, true]
+        }
+      }, {
+        deceleration: 0.001
+      });
+      this.inst.setTo({x: 50});
+      expect(this.inst.get()).to.be.eql({x: 50, otherX: -100});
+
+      this.inst.on({
+        "animationStart": startHandler,
+        "change": changeHandler,
+        "animationEnd": endHandler
+      });
+      
+      const startHandler = sinon.spy();
+      const changeHandler = sinon.spy();
+      const endHandler = sinon.spy(function() {
+        // Then
+        expect(startHandler.callCount).to.be.equal(1);
+        expect(changeHandler.called).to.be.true;
+        expect(this.inst.get()).to.be.eql({x: 40, otherX: -100});
+        done();
+      });
+      
+      // When
+      this.inst.setBy({x: -10}, 200);
+    });    
   });
 
   describe("Axes Test with InputType", function () {

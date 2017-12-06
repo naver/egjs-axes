@@ -2,6 +2,7 @@ import { IInputType, IInputTypeObserver } from "./InputType";
 export interface PinchInputOption {
     scale?: number;
     threshold?: number;
+    hammerManagerOptions?: Object;
 }
 export declare class PinchInput implements IInputType {
     options: PinchInputOption;

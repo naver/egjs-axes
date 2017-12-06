@@ -23,13 +23,11 @@ export class AxisManager {
   }
   constructor(private axis, private options: AxesOption) {
     this._complementOptions();
-    
     this._pos = Object.keys(this.axis).reduce((acc, v) => {
       acc[v] = this.axis[v].range[0];
       return acc;
     }, {});
   }
-  
   /**
 	 * set up 'css' expression
 	 * @private
@@ -54,7 +52,6 @@ export class AxisManager {
 			});
 		});
   }
-  
   getDelta(depaPos: Axis, destPos: Axis): Axis {
     const fullDepaPos = this.get(depaPos);
     return this.map(this.get(destPos), (v, k) => v - fullDepaPos[k]);

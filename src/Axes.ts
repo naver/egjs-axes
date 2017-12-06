@@ -4,10 +4,6 @@ import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
 import { InputObserver } from "./InputObserver";
-import { PanInput } from "./inputType/PanInput";
-import { PinchInput } from "./inputType/PinchInput";
-import { WheelInput } from "./inputType/WheelInput";
-import { MoveKeyInput } from "./inputType/MoveKeyInput";
 import { TRANSFORM, DIRECTION } from "./const";
 import { IInputType } from "./inputType/InputType";
 
@@ -114,10 +110,11 @@ export interface AxesOption {
  */
 export default class Axes extends Component {
 	static VERSION = "#__VERSION__#";
-	static PanInput = PanInput;
-	static PinchInput = PinchInput;
-	static WheelInput = WheelInput;
-	static MoveKeyInput = MoveKeyInput;
+	// for tree shaking
+	static PanInput;
+	static PinchInput;
+	static WheelInput;
+	static MoveKeyInput;
 
 	/**
 	 * @name eg.Axes.TRANSFORM
@@ -209,7 +206,6 @@ export default class Axes extends Component {
 		this.em.setAnimationManager(this.am);
 		startPos && this.em.triggerChange(startPos);
 	}
-	
 	/**
 	 * Connect the axis of eg.Axes to the inputType.
 	 * @ko eg.Axes의 축과 inputType을 연결한다

@@ -4,10 +4,6 @@ import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
 import { InputObserver } from "./InputObserver";
-import { PanInput } from "./inputType/PanInput";
-import { PinchInput } from "./inputType/PinchInput";
-import { WheelInput } from "./inputType/WheelInput";
-import { MoveKeyInput } from "./inputType/MoveKeyInput";
 import { DIRECTION } from "./const";
 import { IInputType } from "./inputType/InputType";
 export interface AxesOption {
@@ -22,10 +18,10 @@ export default class Axes extends Component {
         [key: string]: AxisOption;
     };
     static VERSION: string;
-    static PanInput: typeof PanInput;
-    static PinchInput: typeof PinchInput;
-    static WheelInput: typeof WheelInput;
-    static MoveKeyInput: typeof MoveKeyInput;
+    static PanInput: any;
+    static PinchInput: any;
+    static WheelInput: any;
+    static MoveKeyInput: any;
     static TRANSFORM: string;
     static DIRECTION_NONE: DIRECTION;
     static DIRECTION_LEFT: DIRECTION;
