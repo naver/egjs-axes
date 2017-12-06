@@ -33,25 +33,10 @@ export function toAxis(source: string[], offset: number[]): Axis {
 		return acc;
 	}, {});
 };
-export function createHammer(element: HTMLElement, recognizers, inputClass?) {
+export function createHammer(element: HTMLElement, options) {
 	try {
-		const options = {
-			recognizers: [
-				recognizers
-			],
-			// css properties were removed due to usablility issue
-			// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-			cssProps: {
-				userSelect: "none",
-				touchSelect: "none",
-				touchCallout: "none",
-				userDrag: "none",
-			}
-		};
-		inputClass && (options["inputClass"] = inputClass);
-
 		// create Hammer
-		return new Hammer.Manager(element, options);
+		return new Hammer.Manager(element, { ...options });
 	} catch (e) {
 		return null;
 	}

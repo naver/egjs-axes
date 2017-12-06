@@ -5,6 +5,7 @@ export interface PanInputOption {
     scale?: number[];
     thresholdAngle?: number;
     threshold?: number;
+    hammerManagerOptions?: Object;
 }
 export declare class PanInput implements IInputType {
     options: PanInputOption;

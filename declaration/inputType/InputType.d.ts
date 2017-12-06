@@ -22,5 +22,5 @@ export interface IInputTypeObserver {
 export declare const SUPPORT_TOUCH: boolean;
 export declare const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export declare function toAxis(source: string[], offset: number[]): Axis;
-export declare function createHammer(element: HTMLElement, recognizers: any, inputClass?: any): any;
+export declare function createHammer(element: HTMLElement, options: any): any;
 export declare function convertInputType(inputType?: string[]): any;

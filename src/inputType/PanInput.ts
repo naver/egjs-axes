@@ -10,6 +10,7 @@ export interface PanInputOption {
 	scale?: number[];
 	thresholdAngle?: number;
 	threshold?: number;
+	hammerManagerOptions?: Object;
 }
 
 /**
@@ -21,6 +22,7 @@ export interface PanInputOption {
  * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
  * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
  * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+ * @property {Object} [hammerManagerOptions={cssProps: {userSelect: "none",touchSelect: "none",touchCallout: "none",userDrag: "none"}] Options of Hammer.Manager <ko>Hammer.Manager의 옵션</ko>
 **/
 /**
  * @class eg.Axes.PanInput
@@ -107,6 +109,16 @@ export class PanInput implements IInputType {
 				scale: [1, 1],
 				thresholdAngle: 45,
 				threshold: 0,
+				hammerManagerOptions: {
+					// css properties were removed due to usablility issue
+					// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
+					cssProps: {
+						userSelect: "none",
+						touchSelect: "none",
+						touchCallout: "none",
+						userDrag: "none",
+					},
+				},
 			}, ...options
 		};
 		this.onHammerInput = this.onHammerInput.bind(this);
@@ -149,9 +161,12 @@ export class PanInput implements IInputType {
 			if (!inputClass) {
 				throw new Error("Wrong inputType parameter!");
 			}
-			this.hammer = createHammer(this.element,
-				[Hammer.Pan, hammerOption],
-				inputClass);
+			this.hammer = createHammer(this.element, { ...{
+				recognizers: [
+					[Hammer.Pan, hammerOption],
+				],
+				inputClass,
+			}, ... this.options.hammerManagerOptions });
 			this.element[UNIQUEKEY] = keyValue;
 		}
 		this.attachEvent(observer);

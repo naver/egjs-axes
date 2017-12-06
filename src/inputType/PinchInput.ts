@@ -7,6 +7,7 @@ import { Axis } from "../AxisManager";
 export interface PinchInputOption {
 	scale?: number;
 	threshold?: number;
+	hammerManagerOptions?: Object;
 }
 
 
@@ -15,6 +16,7 @@ export interface PinchInputOption {
  * @ko eg.Axes.PinchInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+ * @property {Object} [hammerManagerOptions={cssProps: {userSelect: "none",touchSelect: "none",touchCallout: "none",userDrag: "none"}] Options of Hammer.Manager <ko>Hammer.Manager의 옵션</ko>
 **/
 
 /**
@@ -57,6 +59,16 @@ export class PinchInput implements IInputType {
 			...{
 				scale: 1,
 				threshold: 0,
+				hammerManagerOptions: {
+					// css properties were removed due to usablility issue
+					// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
+					cssProps: {
+						userSelect: "none",
+						touchSelect: "none",
+						touchCallout: "none",
+						userDrag: "none",
+					},
+				},
 			}, ...options
     };
 		this.onPinchStart = this.onPinchStart.bind(this);
@@ -83,9 +95,12 @@ export class PinchInput implements IInputType {
 			} else {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
 			}
-      this.hammer = createHammer(this.element,
-        [Hammer.Pinch, hammerOption],
-        Hammer.TouchInput);
+      this.hammer = createHammer(this.element, { ...{
+				recognizers: [
+					[Hammer.Pinch, hammerOption],
+				],
+				inputClass: Hammer.TouchInput,
+			}, ...this.options.hammerManagerOptions});
 			this.element[UNIQUEKEY] = keyValue;
 		}
 		this.attachEvent(observer);

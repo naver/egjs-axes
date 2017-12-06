@@ -1,6 +1,6 @@
 import { InputObserver } from "./../InputObserver";
 import { $ } from "../utils";
-import { UNIQUEKEY, toAxis, convertInputType, createHammer, IInputType, IInputTypeObserver } from "./InputType";
+import { UNIQUEKEY, toAxis, IInputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";
 
 export interface WheelInputOption {
