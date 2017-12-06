@@ -15,8 +15,10 @@ describe("Util Test", function() {
     const divs = [complicatedHTML, complicatedHTML];
     
     // Then
+    expect($(window)).to.be.equal(window);
+    expect($(document)).to.be.equal(document);
     expect($(div) instanceof HTMLElement).to.be.true;
-    expect($(divs) instanceof HTMLElement).to.be.true;
+    expect($($(div)) instanceof HTMLElement).to.be.true;
     expect($(divs, true).length).to.be.equal(2);
     expect($("#sandbox")).to.be.equal(this.el);
     expect(this.el).to.be.equal(this.el);

@@ -4,10 +4,6 @@ import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
 import { InputObserver } from "./InputObserver";
-import { PanInput } from "./inputType/PanInput";
-import { PinchInput } from "./inputType/PinchInput";
-import { WheelInput } from "./inputType/WheelInput";
-import { MoveKeyInput } from "./inputType/MoveKeyInput";
 import { TRANSFORM, DIRECTION } from "./const";
 import { IInputType } from "./inputType/InputType";
 
