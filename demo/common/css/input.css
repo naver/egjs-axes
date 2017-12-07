@@ -1,9 +1,10 @@
 /* ======== input ======= */
 #inputs.docs {
     padding: 20px 0px 0px;
+    margin-bottom: 0;
 }
 #inputs .docs-inner {
-    padding : 0;
+    /* padding : 0; */
 }
 #inputs .docs-inner .checked {
     background: #fff;
@@ -28,18 +29,24 @@
     font-size: 13px;
 }
 .input-item {
-    width: 150px;
-    margin: 5px 5px 0px;
+    width: 25%;
+    min-width: 150px;
     padding-top: 5px;
+    margin-bottom: 10px;
     display: inline-block;
     list-style: none;
     vertical-align: top;
     cursor: pointer;
     text-align: center;
+    float:left;
+}
+.input-item .logo-input-area {
+    width: 150px;
+    height: 150px;
 }
 .input-item.checked p {
     font-weight: bold;
-    /* color: #5a5; */
+    color: #5a5;
 }
 
 
@@ -149,6 +156,9 @@
 @media (max-width: 650px) {
     .logo {
         width: 100%;
+    }
+    .input-item {
+        width: 50%;
     }
     .logo-input-area, .logo-view-area {
         width: 180px;
