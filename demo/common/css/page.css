@@ -335,8 +335,8 @@ pre code {
 .docs.input h2.title {
   text-align: left;
 }
-.docs,inputs p.description {
-  text-align: center;
+.docs, inputs p.description {
+  /* text-align: center; */
   margin-bottom: 10px;
 }
 /* ======= License Section ======= */
