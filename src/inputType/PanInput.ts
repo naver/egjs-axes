@@ -153,7 +153,7 @@ export class PanInput implements IInputType {
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
-				this.hammer.destroy();
+				this.hammer && this.hammer.destroy();
 			} else {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
 			}
