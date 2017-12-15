@@ -172,11 +172,20 @@ $(function () {
   // 2. attach event handler
   axes.on({
     "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
-    "change": ({pos, delta, holding}) => {
+    "change": function (e) {
+      var pos = e.pos;
+      var delta = e.delta;
+      var holding = e.holding;
+      console.log(e);
       if (delta.panX || delta.panY) {
         pan.textContent = 
           `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
-        holding && !pan.classList.contains("blinking") &&
+          if (e.inputEvent && e.inputEvent.type === "keydown") {
+              pan.classList.add("keyboard");
+          } else {
+            pan.classList.remove("keyboard");
+          }
+          holding && !pan.classList.contains("blinking") &&
           pan.classList.add("blinking");
       }
       if (delta.zoom) {

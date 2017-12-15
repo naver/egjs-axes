@@ -1,0 +1,180 @@
+/* ======== input ======= */
+#inputs.docs {
+    padding: 20px 0px 0px;
+    margin-bottom: 0;
+}
+#inputs .docs-inner {
+    /* padding : 0; */
+}
+#inputs .docs-inner .checked {
+    background: #fff;
+}
+.input-list {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.input-list .logo {
+    position: relative;
+    width: 150px;
+    height: 150px;
+}
+.input-list .logo .logo-input-area {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+.input-list .logo .logo-input-area {
+    font-size: 13px;
+}
+.input-item {
+    width: 25%;
+    min-width: 150px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+    list-style: none;
+    vertical-align: top;
+    cursor: pointer;
+    text-align: center;
+    float:left;
+}
+.input-item .logo-input-area {
+    width: 150px;
+    height: 150px;
+}
+.input-item.checked p {
+    font-weight: bold;
+    color: #5a5;
+}
+
+
+/* ======== input-description ======= */
+.logo {
+    width: 600px;
+    margin: 0px auto;
+    text-align: center;
+}
+.logo-input-area, .logo-view-area {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    display: inline-block;
+    margin: 10px;
+}
+.logo-input-area {
+    /* border: 2px solid #999; */
+    margin-right: 40px;
+}
+.logo-view-area {
+    border: 5px dashed #999;
+}
+.logo-view-area .dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 4px solid #999;
+    background: #fff;
+}
+.logo-view-area .dot.left {
+    left: -10px;
+}
+.logo-view-area .dot.top {
+    top: -10px;
+}
+.logo-view-area .dot.bottom {
+    bottom: -10px;
+}
+.logo-view-area .dot.right {
+    right: -10px;
+}
+.logo-view-area .object {
+    position: absolute;
+    bottom: 20%;
+    left: 20%;
+    width: 20px;
+    height: 20px;
+    background: #f55;
+
+}
+#input.docs {
+    background: #f5f5f5;
+    padding: 0 0 40px;
+}
+#input .example {
+    margin: 10px 0px;
+}
+.object-position {
+    position: absolute;
+    white-space: nowrap;
+    bottom: 110%;
+    font-weight: bold;
+    left: -100px;
+    right: -100px;
+    margin: auto;
+    width: 100px;
+    text-align: center;
+
+}
+.object-position *:after {
+    content: "0";
+    color: #f55;
+}
+.logo .object-position .object-position-x {
+    margin-right: 5px;
+}
+
+/* ====== demo ====== */
+.demo-list {
+    display: block;
+    clear: both;
+    margin: 0px auto;
+    padding: 0;
+    text-align: center;
+    padding-top: 50px;
+    max-npmwidth: 660px;
+}
+.demo-item {
+    display: inline-block;
+    width: 160px;
+    padding: 10px;
+    text-align: center;
+    vertical-align: top;
+}
+.demo-item img {
+    width: 140px;
+    height: 100px;
+    border: 1px solid #ccc;
+    /* border-radius: 50%; */
+}
+.demo-item p {
+    text-align: center;
+}
+
+
+@media (max-width: 650px) {
+    .logo {
+        width: 100%;
+    }
+    .input-item {
+        width: 50%;
+    }
+    .logo-input-area, .logo-view-area {
+        width: 180px;
+        height: 180px;
+    }
+    .logo-input-area {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 460px) {
+    .logo .logo-input-area {
+        width: 100px;
+        height: 100px;
+    }
+    .logo .logo-input-area, .logo .logo-view-area {
+        vertical-align: middle;
+    }
+}

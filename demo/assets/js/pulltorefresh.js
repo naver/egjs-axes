@@ -20,7 +20,7 @@ $(function () {
     const el = document.createElement("li");
     el.className = "pull_drw addblinking";
     el.innerHTML = `<div class="pull_im">
-        <img src="./assets/image/pulltorefresh/${Math.floor((Math.random() * 50) + 1)}.jpg" width="110"/>
+        <img src="../image/pulltorefresh/${Math.floor((Math.random() * 50) + 1)}.jpg" width="110"/>
       </div>
       <div class="pull_tx">
         <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>

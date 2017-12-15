@@ -1,3 +1,8 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 #grid {
   position: relative;
   float:left;
@@ -74,7 +79,13 @@
 .mouse .pan {
   background:url("../image/axes/mouse-click.png");
 }
+.mouse .pan.keyboard {
+  background:url("../image/axes/keyboard.png");
+}
+#inputType.mouse .pan.keyboard {
+  background-size: auto 50px;
 
+}
 .mouse .zoom {
   background:url("../image/axes/mouse-wheel.png");
 }

@@ -7,22 +7,77 @@ hashtag: "#interaction #virtual-scroll"
 GA: UA-70842526-16
 github:
   user: naver
-  repo: egjs-axes 
-js:
-- assets/js/axes.js
-- assets/js/car360viewer.js
-- assets/js/cardinhand.js
-- assets/js/cube.js
-- assets/js/minimap.js
-- assets/js/subway.js
-- assets/js/pulltorefresh.js
-- assets/js/3dcarousel.js
-css:
-- assets/css/axes.css
-- assets/css/car360viewer.css
-- assets/css/cardinhand.css
-- assets/css/cube.css
-- assets/css/minimap.css
-- assets/css/subway.css
-- assets/css/pulltorefresh.css
-- assets/css/3dcarousel.css
+  repo: egjs-axes
+inputs:
+  - name: PanInput
+    description: Connect axis to the mouse or touchscreen x, y position.
+    js: axis.connect(["x", "y"], new eg.Axes.PanInput(target));
+    object:
+      - x
+      - y
+    demos:
+      - name: What is eg.Axes?
+        file: axes
+      - name: Car 360º Viewer
+        file: car360viewer
+      - name: Rotate a Cube
+        file: cube
+      - name: 3D Carousel
+        file: 3dcarousel
+      - name: Cards in hands
+        file: cardinhand
+      - name: Pull to Refresh
+        file: pulltorefresh
+      - name: Mini Map
+        file: minimap
+      - name: Subway
+        file: subway
+  - name: PinchInput
+    description: Connect axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+    js: axis.connect(["zoom"], new eg.Axes.PinchInput(target));
+    object:
+      - zoom
+    demos:
+      - name: What is eg.Axes?
+        file: axes
+      - name: Bubble
+        file: bubble
+      - name: Subway
+        file: subway
+  - name: WheelInput
+    description: Connect axis when the mousewheel is moved.
+    js: axis.connect(["wheel"], new eg.Axes.WheelInput(target));
+    object:
+      - scroll
+    demos:
+      - name: What is eg.Axes?
+        file: axes
+      - name: 3D Carousel
+        file: 3dcarousel
+      - name: Subway
+        file: subway
+      - name: Bubble
+        file: bubble
+  - name: MoveKeyInput
+    description: Connect axis when the arrow key is pushed.
+    js: axis.connect(["leftright", "updown"], new eg.Axes.MoveKeyInput(target));
+    object:
+      - x
+      - y
+    demos:
+      - name: What is eg.Axes?
+        file: axes
+      - name: Rotate a Cube
+        file: cube
+      - name: Mini Map
+        file: minimap
+projects:
+- name: Naver Search Mobile
+  url: https://m.search.naver.com/search.naver?sm=mtb_sly.hst&where=m&query=%EB%8D%94%EB%B9%84%ED%8B%80&oquery=%EB%B2%A4%EC%B8%A0+%EB%89%B4%EB%B9%84%ED%8B%80&tqi=TAh%2BNlpySCGssbKZNIKssssssoo-206192&tab=&acr=5
+  image: ./assets/image/projects/search.png
+- name: Flicking
+  url: https://naver.github.io/egjs-flicking/
+  image: ./assets/image/projects/flicking.png
+- name: View 360
+  url: https://naver.github.io/egjs-view360/
+  image: ./assets/image/projects/view360.png
