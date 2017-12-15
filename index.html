@@ -13,25 +13,19 @@
     <script src="./common/js/bootstrap.min.js"></script>
 </head>
 
-	<link rel="stylesheet" href="assets/css/axes.css">
-
-	<link rel="stylesheet" href="assets/css/car360viewer.css">
-
-	<link rel="stylesheet" href="assets/css/cardinhand.css">
-
-	<link rel="stylesheet" href="assets/css/cube.css">
-
-	<link rel="stylesheet" href="assets/css/minimap.css">
-
-	<link rel="stylesheet" href="assets/css/subway.css">
-
-	<link rel="stylesheet" href="assets/css/pulltorefresh.css">
-
-	<link rel="stylesheet" href="assets/css/3dcarousel.css">
-
 
 	<script src="release/latest/dist/axes.pkgd.js"></script>
 
+
+<link rel="stylesheet" href="./assets/css/logo/PanInput.css">
+
+<link rel="stylesheet" href="./assets/css/logo/PinchInput.css">
+
+<link rel="stylesheet" href="./assets/css/logo/WheelInput.css">
+
+<link rel="stylesheet" href="./assets/css/logo/MoveKeyInput.css">
+
+<link rel="stylesheet" href="./common/css/input.css">
 <script>
 	var homeUrl = window.location.href;
 	if (homeUrl.indexOf("#") !== -1) {
@@ -61,20 +55,27 @@
 
     <!-- ******HEADER****** -->
     <header id="header" class="header">
-            <div class="container">
+        <div class="container">
+            <div class="pull-left home">
                 <a href="//naver.github.io/egjs">
-                    <h1 class="logo pull-left"></h1>
-                </a><!--//logo-->
+                    <h1 class="logo"></h1>
+                </a>
             </div>
-        </header><!--//header-->
+            <div class="pull-right home">
+                <a target="_blank" href="//naver.github.io/egjs-axes/release/latest/doc/">
+                API </a>/
+                <a target="_blank" href="//github.com/naver/egjs-axes"> Github </a>
+            </div>
     
-    
+        </div>
+    </header>
+    <!--//header-->
 <section id="promo" class="promo section">
     <div class="container">
         <div class="hero-image" style="background-image: url(//naver.github.io/egjs/img/Axes.png)">
         </div>
         <h2 class="title">
-            <span class="highlight">Axes</span><a href="https://github.com/naver/egjs-axes/releases/tag/2.3.2"><span class="version">v2.3.2</span></a>
+            <span class="highlight">Axes</span><a href="https://github.com/naver/egjs-axes/releases/tag/2.3.3"><span class="version">v2.3.3</span></a>
         </h2>
         <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.<br/>
             <span class="hashtag">#interaction #virtual-scroll</span>
@@ -87,9 +88,8 @@
 				<div class="docs-inner">
 					<p class="text-center">
 						<a href="#getting-started">Getting Started </a>/ 
-						<a href="#demos"> Demos </a>/
-						<a target="_blank" href="//naver.github.io/egjs-axes/release/latest/doc/"> Documentation </a>/ 
-						<a target="_blank" href="//github.com/naver/egjs-axes"> Source </a>
+						<a href="#inputs"> Inputs &amp; Demos </a>/
+						<a href="#projects"> Projects </a>
 					</p>
 				</div>
 			</div>
@@ -104,18 +104,16 @@
 
 <h3 id="quick-steps-to-use">Quick steps to use:</h3>
 
-<h4 id="set-up-your-html">1. Set up your HTML</h4>
+<h4 id="1-set-up-your-html">1. Set up your HTML</h4>
 
 <div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"area"</span><span class="nt">&gt;&lt;/div&gt;</span>
 </code></pre>
 </div>
 
-<h4 id="load-files-or-import-library">2. Load files or import library</h4>
+<h4 id="2-load-files-or-import-library">2. Load files or import library</h4>
 
 <h5 id="es5">ES5</h5>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre>
 </div>
 
@@ -124,7 +122,7 @@
 </code></pre>
 </div>
 
-<h4 id="initialize-egaxes">3. Initialize eg.Axes</h4>
+<h4 id="3-initialize-egaxes">3. Initialize eg.Axes</h4>
 
 <p>Initialize eg.Axes. specify the axis to be used.
 The key of the axis specifies the name to use as the logical virtual coordinate system.</p>
@@ -138,7 +136,7 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 </code></pre>
 </div>
 
-<h4 id="attach-event-handlers">4. Attach event handlers</h4>
+<h4 id="4-attach-event-handlers">4. Attach event handlers</h4>
 <p>eg.Axes provides five events.</p>
 
 <ul>
@@ -155,22 +153,26 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 </code></pre>
 </div>
 
-<h4 id="initialize-inputtypes-to-use">5. Initialize InputTypes to use</h4>
+<h4 id="5-initialize-inputtypes-to-use">5. Initialize InputTypes to use</h4>
 <p>Create an InputType to associate with the axis of eg.Axes.</p>
 
-<p>Axes provides three inputTypes.
-- <a href="./release/latest/doc/eg.Axes.PanInput.html">eg.Axes.PanInput</a>
-- <a href="./release/latest/doc/eg.Axes.PinchInput.html">eg.Axes.PinchInput</a>
-- <a href="./release/latest/doc/eg.Axes.WheelInput.html">eg.Axes.WheelInput</a></p>
+<p>Axes provides three inputTypes.</p>
+<ul>
+  <li><a href="./release/latest/doc/eg.Axes.PanInput.html">eg.Axes.PanInput</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.PinchInput.html">eg.Axes.PinchInput</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.WheelInput.html">eg.Axes.WheelInput</a></li>
+  <li><a href="./release/latest/doc/eg.Axes.MoveKeyInput.html">eg.Axes.MoveKeyInput</a></li>
+</ul>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create inputTypes to use</span>
 <span class="kr">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
 <span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
 <span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">movekeyInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">(</span><span class="s2">"#mArea"</span><span class="p">);</span>
 </code></pre>
 </div>
 
-<h4 id="connect-egaxes-and-inputtypes">6. Connect eg.Axes and InputTypes</h4>
+<h4 id="6-connect-egaxes-and-inputtypes">6. Connect eg.Axes and InputTypes</h4>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="cm">/** 
  * [PanInput] When the mouse or touchscreen is down and moved.
@@ -189,610 +191,338 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <span class="c1">// [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).</span>
 <span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"something2"</span><span class="p">],</span> <span class="nx">pinchInput</span><span class="p">);</span> <span class="c1">// or axes.connect("something2", pinchInput);</span>
+
+<span class="c1">// Connect 'something1' axis to left-right arrow key and 'something2' axis to top-bottom key</span>
+<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"something1"</span><span class="p">,</span> <span class="s2">"something2"</span><span class="p">],</span> <span class="nx">movekeyInput</span><span class="p">);</span> <span class="c1">// or axes.connect("something1 something2", panInput);</span>
 </code></pre>
 </div>
 
-<h4 id="enjoy">7. Enjoy!</h4>
+<h4 id="7-enjoy">7. Enjoy!</h4>
 <p>You can change the value of the axis through touch screen, mouse or anything else.</p>
 
 			</div>
 		</div>
 	</section>
-	<section id="demos" class="docs section demos">
+	<section id="inputs" class="docs section inputs">
 		<div class="container">
 			<div class="docs-inner">
-				<h2 class="title text-center">Demos</h2>
-				
-				<h3 id="what-is-the-egaxes">What is the eg.Axes?</h3>
-
-<div class="demobox" codepen="axes">
-  <p>You can change the value of the axis and apply it to the UI via the touch screen, mouse, or various other inputs.</p>
-  <div id="inputTypeWrapper">
-    <div id="inputType">
-      <div class="pan"></div>
-      <div class="zoom">zoom: 1.00</div>
-    </div>
-  </div>
-  <div id="delegateTarget">
-    <div id="uiWrapper">
-      <div class="ui">
-        <img src="./assets/image/axes/logo.svg" />
-      </div>
-    </div>
-    <div id="grid"></div>
-  </div>
-  <div style="clear:both;"></div>
+				<h2 class="title text-center">Inputs</h2>
+				<p class="description">If you select a inputType, you can show demos.</p>
+				<ul class="input-list">
+					
+					 <li class="input-item" onclick="showInput('PanInput', this)">
+						<div class="logo PanInput">
+							<div class="logo-input-area">
+							<div class="mouse">
+    <div class="mouse-left-button"></div>
+    <div class="mouse-right-button"></div>
 </div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">panX</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
-  <span class="p">},</span>
-  <span class="na">panY</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">20</span>
-  <span class="p">},</span>
-  <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">1</span>
-  <span class="p">}</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">minimumDuration</span><span class="p">:</span> <span class="mi">300</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"hold"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">SUPPORT_TOUCH</span> <span class="o">&amp;&amp;</span> <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">),</span>
-  <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span> <span class="nx">holding</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">panX</span> <span class="o">||</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">panY</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">pan</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> 
-        <span class="err">`</span><span class="na">panX</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))},</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">$</span><span class="p">{(</span><span class="o">+</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">0</span><span class="p">))}</span><span class="err">`</span><span class="p">;</span>
-      <span class="nx">holding</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
-          <span class="nx">pan</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">zoom</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="err">`</span><span class="na">zoom</span><span class="p">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">)}</span><span class="err">`</span><span class="p">;</span>
-      <span class="o">!</span><span class="nx">zoom</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">zoom</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"blinking"</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="nx">gridView</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">);</span>
-    <span class="nx">ui</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
-      <span class="err">`</span><span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span><span class="err">`</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="s2">"release"</span><span class="err">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span>
-  <span class="s2">"animationEnd"</span><span class="err">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">()</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize inputTypes and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">))</span>  
-  <span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"panX panY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">,</span> <span class="p">{</span>
-    <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">]</span>
-  <span class="p">}))</span>
-  <span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"zoom"</span><span class="p">,</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span>
-    <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">)</span> <span class="p">:</span>
-    <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">delegateTarget</span><span class="p">));</span>
-
-<span class="c1">// 4. move to position </span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">setTo</span><span class="p">({</span><span class="na">panX</span><span class="p">:</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="na">panY</span><span class="p">:</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">});</span>
-</code></pre>
+							</div>
+						</div>
+						<p>PanInput</p>
+					</li>
+					
+					 <li class="input-item" onclick="showInput('PinchInput', this)">
+						<div class="logo PinchInput">
+							<div class="logo-input-area">
+							<div class="pinch pinch-left"></div>
+<div class="pinch pinch-right"></div>
+							</div>
+						</div>
+						<p>PinchInput</p>
+					</li>
+					
+					 <li class="input-item" onclick="showInput('WheelInput', this)">
+						<div class="logo WheelInput">
+							<div class="logo-input-area">
+							<div class="mouse">
+    <div class="wheel"></div>
 </div>
-
-<h3 id="car-360-viewer">Car 360º viewer</h3>
-
-<div codepen="car360viewer">
-  <p>You can create a viewer that can rotate 360 ​​degrees using one axis.</p>
-  <div class="car_spot">
-    <div class="car_rotate">
-      <div class="img_cont" style="position:relative;z-index:10">
-        <img height="150" src="./assets/image/car360/beatle (1).png" />
-        <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none" />
-      </div>
-      <div class="ratate_bg"></div>
-    </div>
-  </div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">angle</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">}</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.01</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="kr">const</span> <span class="nx">index</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">angle</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">/</span> <span class="nx">ape</span><span class="p">),</span> <span class="nx">imagesNum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
-  <span class="nx">images</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">v</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">index</span> <span class="p">?</span> <span class="s2">"inline-block"</span> <span class="p">:</span> <span class="s2">"none"</span><span class="p">;</span>
-  <span class="p">});</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize a inputType and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"angle"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">".car_rotate"</span><span class="p">));</span>
-</code></pre>
-</div>
-
-<h3 id="rotate-a-cube">Rotate a Cube</h3>
-
-<div codepen="cube">
-  <p>You can rotate the cube using two axes.</p>
-  <div id="area">
-    <div id="box">
-      <div class="face metal-linear" style="-webkit-transform:rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px);">1</div>
-      <div class="face metal-linear" style="-webkit-transform:rotateY(-90deg) translate3d(0px,-50px,100px);">2</div>
-      <div class="face metal-linear" style="-webkit-transform:rotateY(90deg) translate3d(0px,-50px,0px);">3</div>
-      <div class="face metal-linear" style="-webkit-transform:rotateX(90deg) translate3d(-50px,0px,100px);">4</div>
-      <div class="face metal-linear" style="-webkit-transform:rotateY(180deg) translate3d(50px,-50px,50px);">5</div>
-      <div class="face metal-linear" style="-webkit-transform:rotateX(-90deg) translate3d(-50px,0px,0px);">6</div>
-    </div>
-  </div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">rotateX</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">},</span>
-  <span class="na">rotateY</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">}</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">box</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span>
-    <span class="err">`</span><span class="nx">rotateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateX</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span> <span class="nx">rotateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rotateY</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-<span class="p">});</span>
-  
-<span class="c1">// 3. Initialize a inputType and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rotateX rotateY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">));</span>
-
-<span class="c1">// 4. move to position </span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">setTo</span><span class="p">({</span>
-  <span class="s2">"rotateX"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
-  <span class="s2">"rotateY"</span><span class="p">:</span> <span class="mi">315</span>
-<span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
-</code></pre>
-</div>
-
-<h3 id="d-carousel">3D Carousel</h3>
-
-<div class="demobox" codepen="3dcarousel">
-  <p>You can create a carousel by controlling the animation.</p>
-  <div id="carouselWrapper">
-    <div class="list_container">
-      <div id="carousel" style="transform: translateZ(-253px);">
-        <figure style="transform: rotateY(0deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music1-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Too Much</div>
-          <div id="list_cd_artist">Loco</div>
-        </figure>
-        <figure style="transform: rotateY(45deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music2-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Woo ah</div>
-          <div id="list_cd_artist">Crush</div>
-        </figure>
-        <figure style="transform: rotateY(90deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music3-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Man In The Mirror</div>
-          <div id="list_cd_artist">Micheal Jackson</div>
-        </figure>
-        <figure style="transform: rotateY(135deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music4-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Adult</div>
-          <div id="list_cd_artist">GiriBoy</div>
-        </figure>
-        <figure style="transform: rotateY(180deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music5-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Always Awake</div>
-          <div id="list_cd_artist">Beenzino</div>
-        </figure>
-        <figure style="transform: rotateY(225deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music6-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">City Burns</div>
-          <div id="list_cd_artist">Andra Day</div>
-        </figure>
-        <figure style="transform: rotateY(270deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music7-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Get Some Air</div>
-          <div id="list_cd_artist">Gary</div>
-        </figure>
-        <figure style="transform: rotateY(315deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music8-min.jpg')">
-            <div id="list_cd_hole"></div>
-          </div>
-          <div id="list_cd_title">Hold Me Tight</div>
-          <div id="list_cd_artist">Loco</div>
-        </figure>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">rotate</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span>
-    <span class="na">circular</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">carousel</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"translateZ(-253px) rotateY("</span> <span class="o">+</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">rotate</span> <span class="o">+</span> <span class="s2">"deg)"</span><span class="p">;</span>
-  <span class="p">},</span>
-  <span class="s2">"release"</span><span class="p">:</span> <span class="p">({</span><span class="nx">destPos</span><span class="p">,</span> <span class="nx">setTo</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="c1">// you can controll animation!</span>
-    <span class="nx">setTo</span><span class="p">({</span><span class="s2">"rotate"</span><span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">destPos</span><span class="p">.</span><span class="nx">rotate</span><span class="o">/</span><span class="nx">ANGLE</span><span class="p">)</span> <span class="o">*</span> <span class="nx">ANGLE</span><span class="p">}</span> <span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
-  <span class="p">},</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize a inputType and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rotate"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#carouselWrapper"</span><span class="p">));</span>
-</code></pre>
-</div>
-
-<h3 id="cards-in-hands">Cards in hands</h3>
-
-<div codepen="cardinhand">
-  <p>You can create a UI that responds to user input using two axes.</p>
-  <div id="showcase">
-    <div class="showcase-item">
-      <div class="showcase-content">
-        <div id="movableCoordWrapper">
-          <div class="hand">
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-          </div>
-        </div>
-        <div id="dot" class="movableDot"></div>
-      </div>
-    </div>
-    <div class="codepen"></div>
-  </div>
-</div>
-
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">hand</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">handRotMin</span><span class="p">,</span> <span class="nx">handRotMax</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">15</span>
-  <span class="p">},</span>
-  <span class="na">top</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">160</span><span class="p">]</span>
-  <span class="p">},</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.00034</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">dot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="s2">"bottom"</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="mf">1.4</span> <span class="o">*</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">}</span><span class="nx">px</span><span class="err">`</span><span class="p">;</span>
-  <span class="nx">dot</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translateX</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span> <span class="o">*</span> <span class="mf">2.3</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-  <span class="nx">hand</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">rotateZ</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">hand</span><span class="p">}</span><span class="nx">deg</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-  <span class="nx">cards</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">v</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">]</span> <span class="o">=</span>
-      <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">v</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">transform</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s2">"translateY"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]}</span> <span class="nx">translateY</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s2">"data-cardOffset"</span><span class="p">))</span> <span class="o">+</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">top</span><span class="p">}</span><span class="nx">px</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-  <span class="p">});</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize a inputType and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"hand top"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">hand</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
-<span class="p">}));</span>
-</code></pre>
-</div>
-
-<h3 id="pull-to-refresh">Pull to Refresh</h3>
-
-<div class="demobox" codepen="pulltorefresh">
-  <p>You can create a pull-to-refresh UI using one axis.</p>
-  <div id="pull-contentWrapper">
-    <div id="prepend">Pull to prepend</div>
-    <ul id="pull-content">
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/1.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/2.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/3.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/4.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/5.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>   
-      
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/6.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/7.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/8.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/9.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>
-      <li class="pull_drw">
-        <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/10.jpg" width="110" />
-        </div>
-        <div class="pull_tx">
-          <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
-        </div>
-      </li>        
-    </ul>
-    <div id="append">Pull to append</div>
-  </div>
-  <div class="bottomWapper"></div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">scroll</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">getMaxRange</span><span class="p">()],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
-  <span class="s2">"change"</span><span class="p">:</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">content</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translate3d</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">scroll</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">axes</span><span class="p">.</span><span class="nx">isBounceArea</span><span class="p">())</span> <span class="p">{</span>
-      <span class="kr">const</span> <span class="nx">info</span> <span class="o">=</span> <span class="nx">getInfo</span><span class="p">(</span><span class="nx">pos</span><span class="p">.</span><span class="nx">scroll</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">info</span><span class="p">.</span><span class="nx">isAdd</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">info</span><span class="p">.</span><span class="nx">isTop</span> <span class="p">?</span> <span class="p">(</span><span class="nx">prepend</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="s2">"Release to prepend"</span><span class="p">)</span> <span class="p">:</span>
-          <span class="p">(</span><span class="nx">append</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="s2">"Release to append"</span><span class="p">);</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">info</span><span class="p">.</span><span class="nx">isTop</span> <span class="p">?</span> <span class="p">(</span><span class="nx">prepend</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="s2">"Pull to prepend"</span><span class="p">)</span> <span class="p">:</span>
-          <span class="p">(</span><span class="nx">append</span><span class="p">.</span><span class="nx">innerText</span> <span class="o">=</span> <span class="s2">"Pull to append"</span><span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="s2">"release"</span> <span class="p">:</span> <span class="p">({</span><span class="nx">depaPos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">axes</span><span class="p">.</span><span class="nx">isBounceArea</span><span class="p">())</span> <span class="p">{</span>
-      <span class="kr">const</span> <span class="nx">info</span> <span class="o">=</span> <span class="nx">getInfo</span><span class="p">(</span><span class="nx">depaPos</span><span class="p">.</span><span class="nx">scroll</span><span class="p">);</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">info</span><span class="p">.</span><span class="nx">isAdd</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">const</span> <span class="nx">el</span> <span class="o">=</span> <span class="nx">getItem</span><span class="p">();</span>
-        <span class="nx">info</span><span class="p">.</span><span class="nx">isTop</span> <span class="p">?</span> 
-          <span class="nx">content</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">content</span><span class="p">.</span><span class="nx">firstChild</span><span class="p">)</span> <span class="p">:</span>
-          <span class="nx">content</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">el</span><span class="p">);</span>
-        <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">scroll</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">getMaxRange</span><span class="p">();</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize inputTypes and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"scroll"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">contentWrapper</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">scale</span> <span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">}));</span>
-</code></pre>
-</div>
-<p>### Mini Map</p>
-
-<div class="demobox" codepen="minimap">
-  <p>You can create a scrollable minimap using two axes.</p>
-  <div style="position:relative">
-    <div id="imageView">
-      <div id="rawImage"></div>
-    </div>
-    <div id="minimap">
-      <div id="minimap-pointer"></div>
-    </div>
-  </div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">rawX</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_WIDTH</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">width</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-  <span class="p">},</span>
-  <span class="na">rawY</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">RAW_IMAGE_HEIGHT</span> <span class="o">-</span> <span class="nx">viewRect</span><span class="p">.</span><span class="nx">height</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-  <span class="p">}</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.0024</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">painting</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> <span class="err">`</span><span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-  <span class="nx">pointer</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span>
-    <span class="o">=</span> <span class="err">`</span><span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawX</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">rawY</span> <span class="o">*</span> <span class="nx">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-<span class="p">});</span>
-  
-<span class="c1">// 3. Initialize a inputType and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"rawX rawY"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">}));</span>
-</code></pre>
-</div>
-
-<h3 id="subway-map">Subway Map</h3>
-
-<div class="demobox" codepen="subway">
-  <p>You can create maps that can zoom using three axes.</p>
-  <div id="zoomWrapper">
-    <img id="subway" src="./assets/image/subway/subway.png" />
-  </div>
-</div>
-
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
-  <span class="na">x</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-  <span class="p">},</span>
-  <span class="na">y</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="na">bounce</span><span class="p">:</span> <span class="mi">100</span>
-  <span class="p">},</span>
-  <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="nx">baseScale</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">deceleration</span><span class="p">:</span> <span class="mf">0.003</span><span class="p">,</span>
-  <span class="na">interrutable</span><span class="p">:</span> <span class="kc">false</span>  
-<span class="p">},</span> <span class="p">{</span>
-  <span class="na">zoom</span><span class="p">:</span> <span class="nx">baseScale</span>
-<span class="p">});</span>
-
-<span class="c1">// 2. attach event handler</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"change"</span><span class="p">,</span> <span class="p">({</span><span class="nx">pos</span><span class="p">,</span> <span class="nx">delta</span><span class="p">,</span> <span class="nx">inputEvent</span><span class="p">,</span> <span class="nx">set</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">inputEvent</span> <span class="o">&amp;&amp;</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kr">const</span> <span class="nx">center</span> <span class="o">=</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">center</span> <span class="p">:</span> <span class="p">{</span>
-      <span class="na">x</span><span class="p">:</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">layerX</span><span class="p">,</span>
-      <span class="na">y</span><span class="p">:</span> <span class="nx">inputEvent</span><span class="p">.</span><span class="nx">layerY</span>
-    <span class="p">};</span>
-    
-    <span class="kr">const</span> <span class="nx">beforeZoom</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">-</span> <span class="nx">delta</span><span class="p">.</span><span class="nx">zoom</span><span class="p">;</span>
-    <span class="kr">const</span> <span class="nx">newX</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">getZoomedOffset</span><span class="p">(</span><span class="nx">center</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span> <span class="nx">beforeZoom</span><span class="p">);</span>
-    <span class="kr">const</span> <span class="nx">newY</span> <span class="o">=</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">y</span> <span class="o">+</span> <span class="nx">getZoomedOffset</span><span class="p">(</span><span class="nx">center</span><span class="p">.</span><span class="nx">y</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span> <span class="nx">beforeZoom</span><span class="p">);</span>
-    <span class="nx">set</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="nx">newX</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="nx">newY</span><span class="p">});</span>
-    <span class="nx">imageView</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span>
-      <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">newY</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-
-    <span class="c1">// change view</span>
-    <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">y</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> 
-      <span class="nx">axes</span><span class="p">.</span><span class="nx">axis</span><span class="p">.</span><span class="nx">x</span><span class="p">.</span><span class="nx">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">getZoomedOffset</span><span class="p">(</span><span class="nx">wrapperSize</span><span class="p">,</span> <span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">,</span> <span class="nx">beforeZoom</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="nx">imageView</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span>
-      <span class="err">`</span><span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span> <span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">x</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="o">-</span><span class="nx">pos</span><span class="p">.</span><span class="nx">y</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">});</span>
-
-<span class="c1">// 3. Initialize inputTypes and connect it</span>
-<span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"zoom"</span><span class="p">,</span> <span class="nx">SUPPORT_TOUCH</span> <span class="p">?</span> 
-  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">)</span> <span class="p">:</span>
-  <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">,</span> <span class="p">{</span>
-    <span class="na">scale</span><span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">baseScale</span><span class="p">)</span>
-  <span class="p">})</span>
-<span class="p">).</span><span class="nx">connect</span><span class="p">(</span><span class="s2">"x y"</span><span class="p">,</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">wrapper</span><span class="p">,</span> <span class="p">{</span>
-  <span class="na">scale</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="p">}));</span>
-</code></pre>
-</div>
-
+							</div>
+						</div>
+						<p>WheelInput</p>
+					</li>
+					
+					 <li class="input-item" onclick="showInput('MoveKeyInput', this)">
+						<div class="logo MoveKeyInput">
+							<div class="logo-input-area">
+							<div class="arrow-key arrow-key-left"><span>◄</span></div>
+<div class="arrow-key arrow-key-top"><span>▲</span></div>
+<div class="arrow-key arrow-key-right"><span>►</span></div>
+<div class="arrow-key arrow-key-bottom"><span>▼</span></div>
+							</div>
+						</div>
+						<p>MoveKeyInput</p>
+					</li>
+					
+				</ul>
 			</div>
 		</div>
 	</section>
+	<section id="input" class="docs section input">
+		<div class="container">
+			
+				<div class="docs-inner PanInput" style="display:none;">
+    <h2 class="title text-center">PanInput</h2>
+    <p>
+        Connect axis to the mouse or touchscreen x, y position.
+    </p>
+    <div class="logo PanInput">
+        <div class="logo-input-area">
+            
+            <div class="mouse">
+    <div class="mouse-left-button"></div>
+    <div class="mouse-right-button"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="mouse-left-button"></div>
+    <div class="mouse-right-button"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="mouse-left-button"></div>
+    <div class="mouse-right-button"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="mouse-left-button"></div>
+    <div class="mouse-right-button"></div>
+</div>
+            
+        </div>
+        <div class="logo-view-area">
+            <div class="dot left top"></div>
+            <div class="dot left bottom"></div>
+            <div class="dot right top"></div>
+            <div class="dot right bottom"></div>
+            <div class="object">
+                <div class="object-position">
+                    (<span class="object-position-x">x: </span><span class="object-position-y">y: </span>)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="example highlighter-rouge">
+        
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">axis</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="nx">target</span><span class="p">));</span></code></pre></figure>
+
+    </div>
+    <ul class="demo-list">
+        
+        <li class="demo-item"><a href="./assets/html/axes.html" target="_blank"><p><img src="./assets/image/demos/axes.gif" /></p><p>What is eg.Axes?</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/car360viewer.html" target="_blank"><p><img src="./assets/image/demos/car360viewer.gif" /></p><p>Car 360º Viewer</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/cube.html" target="_blank"><p><img src="./assets/image/demos/cube.gif" /></p><p>Rotate a Cube</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/3dcarousel.html" target="_blank"><p><img src="./assets/image/demos/3dcarousel.gif" /></p><p>3D Carousel</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/cardinhand.html" target="_blank"><p><img src="./assets/image/demos/cardinhand.gif" /></p><p>Cards in hands</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/pulltorefresh.html" target="_blank"><p><img src="./assets/image/demos/pulltorefresh.gif" /></p><p>Pull to Refresh</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/minimap.html" target="_blank"><p><img src="./assets/image/demos/minimap.gif" /></p><p>Mini Map</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/subway.html" target="_blank"><p><img src="./assets/image/demos/subway.gif" /></p><p>Subway</p></a></li>
+        
+    </ul>
+</div>
+			
+				<div class="docs-inner PinchInput" style="display:none;">
+    <h2 class="title text-center">PinchInput</h2>
+    <p>
+        Connect axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+    </p>
+    <div class="logo PinchInput">
+        <div class="logo-input-area">
+            
+            <div class="pinch pinch-left"></div>
+<div class="pinch pinch-right"></div>
+            
+            <div class="pinch pinch-left"></div>
+<div class="pinch pinch-right"></div>
+            
+            <div class="pinch pinch-left"></div>
+<div class="pinch pinch-right"></div>
+            
+            <div class="pinch pinch-left"></div>
+<div class="pinch pinch-right"></div>
+            
+        </div>
+        <div class="logo-view-area">
+            <div class="dot left top"></div>
+            <div class="dot left bottom"></div>
+            <div class="dot right top"></div>
+            <div class="dot right bottom"></div>
+            <div class="object">
+                <div class="object-position">
+                    (<span class="object-position-zoom">zoom: </span>)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="example highlighter-rouge">
+        
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">axis</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"zoom"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="nx">target</span><span class="p">));</span></code></pre></figure>
+
+    </div>
+    <ul class="demo-list">
+        
+        <li class="demo-item"><a href="./assets/html/axes.html" target="_blank"><p><img src="./assets/image/demos/axes.gif" /></p><p>What is eg.Axes?</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/bubble.html" target="_blank"><p><img src="./assets/image/demos/bubble.gif" /></p><p>Bubble</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/subway.html" target="_blank"><p><img src="./assets/image/demos/subway.gif" /></p><p>Subway</p></a></li>
+        
+    </ul>
+</div>
+			
+				<div class="docs-inner WheelInput" style="display:none;">
+    <h2 class="title text-center">WheelInput</h2>
+    <p>
+        Connect axis when the mousewheel is moved.
+    </p>
+    <div class="logo WheelInput">
+        <div class="logo-input-area">
+            
+            <div class="mouse">
+    <div class="wheel"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="wheel"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="wheel"></div>
+</div>
+            
+            <div class="mouse">
+    <div class="wheel"></div>
+</div>
+            
+        </div>
+        <div class="logo-view-area">
+            <div class="dot left top"></div>
+            <div class="dot left bottom"></div>
+            <div class="dot right top"></div>
+            <div class="dot right bottom"></div>
+            <div class="object">
+                <div class="object-position">
+                    (<span class="object-position-scroll">scroll: </span>)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="example highlighter-rouge">
+        
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">axis</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"wheel"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="nx">target</span><span class="p">));</span></code></pre></figure>
+
+    </div>
+    <ul class="demo-list">
+        
+        <li class="demo-item"><a href="./assets/html/axes.html" target="_blank"><p><img src="./assets/image/demos/axes.gif" /></p><p>What is eg.Axes?</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/3dcarousel.html" target="_blank"><p><img src="./assets/image/demos/3dcarousel.gif" /></p><p>3D Carousel</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/subway.html" target="_blank"><p><img src="./assets/image/demos/subway.gif" /></p><p>Subway</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/bubble.html" target="_blank"><p><img src="./assets/image/demos/bubble.gif" /></p><p>Bubble</p></a></li>
+        
+    </ul>
+</div>
+			
+				<div class="docs-inner MoveKeyInput" style="display:none;">
+    <h2 class="title text-center">MoveKeyInput</h2>
+    <p>
+        Connect axis when the arrow key is pushed.
+    </p>
+    <div class="logo MoveKeyInput">
+        <div class="logo-input-area">
+            
+            <div class="arrow-key arrow-key-left"><span>◄</span></div>
+<div class="arrow-key arrow-key-top"><span>▲</span></div>
+<div class="arrow-key arrow-key-right"><span>►</span></div>
+<div class="arrow-key arrow-key-bottom"><span>▼</span></div>
+            
+            <div class="arrow-key arrow-key-left"><span>◄</span></div>
+<div class="arrow-key arrow-key-top"><span>▲</span></div>
+<div class="arrow-key arrow-key-right"><span>►</span></div>
+<div class="arrow-key arrow-key-bottom"><span>▼</span></div>
+            
+            <div class="arrow-key arrow-key-left"><span>◄</span></div>
+<div class="arrow-key arrow-key-top"><span>▲</span></div>
+<div class="arrow-key arrow-key-right"><span>►</span></div>
+<div class="arrow-key arrow-key-bottom"><span>▼</span></div>
+            
+            <div class="arrow-key arrow-key-left"><span>◄</span></div>
+<div class="arrow-key arrow-key-top"><span>▲</span></div>
+<div class="arrow-key arrow-key-right"><span>►</span></div>
+<div class="arrow-key arrow-key-bottom"><span>▼</span></div>
+            
+        </div>
+        <div class="logo-view-area">
+            <div class="dot left top"></div>
+            <div class="dot left bottom"></div>
+            <div class="dot right top"></div>
+            <div class="dot right bottom"></div>
+            <div class="object">
+                <div class="object-position">
+                    (<span class="object-position-x">x: </span><span class="object-position-y">y: </span>)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="example highlighter-rouge">
+        
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">axis</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"leftright"</span><span class="p">,</span> <span class="s2">"updown"</span><span class="p">],</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">(</span><span class="nx">target</span><span class="p">));</span></code></pre></figure>
+
+    </div>
+    <ul class="demo-list">
+        
+        <li class="demo-item"><a href="./assets/html/axes.html" target="_blank"><p><img src="./assets/image/demos/axes.gif" /></p><p>What is eg.Axes?</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/cube.html" target="_blank"><p><img src="./assets/image/demos/cube.gif" /></p><p>Rotate a Cube</p></a></li>
+        
+        <li class="demo-item"><a href="./assets/html/minimap.html" target="_blank"><p><img src="./assets/image/demos/minimap.gif" /></p><p>Mini Map</p></a></li>
+        
+    </ul>
+</div>
+			
+		</div>
+	</section>
+	<section id="projects" class="docs section projects">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Projects</h2>
+				<ul class="project-list">
+					
+					<li class="project-item">
+						<a target="blank" href="https://m.search.naver.com/search.naver?sm=mtb_sly.hst&where=m&query=%EB%8D%94%EB%B9%84%ED%8B%80&oquery=%EB%B2%A4%EC%B8%A0+%EB%89%B4%EB%B9%84%ED%8B%80&tqi=TAh%2BNlpySCGssbKZNIKssssssoo-206192&tab=&acr=5"><p>
+							<img src="./assets/image/projects/search.png">
+						</p>
+						<p>Naver Search Mobile</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://naver.github.io/egjs-flicking/"><p>
+							<img src="./assets/image/projects/flicking.png">
+						</p>
+						<p>Flicking</p></a>
+					</li>
+					
+					<li class="project-item">
+						<a target="blank" href="https://naver.github.io/egjs-view360/"><p>
+							<img src="./assets/image/projects/view360.png">
+						</p>
+						<p>View 360</p></a>
+					</li>
+					
+				</ul>
+			</div>
+		</div>
+	</section>	
 </div>
     <!-- ******FOOTER****** -->
     <footer>
@@ -822,21 +552,18 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
     </script>
 
 
-	<script src="assets/js/axes.js"></script>
+<script>
+	var inputs = $(".input-list .input-item");
+	var docs = $("#input .docs-inner");
 
-	<script src="assets/js/car360viewer.js"></script>
+	function showInput(name, self) {
+		docs.css("display", "none");
+		inputs.removeClass("checked");
 
-	<script src="assets/js/cardinhand.js"></script>
-
-	<script src="assets/js/cube.js"></script>
-
-	<script src="assets/js/minimap.js"></script>
-
-	<script src="assets/js/subway.js"></script>
-
-	<script src="assets/js/pulltorefresh.js"></script>
-
-	<script src="assets/js/3dcarousel.js"></script>
-
+		$(self).addClass("checked");
+		$("#input .docs-inner." + name).css("display", "block");
+	}
+	showInput("PanInput", inputs[0]);
+</script>
 </body>
 </html>

@@ -118,6 +118,21 @@ pre code {
   left: 25px;
 }
 
+.header .pull-left {
+  position: relative;
+}
+.header .pull-right a {
+  font-family: 'Zilla Slab', serif;
+  font-size: 18px;
+  line-height: 40px;
+  letter-spacing: -0.8px;
+  text-decoration: none;
+  display: inline-block;
+  color: #2B2B2B;
+}
+
+
+
 .header.navbar-fixed-top .logo {
   background: url("../image/type_black.svg") no-repeat;
 }
@@ -309,6 +324,20 @@ pre code {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+
+.docs.inputs {
+  background: #f5f5f5;
+}
+.docs.inputs .docs-inner {
+  background: transparent;
+}
+.docs.input h2.title {
+  text-align: left;
+}
+.docs, inputs p.description {
+  /* text-align: center; */
+  margin-bottom: 10px;
 }
 /* ======= License Section ======= */
 .license {
@@ -637,3 +666,34 @@ footer {
   span.size {
       opacity: .6;
   }
+
+
+
+/* ======= project ====== */
+#projects {
+  /* background: #f5f5f5; */
+}
+#projects .docs-inner {
+  background: transparent;
+}
+.project-list {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.project-item {
+  width: 100px;
+  margin: 5px;
+  display: inline-block;
+  list-style: none;
+  vertical-align: top;
+}
+.project-item img {
+  width: 100px;
+  height: 100px;
+  /* border-radius: 50%; */
+}
+.project-item p {
+  text-align: center;
+  font-weight: bold;
+}

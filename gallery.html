@@ -13,22 +13,6 @@
     <script src="./common/js/bootstrap.min.js"></script>
 </head>
 
-	<link rel="stylesheet" href="assets/css/axes.css">
-
-	<link rel="stylesheet" href="assets/css/car360viewer.css">
-
-	<link rel="stylesheet" href="assets/css/cardinhand.css">
-
-	<link rel="stylesheet" href="assets/css/cube.css">
-
-	<link rel="stylesheet" href="assets/css/minimap.css">
-
-	<link rel="stylesheet" href="assets/css/subway.css">
-
-	<link rel="stylesheet" href="assets/css/pulltorefresh.css">
-
-	<link rel="stylesheet" href="assets/css/3dcarousel.css">
-
 
 	<script src="release/latest/dist/axes.pkgd.js"></script>
 
@@ -58,6 +42,8 @@
 				
 				<h3 id="what-is-the-egaxes">What is the eg.Axes?</h3>
 
+<h1>What is the eg.Axes?</h1>
+
 <div class="demobox" codepen="axes">
   <p>You can change the value of the axis and apply it to the UI via the touch screen, mouse, or various other inputs.</p>
   <div id="inputTypeWrapper">
@@ -69,13 +55,23 @@
   <div id="delegateTarget">
     <div id="uiWrapper">
       <div class="ui">
-        <img src="./assets/image/axes/logo.svg" />
+        <img src="../image/axes/logo.svg" />
       </div>
     </div>
     <div id="grid"></div>
   </div>
   <div style="clear:both;"></div>
 </div>
+
+<link rel="stylesheet" href="../css/axes.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/axes.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -113,8 +109,8 @@
     <span class="nx">ui</span><span class="p">.</span><span class="nx">style</span><span class="p">[</span><span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">TRANSFORM</span><span class="p">]</span> <span class="o">=</span> 
       <span class="err">`</span><span class="nx">translate3d</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panX</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">panY</span><span class="p">}</span><span class="nx">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">scale</span><span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">pos</span><span class="p">.</span><span class="nx">zoom</span><span class="p">})</span><span class="err">`</span><span class="p">;</span>
   <span class="p">},</span>
-  <span class="s2">"release"</span><span class="err">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span>
-  <span class="s2">"animationEnd"</span><span class="err">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">()</span>
+  <span class="s2">"release"</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span>
+  <span class="s2">"animationEnd"</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">stopBlinking</span><span class="p">()</span>
 <span class="p">});</span>
 
 <span class="c1">// 3. Initialize inputTypes and connect it</span>
@@ -131,54 +127,67 @@
 </code></pre>
 </div>
 
-<h3 id="car-360-viewer">Car 360º viewer</h3>
+<h3 id="car-360º-viewer">Car 360º viewer</h3>
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
 <div codepen="car360viewer">
+  <h1>Car 360º Viewer</h1>
   <p>You can create a viewer that can rotate 360 ​​degrees using one axis.</p>
   <div class="car_spot">
     <div class="car_rotate">
       <div class="img_cont" style="position:relative;z-index:10">
-        <img height="150" src="./assets/image/car360/beatle (1).png" />
-        <img height="150" src="./assets/image/car360/beatle (2).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (3).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (4).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (5).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (6).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (7).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (8).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (9).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (10).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (11).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (12).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (13).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (14).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (15).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (16).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (17).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (18).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (19).png" style="display:none;" />
-        <img height="150" src="./assets/image/car360/beatle (20).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (21).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (22).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (23).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (24).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (25).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (26).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (27).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (28).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (29).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (30).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (31).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (32).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (33).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (34).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (35).png" style="display:none" />
-        <img height="150" src="./assets/image/car360/beatle (36).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (1).png" />
+        <img height="150" src="./../image/car360/beatle (2).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (3).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (4).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (5).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (6).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (7).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (8).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (9).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (10).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (11).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (12).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (13).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (14).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (15).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (16).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (17).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (18).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (19).png" style="display:none;" />
+        <img height="150" src="./../image/car360/beatle (20).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (21).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (22).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (23).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (24).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (25).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (26).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (27).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (28).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (29).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (30).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (31).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (32).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (33).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (34).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (35).png" style="display:none" />
+        <img height="150" src="./../image/car360/beatle (36).png" style="display:none" />
       </div>
       <div class="ratate_bg"></div>
     </div>
   </div>
 </div>
+
+<link rel="stylesheet" href="./../css/car360viewer.css" />
+
+<script src="./../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="./../../common/js/jquery-2.2.4.js"></script>
+
+<script src="./../../common/js/codepen.js"></script>
+
+<script src="./../js/car360viewer.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -205,7 +214,10 @@
 
 <h3 id="rotate-a-cube">Rotate a Cube</h3>
 
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
 <div codepen="cube">
+  <h1>Rotate a Cube</h1>
   <p>You can rotate the cube using two axes.</p>
   <div id="area">
     <div id="box">
@@ -218,6 +230,16 @@
     </div>
   </div>
 </div>
+
+<link rel="stylesheet" href="../css/cube.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/cube.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -250,64 +272,67 @@
 </code></pre>
 </div>
 
-<h3 id="d-carousel">3D Carousel</h3>
+<h3 id="3d-carousel">3D Carousel</h3>
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
 <div class="demobox" codepen="3dcarousel">
+  <h1>3D Carousel</h1>
   <p>You can create a carousel by controlling the animation.</p>
   <div id="carouselWrapper">
     <div class="list_container">
       <div id="carousel" style="transform: translateZ(-253px);">
         <figure style="transform: rotateY(0deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music1-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music1-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Too Much</div>
           <div id="list_cd_artist">Loco</div>
         </figure>
         <figure style="transform: rotateY(45deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music2-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music2-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Woo ah</div>
           <div id="list_cd_artist">Crush</div>
         </figure>
         <figure style="transform: rotateY(90deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music3-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music3-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Man In The Mirror</div>
           <div id="list_cd_artist">Micheal Jackson</div>
         </figure>
         <figure style="transform: rotateY(135deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music4-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music4-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Adult</div>
           <div id="list_cd_artist">GiriBoy</div>
         </figure>
         <figure style="transform: rotateY(180deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music5-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music5-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Always Awake</div>
           <div id="list_cd_artist">Beenzino</div>
         </figure>
         <figure style="transform: rotateY(225deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music6-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music6-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">City Burns</div>
           <div id="list_cd_artist">Andra Day</div>
         </figure>
         <figure style="transform: rotateY(270deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music7-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music7-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Get Some Air</div>
           <div id="list_cd_artist">Gary</div>
         </figure>
         <figure style="transform: rotateY(315deg) translateZ(253px);">
-          <div id="list_cd" style="background-image:url('./assets/image/3dcarousel/music8-min.jpg')">
+          <div id="list_cd" style="background-image:url('../image/3dcarousel/music8-min.jpg')">
             <div id="list_cd_hole"></div>
           </div>
           <div id="list_cd_title">Hold Me Tight</div>
@@ -317,6 +342,16 @@
     </div>
   </div>
 </div>
+
+<link rel="stylesheet" href="../css/3dcarousel.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/3dcarousel.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -344,20 +379,23 @@
 
 <h3 id="cards-in-hands">Cards in hands</h3>
 
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
 <div codepen="cardinhand">
+  <h1>Cards in hands</h1>
   <p>You can create a UI that responds to user input using two axes.</p>
   <div id="showcase">
     <div class="showcase-item">
       <div class="showcase-content">
         <div id="movableCoordWrapper">
           <div class="hand">
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
-            <div class="handcard" style=""><img class="logo_mono" src="./common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
+            <div class="handcard" style=""><img class="logo_mono" src="../../common/image/logo_mono.svg" /></div>
           </div>
         </div>
         <div id="dot" class="movableDot"></div>
@@ -366,6 +404,16 @@
     <div class="codepen"></div>
   </div>
 </div>
+
+<link rel="stylesheet" href="../css/cardinhand.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/cardinhand.js"></script>
 
 <div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -401,14 +449,17 @@
 
 <h3 id="pull-to-refresh">Pull to Refresh</h3>
 
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
 <div class="demobox" codepen="pulltorefresh">
+  <h1>Pull to Refresh</h1>
   <p>You can create a pull-to-refresh UI using one axis.</p>
   <div id="pull-contentWrapper">
     <div id="prepend">Pull to prepend</div>
     <ul id="pull-content">
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/1.jpg" width="110" />
+          <img src="../image/pulltorefresh/1.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -416,7 +467,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/2.jpg" width="110" />
+          <img src="../image/pulltorefresh/2.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -424,7 +475,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/3.jpg" width="110" />
+          <img src="../image/pulltorefresh/3.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -432,7 +483,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/4.jpg" width="110" />
+          <img src="../image/pulltorefresh/4.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -440,7 +491,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/5.jpg" width="110" />
+          <img src="../image/pulltorefresh/5.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -449,7 +500,7 @@
       
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/6.jpg" width="110" />
+          <img src="../image/pulltorefresh/6.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -457,7 +508,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/7.jpg" width="110" />
+          <img src="../image/pulltorefresh/7.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -465,7 +516,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/8.jpg" width="110" />
+          <img src="../image/pulltorefresh/8.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -473,7 +524,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/9.jpg" width="110" />
+          <img src="../image/pulltorefresh/9.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -481,7 +532,7 @@
       </li>
       <li class="pull_drw">
         <div class="pull_im">
-          <img src="./assets/image/pulltorefresh/10.jpg" width="110" />
+          <img src="../image/pulltorefresh/10.jpg" width="110" />
         </div>
         <div class="pull_tx">
           <span class="pull_tit">egjs is Javascript components group that brings easiest and fastest way to build a web application in your way</span>
@@ -492,6 +543,16 @@
   </div>
   <div class="bottomWapper"></div>
 </div>
+
+<link rel="stylesheet" href="../css/pulltorefresh.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/pulltorefresh.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -536,9 +597,12 @@
 <span class="p">}));</span>
 </code></pre>
 </div>
-<p>### Mini Map</p>
+<h3 id="mini-map">Mini Map</h3>
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
 <div class="demobox" codepen="minimap">
+  <h1>Mini Map</h1>
   <p>You can create a scrollable minimap using two axes.</p>
   <div style="position:relative">
     <div id="imageView">
@@ -549,6 +613,16 @@
     </div>
   </div>
 </div>
+
+<link rel="stylesheet" href="../css/minimap.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/minimap.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -580,12 +654,25 @@
 
 <h3 id="subway-map">Subway Map</h3>
 
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
 <div class="demobox" codepen="subway">
+  <h1>Subway</h1>
   <p>You can create maps that can zoom using three axes.</p>
   <div id="zoomWrapper">
-    <img id="subway" src="./assets/image/subway/subway.png" />
+    <img id="subway" src="../image/subway/subway.png" />
   </div>
 </div>
+
+<link rel="stylesheet" href="../css/subway.css" />
+
+<script src="../../release/latest/dist/axes.pkgd.js"></script>
+
+<script src="../../common/js/jquery-2.2.4.js"></script>
+
+<script src="../../common/js/codepen.js"></script>
+
+<script src="../js/subway.js"></script>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1. Initialize eg.Axes</span>
 <span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
@@ -647,22 +734,6 @@
 		</div>
 	</section>
 </div>
-
-	<script src="assets/js/axes.js"></script>
-
-	<script src="assets/js/car360viewer.js"></script>
-
-	<script src="assets/js/cardinhand.js"></script>
-
-	<script src="assets/js/cube.js"></script>
-
-	<script src="assets/js/minimap.js"></script>
-
-	<script src="assets/js/subway.js"></script>
-
-	<script src="assets/js/pulltorefresh.js"></script>
-
-	<script src="assets/js/3dcarousel.js"></script>
 
 <script>
 $("h3[id]").append(function() {

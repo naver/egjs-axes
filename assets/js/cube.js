@@ -22,7 +22,7 @@ $(function () {
   });
     
   // 3. Initialize a inputType and connect it
-  axes.connect("rotateX rotateY", new eg.Axes.PanInput("#area"));
+  axes.connect("rotateX rotateY", new eg.Axes.PanInput("#area")).connect("rotateX rotateY", new eg.Axes.MoveKeyInput("#area", {scale: [10, -10]}));
   
   // 4. move to position 
   axes.setTo({
