@@ -169,6 +169,7 @@ describe("PanInput", () => {
     it("should check status after destroy", () => {
       // Given
       this.inst.connect({});
+      const beforeEl = this.inst.element;
       
       // When
       this.inst.destroy();
@@ -177,10 +178,22 @@ describe("PanInput", () => {
       expect(this.inst.hammer).to.be.not.exist;
       expect(this.inst.element).to.be.not.exist;
       expect(this.observer).to.be.not.exist;
+      expect(UNIQUEKEY in beforeEl).to.be.false;
       expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_NONE);
       
       this.inst = null;
     });
+    it("should check connect when hammer instance is null and element has key property", () => {
+      // Given
+      this.inst.element[UNIQUEKEY] = "someting";
+      
+      // When 
+      expect(this.inst.hammer).to.be.not.exist;
+      this.inst.connect({});
+      
+      // Then
+      expect(this.inst.hammer).to.be.exist;
+    });    
   });
   describe("enable/disable", function() {
     beforeEach(() => {
