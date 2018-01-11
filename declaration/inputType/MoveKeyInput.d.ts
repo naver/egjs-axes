@@ -18,6 +18,8 @@ export declare class MoveKeyInput implements IInputType {
     element: HTMLElement;
     private _isEnabled;
     private _isHolded;
+    private _timer;
+    private _offsets;
     private observer;
     constructor(el: any, options?: MoveKeyInputOption);
     mapAxes(axes: string[]): void;
@@ -25,6 +27,7 @@ export declare class MoveKeyInput implements IInputType {
     disconnect(): this;
     destroy(): void;
     private onKeydown(event);
+    private onKeyup(e);
     private attachEvent(observer);
     private dettachEvent();
     enable(): this;
