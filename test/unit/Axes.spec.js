@@ -422,11 +422,11 @@ describe("Axes", function () {
         this.input.destroy();
         this.input = null;
       }
-      this.holdHandler.reset();
-      this.releaseHandler.reset();
-      this.finishHandler.reset();
-      this.animationStartHandler.reset();
-      this.animationEndHandler.reset();
+      this.holdHandler.resetHistory();
+      this.releaseHandler.resetHistory();
+      this.finishHandler.resetHistory();
+      this.animationStartHandler.resetHistory();
+      this.animationEndHandler.resetHistory();
       cleanup();
     });
 

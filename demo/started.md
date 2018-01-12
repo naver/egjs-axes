@@ -20,17 +20,17 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 
 ##### ES6+
 ```js
-import Axes from "@egjs/axes";
+import Axes, {PanInput, PinchInput, WheelInput, MoveKeyInput} from "@egjs/axes";
 ```
 
-#### 3. Initialize eg.Axes
+#### 3. Initialize Axes
 
-Initialize eg.Axes. specify the axis to be used.
+Initialize Axes. specify the axis to be used.
 The key of the axis specifies the name to use as the logical virtual coordinate system.
 
 ```js
 // create eg.Axes with option
-const axes = new eg.Axes({
+const axes = new Axes({
   something1: { range: [0, 100] },
   something2: { range: [0, 100] },
   somethingN: { range: [-200, 200] }
@@ -63,10 +63,10 @@ Axes provides three inputTypes.
 
 ```js
 // create inputTypes to use
-const panInput = new eg.Axes.PanInput("#area");
-const wheelInput = new eg.Axes.WheelInput("#wArea");
-const pinchInput = new eg.Axes.PinchInput("#pArea");
-const movekeyInput = new eg.Axes.MoveKeyInput("#mArea");
+const panInput = new PanInput("#area");
+const wheelInput = new WheelInput("#wArea");
+const pinchInput = new PinchInput("#pArea");
+const movekeyInput = new MoveKeyInput("#mArea");
 ```
 
 #### 6. Connect eg.Axes and InputTypes 
