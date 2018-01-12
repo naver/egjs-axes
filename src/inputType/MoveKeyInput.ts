@@ -17,23 +17,6 @@ export const KEYMAP = {
 
 export interface MoveKeyInputOption {
 	scale?: Array<Number>;
-	useAnimate?: Boolean;
-}
-
-function isMoveKey(e) {
-	switch (e.keyCode) {
-		case KEYMAP.LEFT_ARROW:
-		case KEYMAP.A:
-		case KEYMAP.RIGHT_ARROW:
-		case KEYMAP.D:
-		case KEYMAP.UP_ARROW:
-		case KEYMAP.W:
-		case KEYMAP.DOWN_ARROW:
-		case KEYMAP.S:
-			return true;
-		default:
-			return false;
-	}
 }
 
 /**
@@ -67,14 +50,12 @@ export class MoveKeyInput implements IInputType {
 	private _isEnabled = false;
 	private _isHolded = false;
 	private _timer = null;
-	private _offsets: number[] = [];
   	private observer: IInputTypeObserver;
 	constructor(el, options?: MoveKeyInputOption) {
 		this.element = $(el);
 		this.options = {
 			...{
 				scale: [1, 1],
-				useAnimate: false,
 			}, ...options
     	};
 		this.onKeydown = this.onKeydown.bind(this);
@@ -112,16 +93,15 @@ export class MoveKeyInput implements IInputType {
 		this.element = null;
 	}
 
-  	private onKeydown(event) {
+  	private onKeydown(e) {
 		if (!this._isEnabled) {
 			return;
 		}
-		event.preventDefault();
 
 		let isMoveKey = true;
 		let direction = 1;
 		let offsets;
-		const e = event;
+
 		switch (e.keyCode) {
 			case KEYMAP.LEFT_ARROW:
 			case KEYMAP.A:
@@ -152,26 +132,23 @@ export class MoveKeyInput implements IInputType {
 			return;
 		}
 		if (!this._isHolded) {
-			this._offsets = offsets;
 			this.observer.hold(this, event);
 			this._isHolded = true;
 		}
 		clearTimeout(this._timer);
 		this.observer.change(this, event, toAxis(this.axes, offsets));
-		// Suppress "double action" if event handled
-		event.preventDefault();
 	}
 	private onKeyup(e) {
-		if (!this._isHolded || !isMoveKey(e)) {
+		if (!this._isHolded) {
 			return;
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
 			if (this._isHolded) {
-				this.observer.release(this, e, toAxis(this.axes, this.options.useAnimate ? this._offsets : [0, 0]));
+				this.observer.release(this, e, toAxis(this.axes, [0, 0]));
 				this._isHolded = false;
 			}
-		}, 50);
+		}, 80);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
