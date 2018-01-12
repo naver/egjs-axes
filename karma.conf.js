@@ -56,14 +56,19 @@ module.exports = function (config) {
 		},
 
 		browsers: [],
-
+		customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
 		reporters: ["mocha"],
 		webpackMiddleware: {
 			noInfo: true
 		}
 	};
 
-	karmaConfig.browsers.push(config.chrome ? "Chrome" : "ChromeHeadless");
+	karmaConfig.browsers.push(config.chrome ? "Chrome" : "ChromeHeadlessNoSandbox");
 
 	if (config.coverage) {
 		karmaConfig.reporters.push("coverage-istanbul");
