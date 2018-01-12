@@ -25,6 +25,7 @@ describe("MoveKeyInput", () => {
       // Then
       expect(this.observer).to.be.not.exist;
       expect(this.inst.element).to.be.exist;
+      expect(this._timer).to.be.not.exist;
     });
     it("should check status after destroy", () => {
       // Given
@@ -36,7 +37,7 @@ describe("MoveKeyInput", () => {
       // Then
       expect(this.inst.element).to.be.not.exist;
       expect(this.observer).to.be.not.exist;
-      
+      expect(this._timer).to.be.not.exist;
       this.inst = null;
     });
   });
@@ -254,6 +255,65 @@ describe("MoveKeyInput", () => {
             expect(changeTriggered).to.be.true;
             expect(deltaY).to.be.equal(1);
         });
+    });
+    // down
+    [1, 2, 3, 4].forEach((keyCode, idx) => {
+      it("should not trigger 'change' event to down wrong keyCode("+keyCode+")", done => {
+          // Given
+          let changeTriggered = false;
+          let deltaY = 0;
+          const changeHandler = sinon.spy();
+          const holdHandler = sinon.spy();
+          const releaseHandler = sinon.spy();
+          const downKeyCode = {
+              keyCode: keyCode
+          };
+          
+
+          this.inst.on("hold", holdHandler);
+          this.inst.on("change", changeHandler);
+          this.inst.on("release", releaseHandler);
+          
+          // When
+          TestHelper.key(this.el, "keydown", downKeyCode);
+
+          // Then
+          expect(changeHandler.calledOnce).to.be.false;
+          expect(holdHandler.calledOnce).to.be.false;
+          setTimeout(() => {
+            TestHelper.key(this.el, "keyup", downKeyCode);
+            expect(releaseHandler.calledOnce).to.be.false;
+            done();
+          }, 100);
+      });
+      it("triggering order test to down wrong keyCode("+keyCode+")", (done) => {
+        // Given
+        const deltaY = 1;
+        const eventLog = [];
+        const eventLogAnswer = ["hold", "change", "release"];
+
+        this.inst
+        .on("hold", () => {
+          eventLog.push("hold");
+        }).on("change", () => {
+          eventLog.push("change");
+        }).on("release", () => {
+          eventLog.push("release");
+        });
+
+        // When
+        TestHelper.key(this.el, "keydown", {keyCode: KEYMAP.DOWN_ARROW}, () => {
+          setTimeout(()=> {
+            TestHelper.key(this.el, "keyup", {keyCode: KEYMAP.keyCode}, () => {
+              setTimeout(()=> {
+                // Then
+                expect(eventLog).to.be.deep.equal(eventLogAnswer);
+                done();
+              }, 100);
+            });
+          }, 20);		
+        });
+      });
     });
   });
 });

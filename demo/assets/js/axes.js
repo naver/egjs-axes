@@ -176,11 +176,11 @@ $(function () {
       var pos = e.pos;
       var delta = e.delta;
       var holding = e.holding;
-      console.log(e);
+
       if (delta.panX || delta.panY) {
         pan.textContent = 
           `panX: ${(+pos.panX.toFixed(0))}, panY: ${(+pos.panY.toFixed(0))}`;
-          if (e.inputEvent && e.inputEvent.type === "keydown") {
+          if (e.inputEvent && (e.inputEvent.type === "keydown" || e.inputEvent.type === "keyup")) {
               pan.classList.add("keyboard");
           } else {
             pan.classList.remove("keyboard");
