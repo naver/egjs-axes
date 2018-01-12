@@ -75,7 +75,7 @@
         <div class="hero-image" style="background-image: url(//naver.github.io/egjs/img/Axes.png)">
         </div>
         <h2 class="title">
-            <span class="highlight">Axes</span><a href="https://github.com/naver/egjs-axes/releases/tag/2.3.3"><span class="version">v2.3.3</span></a>
+            <span class="highlight">Axes</span><a href="https://github.com/naver/egjs-axes/releases/tag/2.3.4"><span class="version">v2.3.4</span></a>
         </h2>
         <p class="intro">A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.<br/>
             <span class="hashtag">#interaction #virtual-scroll</span>
@@ -118,17 +118,17 @@
 </div>
 
 <h5 id="es6">ES6+</h5>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">Axes</span> <span class="nx">from</span> <span class="s2">"@egjs/axes"</span><span class="p">;</span>
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">Axes</span><span class="p">,</span> <span class="p">{</span><span class="nx">PanInput</span><span class="p">,</span> <span class="nx">PinchInput</span><span class="p">,</span> <span class="nx">WheelInput</span><span class="p">,</span> <span class="nx">MoveKeyInput</span><span class="p">}</span> <span class="nx">from</span> <span class="s2">"@egjs/axes"</span><span class="p">;</span>
 </code></pre>
 </div>
 
-<h4 id="3-initialize-egaxes">3. Initialize eg.Axes</h4>
+<h4 id="3-initialize-axes">3. Initialize Axes</h4>
 
-<p>Initialize eg.Axes. specify the axis to be used.
+<p>Initialize Axes. specify the axis to be used.
 The key of the axis specifies the name to use as the logical virtual coordinate system.</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create eg.Axes with option</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">({</span>
+<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Axes</span><span class="p">({</span>
   <span class="na">something1</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
   <span class="na">something2</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
   <span class="na">somethingN</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span> <span class="p">}</span>
@@ -165,10 +165,10 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 </ul>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create inputTypes to use</span>
-<span class="kr">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">movekeyInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">(</span><span class="s2">"#mArea"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">movekeyInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MoveKeyInput</span><span class="p">(</span><span class="s2">"#mArea"</span><span class="p">);</span>
 </code></pre>
 </div>
 
