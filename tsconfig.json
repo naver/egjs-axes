@@ -3,7 +3,8 @@
     "target": "es3",
     "module": "commonjs",
     "lib": ["es5", "dom"],
-    "removeComments": false
+    "removeComments": false,
+    "outDir": "outjs"
   },
   "include": [
     "src/**/*.ts"

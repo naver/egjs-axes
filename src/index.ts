@@ -1,12 +1,6 @@
 import Axes from "./Axes";
-import { PanInput } from "./inputType/PanInput";
-import { PinchInput } from "./inputType/PinchInput";
-import { WheelInput } from "./inputType/WheelInput";
-import { MoveKeyInput } from "./inputType/MoveKeyInput";
-
-Axes.PanInput = PanInput;
-Axes.PinchInput = PinchInput;
-Axes.WheelInput = WheelInput;
-Axes.MoveKeyInput = MoveKeyInput;
-
-export = Axes;
+export { PanInput } from "./inputType/PanInput";
+export { PinchInput } from "./inputType/PinchInput";
+export { WheelInput } from "./inputType/WheelInput";
+export { MoveKeyInput } from "./inputType/MoveKeyInput";
+export default Axes;

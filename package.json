@@ -3,14 +3,15 @@
 	"version": "2.3.3-snapshot",
 	"description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
 	"main": "dist/axes.js",
-	"types": "declaration/Axes.d.ts",
+	"module": "outjs/index.js",
+	"types": "declaration/index.d.ts",
 	"scripts": {
 		"start": "webpack-dev-server --open",
 		"build": "webpack --env production  && webpack --env packaged && npm run declaration",
 		"test": "karma start",
 		"test:chrome": "karma start --chrome",
 		"lint": "tslint src",
-		"jsdoc": "rm -rf ./doc && rm -rf outjs && tsc -p tsconfig.doc.json && jsdoc -c jsdoc.json",
+		"jsdoc": "rm -rf ./doc && rm -rf outjs && tsc -p tsconfig.json && jsdoc -c jsdoc.json",
 		"declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
 		"coverage": "karma start --coverage",
 		"demo:start": "npm run demo:prebuild-latest && npm run demo:updateVersion && jekyll serve --host=0.0.0.0 -s demo",
@@ -74,7 +75,7 @@
 		"sinon": "^4.1.4",
 		"string-replace-webpack-plugin": "0.1.3",
 		"sync-exec": "^0.6.2",
-		"tslint": "^5.8.0",
+		"tslint": "^5.9.1",
 		"tslint-eslint-rules": "^4.1.1",
 		"tslint-loader": "^3.5.3",
 		"typescript": "^2.6.2",
@@ -84,6 +85,6 @@
 		"webpack-merge": "^4.1.1",
 		"write-file-webpack-plugin": "^4.2.0",
 		"xml2js": "^0.4.19",
-		"marked": "^0.3.9"
+		"marked": "^0.3.12"
 	}
 }
