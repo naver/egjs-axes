@@ -6,8 +6,8 @@ var banner = require("./banner");
 
 var config = {
 	entry: {
-		"axes.pkgd": "./src/index.ts",
-		"axes.pkgd.min": "./src/index.ts"
+		"axes.pkgd": "./src/index.umd.ts",
+		"axes.pkgd.min": "./src/index.umd.ts"
 	},
 	externals: [],
 	plugins: [
