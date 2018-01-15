@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 exports.__esModule = true;
 var Coordinate_1 = require("./Coordinate");
 ;
-var AxisManager = (function () {
+var AxisManager = /** @class */ (function () {
     function AxisManager(axis, options) {
         var _this = this;
         this.axis = axis;
@@ -29,6 +29,10 @@ var AxisManager = (function () {
         }
         return true;
     };
+    /**
+       * set up 'css' expression
+       * @private
+       */
     AxisManager.prototype._complementOptions = function () {
         var _this = this;
         Object.keys(this.axis).forEach(function (axis) {
