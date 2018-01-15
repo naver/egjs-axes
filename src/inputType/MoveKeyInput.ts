@@ -14,6 +14,9 @@ export const KEYMAP = {
 	DOWN_ARROW: 40,
 	S: 83,
 };
+const DIRECTION_REVERSE = -1;
+const DIRECTION_FORWARD = 1;
+const DELAY = 80;
 
 export interface MoveKeyInputOption {
 	scale?: Array<Number>;
@@ -99,13 +102,13 @@ export class MoveKeyInput implements IInputType {
 		}
 
 		let isMoveKey = true;
-		let direction = 1;
+		let direction = DIRECTION_FORWARD;
 		let offsets;
 
 		switch (e.keyCode) {
 			case KEYMAP.LEFT_ARROW:
 			case KEYMAP.A:
-				direction = -1;
+				direction = DIRECTION_REVERSE;
 			case KEYMAP.RIGHT_ARROW:
 			case KEYMAP.D:
 				if (!this.axes[0]) {
@@ -116,7 +119,7 @@ export class MoveKeyInput implements IInputType {
 				break;
 			case KEYMAP.DOWN_ARROW:
 			case KEYMAP.S:
-				direction = -1;
+				direction = DIRECTION_REVERSE;
 			case KEYMAP.UP_ARROW:
 			case KEYMAP.W:
 				if (!this.axes[1]) {
@@ -148,7 +151,7 @@ export class MoveKeyInput implements IInputType {
 				this.observer.release(this, e, toAxis(this.axes, [0, 0]));
 				this._isHolded = false;
 			}
-		}, 80);
+		}, DELAY);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
