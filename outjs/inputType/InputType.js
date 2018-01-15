@@ -23,7 +23,6 @@ exports.toAxis = toAxis;
 ;
 function createHammer(element, options) {
     try {
-        // create Hammer
         return new Hammer.Manager(element, __assign({}, options));
     }
     catch (e) {
