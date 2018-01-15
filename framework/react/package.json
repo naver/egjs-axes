@@ -9,7 +9,7 @@
     "react-scripts": "1.0.17"
   },
   "devDependencies": {
-    "@egjs/axes": "^2.4.0"
+    "@egjs/axes": "^2.4.1"
   },
   "scripts": {
     "start": "react-scripts ./scripts/start.js",
