@@ -10,7 +10,28 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 exports.__esModule = true;
 var utils_1 = require("../utils");
 var InputType_1 = require("./InputType");
-var WheelInput = (function () {
+/**
+ * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
+ * @ko eg.Axes.WheelInput 모듈의 옵션 객체
+ * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+**/
+/**
+ * @class eg.Axes.WheelInput
+ * @classdesc A module that passes the amount of change to eg.Axes when the mouse wheel is moved. use one axis.
+ * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
+ *
+ * @example
+ * const wheel = new eg.Axes.WheelInput("#area", {
+ * 		scale: 1
+ * });
+ *
+ * // Connect 'something' axis when the mousewheel is moved.
+ * axes.connect("something", wheel);
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
+ * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
+ */
+var WheelInput = /** @class */ (function () {
     function WheelInput(el, options) {
         this.axes = [];
         this.element = null;
@@ -36,6 +57,11 @@ var WheelInput = (function () {
         this.dettachEvent();
         return this;
     };
+    /**
+    * Destroys elements, properties, and events used in a module.
+    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+    * @method eg.Axes.WheelInput#destroy
+    */
     WheelInput.prototype.destroy = function () {
         this.disconnect();
         this.element = null;
@@ -74,14 +100,32 @@ var WheelInput = (function () {
         this._isEnabled = false;
         this.observer = null;
     };
+    /**
+     * Enables input devices
+     * @ko 입력 장치를 사용할 수 있게 한다
+     * @method eg.Axes.WheelInput#enable
+     * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     WheelInput.prototype.enable = function () {
         this._isEnabled = true;
         return this;
     };
+    /**
+     * Disables input devices
+     * @ko 입력 장치를 사용할 수 없게 한다.
+     * @method eg.Axes.WheelInput#disable
+     * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+     */
     WheelInput.prototype.disable = function () {
         this._isEnabled = false;
         return this;
     };
+    /**
+     * Returns whether to use an input device
+     * @ko 입력 장치를 사용 여부를 반환한다.
+     * @method eg.Axes.WheelInput#isEnable
+     * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+     */
     WheelInput.prototype.isEnable = function () {
         return this._isEnabled;
     };
