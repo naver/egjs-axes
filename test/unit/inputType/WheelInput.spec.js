@@ -92,95 +92,115 @@ describe("WheelInput", () => {
     }); 
   });
 
-  describe("wheel event test", function() {
-    beforeEach(() => {
-      this.el = sandbox();
-      this.input = new WheelInput(this.el); 
-      this.inst = new Axes({
-        x: {
-          range: [10, 120]
-        }
-      });
-      this.inst.connect(["x"], this.input);
-    });
+  [1,2,4].forEach(function(scale) {
+    [true, false].forEach(function(useNormalized) {
+      describe(`wheel event test(useNormalized: ${useNormalized})`, function() {
+        beforeEach(() => {
+          this.el = sandbox();
+          this.input = new WheelInput(this.el, {useNormalized: useNormalized, scale: scale}); 
+          this.inst = new Axes({
+            x: {
+              range: [10, 120]
+            }
+          });
+          this.inst.connect(["x"], this.input);
+        });
 
-    afterEach(() => {
-      if (this.ins) {
-        this.inst.destroy();
-        this.inst = null;
-      }
-      if (this.input) {
-        this.input.destroy();
-        this.input = null;
-      }
-      cleanup();
-    });
+        afterEach(() => {
+          this.el = null;
+          if (this.inst) {
+            this.inst.destroy();
+            this.inst = null;
+          }
+          if (this.input) {
+            this.input.destroy();
+            this.input = null;
+          }
+          cleanup();
+        });
+        [-1,-3,-5,-9].forEach(d => {
+          it(`should check delta test (delta: ${d}, useNormalized: ${useNormalized})`, done => {
+            this.inst.on("change", ({pos, delta}) => {
+                if (delta.x === 0) {
+                  return;
+                }
+              const sign = 1;
+              expect(delta.x).to.be.equals(scale * (useNormalized ? sign : (sign * Math.abs(d))));
+            });
+            this.inst.on("release", e => {
+              done();
+            });
+            TestHelper.wheelVertical(this.el, d, () => {
 
-    it("no event triggering when disconnected", (done) => {
-      // Given
-      const deltaY = 1;
-      let changeTriggered = false;
+            });
+          });
+        });
+        it("no event triggering when disconnected", (done) => {
+          // Given
+          const deltaY = 1;
+          let changeTriggered = false;
 
-      this.inst
-      .on("change", () => {
-        changeTriggered = true;
-      });
-      this.inst.disconnect();
+          this.inst
+          .on("change", () => {
+            changeTriggered = true;
+          });
+          this.inst.disconnect();
 
-      // When
-      TestHelper.wheelVertical(this.el, deltaY, () => {
-        // Then
-        expect(changeTriggered).to.be.false;
-        done();
-			});
-    });
+          // When
+          TestHelper.wheelVertical(this.el, deltaY, () => {
+            // Then
+            expect(changeTriggered).to.be.false;
+            done();
+          });
+        });
 
-    it("no event triggering when offset is 0", (done) => {
-      // Given
-      const deltaY = 0;
-      let changeTriggered = false;
+        it("no event triggering when offset is 0", (done) => {
+          // Given
+          const deltaY = 0;
+          let changeTriggered = false;
 
-      this.inst
-      .on("change", () => {
-        changeTriggered = true;
-      });
+          this.inst
+          .on("change", () => {
+            changeTriggered = true;
+          });
 
-      // When
-      TestHelper.wheelVertical(this.el, deltaY, () => {
-        // Then
-        expect(changeTriggered).to.be.false;
-        done();
-			});
-    });
+          // When
+          TestHelper.wheelVertical(this.el, deltaY, () => {
+            // Then
+            expect(changeTriggered).to.be.false;
+            done();
+          });
+        });
 
-    it("triggering order test", (done) => {
-      // Given
-      const deltaY = 1;
-      const eventLog = [];
-      const eventLogAnswer = ["hold", "change", "change", "release"];
-
-      this.inst
-      .on("hold", () => {
-        eventLog.push("hold");
-      }).on("change", () => {
-        eventLog.push("change");
-      }).on("release", () => {
-        eventLog.push("release");
-      });
-
-      // When
-      TestHelper.wheelVertical(this.el, deltaY, () => {
-        setTimeout(()=> {
+        it("triggering order test", (done) => {
+          // Given
+          const deltaY = 1;
+          const eventLog = [];
+          const eventLogAnswer = ["hold", "change", "change", "release"];
+    
+          this.inst
+          .on("hold", () => {
+            eventLog.push("hold");
+          }).on("change", () => {
+            eventLog.push("change");
+          }).on("release", () => {
+            eventLog.push("release");
+          });
+    
+          // When
           TestHelper.wheelVertical(this.el, deltaY, () => {
             setTimeout(()=> {
-              // Then
-				      expect(eventLog).to.be.deep.equal(eventLogAnswer);
-              done();
-            }, 60);
+              TestHelper.wheelVertical(this.el, deltaY, () => {
+                setTimeout(()=> {
+                  // Then
+                  expect(eventLog).to.be.deep.equal(eventLogAnswer);
+                  done();
+                }, 60);
+              });
+            }, 20);		
           });
-        }, 20);		
-			});
+        });
+      });
     });
   });
 });
-

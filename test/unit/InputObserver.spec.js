@@ -1,5 +1,6 @@
 import {InputObserver} from "../../src/InputObserver";
 import {AnimationManager} from "../../src/AnimationManager";
+import Axes from "../../src/Axes";
 import {AxisManager} from "../../src/AxisManager";
 import {InterruptManager} from "../../src/InterruptManager";
 import {EventManager} from "../../src/EventManager";
@@ -30,19 +31,10 @@ describe("InputObserver", function () {
         maximumDuration: 2000,
         minimumDuration: 0
       };
-      this.am = new AnimationManager({
-        options: this.options, 
-        itm: new InterruptManager(this.options), 
-        em: new EventManager(null),
-        axm: new AxisManager(this.axis, this.options)
-      });
-      this.inst = new InputObserver({
-        options: this.options, 
-        itm: this.am.itm,
-        em: this.am.em,
-        axm: this.am.axm,
-        am: this.am
-      });
+      this.axes = new Axes(this.axis, this.options);
+      this.axm = this.axes.axm;
+      this.am = this.axes.am;
+      this.inst = this.axes.io;
     });
     afterEach(() => {
     });
@@ -61,6 +53,26 @@ describe("InputObserver", function () {
       
       // Then
       expect(this.inst.get(inputType)).to.be.eql({"y": 20});
+    });
+    it("should check 'change' method", () => {
+      // Given
+      const inputType = {
+        axes: ["y"]
+      };
+
+      
+      // When/Then
+      expect(this.inst.get(inputType)).to.be.eql({"y": 0});
+
+      // When
+      this.inst.change(inputType, {}, {});
+      expect(this.inst.get(inputType)).to.be.not.eql({"y": 200});
+
+      this.inst.hold(inputType, {});
+      this.inst.change(inputType, {}, {y: 250});
+      
+      // Then
+      expect(this.inst.get(inputType)).to.be.eql({"y": 200});
     });
   });
 });

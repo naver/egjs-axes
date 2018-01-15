@@ -13,8 +13,13 @@ export default class TestHelper {
 			wheelEvent = document.createEvent("WheelEvent");
 			wheelEvent.initEvent("wheel", params);
 		}
+		let isCall = false;
 
 		function callbackOnce() {
+			if (isCall) {
+				return;
+			}
+			isCall = true;
 			callback && callback();
 			target.removeEventListener("wheel", callbackOnce);// Is this posible??
 		}
