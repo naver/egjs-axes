@@ -20,17 +20,22 @@ exports.KEYMAP = {
     DOWN_ARROW: 40,
     S: 83
 };
+var DIRECTION_REVERSE = -1;
+var DIRECTION_FORWARD = 1;
+var DELAY = 80;
 var MoveKeyInput = (function () {
     function MoveKeyInput(el, options) {
         this.axes = [];
         this.element = null;
         this._isEnabled = false;
         this._isHolded = false;
+        this._timer = null;
         this.element = utils_1.$(el);
         this.options = __assign({
             scale: [1, 1]
         }, options);
         this.onKeydown = this.onKeydown.bind(this);
+        this.onKeyup = this.onKeyup.bind(this);
     }
     MoveKeyInput.prototype.mapAxes = function (axes) {
         this.axes = axes;
@@ -51,46 +56,71 @@ var MoveKeyInput = (function () {
         this.disconnect();
         this.element = null;
     };
-    MoveKeyInput.prototype.onKeydown = function (event) {
+    MoveKeyInput.prototype.onKeydown = function (e) {
         if (!this._isEnabled) {
             return;
         }
-        event.preventDefault();
         var isMoveKey = true;
+        var direction = DIRECTION_FORWARD;
         var offsets;
-        var e = event;
         switch (e.keyCode) {
             case exports.KEYMAP.LEFT_ARROW:
             case exports.KEYMAP.A:
-                offsets = [-this.options.scale[0], 0];
-                break;
+                direction = DIRECTION_REVERSE;
             case exports.KEYMAP.RIGHT_ARROW:
             case exports.KEYMAP.D:
-                offsets = [this.options.scale[0], 0];
-                break;
-            case exports.KEYMAP.UP_ARROW:
-            case exports.KEYMAP.W:
-                offsets = [0, this.options.scale[1]];
+                if (!this.axes[0]) {
+                    isMoveKey = false;
+                    break;
+                }
+                offsets = [+this.options.scale[0] * direction, 0];
                 break;
             case exports.KEYMAP.DOWN_ARROW:
             case exports.KEYMAP.S:
-                offsets = [0, -this.options.scale[1]];
+                direction = DIRECTION_REVERSE;
+            case exports.KEYMAP.UP_ARROW:
+            case exports.KEYMAP.W:
+                if (!this.axes[1]) {
+                    isMoveKey = false;
+                    break;
+                }
+                offsets = [0, +this.options.scale[1] * direction];
                 break;
             default:
                 isMoveKey = false;
         }
-        if (isMoveKey) {
-            this.observer.change(this, event, InputType_1.toAxis(this.axes, offsets));
-            e.preventDefault();
+        if (!isMoveKey) {
+            return;
         }
+        if (!this._isHolded) {
+            this.observer.hold(this, event);
+            this._isHolded = true;
+        }
+        clearTimeout(this._timer);
+        this.observer.change(this, event, InputType_1.toAxis(this.axes, offsets));
+    };
+    MoveKeyInput.prototype.onKeyup = function (e) {
+        var _this = this;
+        if (!this._isHolded) {
+            return;
+        }
+        clearTimeout(this._timer);
+        this._timer = setTimeout(function () {
+            _this.observer.release(_this, e, InputType_1.toAxis(_this.axes, [0, 0]));
+            _this._isHolded = false;
+        }, DELAY);
     };
     MoveKeyInput.prototype.attachEvent = function (observer) {
         this.observer = observer;
         this.element.addEventListener("keydown", this.onKeydown, false);
+        this.element.addEventListener("keypress", this.onKeydown, false);
+        this.element.addEventListener("keyup", this.onKeyup, false);
         this._isEnabled = true;
     };
     MoveKeyInput.prototype.dettachEvent = function () {
         this.element.removeEventListener("keydown", this.onKeydown, false);
+        this.element.removeEventListener("keypress", this.onKeydown, false);
+        this.element.removeEventListener("keyup", this.onKeyup, false);
         this._isEnabled = false;
         this.observer = null;
     };

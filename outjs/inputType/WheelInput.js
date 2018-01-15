@@ -19,7 +19,8 @@ var WheelInput = (function () {
         this._timer = null;
         this.element = utils_1.$(el);
         this.options = __assign({
-            scale: 1
+            scale: 1,
+            useNormalized: true
         }, options);
         this.onWheel = this.onWheel.bind(this);
     }
@@ -52,13 +53,14 @@ var WheelInput = (function () {
             this.observer.hold(this, event);
             this._isHolded = true;
         }
-        var offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
+        var offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
         this.observer.change(this, event, InputType_1.toAxis(this.axes, [offset]));
         clearTimeout(this._timer);
+        var inst = this;
         this._timer = setTimeout(function () {
             if (_this._isHolded) {
-                _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [0]));
                 _this._isHolded = false;
+                _this.observer.release(_this, event, InputType_1.toAxis(_this.axes, [0]));
             }
         }, 50);
     };
