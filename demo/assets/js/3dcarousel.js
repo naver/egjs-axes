@@ -26,5 +26,5 @@ $(function() {
   });
 
   // 3. Initialize a inputType and connect it
-  axes.connect("rotate", new eg.Axes.PanInput("#carouselWrapper")).connect("rotate", new eg.Axes.WheelInput("#carouselWrapper", {scale: 3}));
+  axes.connect("rotate", new eg.Axes.PanInput("#carouselWrapper")).connect("rotate", new eg.Axes.WheelInput("#carouselWrapper", {useNormalized: false}));
 });

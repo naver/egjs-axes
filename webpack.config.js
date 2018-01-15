@@ -5,7 +5,7 @@ var StringReplacePlugin = require("string-replace-webpack-plugin");
 
 var config = {
 	entry: {
-		"axes": "./src/index.ts"
+		"axes": "./src/index.umd.ts"
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),

@@ -1,0 +1,213 @@
+.head, .ear, .cheek, .eye, .mouth, .body, .arm, .fist, .leg, .foot {
+    border: 5px solid #555;
+    background: #fff;
+}
+.head, .eye, .eye:before, .eye:after, .mouth {
+    transition: all ease 0.5s;
+}
+.character {
+    position: absolute;
+    left: 200px;
+    bottom: 100px;
+
+    width: 200px;
+    height: 320px;
+}
+.character.left {
+    transform: scaleX(-1);
+}
+.head {
+    position: absolute;
+    width: 150px;
+    height: 140px;
+    border-radius: 50% / 50% 50% 30% 30%;
+    background: white;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    margin: 0px auto;
+}
+.ear {
+    position: absolute;
+    width: 50px;
+    height: 40px;
+    border-radius: 50%;
+    transform: rotate(40deg);
+    background: inherit;
+    left: -20px;
+    bottom: 17px;
+}
+.cheek {
+    position: absolute;
+    width: 50px;
+    height: 40px;
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    background: inherit;
+    right: -10px;
+    bottom: 12px;
+}
+.head-front, .body-front, .arm-front, .leg-front {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    background: inherit;
+    z-index: 1;
+}
+.hair {
+    position: absolute;
+}
+.eyes {
+    position: absolute;
+    top: 45%;
+    width: 100%;
+}
+.eye {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: 0px auto;
+}
+.eye:before {
+    top: -20px;
+    content: "";
+    position: absolute;
+}
+.eye.left {
+    right: 10%;
+}
+.eye.right {
+    left: 50%;
+}
+.eye:after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    top: 16px;
+}
+.eye.left:after {
+    left: -25px;
+}
+.eye.right:after {
+    left: 15px;
+}
+.mouth {
+    position: absolute;
+    border-radius: 50% / 0% 0% 100% 100%;
+    top: 65%;
+    width: 20px;
+    height: 15px;
+    left: 25%;
+    right: 0%;
+    margin: 0px auto;
+    transition: all ease 0.2s;
+}
+.body {
+    position: absolute;
+    width: 80px;
+    height: 140px;
+    border-radius: 0% 0% 50% 50% / 0px 0px 10% 10%;
+    background: #fff;
+    left: 0;
+    right: 0;
+    top: 100px;
+    margin: 0px auto;
+}
+.arm {
+    position: absolute;
+    width: 30px;
+    height: 75px;
+    background: #fff;
+    border-radius: 15px 15px 10% 10%/ 15px 15px 50%;
+    transform-origin: 50% 30px;
+    top: 25px;
+}
+.arm.left {
+    left: -20px;
+    transform: rotate(40deg);
+}
+.arm.right {
+    right: -20px;
+    transform: rotate(-40deg);
+}
+.fist {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    width: 120%;
+    height: 30px;
+    bottom: -12px;
+    left: -100%;
+    right: -100%;
+    margin: 0px auto;
+}
+.legs {
+    position: absolute;
+    top: 75%;
+    width: 100%;
+}
+.leg {
+    position: absolute;
+    border-top: 0;
+    border-radius: 20% / 20% 20% 0px 0px;
+    background: #fff;
+    width: 38px;
+    height: 80px;
+    transform-origin: 50% 15px;
+}
+.leg.left {
+    left: -5px;
+    transform: rotate(20deg);
+}
+.leg.right {
+    right: -5px;
+    transform: rotate(-30deg);
+}
+.foot {
+    position: absolute;
+    background: #fff;
+    width: 50px;
+    height: 30px;
+    border-radius: 50%;
+    top: 80%;
+    left: -10px;
+    transform: rotate(10deg);
+}
+.character.angry .head {
+    background: #f97474;
+}
+.character.angry .eye:before {
+    width: 30px;
+    height: 5px;
+    border-radius: 3px;
+    background: #555;
+    left: -100px;
+    right: -100px;
+    margin: 0px auto;
+}
+.character.angry .eye.left:before {
+    transform: rotate(30deg);
+}
+.character.angry .eye.right:before {
+    transform: rotate(-30deg);
+}
+.character.angry .mouth {
+    border-radius: 50% / 100% 100% 0% 0%;
+}
+.character.grin .eye {
+    width: 20px;
+    height: 2px;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0%;
+    background: transparent;
+}
+.character.grin .eye:after {
+    background: radial-gradient(RGBA(253, 163, 155, 1.00), RGBA(253, 163, 155, 0.5), RGBA(253, 163, 155, 0) 70%);
+}

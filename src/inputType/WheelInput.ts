@@ -5,6 +5,7 @@ import { Axis } from "../AxisManager";
 
 export interface WheelInputOption {
 	scale?: number;
+	useNormalized?: boolean;
 }
 
 /**
@@ -41,7 +42,8 @@ export class WheelInput implements IInputType {
 		this.element = $(el);
 		this.options = {
 			...{
-				scale: 1
+				scale: 1,
+				useNormalized: true,
 			}, ...options
     };
 		this.onWheel = this.onWheel.bind(this);
@@ -68,7 +70,7 @@ export class WheelInput implements IInputType {
 	* @method eg.Axes.WheelInput#destroy
 	*/
 	destroy() {
-		this.disconnect();
+		this.disconnect();	
 		this.element = null;
 	}
 
@@ -86,14 +88,16 @@ export class WheelInput implements IInputType {
 			this.observer.hold(this, event);
 			this._isHolded = true;
 		}
-		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale;
-		this.observer.change(this, event, toAxis(this.axes, [offset]));
+		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
 
+		this.observer.change(this, event, toAxis(this.axes, [offset]));
 		clearTimeout(this._timer);
+		const inst = this;
+
 		this._timer = setTimeout(() => {
 			if (this._isHolded) {
-				this.observer.release(this, event, toAxis(this.axes, [0]));
 				this._isHolded = false;
+				this.observer.release(this, event, toAxis(this.axes, [0]));
 			}
 		}, 50);
   }
