@@ -1,11 +1,6 @@
 import {Component} from "react";
 import NativeAxes from "@egjs/axes";
 import ReactDOM from 'react-dom';
-import InputType from "./inputTypes/InputType";
-import PanInput from "./inputTypes/PanInput";
-import TouchInput from "./inputTypes/TouchInput";
-import MoveKeyInput from "./inputTypes/MoveKeyInput";
-import WheelInput from "./inputTypes/WheelInput";
 import PropTypes from 'prop-types';
 
 function toZeroAxis(axis) {
@@ -71,10 +66,6 @@ export default class Axes extends Component {
         })
     }
     render() {
-        console.log(this._prev === this.props.inputs);
-        this._prev = this.props.inputs;
-
-
         return this.props.children(this.state);
     }
     componentDidMount() {
@@ -86,7 +77,6 @@ export default class Axes extends Component {
             const props = inst.props;
             const {type, axis, options} = props;
         
-            console.log(type, axis, options);
             this.axes.connect(axis, new type(element, options));
         });
     }
@@ -94,6 +84,3 @@ export default class Axes extends Component {
         this.axes.destroy();
     }
 }
-
-
-export {InputType, PanInput, MoveKeyInput, TouchInput, WheelInput};
