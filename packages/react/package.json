@@ -1,7 +1,12 @@
 {
-  "name": "react-axes",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@egjs/react-axes",
+  "version": "1.0.0",
+  "main": "index.js",
+	"author": {
+		"name": "NAVER Corp."
+  },
+	"license": "MIT",
+	"homepage": "https://github.com/naver/egjs-axes",  
   "dependencies": {
     "@egjs/component": "^2.1.0",
     "react": "^15.4.2",
@@ -14,7 +19,6 @@
   },
   "scripts": {
     "start": "rc-tools run server",
-    "build": "rc-tools run build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "gh-pages": "rc-tools run gh-pages",

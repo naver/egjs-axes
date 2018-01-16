@@ -30,6 +30,7 @@ export default class Axes extends Component {
         super(props);
         const events = {};
         const options = {};
+        const axis = {};
 
         for (const name in props) {
             if (name in Axes.propTypes) {
@@ -38,6 +39,18 @@ export default class Axes extends Component {
                 options[name] = props[name];
             } else if (~name.search(/^on/)) {
                 events[name.replace("on", "").toLowerCase()] = props[name];
+            }
+        }
+        
+        const propsAxis = this.props.axis;
+
+        for (const name in propsAxis) {
+            if (Array.isArray(propsAxis[name])) {
+                axis[name] = {
+                    range: propsAxis[name],
+                };
+            } else {
+                axis[name] = propsAxis[name];
             }
         }
         this.axes = new NativeAxes(this.props.axis, options);
