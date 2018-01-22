@@ -29,7 +29,7 @@ ReactDOM.render(
 ## API
 ### props
 |name|type|description|
-|---|---|---|---|---|---|
+|---|---|---|
 |axis|Object(string, [AxisOption](AxisOptionObject))|The key of the axis specifies the name to use as the logical virtual coordinate system.|
 |inputs|Array(InputType), InputType| The inputType instance to associate with the axis of eg.Axes|
 |other props||[AxesOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxesOption)|
@@ -83,6 +83,15 @@ ReactDOM.render(
 ...
 </Axes>
 ```
+## Supported Browsers
+The following are the supported browsers.
+
+|Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
+|---|---|---|---|---|---|
+|10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
+
+
+
 ## Development
 
 ```bash
@@ -92,12 +101,6 @@ $ npm run start
 * /examples/app.html
 * /examples/character.html
 
-## Supported Browsers
-The following are the supported browsers.
-
-|Internet Explorer|Chrome|Firefox|Safari|iOS|Android|
-|---|---|---|---|---|---|
-|10+|Latest|Latest|Latest|7+|2.3+(except 3.x)|
 
 ## Dependency
 
