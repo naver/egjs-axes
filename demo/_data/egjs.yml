@@ -8,6 +8,10 @@ GA: UA-70842526-16
 github:
   user: naver
   repo: egjs-axes
+js:
+- assets/js/character_bundle.js
+css:
+- assets/css/character.css
 inputs:
   - name: PanInput
     description: Connect axis to the mouse or touchscreen x, y position.
