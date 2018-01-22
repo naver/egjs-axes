@@ -7,7 +7,7 @@ class Sun extends Component {
     super(props);
     this.axis = {
       "zoom": {
-        range: [1, 2],
+        range: [1, 1.8],
         bounce: [0.2, 0.2],
       }
     };
@@ -18,7 +18,7 @@ class Sun extends Component {
       <Axes axis={this.axis} inputs = {this.inputs}>
       {({pos}) => (
         <div className="sun" style={{transform:`scale(${pos.zoom})`}}
-        data-tooltip="You can zoom sun by mouse wheel (WheelInput)"
+        data-tooltip="Mouse Wheel (WheelInput)"
         data-axis={`zoom: ${pos.zoom}`}
         ></div>
       )}
@@ -31,7 +31,7 @@ class Tree extends Component {
     super(props);
     this.axis = {
       "zoom": {
-        range: [0.7, 1.3],
+        range: [0.6, 1.2],
         bounce: [0.2, 0.2],
       }
     };
@@ -42,8 +42,8 @@ class Tree extends Component {
     return (
       <Axes axis={this.axis} inputs = {this.inputs}>
       {({pos}) => (
-        <div className="tree" style={{right, bottom, transform:`scale(${pos.zoom})`}}
-        data-tooltip="You can zoom tree by mouse wheel (WheelInput)" data-axis={`zoom: ${pos.zoom}`}>
+        <div className={`tree ${this.props.mediaHide ? "mediaHide" : ""}`} style={{right, bottom, transform:`scale(${pos.zoom})`}}
+        data-tooltip="Mouse Wheel (WheelInput)" data-axis={`zoom: ${pos.zoom}`}>
           <div className="leaves leaves1"></div>
           <div className="leaves leaves2"></div>
           <div className="leaves leaves3"></div>
@@ -60,25 +60,25 @@ class Cloud extends Component {
     super(props);
     this.axis = {
       "x": {
-        range: [0, 300],
+        range: [0, 100],
         bounce: [100, 100],
       },
       "y": {
-        range: [0, 100],
+        range: [0, 120],
         bounce: [100, 100],
       }
     };
-    this.inputs = new PanInput({axis: "x y"});  
+    this.inputs = new PanInput({axis: "x y", scale: [0.5, 1]});  
   }
   render() {
     return (
       <Axes axis={this.axis} inputs = {this.inputs}>
-      {({pos}) => (
-        <div className="cloud" style={{
+      {({pos, inputEvent}) => (
+        <div className={`cloud ${this.props.mediaHide ? "mediaHide" : ""}`} style={{
           transform: `translate(${pos.x}px, ${pos.y}px)`,
           left: this.props.left,
           top: this.props.top,
-        }} data-tooltip="You can move cloud by mouse drag or touch (PanInput)" data-axis={`x: ${pos.x}, y: ${pos.y}`}>
+        }} data-tooltip="Mouse Drag or Touch (PanInput)" data-axis={`x: ${pos.x}, y: ${pos.y}`}>
           <div className="c1"></div>
           <div className="c2"></div>
           <div className="c3"></div>
@@ -90,29 +90,40 @@ class Cloud extends Component {
     );
   }
 }
+
+const hair = ["short", "baldhead", "bob"];
+const look = ["", "grin", "angry", "absence"];
+
 class Character extends Component {
   constructor(props) {
     super(props);
     this.left = "";
-
-
+    this.state = {
+      hair: 0,
+      look: 0,
+    };
+    this.changeHair = this.changeHair.bind(this);
+  }
+  changeHair() {
+    this.setState({hair: (this.state.hair + 1) % hair.length});
   }
   render() {
     const {pos, delta} = this.props;
     const {x, y} = pos;
     const level = Math.abs((x + y) % 16 -8);
+    const face = parseInt(x / 25.1);
 
     if (delta.x < 0) {
 			this.left = "left";
 		} else if (delta.x > 0) {
 			this.left = "";
 		}
-    return (<div className={`character ${this.props.hair} ${this.props.look} ${this.left}`} style={
+    return (<div className={`character ${hair[this.state.hair]} ${look[face]} ${this.left}`} style={
       {
         left: `${x / 96 * 80}%`,
-		    marginBottom: `${(y * 3 + (8 - level) * 5)}px`,
+		    marginBottom: `${(y / 10 + (8 - level) * 1)}%`,
       }
-    } data-tooltip="You can move character by arrow key (MoveKeyInput)" data-axis={`x: ${x}, y: ${y}`}>
+    } data-tooltip="Keyboard Arrow Key (MoveKeyInput)" data-axis={`x: ${x}, y: ${y}`}>
     <div className="inner">
       <div className="hair-back">
           <div className="hair hair1"></div>
@@ -120,7 +131,7 @@ class Character extends Component {
           <div className="hair hair3"></div>
           <div className="hair hair4"></div>
       </div>
-      <div className="head">
+      <div className="head" onClick= {this.changeHair}>
           <div className="ear"></div>
           <div className="cheek"></div>
           <div className="head-front">
@@ -166,67 +177,47 @@ class Character extends Component {
   }
 }
 
-const hair = ["short", "baldhead", "bob"];
-const look = ["", "grin", "angry", "absence"];
-
 class App extends Component {
   constructor(prop) {
     super(prop);
     this.inputs = new MoveKeyInput({axis: "x y", scale: [2, 2]});
     this.state = {
       className: "",
-      hair: 0,
-      look: 0,
-    };
 
-    this.showInfo = this.showInfo.bind(this);
-    this.hideInfo = this.hideInfo.bind(this);
-    this.changeHair = this.changeHair.bind(this);
-    this.changeLook = this.changeLook.bind(this);
+    };
+    this.toggleInfo = this.toggleInfo.bind(this);
   }
-  showInfo() {
-    this.setState({className: "showInfo"});
-  }
-  hideInfo() {
-    this.setState({className: ""});
-  }
-  changeHair() {
-    this.setState({hair: (this.state.hair + 1) % hair.length});
-  }
-  changeLook() {
-    this.setState({look: (this.state.look + 1) % look.length});
+  toggleInfo() {
+    this.setState({className: this.state.className ? "" : "showInfo"});
   }
   render() {
     return (
-      <div>
         <Axes axis={{
           "x": [0, 100],
           "y": [0, 40],
         }} inputs = {this.inputs}>
-          {({pos, delta}) => (
+          {({pos, delta, inputEvent}) => {
+            inputEvent && inputEvent.preventDefault();
+            return (
             <div className={`container ${this.state.className}`}>
               <Sun />
-              <Cloud top="120px" left="70%"/>
-              <Cloud top="80px" left="40%"/>
-              <Cloud top="140px" left="20%"/>
+              <Cloud top="60px" left="60%" />
+              <Cloud top="20px" left="45%" mediaHide/>
+              <Cloud top="80px" left="200px"/>
               <div className="broad">
-                <Tree right="40%" bottom="80%"/>
-                <Character face="" pos={pos} delta={delta} hair={hair[this.state.hair]} look={look[this.state.look]}/>
-                <Tree right="20%" bottom="30%"/>
-                <Tree right="70%" bottom="30%"/>
+                <Tree right="40%" bottom="80%" mediaHide/>
+                <Character face="" pos={pos} delta={delta}/>
+                <Tree right="20%" bottom="30%" />
+                <Tree right="70%" bottom="30%" />
               </div>
-              <div className="controller">
-              </div>
+              <div className="buttons">
+              <button onClick={this.toggleInfo}>Toggle Information</button>
             </div>
-          )}
+            </div>
+          );
+        }
+        }
         </Axes>
-        <div className="buttons">
-          <button onClick={this.showInfo}>Show Information</button>
-          <button onClick={this.hideInfo}>Hide Information</button>
-          <button onClick={this.changeHair}>Change Hair</button>
-          <button onClick={this.changeLook}>Change A Look</button>
-        </div>
-      </div>
     );
   }
 }

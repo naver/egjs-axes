@@ -1,3 +1,14 @@
+.demobox {
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.demobox * {
+    box-sizing: content-box;
+}
 .demobox .title {
     position: absolute;
     z-index: 2;
@@ -21,7 +32,7 @@
     padding: 5px;
     display: none;
 }
-.container.showInfo [data-axis]:after {
+.demobox .container.showInfo [data-axis]:after {
     position: absolute;
     content: attr(data-axis);
     z-index: 10;
@@ -40,17 +51,17 @@
 [data-tooltip]:hover:before {
     display: block;
 }
-.sun[data-tooltip]:before, .cloud[data-tooltip]:before {
+.sun[data-tooltip]:before, .cloud[data-tooltip]:before,  .tree[data-tooltip]:before {
     bottom: auto;
     top: 100%;
 }
 .character.left[data-tooltip]:before, .showInfo .character.left:after {
     transform: scaleX(-1);
 }
-.container.showInfo .character[data-axis]:after {
+.demobox .container.showInfo .character[data-axis]:after {
     top: 100%;
 }
-.container {
+.demobox .container {
     position: absolute;
     left: 0;
     top: 0;
@@ -58,7 +69,8 @@
     bottom: 50px;
     width: 100%;
     background: rgb(185, 231, 255);
-    overflow: hidden;
+    outline: none;
+    -webkit-outline: none;
 }
 .broad {
     position: absolute;
@@ -169,17 +181,17 @@
     left: 200px;
     bottom: 40%;
     width: 200px;
-    height: 320px;
+    height: 250px;
     z-index: 2;
 }
 
 .character .inner {
     position: absolute;
-    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    transform-origin: 50% 90%;
+    height: 320px;
+    transform-origin: 50% 100%;
     transform: scale(0.7);
 }
 
@@ -555,11 +567,28 @@
     z-index: 2;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: -50px;
     width: 100%;
     height: 50px;
 }
 .buttons button {
+    position: absolute;
+    left: 37.5%;
     width: 25%;
     height: 50px;
+    box-sizing: border-box;
+}
+.showcase .mediaHide {
+    display: none;
+}
+.showcase .character {
+    height: 200px;
+}
+.showcase .character .inner {
+    transform: scale(0.7);
+}
+@media (max-width: 800px) {
+    .mediaHide {
+        display: none;
+    }
 }
