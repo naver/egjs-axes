@@ -32,14 +32,16 @@ ReactDOM.render(
 |inputs|Array(InputType), InputType| The inputType instance to associate with the axis of eg.Axes|
 |other props||[AxesOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxesOption)|
 
-### inputs
-* [MoveKeyInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#MoveKeyInputOption)
-* [PanInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PanInputOption)
-* [PinchInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption)
-* [WheelInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption)
+### InputTypes
+* [MoveKeyInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#MoveKeyInputOption)
+* [PanInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PanInputOption)
+* [PinchInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption)
+* [WheelInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption)
 
 ### Example
 ```jsx
+import Axes, {PanInput, WheelInput, MoveKeyInput} from "@egjs/react-axes";
+
 <Axes axis={{
     x: {
         range: [0, 100],
@@ -50,15 +52,15 @@ ReactDOM.render(
         bounce: [20, 50],
     },
     z: {
-        range: [0, 50],
-        bounce: [20, 50],
+        range: [0.2, 1.2],
     }
 },
 inputs={[
     new MoveKeyInput({axis: "x y", scale: [10, -10]}),
-    new PanInput({axis: "x y"})
+    new PanInput({axis: "x y"}),
+    new WheelInput({axis: "z"})
 ]}>
-({pos, delta, holding, inputEvent}) => (<div style={{left: `${pos.x}px`, top: `${pox.y}px`}}></div>)
+({pos, delta, holding, inputEvent}) => (<div style={{left: `${pos.x}px`, top: `${pox.y}px`, transform: `scale(${pos.z})`}}></div>)
 </Axes>
 ```
 
