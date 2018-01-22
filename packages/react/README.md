@@ -3,7 +3,7 @@
 Use Axes to 
 react component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
 
-- [Get Started and Demos](https://naver.github.io/egjs-axes/)
+- [Demo](https://naver.github.io/egjs-axes/)
 
 
 ## Install
@@ -38,14 +38,7 @@ ReactDOM.render(
 * [PinchInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption)
 * [WheelInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption)
 
-### axis format
-#### simple format(only range)
-```jsx
-<Axes axis={{x: [0, 100], y: [0, 100], z: [0, 50]}}>
-...
-</Axes>
-```
-#### complex format(with bounce)
+### Example
 ```jsx
 <Axes axis={{
     x: {
@@ -59,28 +52,18 @@ ReactDOM.render(
     z: {
         range: [0, 50],
         bounce: [20, 50],
-    },
-}}>
-...
-</Axes>
-```
-
-### inputs format
-#### single format
-```jsx
-<Axes inputs={new MoveKeyInput({axis: "x y", scale: [1, -1]})}>
-...
-</Axes>
-```
-#### multiple format
-```jsx
-<Axes inputs={[
+    }
+},
+inputs={[
     new MoveKeyInput({axis: "x y", scale: [10, -10]}),
     new PanInput({axis: "x y"})
 ]}>
-...
+({pos, delta, holding, inputEvent}) => (<div style={{left: `${pos.x}px`, top: `${pox.y}px`}}></div>)
 </Axes>
 ```
+
+* [API Documents](https://github.com/naver/egjs-axes/wiki/react-axes-API)
+
 ## Supported Browsers
 The following are the supported browsers.
 
