@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "rc-tools run server",
+    "build": "rc-tools run build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "gh-pages": "rc-tools run gh-pages",
