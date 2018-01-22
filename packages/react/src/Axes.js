@@ -53,12 +53,13 @@ export default class Axes extends Component {
                 axis[name] = propsAxis[name];
             }
         }
-        this.axes = new NativeAxes(this.props.axis, options);
+        this.axes = new NativeAxes(axis, options);
         for (const name in events) {
             this.axes.on(name, events[name]);
         }
         this.axes.on("change", this.onChange.bind(this));
         this.axes.on("hold", this.onHold.bind(this));
+        this.axes.on("release", this.onRelease.bind(this));
         const pos = this.axes.get();
 
         this.state = {
@@ -78,11 +79,23 @@ export default class Axes extends Component {
             holding: true,
         })
     }
+    onRelease(e) {
+        this.onChange({
+            ...e,
+            pos: this.axes.get(),
+            delta: toZeroAxis(this.axes.axis),
+            holding: false,
+        })
+    }
     render() {
         return this.props.children(this.state);
     }
     componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
+
+        if (!element) {
+            return;
+        }
         const inputs = Array.isArray(this.props.inputs) ? this.props.inputs : [this.props.inputs];
 
         inputs.forEach(input => {

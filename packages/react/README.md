@@ -12,10 +12,8 @@ $ npm install @egjs/react-axes
 ```
 
 ## Usage
-
-### single input
 ```jsx
-import Axes, {MoveKeyInput} from "@egjs/react-axes";
+import Axes, {MoveKeyInput, PanInput} from "@egjs/react-axes";
 
 ReactDOM.render(
     <Axes axis={{x: [0, 100], y: [0, 100]}} inputs={new MoveKeyInput({axis: "x y", scale: [1, -1]})}>
@@ -29,7 +27,7 @@ ReactDOM.render(
 ## API
 ### props
 |name|type|description|
-|---|---|---|
+|---|---------------|---|
 |axis|Object(string, [AxisOption](AxisOptionObject))|The key of the axis specifies the name to use as the logical virtual coordinate system.|
 |inputs|Array(InputType), InputType| The inputType instance to associate with the axis of eg.Axes|
 |other props||[AxesOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxesOption)|
@@ -62,7 +60,7 @@ ReactDOM.render(
         range: [0, 50],
         bounce: [20, 50],
     },
-}>
+}}>
 ...
 </Axes>
 ```
