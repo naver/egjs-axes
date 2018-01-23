@@ -13,7 +13,8 @@ describe("InputType", () => {
       // When
       let inputType = [ "touch", "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
+      expect(Hammer.TouchMouseInput).to.be.ok;
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchMouseInput);
 
       // When
       inputType = [ "touch" ];
