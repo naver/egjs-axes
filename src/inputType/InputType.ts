@@ -52,6 +52,12 @@ export function convertInputType(inputType: string[] = []) {
 			// no default
 		}
 	});
-	return (hasTouch && Hammer.TouchInput) ||
-		(hasMouse && Hammer.MouseInput) || null;
+	if (hasTouch && hasMouse) {
+		return Hammer.TouchMouseInput;
+	} else if (hasTouch) {
+		return Hammer.TouchInput;
+	} else if (hasMouse) {
+		return Hammer.MouseInput;
+	}
+	return null;
 }
