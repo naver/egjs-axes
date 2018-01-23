@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-axes",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
 	"author": {
 		"name": "NAVER Corp."
@@ -8,13 +8,12 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-axes",  
   "dependencies": {
-    "@egjs/component": "^2.1.0",
+    "@egjs/axes": "^2.4.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-scripts": "1.0.17"
   },
   "devDependencies": {
-    "@egjs/axes": "^2.4.2",
     "rc-tools": "^7.0.7"
   },
   "scripts": {
@@ -24,7 +23,6 @@
     "eject": "react-scripts eject",
     "gh-pages": "rc-tools run gh-pages",
     "pub": "rc-tools run update-self && rc-tools run pub",
-    "lint": "rc-tools run lint",
-    "prepublish": "rc-tools run guard"
+    "lint": "rc-tools run lint"
   }
 }

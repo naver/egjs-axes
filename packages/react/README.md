@@ -1,4 +1,4 @@
-# react-axes [![npm version](https://badge.fury.io/js/%40react%2Faxes.svg)](https://badge.fury.io/js/%react%2Faxes)
+# react-axes [![npm version](https://badge.fury.io/js/%40egjs%2Freact-axes.svg)](https://www.npmjs.com/package/@egjs/react-axes)
 
 Use Axes to 
 react component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
