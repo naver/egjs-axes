@@ -24,7 +24,6 @@ exports.toAxis = toAxis;
 ;
 function createHammer(element, options) {
     try {
-        // create Hammer
         return new Hammer.Manager(element, __assign({}, options));
     }
     catch (e) {
@@ -37,18 +36,22 @@ function convertInputType(inputType) {
     if (inputType === void 0) { inputType = []; }
     var hasTouch = false;
     var hasMouse = false;
+    var hasPointer = false;
     inputType.forEach(function (v) {
         switch (v) {
             case "mouse":
                 hasMouse = true;
                 break;
-            case "touch": hasTouch = exports.SUPPORT_TOUCH;
+            case "touch":
+                hasTouch = exports.SUPPORT_TOUCH;
+                break;
+            case "pointer": hasPointer = exports.SUPPORT_POINTER_EVENTS;
         }
     });
-    if (hasTouch && hasMouse) {
-        if (exports.SUPPORT_POINTER_EVENTS) {
-            return Hammer.PointerEventInput;
-        }
+    if (hasPointer) {
+        return Hammer.PointerEventInput;
+    }
+    else if (hasTouch && hasMouse) {
         return Hammer.TouchMouseInput;
     }
     else if (hasTouch) {
