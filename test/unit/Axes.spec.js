@@ -302,8 +302,16 @@ describe("Axes", function () {
       input3.destroy();
     });
   });
-  describe("Axes Custom Event Test with interruptable", function () {
+  [
+    ["pointer"], ["touch", "mouse"], ["touch"]
+  ].forEach(type => {
+  describe(`Axes Custom Event Test with interruptable(${type})`, function () {
     beforeEach(() => {
+      if (type.indexOf("pointer") > -1) {
+        Simulator.setType("pointer");
+      } else {
+        Simulator.setType("touch");
+      }
       this.inst = new Axes({
         x: {
           range: [0, 300],
@@ -327,7 +335,9 @@ describe("Axes", function () {
       this.notPreventedFn = function() {
         expect(self.itm._prevented).to.be.false;
       };
-      this.input = new PanInput(this.el);
+      this.input = new PanInput(this.el, {
+        inputType: type,
+      });
       this.inst.connect(["x", "y"], this.input);
     });
     afterEach(() => {
@@ -380,8 +390,13 @@ describe("Axes", function () {
       });
     });
   });
-  describe("Axes Custom Event Test", function () {
+  describe(`Axes Custom Event Test(${type})`, function () {
     beforeEach(() => {
+      if (type.indexOf("pointer") > -1) {
+        Simulator.setType("pointer");
+      } else {
+        Simulator.setType("touch");
+      }
       this.inst = new Axes({
         x: {
           range: [0, 300],
@@ -404,7 +419,9 @@ describe("Axes", function () {
       this.animationStartHandler = sinon.spy();
       this.animationEndHandler = sinon.spy();
 
-      this.input = new PanInput(this.el);
+      this.input = new PanInput(this.el, {
+        inputType: type,
+      });
       this.inst.on({
         "hold": this.holdHandler,
         "release": this.releaseHandler,
@@ -631,17 +648,21 @@ describe("Axes", function () {
 
 			// grab while animating
 			this.inst.on("animationStart", (e) => {
-				destPos = e.destPos;
+        destPos = e.destPos;
 				Simulator.gestures.tap(this.el);
 			});
 
 			// Then
 			this.inst.on("animationEnd", (e) => {
-				let endPos = this.inst.get();
-				expect(e.isTrusted).to.be.true;
-				expect(endPos.x !== destPos.x || endPos.y !== destPos.y ).to.be.true;
-				done();
+        setTimeout(() => {
+          let endPos = this.inst.get();
+
+          expect(e.isTrusted).to.be.true;
+          expect(endPos.x !== destPos.x || endPos.y !== destPos.y ).to.be.true;
+          done();
+        });
 			})
-		});
+    });
+  });
   });
 });

@@ -23,6 +23,7 @@ export interface IInputTypeObserver {
 	release(inputType: IInputType, event, offset: Axis, duration?: number);
 }
 
+export const SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window;
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export function toAxis(source: string[], offset: number[]): Axis {
@@ -44,14 +45,24 @@ export function createHammer(element: HTMLElement, options) {
 export function convertInputType(inputType: string[] = []) {
 	let hasTouch = false;
 	let hasMouse = false;
+	let hasPointer = false;
 
 	inputType.forEach(v => {
 		switch (v) {
 			case "mouse": hasMouse = true; break;
-			case "touch": hasTouch = SUPPORT_TOUCH;
+			case "touch": hasTouch = SUPPORT_TOUCH;break;
+			case "pointer": hasPointer = SUPPORT_POINTER_EVENTS;
 			// no default
 		}
 	});
-	return (hasTouch && Hammer.TouchInput) ||
-		(hasMouse && Hammer.MouseInput) || null;
+	if (hasPointer) {
+		return Hammer.PointerEventInput;
+	} else if (hasTouch && hasMouse) {
+		return Hammer.TouchMouseInput;
+	} else if (hasTouch) {
+		return Hammer.TouchInput;
+	} else if (hasMouse) {
+		return Hammer.MouseInput;
+	}
+	return null;
 }

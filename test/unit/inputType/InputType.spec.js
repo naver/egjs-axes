@@ -8,13 +8,18 @@ describe("InputType", () => {
     it("should check convertInputType when supporting touch", () => {
       // Given
       const MockInputInjector = InputInjector();
-      MockInputInjector.SUPPORT_TOUCH = true;
-      
-      // When
-      let inputType = [ "touch", "mouse" ];
-      // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
 
+      MockInputInjector.SUPPORT_TOUCH = true;
+      MockInputInjector.SUPPORT_POINTER_EVENTS = true;
+      // When
+      let inputType = ["pointer", "touch", "mouse" ];
+      // Then
+      expect(Hammer.TouchMouseInput).to.be.ok;
+      expect(Hammer.PointerEventInput).to.be.ok;
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.PointerEventInput);
+      MockInputInjector.SUPPORT_POINTER_EVENTS = false;
+      
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchMouseInput);
       // When
       inputType = [ "touch" ];
       // Then

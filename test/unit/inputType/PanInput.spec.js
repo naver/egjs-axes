@@ -8,7 +8,9 @@ describe("PanInput", () => {
   describe("when hammer instance is shared", function() {
     beforeEach(() => {
       this.el = sandbox();
-      this.inst1 = new PanInput(this.el);
+      this.inst1 = new PanInput(this.el, {
+        inputType: ["touch", "mouse"],
+      });
       this.inst2 = new PinchInput(this.el);
       this.inst1.mapAxes(["x1","y1"]);
       this.inst2.mapAxes(["x2"]);
@@ -198,7 +200,9 @@ describe("PanInput", () => {
   describe("enable/disable", function() {
     beforeEach(() => {
       this.el = sandbox();
-      this.inst = new PanInput(this.el);
+      this.inst = new PanInput(this.el, {
+        inputType: ["touch", "mouse"],
+      });
       this.inst.mapAxes(["x1","y1"]);
       this.observer = {
         get() {
