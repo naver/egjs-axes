@@ -9,6 +9,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var Hammer = require("hammerjs");
+exports.SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window;
 exports.SUPPORT_TOUCH = "ontouchstart" in window;
 exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 function toAxis(source, offset) {
@@ -44,7 +45,18 @@ function convertInputType(inputType) {
             case "touch": hasTouch = exports.SUPPORT_TOUCH;
         }
     });
-    return (hasTouch && Hammer.TouchInput) ||
-        (hasMouse && Hammer.MouseInput) || null;
+    if (hasTouch && hasMouse) {
+        if (exports.SUPPORT_POINTER_EVENTS) {
+            return Hammer.PointerEventInput;
+        }
+        return Hammer.TouchMouseInput;
+    }
+    else if (hasTouch) {
+        return Hammer.TouchInput;
+    }
+    else if (hasMouse) {
+        return Hammer.MouseInput;
+    }
+    return null;
 }
 exports.convertInputType = convertInputType;

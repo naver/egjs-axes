@@ -19,6 +19,7 @@ export interface IInputTypeObserver {
     hold(inputType: IInputType, event: any): any;
     release(inputType: IInputType, event: any, offset: Axis, duration?: number): any;
 }
+export declare const SUPPORT_POINTER_EVENTS: boolean;
 export declare const SUPPORT_TOUCH: boolean;
 export declare const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export declare function toAxis(source: string[], offset: number[]): Axis;

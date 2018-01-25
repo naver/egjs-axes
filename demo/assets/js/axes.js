@@ -171,7 +171,7 @@ $(function () {
   
   // 2. attach event handler
   axes.on({
-    "hold": event => !SUPPORT_TOUCH && pan.classList.add("blinking"),
+    "hold": event => pan.classList.add("blinking"),
     "change": function (e) {
       var pos = e.pos;
       var delta = e.delta;
