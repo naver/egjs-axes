@@ -6,7 +6,7 @@ A module used to change the information of user action entered by various input 
 
 You can easily create a UI that responds to user actions.
 
-![car360 using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/360car.gif)
+![showcase using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/showcase.gif)
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-axes/)
