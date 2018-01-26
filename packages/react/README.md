@@ -1,8 +1,10 @@
-# react-axes [![npm version](https://badge.fury.io/js/%40egjs%2Freact-axes.svg)](https://www.npmjs.com/package/@egjs/react-axes)
+# react-axes [![npm version](https://badge.fury.io/js/%40egjs%2Freact-axes.svg)](https://badge.fury.io/js/%40egjs%2Freact-axes)
 
 Use Axes to 
 react component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
 
+
+* [API Documents](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
 - [Demo](https://naver.github.io/egjs-axes/)
 
 
@@ -12,33 +14,6 @@ $ npm install @egjs/react-axes
 ```
 
 ## Usage
-```jsx
-import Axes, {MoveKeyInput, PanInput} from "@egjs/react-axes";
-
-ReactDOM.render(
-    <Axes axis={{x: [0, 100], y: [0, 100]}} inputs={new MoveKeyInput({axis: "x y", scale: [1, -1]})}>
-        ({pos}) => (
-            <div style={{left: `${pos.x}px`, top: `${pox.y}px`}}></div>
-        )
-    </Axes>
-);
-```
-
-## API
-### props
-|name|type|description|
-|---|---------------|---|
-|axis|Object(string, [AxisOption](AxisOptionObject))|The key of the axis specifies the name to use as the logical virtual coordinate system.|
-|inputs|Array(InputType), InputType| The inputType instance to associate with the axis of eg.Axes|
-|other props||[AxesOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxesOption)|
-
-### InputTypes
-* [MoveKeyInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#MoveKeyInputOption)
-* [PanInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PanInputOption)
-* [PinchInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption)
-* [WheelInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption)
-
-### Example
 ```jsx
 import Axes, {PanInput, WheelInput, MoveKeyInput} from "@egjs/react-axes";
 
@@ -64,7 +39,22 @@ inputs={[
 </Axes>
 ```
 
-* [API Documents](https://github.com/naver/egjs-axes/wiki/react-axes-API)
+## API
+### props
+|name|type|description|
+|---|---------------|---|
+|axis|Map(key: string, value: [AxisOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxisOption))|The key of the axis specifies the name to use as the logical virtual coordinate system.|
+|inputs|InputType[] or InputType| The inputType instance to associate with the axis of eg.Axes|
+|other props||[AxesOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#AxesOptionObject)|
+
+> #### InputTypes
+> All inputTypes provide an `axis` property that represents the axis.
+>
+> * MoveKeyInput(options: [MoveKeyInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#MoveKeyInputOption))
+> * PanInput(options: [PanInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PanInputOption))
+> * PinchInput(options: [PinchInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption))
+> * WheelInput(options: [WheelInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption))
+
 
 ## Supported Browsers
 The following are the supported browsers.
@@ -78,11 +68,9 @@ The following are the supported browsers.
 ## Development
 
 ```bash
-# Run rc-tools server for development
+# Run rc-tools server and see examples for development
 $ npm run start
 ```
-* /examples/app.html
-* /examples/character.html
 
 
 ## Dependency
