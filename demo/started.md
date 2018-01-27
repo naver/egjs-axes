@@ -17,6 +17,13 @@ IE 10+, latest of Chrome/FF/Safari, iOS 7+ and Android 2.3+ (except 3.x)
 ``` html
 {% for dist in site.data.egjs.dist %}<script src="//{{ site.data.egjs.github.user }}.github.io/{{ site.data.egjs.github.repo }}/{{ dist }}"></script>{% endfor %}
 ```
+```js
+var Axes = eg.Axes;
+var PanInput = Axes.PanInput;
+var PinchInput = Axes.PinchInput;
+var WheelInput = Axes.WheelInput;
+var MoveKeyInput = Axes.MoveKeyInput;
+```
 
 ##### ES6+
 ```js
@@ -56,10 +63,10 @@ axes.on({
 Create an InputType to associate with the axis of eg.Axes.
 
 Axes provides three inputTypes.
-- [eg.Axes.PanInput](./release/latest/doc/eg.Axes.PanInput.html)
-- [eg.Axes.PinchInput](./release/latest/doc/eg.Axes.PinchInput.html)
-- [eg.Axes.WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
-- [eg.Axes.MoveKeyInput](./release/latest/doc/eg.Axes.MoveKeyInput.html)
+- [PanInput](./release/latest/doc/eg.Axes.PanInput.html)
+- [PinchInput](./release/latest/doc/eg.Axes.PinchInput.html)
+- [WheelInput](./release/latest/doc/eg.Axes.WheelInput.html)
+- [MoveKeyInput](./release/latest/doc/eg.Axes.MoveKeyInput.html)
 
 ```js
 // create inputTypes to use

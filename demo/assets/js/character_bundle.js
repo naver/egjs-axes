@@ -28020,7 +28020,7 @@ var Character = function (_Component4) {
       'div',
       { className: 'character ' + hair[this.state.hair] + ' ' + look[face] + ' ' + this.left, style: {
           left: x / 96 * 80 + '%',
-          marginBottom: y / 10 + (8 - level) * 1 + '%'
+          marginBottom: y / 7 + (8 - level) * 1 + '%'
         }, 'data-tooltip': 'Keyboard Arrow Key (MoveKeyInput)', 'data-axis': 'x: ' + x + ', y: ' + y },
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
@@ -28133,7 +28133,7 @@ var App = function (_Component5) {
       __WEBPACK_IMPORTED_MODULE_2__index_js__["d" /* default */],
       { axis: {
           "x": [0, 100],
-          "y": [0, 40]
+          "y": [0, 30]
         }, inputs: this.inputs },
       function (_ref4) {
         var pos = _ref4.pos,

@@ -59,14 +59,14 @@
     transform: scaleX(-1);
 }
 .demobox .container.showInfo .character[data-axis]:after {
-    top: 100%;
+    top: 110%;
 }
 .demobox .container {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
-    bottom: 50px;
+    bottom: 0px;
     width: 100%;
     background: rgb(185, 231, 255);
     outline: none;
@@ -208,6 +208,7 @@
     left: 0;
     right: 0;
     margin: 0px auto;
+    cursor: pointer;
 }
 .hair-front {
     position: absolute;
@@ -565,18 +566,24 @@
 .buttons {
     position: absolute;
     z-index: 2;
-    left: 0;
     right: 0;
-    bottom: -50px;
-    width: 100%;
+    bottom: 0px;
+    width: 100px;
     height: 50px;
 }
 .buttons button {
     position: absolute;
-    left: 37.5%;
-    width: 25%;
+    width: 100px;
     height: 50px;
     box-sizing: border-box;
+    outline: none;
+    -webkit-outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: #fff;
+    font-weight: bold;
+    cursor: pointer;
 }
 .showcase .mediaHide {
     display: none;
@@ -585,7 +592,7 @@
     height: 200px;
 }
 .showcase .character .inner {
-    transform: scale(0.7);
+    transform: scale(0.6);
 }
 @media (max-width: 800px) {
     .mediaHide {

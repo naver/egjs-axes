@@ -75,8 +75,6 @@ inputs:
         file: cube
       - name: Mini Map
         file: minimap
-      - name: Character Move
-        file: character
 projects:
 - name: Naver Search Mobile
   url: https://m.search.naver.com/search.naver?sm=mtb_sly.hst&where=m&query=%EB%8D%94%EB%B9%84%ED%8B%80&oquery=%EB%B2%A4%EC%B8%A0+%EB%89%B4%EB%B9%84%ED%8B%80&tqi=TAh%2BNlpySCGssbKZNIKssssssoo-206192&tab=&acr=5
