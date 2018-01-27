@@ -1,10 +1,8 @@
 # react-axes [![npm version](https://badge.fury.io/js/%40egjs%2Freact-axes.svg)](https://badge.fury.io/js/%40egjs%2Freact-axes)
 
-Use Axes to 
-react component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
+A react component that can easily use [egjs-axes](https://github.com/naver/egjs-axes)
 
-
-- [API Documents](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
+- [API Documents for React](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
 - [Demo](https://naver.github.io/egjs-axes/)
 
 
@@ -14,6 +12,7 @@ $ npm install @egjs/react-axes
 ```
 
 ## Usage
+
 ```jsx
 import Axes, {PanInput, WheelInput, MoveKeyInput} from "@egjs/react-axes";
 
@@ -39,7 +38,6 @@ inputs={[
 </Axes>
 ```
 
-## API
 ### props
 |name|type|description|
 |---|---------------|---|
@@ -54,6 +52,8 @@ inputs={[
 > * PanInput(options: [PanInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PanInputOption))
 > * PinchInput(options: [PinchInput](https://naver.github.io/egjs-axes/release/latest/doc/global.html#PinchInputOption))
 > * WheelInput(options: [WheelInputOption](https://naver.github.io/egjs-axes/release/latest/doc/global.html#WheelInputOption))
+
+For more information, see the [API Documents for React](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
 
 
 ## Supported Browsers
