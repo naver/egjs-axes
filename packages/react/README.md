@@ -4,7 +4,7 @@ Use Axes to
 react component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
 
 
-* [API Documents](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
+- [API Documents](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
 - [Demo](https://naver.github.io/egjs-axes/)
 
 
@@ -72,12 +72,6 @@ The following are the supported browsers.
 $ npm run start
 ```
 
-
-## Dependency
-
-react-axes has the dependencies for the following libraries:
-
-[egjs-axes](http://github.com/naver/egjs-axes)
 
 ## Bug Report
 
