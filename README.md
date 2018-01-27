@@ -15,7 +15,7 @@ You can easily create a UI that responds to user actions.
 - [How to create a custom InputType](https://github.com/naver/egjs-axes/wiki/How-to-create-a-custom-InputType)
 
 ## Third party applications
- - [Axes for react](https://github.com/naver/egjs-axes/tree/master/packages/react): A react component that can easily use egjs-axes
+ - [@egjs/react-axes](https://github.com/naver/egjs-axes/tree/master/packages/react): A react component that can easily use egjs-axes
 
 ## Download and Installation
 
