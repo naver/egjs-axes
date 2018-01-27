@@ -322,7 +322,6 @@
     z-index: 4;
     left: 20px;
     top: -5px;
-    box-sizing:content-box;
 }
 .ponytail .hair-back {
     position: absolute;
@@ -345,6 +344,7 @@
     border-radius: 50% / 50% 50% 0% 0px;
     transform: rotate(180deg);
     left: -90px;
+    box-sizing: border-box;
 }
 .bob .hair-back {
     position: absolute;
