@@ -92,6 +92,9 @@
 				<div class="demobox showcase" codepen="character">
 					<div id="__react-content"></div>
 				</div>
+				<div class="newwindow">
+					<a href="./assets/html/character.html" target="_blank">Open a showcase in a new window</a>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -118,42 +121,37 @@
 
 <h4 id="1-set-up-your-html">1. Set up your HTML</h4>
 
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"area"</span><span class="nt">&gt;&lt;/div&gt;</span>
-</code></pre>
-</div>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"area"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
 
 <h4 id="2-load-files-or-import-library">2. Load files or import library</h4>
 
 <h5 id="es5">ES5</h5>
-<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre>
-</div>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">Axes</span> <span class="o">=</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">;</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">Axes</span> <span class="o">=</span> <span class="nx">eg</span><span class="p">.</span><span class="nx">Axes</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">PanInput</span> <span class="o">=</span> <span class="nx">Axes</span><span class="p">.</span><span class="nx">PanInput</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">PinchInput</span> <span class="o">=</span> <span class="nx">Axes</span><span class="p">.</span><span class="nx">PinchInput</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">WheelInput</span> <span class="o">=</span> <span class="nx">Axes</span><span class="p">.</span><span class="nx">WheelInput</span><span class="p">;</span>
 <span class="kd">var</span> <span class="nx">MoveKeyInput</span> <span class="o">=</span> <span class="nx">Axes</span><span class="p">.</span><span class="nx">MoveKeyInput</span><span class="p">;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h5 id="es6">ES6+</h5>
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">Axes</span><span class="p">,</span> <span class="p">{</span><span class="nx">PanInput</span><span class="p">,</span> <span class="nx">PinchInput</span><span class="p">,</span> <span class="nx">WheelInput</span><span class="p">,</span> <span class="nx">MoveKeyInput</span><span class="p">}</span> <span class="nx">from</span> <span class="s2">"@egjs/axes"</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">Axes</span><span class="p">,</span> <span class="p">{</span><span class="nx">PanInput</span><span class="p">,</span> <span class="nx">PinchInput</span><span class="p">,</span> <span class="nx">WheelInput</span><span class="p">,</span> <span class="nx">MoveKeyInput</span><span class="p">}</span> <span class="k">from</span> <span class="s2">"@egjs/axes"</span><span class="p">;</span>
+</code></pre></div></div>
 
 <h4 id="3-initialize-axes">3. Initialize Axes</h4>
 
 <p>Initialize Axes. specify the axis to be used.
 The key of the axis specifies the name to use as the logical virtual coordinate system.</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create eg.Axes with option</span>
-<span class="kr">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Axes</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// create eg.Axes with option</span>
+<span class="kd">const</span> <span class="nx">axes</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Axes</span><span class="p">({</span>
   <span class="na">something1</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
   <span class="na">something2</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span> <span class="p">},</span>
   <span class="na">somethingN</span><span class="p">:</span> <span class="p">{</span> <span class="na">range</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span> <span class="p">}</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h4 id="4-attach-event-handlers">4. Attach event handlers</h4>
 <p>eg.Axes provides five events.</p>
@@ -166,11 +164,10 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
   <li><a href="./release/latest/doc/eg.Axes.html#event:animationEnd">animationEnd</a></li>
 </ul>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">axes</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span>
  <span class="s2">"change"</span><span class="p">:</span> <span class="nx">evt</span> <span class="o">=&gt;</span> <span class="cm">/* ... */</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h4 id="5-initialize-inputtypes-to-use">5. Initialize InputTypes to use</h4>
 <p>Create an InputType to associate with the axis of eg.Axes.</p>
@@ -183,17 +180,16 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
   <li><a href="./release/latest/doc/eg.Axes.MoveKeyInput.html">MoveKeyInput</a></li>
 </ul>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// create inputTypes to use</span>
-<span class="kr">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">movekeyInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MoveKeyInput</span><span class="p">(</span><span class="s2">"#mArea"</span><span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// create inputTypes to use</span>
+<span class="kd">const</span> <span class="nx">panInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PanInput</span><span class="p">(</span><span class="s2">"#area"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">wheelInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WheelInput</span><span class="p">(</span><span class="s2">"#wArea"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">pinchInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PinchInput</span><span class="p">(</span><span class="s2">"#pArea"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">movekeyInput</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MoveKeyInput</span><span class="p">(</span><span class="s2">"#mArea"</span><span class="p">);</span>
+</code></pre></div></div>
 
 <h4 id="6-connect-egaxes-and-inputtypes">6. Connect eg.Axes and InputTypes</h4>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="cm">/** 
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/** 
  * [PanInput] When the mouse or touchscreen is down and moved.
  *
  * Connect the 'something2' axis to the mouse or touchscreen x position and
@@ -213,8 +209,7 @@ The key of the axis specifies the name to use as the logical virtual coordinate 
 
 <span class="c1">// Connect 'something1' axis to left-right arrow key and 'something2' axis to top-bottom key</span>
 <span class="nx">axes</span><span class="p">.</span><span class="nx">connect</span><span class="p">([</span><span class="s2">"something1"</span><span class="p">,</span> <span class="s2">"something2"</span><span class="p">],</span> <span class="nx">movekeyInput</span><span class="p">);</span> <span class="c1">// or axes.connect("something1 something2", panInput);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h4 id="7-enjoy">7. Enjoy!</h4>
 <p>You can change the value of the axis through touch screen, mouse or anything else.</p>

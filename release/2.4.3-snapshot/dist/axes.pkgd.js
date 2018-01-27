@@ -3584,7 +3584,7 @@ exports["default"] = Axes;
  * @egjs/component JavaScript library
  * http://naver.github.io/egjs/component
  * 
- * @version 2.1.0
+ * @version 2.0.0
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(true)
@@ -3674,7 +3674,7 @@ var _Component2 = _interopRequireDefault(_Component);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-_Component2["default"].VERSION = "2.1.0";
+_Component2["default"].VERSION = "2.0.0";
 module.exports = _Component2["default"];
 
 /***/ }),
@@ -3715,27 +3715,13 @@ var Component = function () {
   * @ko 커스텀 이벤트를 발생시킨다
   * @param {String} eventName The name of the custom event to be triggered <ko>발생할 커스텀 이벤트의 이름</ko>
   * @param {Object} customEvent Event data to be sent when triggering a custom event <ko>커스텀 이벤트가 발생할 때 전달할 데이터</ko>
-  * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <a href="https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F">Ref</a> <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다. <a href="https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F">참고</a></ko>
+  * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. <ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다.</ko>
   * @example
  class Some extends eg.Component {
   some(){
-  	if(this.trigger("beforeHi")){ // When event call to stop return false.
- 	this.trigger("hi");// fire hi event.
-  	}
+    this.trigger("hi");// fire hi event.
   }
  }
- const some = new Some();
- some.on("beforeHi", (e) => {
- if(condition){
- 	e.stop(); // When event call to stop, `hi` event not call.
- }
- });
- some.on("hi", (e) => {
- // `currentTarget` is component instance.
- console.log(some === e.currentTarget); // true
- });
- // If you want to more know event design. You can see article.
- // https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F
   */
 
 
@@ -3761,7 +3747,6 @@ var Component = function () {
 		customEvent.stop = function () {
 			isCanceled = true;
 		};
-		customEvent.currentTarget = this;
 
 		for (var _len = arguments.length, restParam = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
 			restParam[_key - 2] = arguments[_key];
