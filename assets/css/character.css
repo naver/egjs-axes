@@ -299,7 +299,6 @@
     margin-left: 5px;
     margin-top: -13px;
     transform: rotate(45deg);
-    box-sizing:content-box;
 }
 .twintail .hair-back .hair1 {
     left: -8px;
@@ -323,6 +322,7 @@
     z-index: 4;
     left: 20px;
     top: -5px;
+    box-sizing:content-box;
 }
 .ponytail .hair-back {
     position: absolute;
