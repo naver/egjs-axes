@@ -121,7 +121,7 @@ class Character extends Component {
     return (<div className={`character ${hair[this.state.hair]} ${look[face]} ${this.left}`} style={
       {
         left: `${x / 96 * 80}%`,
-		    marginBottom: `${(y / 7 + (8 - level) * 1)}%`,
+		    marginBottom: `${(y / 3 + (8 - level) * 1)}%`,
       }
     } data-tooltip="Keyboard Arrow Key (MoveKeyInput)" data-axis={`x: ${x}, y: ${y}`}>
     <div className="inner">

@@ -6,6 +6,12 @@
     height: 100%;
     overflow: hidden;
 }
+.demobox .container {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
 .demobox * {
     box-sizing: content-box;
 }
@@ -179,7 +185,7 @@
 .character {
     position: absolute;
     left: 200px;
-    bottom: 40%;
+    bottom: 35%;
     width: 200px;
     height: 250px;
     z-index: 2;
