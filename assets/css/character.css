@@ -344,7 +344,7 @@
     border-radius: 50% / 50% 50% 0% 0px;
     transform: rotate(180deg);
     left: -90px;
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 .bob .hair-back {
     position: absolute;
