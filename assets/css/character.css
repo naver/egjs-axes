@@ -299,7 +299,7 @@
     margin-left: 5px;
     margin-top: -13px;
     transform: rotate(45deg);
-    box-sizing:border-box;
+    box-sizing:content-box;
 }
 .twintail .hair-back .hair1 {
     left: -8px;
