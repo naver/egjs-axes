@@ -11,7 +11,7 @@ exports.__esModule = true;
 var Coordinate_1 = require("./Coordinate");
 var AxisManager_1 = require("./AxisManager");
 var utils_1 = require("./utils");
-var AnimationManager = (function () {
+var AnimationManager = /** @class */ (function () {
     function AnimationManager(_a) {
         var options = _a.options, itm = _a.itm, em = _a.em, axm = _a.axm;
         this.options = options;
@@ -82,6 +82,7 @@ var AnimationManager = (function () {
     AnimationManager.prototype.animationEnd = function () {
         var beforeParam = this.getEventInfo();
         this._animateParam = null;
+        // for Circular
         var circularTargets = this.axm.filter(this.axm.get(), function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); });
         Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(circularTargets, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); }));
         this.itm.setInterrupt(false);
@@ -107,7 +108,7 @@ var AnimationManager = (function () {
                     }
                     complete();
                     return;
-                }
+                } // animationEnd
                 self_1._raf = utils_1.requestAnimationFrame(loop);
             })();
         }
@@ -127,7 +128,9 @@ var AnimationManager = (function () {
         var param = this.createAnimationParam(destPos, duration, option);
         var depaPos = __assign({}, param.depaPos);
         var retTrigger = this.em.triggerAnimationStart(param);
+        // to control
         var userWish = this.getUserControll(param);
+        // You can't stop the 'animationStart' event when 'circular' is true.
         if (!retTrigger && this.axm.every(userWish.destPos, function (v, k, opt) { return Coordinate_1["default"].isCircularable(v, opt.range, opt.circular); })) {
             console.warn("You can't stop the 'animation' event when 'circular' is true.");
         }
@@ -144,6 +147,7 @@ var AnimationManager = (function () {
             }, function () { return _this.animationEnd(); });
         }
     };
+    // animation frame (0~1)
     AnimationManager.prototype.frame = function (param) {
         var curTime = new Date().getTime() - param.startTime;
         var easingPer = this.easing(curTime / param.duration);
