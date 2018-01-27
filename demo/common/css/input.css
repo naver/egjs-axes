@@ -1,13 +1,13 @@
 /* ======== input ======= */
 #inputs.docs {
-    padding: 20px 0px 0px;
+    padding: 0px 0px 20px;
     margin-bottom: 0;
 }
 #inputs .docs-inner {
     /* padding : 0; */
 }
 #inputs .docs-inner .checked {
-    background: #fff;
+    background: #f5f5f5;
 }
 .input-list {
     position: relative;
@@ -16,6 +16,7 @@
     text-align: center;
 }
 .input-list .logo {
+    display: block;
     position: relative;
     width: 150px;
     height: 150px;
@@ -100,7 +101,10 @@
 }
 #input.docs {
     background: #f5f5f5;
-    padding: 0 0 40px;
+    padding: 40px 0;
+}
+#input .docs-inner {
+    background: transparent;
 }
 #input .example {
     margin: 10px 0px;
@@ -133,7 +137,7 @@
     padding: 0;
     text-align: center;
     padding-top: 50px;
-    max-npmwidth: 660px;
+    max-width: 660px;
 }
 .demo-item {
     display: inline-block;

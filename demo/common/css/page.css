@@ -282,7 +282,7 @@ pre code {
   /*background: #f5f5f5;*/
   /* background: #eebf3f; */
 }
-.docs.demos {
+.docs#showacase {
   background: #f5f5f5;
 }
 .docs .title {
@@ -325,12 +325,29 @@ pre code {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-
-.docs.inputs {
+#showcase .demobox {
+  position: relative;
+  height: 600px;
+}
+.docs.showcase {
+  background: #fff;
+}
+.docs.index {
+  padding: 0;
+  margin: 0;
+}
+.docs.started {
+  padding-top: 0;
+}
+.docs.index, .docs.index .docs-inner, .docs.started, .docs.started .docs-inner {
   background: #f5f5f5;
+  margin-bottom: 0;
 }
 .docs.inputs .docs-inner {
   background: transparent;
+}
+.docs.input {
+  
 }
 .docs.input h2.title {
   text-align: left;

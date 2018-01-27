@@ -33,18 +33,28 @@
 {% include header.html %}
 {% include promo.html %}
 <div>
-	<section id="index" class="section">
-			<div class="container">
-				<div class="docs-inner">
-					<p class="text-center">
-						<a href="#getting-started">Getting Started </a>/ 
-						<a href="#inputs"> Inputs &amp; Demos </a>/
-						<a href="#projects"> Projects </a>
-					</p>
+	<section id="showcase" class="docs section showcase">
+		<div class="container">
+			<div class="docs-inner">
+				<h2 class="title text-center">Showcase</h2>
+				<div class="demobox showcase" codepen="character">
+					<div id="__react-content"></div>
 				</div>
 			</div>
-		</section>
-	<section id="getting-started" class="docs section">
+		</div>
+	</section>
+	<section id="index" class="docs section index">
+		<div class="container">
+			<div class="docs-inner">
+				<p class="text-center">
+					<a href="#getting-started">Getting Started </a>/ 
+					<a href="#inputs"> Inputs &amp; Demos </a>/
+					<a href="#projects"> Projects </a>
+				</p>
+			</div>
+		</div>
+	</section>
+	<section id="getting-started" class="docs section started">
 		<div class="container">
 			<div class="docs-inner">
 				<h2 class="title text-center">Getting Started</h2>
@@ -60,12 +70,12 @@
 				<p class="description">If you select a inputType, you can show demos.</p>
 				<ul class="input-list">
 					{% for input in site.data.egjs.inputs %}
-					 <li class="input-item" onclick="showInput('{{input.name}}', this)">
-						<div class="logo {{input.name}}">
+					 <li class="input-item {{input.name}}" onclick="showInput('{{input.name}}', this)">
+						<a class="logo {{input.name}}" href="#{{input.name}}" id="{{input.name}}">
 							<div class="logo-input-area">
 							{% include_relative assets/html/logo/{{input.name}}.html %}
 							</div>
-						</div>
+						</a>
 						<p>{{input.name}}</p>
 					</li>
 					{% endfor %}
@@ -103,9 +113,17 @@
 	<script src="{{ js }}"></script>
 {% endfor %}
 <script>
+	var hash = (location.hash || "#{{site.data.egjs.inputs[0].name}}").replace("#", "");
+	var selectedItem = "{{site.data.egjs.inputs[0].name}}";
+	var input = $(".input-list .input-item." + hash);
 	var inputs = $(".input-list .input-item");
 	var docs = $("#input .docs-inner");
 
+	if (input.length > 0)  {
+		selectedItem = hash;
+	} else {
+		input = [inputs[0]];
+	}
 	function showInput(name, self) {
 		docs.css("display", "none");
 		inputs.removeClass("checked");
@@ -113,7 +131,7 @@
 		$(self).addClass("checked");
 		$("#input .docs-inner." + name).css("display", "block");
 	}
-	showInput("{{site.data.egjs.inputs[0].name}}", inputs[0]);
+	showInput(selectedItem, input[0]);
 </script>
 </body>
 </html>

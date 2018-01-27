@@ -1,0 +1,29 @@
+{
+  "name": "@egjs/react-axes",
+  "version": "0.1.0",
+  "description": "A component used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
+  "main": "index.js",
+	"author": {
+		"name": "NAVER Corp."
+  },
+	"license": "MIT",
+	"homepage": "https://github.com/naver/egjs-axes",  
+  "dependencies": {
+    "@egjs/axes": "^2.4.3",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-scripts": "1.0.17"
+  },
+  "devDependencies": {
+    "rc-tools": "^7.0.7"
+  },
+  "scripts": {
+    "start": "rc-tools run server",
+    "build": "rc-tools run build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "gh-pages": "rc-tools run gh-pages",
+    "pub": "rc-tools run update-self && rc-tools run pub",
+    "lint": "rc-tools run lint"
+  }
+}

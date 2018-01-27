@@ -7,7 +7,7 @@ class Sun extends Component {
     super(props);
     this.axis = {
       "zoom": {
-        range: [1, 2],
+        range: [1, 1.8],
         bounce: [0.2, 0.2],
       }
     };
@@ -19,6 +19,7 @@ class Sun extends Component {
       {({pos}) => (
         <div className="sun" style={{transform:`scale(${pos.zoom})`}}
         data-tooltip="Mouse Wheel (WheelInput)"
+        data-axis={`zoom: ${pos.zoom}`}
         ></div>
       )}
       </Axes>
@@ -30,8 +31,8 @@ class Tree extends Component {
     super(props);
     this.axis = {
       "zoom": {
-        range: [1, 1.6],
-        bounce: [0.5, 0.5],
+        range: [0.6, 1.2],
+        bounce: [0.2, 0.2],
       }
     };
     this.inputs = new WheelInput({axis: "zoom", useNormalized: false, scale: 0.1});  
@@ -41,8 +42,8 @@ class Tree extends Component {
     return (
       <Axes axis={this.axis} inputs = {this.inputs}>
       {({pos}) => (
-        <div className="tree" style={{right, bottom, transform:`scale(${pos.zoom})`}}
-        data-tooltip="Mouse Wheel (WheelInput)">
+        <div className={`tree ${this.props.mediaHide ? "mediaHide" : ""}`} style={{right, bottom, transform:`scale(${pos.zoom})`}}
+        data-tooltip="Mouse Wheel (WheelInput)" data-axis={`zoom: ${pos.zoom}`}>
           <div className="leaves leaves1"></div>
           <div className="leaves leaves2"></div>
           <div className="leaves leaves3"></div>
@@ -59,25 +60,25 @@ class Cloud extends Component {
     super(props);
     this.axis = {
       "x": {
-        range: [0, 300],
+        range: [0, 100],
         bounce: [100, 100],
       },
       "y": {
-        range: [0, 100],
+        range: [0, 120],
         bounce: [100, 100],
       }
     };
-    this.inputs = new PanInput({axis: "x y"});  
+    this.inputs = new PanInput({axis: "x y", scale: [0.5, 1]});  
   }
   render() {
     return (
       <Axes axis={this.axis} inputs = {this.inputs}>
-      {({pos}) => (
-        <div className="cloud" style={{
+      {({pos, inputEvent}) => (
+        <div className={`cloud ${this.props.mediaHide ? "mediaHide" : ""}`} style={{
           transform: `translate(${pos.x}px, ${pos.y}px)`,
           left: this.props.left,
           top: this.props.top,
-        }} data-tooltip="Mouse Drag Or Touch (PanInput)">
+        }} data-tooltip="Mouse Drag or Touch (PanInput)" data-axis={`x: ${pos.x}, y: ${pos.y}`}>
           <div className="c1"></div>
           <div className="c2"></div>
           <div className="c3"></div>
@@ -89,27 +90,40 @@ class Cloud extends Component {
     );
   }
 }
+
+const hair = ["short", "baldhead", "bob"];
+const look = ["", "grin", "angry", "absence"];
+
 class Character extends Component {
   constructor(props) {
     super(props);
     this.left = "";
+    this.state = {
+      hair: 0,
+      look: 0,
+    };
+    this.changeHair = this.changeHair.bind(this);
+  }
+  changeHair() {
+    this.setState({hair: (this.state.hair + 1) % hair.length});
   }
   render() {
     const {pos, delta} = this.props;
     const {x, y} = pos;
     const level = Math.abs((x + y) % 16 -8);
+    const face = parseInt(x / 25.1);
 
     if (delta.x < 0) {
 			this.left = "left";
 		} else if (delta.x > 0) {
 			this.left = "";
 		}
-    return (<div className={`character short ${this.left}`} style={
+    return (<div className={`character ${hair[this.state.hair]} ${look[face]} ${this.left}`} style={
       {
         left: `${x / 96 * 80}%`,
-		    marginBottom: `${(y * 3 + (8 - level) * 5)}px`,
+		    marginBottom: `${(y / 3 + (8 - level) * 1)}%`,
       }
-    } data-tooltip="Keyboard Arrow Key (MoveKeyInput)">
+    } data-tooltip="Keyboard Arrow Key (MoveKeyInput)" data-axis={`x: ${x}, y: ${y}`}>
     <div className="inner">
       <div className="hair-back">
           <div className="hair hair1"></div>
@@ -117,7 +131,7 @@ class Character extends Component {
           <div className="hair hair3"></div>
           <div className="hair hair4"></div>
       </div>
-      <div className="head">
+      <div className="head" onClick= {this.changeHair}>
           <div className="ear"></div>
           <div className="cheek"></div>
           <div className="head-front">
@@ -157,7 +171,7 @@ class Character extends Component {
                   <div className="leg-front"></div><div className="foot"></div>
               </div>
           </div>
-      </div>
+        </div>
     </div>
 </div>);
   }
@@ -167,28 +181,42 @@ class App extends Component {
   constructor(prop) {
     super(prop);
     this.inputs = new MoveKeyInput({axis: "x y", scale: [2, 2]});
+    this.state = {
+      className: "",
+
+    };
+    this.toggleInfo = this.toggleInfo.bind(this);
+  }
+  toggleInfo() {
+    this.setState({className: this.state.className ? "" : "showInfo"});
   }
   render() {
     return (
         <Axes axis={{
           "x": [0, 100],
-          "y": [0, 40],
+          "y": [0, 30],
         }} inputs = {this.inputs}>
-          {({pos, delta}) => (
-            <div className="container">
+          {({pos, delta, inputEvent}) => {
+            inputEvent && inputEvent.preventDefault();
+            return (
+            <div className={`container ${this.state.className}`}>
               <Sun />
-              <Cloud top="120px" left="70%"/>
-              <Cloud top="80px" left="40%"/>
-              <Cloud top="140px" left="20%"/>
-              <div className="broad"></div>
-              <Tree right="40%" bottom="200px"/>
-              <Character face="" pos={pos} delta={delta}/>
-              <Tree right="20%" bottom="100px"/>
-              <Tree right="70%" bottom="100px"/>
-              <div className="controller">
+              <Cloud top="60px" left="60%" />
+              <Cloud top="20px" left="45%" mediaHide/>
+              <Cloud top="80px" left="200px"/>
+              <div className="broad">
+                <Tree right="40%" bottom="80%" mediaHide/>
+                <Character face="" pos={pos} delta={delta}/>
+                <Tree right="20%" bottom="30%" />
+                <Tree right="70%" bottom="30%" />
               </div>
+              <div className="buttons">
+              <button onClick={this.toggleInfo}>Toggle Information</button>
             </div>
-          )}
+            </div>
+          );
+        }
+        }
         </Axes>
     );
   }
