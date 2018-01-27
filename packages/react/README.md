@@ -28,7 +28,7 @@ import Axes, {PanInput, WheelInput, MoveKeyInput} from "@egjs/react-axes";
     z: {
         range: [0.2, 1.2],
     }
-},
+}},
 inputs={[
     new MoveKeyInput({axis: "x y", scale: [10, -10]}),
     new PanInput({axis: "x y"}),
