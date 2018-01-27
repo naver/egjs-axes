@@ -329,6 +329,10 @@ pre code {
   position: relative;
   height: 600px;
 }
+#showcase .newwindow {
+  text-align: center;
+  font-weight: bold;
+}
 .docs.showcase {
   background: #fff;
 }

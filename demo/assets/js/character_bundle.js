@@ -4817,6 +4817,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 exports.__esModule = true;
 var Hammer = __webpack_require__(56);
+exports.SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window;
 exports.SUPPORT_TOUCH = "ontouchstart" in window;
 exports.UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 function toAxis(source, offset) {
@@ -4844,16 +4845,31 @@ function convertInputType(inputType) {
     if (inputType === void 0) { inputType = []; }
     var hasTouch = false;
     var hasMouse = false;
+    var hasPointer = false;
     inputType.forEach(function (v) {
         switch (v) {
             case "mouse":
                 hasMouse = true;
                 break;
-            case "touch": hasTouch = exports.SUPPORT_TOUCH;
+            case "touch":
+                hasTouch = exports.SUPPORT_TOUCH;
+                break;
+            case "pointer": hasPointer = exports.SUPPORT_POINTER_EVENTS;
         }
     });
-    return (hasTouch && Hammer.TouchInput) ||
-        (hasMouse && Hammer.MouseInput) || null;
+    if (hasPointer) {
+        return Hammer.PointerEventInput;
+    }
+    else if (hasTouch && hasMouse) {
+        return Hammer.TouchMouseInput;
+    }
+    else if (hasTouch) {
+        return Hammer.TouchInput;
+    }
+    else if (hasMouse) {
+        return Hammer.MouseInput;
+    }
+    return null;
 }
 exports.convertInputType = convertInputType;
 
@@ -26896,7 +26912,7 @@ var InputType_1 = __webpack_require__(35);
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @property {String[]} [inputType=["touch","mouse"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
+ * @property {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
  * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
  * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
@@ -26946,7 +26962,7 @@ var PanInput = /** @class */ (function () {
         }
         this.element = utils_1.$(el);
         this.options = __assign({
-            inputType: ["touch", "mouse"],
+            inputType: ["touch", "mouse", "pointer"],
             scale: [1, 1],
             thresholdAngle: 45,
             threshold: 0,
@@ -27977,7 +27993,7 @@ var Cloud = function (_Component3) {
   return Cloud;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-var hair = ["short", "baldhead", "bob"];
+var hair = ["short", "baldhead", "bob", "ponytail", "twintail"];
 var look = ["", "grin", "angry", "absence"];
 
 var Character = function (_Component4) {
@@ -28020,7 +28036,7 @@ var Character = function (_Component4) {
       'div',
       { className: 'character ' + hair[this.state.hair] + ' ' + look[face] + ' ' + this.left, style: {
           left: x / 96 * 80 + '%',
-          marginBottom: y / 3 + (8 - level) * 1 + '%'
+          bottom: 35 + y + (8 - level) * 4 + '%'
         }, 'data-tooltip': 'Keyboard Arrow Key (MoveKeyInput)', 'data-axis': 'x: ' + x + ', y: ' + y },
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',

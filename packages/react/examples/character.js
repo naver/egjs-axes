@@ -91,7 +91,7 @@ class Cloud extends Component {
   }
 }
 
-const hair = ["short", "baldhead", "bob"];
+const hair = ["short", "baldhead", "bob", "ponytail", "twintail"];
 const look = ["", "grin", "angry", "absence"];
 
 class Character extends Component {
@@ -111,7 +111,7 @@ class Character extends Component {
     const {pos, delta} = this.props;
     const {x, y} = pos;
     const level = Math.abs((x + y) % 16 -8);
-    const face = parseInt(x / 25.1);
+    const face = parseInt(x / (25.1));
 
     if (delta.x < 0) {
 			this.left = "left";
@@ -121,7 +121,7 @@ class Character extends Component {
     return (<div className={`character ${hair[this.state.hair]} ${look[face]} ${this.left}`} style={
       {
         left: `${x / 96 * 80}%`,
-		    marginBottom: `${(y / 3 + (8 - level) * 1)}%`,
+		    bottom: `${(35 + y+ (8 - level) * 4)}%`,
       }
     } data-tooltip="Keyboard Arrow Key (MoveKeyInput)" data-axis={`x: ${x}, y: ${y}`}>
     <div className="inner">

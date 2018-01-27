@@ -271,7 +271,7 @@
 .baldhead .hair-front {
     display: none;
 }
-.character:not([class*="baldhead"]):not([class*="short"]) .hair-front {
+.character.bob .hair-front, .character.ponytail .hair-front {
     transform: scale(1.08);
 }
 .twintail .hair-back {
@@ -322,6 +322,7 @@
     z-index: 4;
     left: 20px;
     top: -5px;
+    box-sizing:content-box;
 }
 .ponytail .hair-back {
     position: absolute;
