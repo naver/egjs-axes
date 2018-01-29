@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 exports.__esModule = true;
 var AxisManager_1 = require("./AxisManager");
 var Coordinate_1 = require("./Coordinate");
-var InputObserver = (function () {
+var InputObserver = /** @class */ (function () {
     function InputObserver(_a) {
         var options = _a.options, itm = _a.itm, em = _a.em, axm = _a.axm, am = _a.am;
         this.isOutside = false;
@@ -21,6 +21,7 @@ var InputObserver = (function () {
         this.axm = axm;
         this.am = am;
     }
+    // when move pointer is held in outside
     InputObserver.prototype.atOutside = function (pos) {
         var _this = this;
         if (this.isOutside) {
@@ -31,6 +32,8 @@ var InputObserver = (function () {
             });
         }
         else {
+            // when start pointer is held in inside
+            // get a initialization slope value to prevent smooth animation.
             var initSlope_1 = this.am.easing(0.00001) / 0.00001;
             return this.axm.map(pos, function (v, k, opt) {
                 var min = opt.range[0];
@@ -69,9 +72,11 @@ var InputObserver = (function () {
         }
         var depaPos = this.axm.get(input.axes);
         var destPos;
+        // for outside logic
         destPos = this.axm.map(this.moveDistance || depaPos, function (v, k) { return v + (offset[k] || 0); });
         this.moveDistance && (this.moveDistance = destPos);
         destPos = this.axm.map(destPos, function (v, k, opt) { return Coordinate_1["default"].getCirculatedPos(v, opt.range, opt.circular); });
+        // from outside to inside
         if (this.isOutside &&
             this.axm.every(depaPos, function (v, k, opt) { return !Coordinate_1["default"].isOutside(v, opt.range); })) {
             this.isOutside = false;
@@ -103,6 +108,7 @@ var InputObserver = (function () {
         if (duration === 0) {
             destPos = __assign({}, depaPos);
         }
+        // prepare params
         var param = {
             depaPos: depaPos,
             destPos: destPos,
@@ -114,6 +120,7 @@ var InputObserver = (function () {
         };
         this.em.triggerRelease(param);
         this.moveDistance = null;
+        // to contol
         var userWish = this.am.getUserControll(param);
         var isEqual = AxisManager_1.AxisManager.equal(userWish.destPos, depaPos);
         var changeOption = {
