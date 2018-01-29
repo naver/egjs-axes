@@ -3,7 +3,7 @@
 A react component that can easily use [egjs-axes](https://github.com/naver/egjs-axes)
 
 - [API Documents for React](https://github.com/naver/egjs-axes/wiki/Axes-API-for-react-(react-axes))
-- [Demo](https://naver.github.io/egjs-axes/)
+- [Character Demo](https://naver.github.io/egjs-axes/assets/html/character.html)
 
 
 ## Install
@@ -28,13 +28,13 @@ import Axes, {PanInput, WheelInput, MoveKeyInput} from "@egjs/react-axes";
     z: {
         range: [0.2, 1.2],
     }
-}},
-inputs={[
+  }},
+  inputs={[
     new MoveKeyInput({axis: "x y", scale: [10, -10]}),
     new PanInput({axis: "x y"}),
     new WheelInput({axis: "z"})
-]}>
-({pos, delta, holding, inputEvent}) => (<div style={{left: `${pos.x}px`, top: `${pox.y}px`, transform: `scale(${pos.z})`}}></div>)
+  ]}>
+  ({pos, delta, holding, inputEvent}) => (<div style={{left: `${pos.x}px`, top: `${pox.y}px`, transform: `scale(${pos.z})`}}></div>)
 </Axes>
 ```
 
