@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Axes, {PanInput, MoveKeyInput, WheelInput} from "../index.js";
+import Axes, {PanInput, MoveKeyInput, PinchInput, WheelInput} from "../index.js";
 
 class Sun extends Component {
   constructor(props) {
@@ -11,14 +11,17 @@ class Sun extends Component {
         bounce: [0.2, 0.2],
       }
     };
-    this.inputs = new WheelInput({axis: "zoom", useNormalized: false, scale: 0.1});  
+    this.inputs = [
+      new WheelInput({axis: "zoom", useNormalized: false, scale: 0.1}),
+      new PinchInput({axis: "zoom", scale: 0.3}),
+    ];
   }
   render() {
     return (
       <Axes axis={this.axis} inputs = {this.inputs}>
       {({pos}) => (
         <div className="sun" style={{transform:`scale(${pos.zoom})`}}
-        data-tooltip="Mouse Wheel (WheelInput)"
+        data-tooltip="Mouse Wheel (WheelInput, PinchInput)"
         data-axis={`zoom: ${pos.zoom}`}
         ></div>
       )}
@@ -35,7 +38,10 @@ class Tree extends Component {
         bounce: [0.2, 0.2],
       }
     };
-    this.inputs = new WheelInput({axis: "zoom", useNormalized: false, scale: 0.1});  
+    this.inputs = [
+      new WheelInput({axis: "zoom", useNormalized: false, scale: 0.1}),
+      new PinchInput({axis: "zoom", scale: 0.3}),
+    ];
   }
   render() {
     const {right, bottom} = this.props;
@@ -43,7 +49,7 @@ class Tree extends Component {
       <Axes axis={this.axis} inputs = {this.inputs}>
       {({pos}) => (
         <div className={`tree ${this.props.mediaHide ? "mediaHide" : ""}`} style={{right, bottom, transform:`scale(${pos.zoom})`}}
-        data-tooltip="Mouse Wheel (WheelInput)" data-axis={`zoom: ${pos.zoom}`}>
+        data-tooltip="Mouse Wheel (WheelInput, PinchInput)" data-axis={`zoom: ${pos.zoom}`}>
           <div className="leaves leaves1"></div>
           <div className="leaves leaves2"></div>
           <div className="leaves leaves3"></div>
@@ -102,20 +108,21 @@ class Character extends Component {
       hair: 0,
       look: 0,
     };
+    this.inputs = new PanInput({axis: "x2 y2", scale: [0.1, 0.1]});
     this.changeHair = this.changeHair.bind(this);
   }
   changeHair() {
     this.setState({hair: (this.state.hair + 1) % hair.length});
   }
   render() {
-    const {pos, delta} = this.props;
-    const {x, y} = pos;
+    const direction = this.props.delta.x;
+    const {x, y} = this.props.pos;
     const level = Math.abs((x + y) % 16 -8);
     const face = parseInt(x / (25.1));
 
-    if (delta.x < 0) {
+    if (direction < 0) {
 			this.left = "left";
-		} else if (delta.x > 0) {
+		} else if (direction > 0) {
 			this.left = "";
 		}
     return (<div className={`character ${hair[this.state.hair]} ${look[face]} ${this.left}`} style={
@@ -174,13 +181,15 @@ class Character extends Component {
         </div>
     </div>
 </div>);
-  }
+}
 }
 
 class App extends Component {
   constructor(prop) {
     super(prop);
-    this.inputs = new MoveKeyInput({axis: "x y", scale: [2, 2]});
+    this.inputs = [
+      new MoveKeyInput({axis: "x y", scale: [2, 2]})
+    ];
     this.state = {
       className: "",
 
@@ -192,7 +201,7 @@ class App extends Component {
   }
   render() {
     return (
-        <Axes axis={{
+        <Axes ref={ axes => this.axes = axes}  axis={{
           "x": [0, 100],
           "y": [0, 30],
         }} inputs = {this.inputs}>
