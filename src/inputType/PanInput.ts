@@ -188,7 +188,7 @@ export class PanInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (this.hammer) {
+		if (this.hammer && this.hammer.recognizers.length === 1) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];

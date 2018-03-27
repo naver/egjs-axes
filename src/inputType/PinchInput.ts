@@ -35,6 +35,7 @@ export interface PinchInputOption {
  * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
 export class PinchInput implements IInputType {
+
 	options: PinchInputOption;
 	axes: string[] = [];
 	hammer = null;
@@ -42,6 +43,8 @@ export class PinchInput implements IInputType {
   private observer: IInputTypeObserver;
   private _base: number = null;
   private _prev: number = null;
+  private _pinchRecognizer = null;
+
 	constructor(el, options?: PinchInputOption) {
 		/**
 		 * Hammer helps you add support for touch gestures to your page
@@ -87,7 +90,8 @@ export class PinchInput implements IInputType {
     if (this.hammer) { // for sharing hammer instance.
       this.dettachEvent();
 			// hammer remove previous PinchRecognizer.
-			this.hammer.add(new Hammer.Pinch(hammerOption));
+			this._pinchRecognizer = this._pinchRecognizer || new Hammer.Pinch(hammerOption);
+			this.hammer.add(this._pinchRecognizer);
     } else {
       let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
@@ -109,6 +113,7 @@ export class PinchInput implements IInputType {
 
   disconnect() {
 		if (this.hammer) {
+			this.hammer.remove(this._pinchRecognizer);
 			this.dettachEvent();
 		}
 		return this;
@@ -121,7 +126,7 @@ export class PinchInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (this.hammer) {
+		if (this.hammer && this.hammer.recognizers.length === 1) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];
@@ -162,7 +167,7 @@ export class PinchInput implements IInputType {
 	private dettachEvent() {
     this.hammer.off("pinchstart", this.onPinchStart)
       .off("pinchmove", this.onPinchMove)
-      .off("pinchend", this.onPinchEnd);
+	  .off("pinchend", this.onPinchEnd);
     this.observer = null;
     this._prev = null;
 	}
