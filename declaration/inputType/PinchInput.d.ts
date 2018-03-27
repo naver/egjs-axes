@@ -12,6 +12,7 @@ export declare class PinchInput implements IInputType {
     private observer;
     private _base;
     private _prev;
+    private _pinchRecognizer;
     constructor(el: any, options?: PinchInputOption);
     mapAxes(axes: string[]): void;
     connect(observer: IInputTypeObserver): IInputType;
