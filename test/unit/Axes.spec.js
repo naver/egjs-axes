@@ -303,7 +303,7 @@ describe("Axes", function () {
       input3.destroy();
     });
 
-    it.skip("should work with pan gesture when connecting PanInput after PinchInput disconnected.", done => {
+    it("should work with pan gesture when connecting PanInput after PinchInput disconnected.", done => {
       // Given
       const MOVE_HORIZONTALLY = {
         pos: [0, 0],
@@ -320,18 +320,13 @@ describe("Axes", function () {
         easing: "linear"
       };
       const target = document.querySelector("#sandbox");
-      const pinchInput = new PinchInput(target);
-      const panInput = new PanInput(target);
+      const pinchInput = new PinchInput(target, {inputType: ["touch"]});
+      const panInput = new PanInput(target, {inputType: ["touch"]});
 
       this.inst.connect("x", pinchInput);
       this.inst.disconnect(pinchInput);
       this.inst.connect(["x", "otherX"], panInput);
-      this.inst.on("change", function(e) {
-        console.log(e);
-      });
-      target.addEventListener("touchmove", function(e){
-        console.log(e);
-      });
+
       const prevX = this.inst.get()["x"];
       const prevY = this.inst.get()["otherX"];
 
