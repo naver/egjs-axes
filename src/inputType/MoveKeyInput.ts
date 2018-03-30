@@ -16,6 +16,8 @@ export const KEYMAP = {
 };
 const DIRECTION_REVERSE = -1;
 const DIRECTION_FORWARD = 1;
+const DIRECTION_HORIZONTAL = -1;
+const DIRECTION_VERTICAL = 1;
 const DELAY = 80;
 
 export interface MoveKeyInputOption {
@@ -103,37 +105,37 @@ export class MoveKeyInput implements IInputType {
 
 		let isMoveKey = true;
 		let direction = DIRECTION_FORWARD;
-		let offsets;
+		let move = DIRECTION_HORIZONTAL;
 
 		switch (e.keyCode) {
 			case KEYMAP.LEFT_ARROW:
 			case KEYMAP.A:
 				direction = DIRECTION_REVERSE;
+				break;
 			case KEYMAP.RIGHT_ARROW:
 			case KEYMAP.D:
-				if (!this.axes[0]) {
-					isMoveKey = false;
-					break;
-				}
-				offsets = [+this.options.scale[0] * direction, 0];
 				break;
 			case KEYMAP.DOWN_ARROW:
 			case KEYMAP.S:
 				direction = DIRECTION_REVERSE;
+				move = DIRECTION_VERTICAL;
+				break;
 			case KEYMAP.UP_ARROW:
 			case KEYMAP.W:
-				if (!this.axes[1]) {
-					isMoveKey = false;
-					break;
-				}
-				offsets = [0, +this.options.scale[1] * direction];
+				move = DIRECTION_VERTICAL;
 				break;
 			default:
 				isMoveKey = false;
 		}
+		if ((move === DIRECTION_HORIZONTAL && !this.axes[0]) ||
+			(move === DIRECTION_VERTICAL && !this.axes[1])) {
+			isMoveKey = false;
+		}
 		if (!isMoveKey) {
 			return;
 		}
+		const offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
+
 		if (!this._isHolded) {
 			this.observer.hold(this, event);
 			this._isHolded = true;

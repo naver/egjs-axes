@@ -36,10 +36,11 @@ export interface PinchInputOption {
  * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
 export class PinchInput implements IInputType {
+
 	options: PinchInputOption;
 	axes: string[] = [];
 	hammer = null;
-  	element: HTMLElement = null;
+  element: HTMLElement = null;
 
 	private observer: IInputTypeObserver;
 	private _base: number = null;
@@ -125,6 +126,8 @@ export class PinchInput implements IInputType {
 	disconnect() {
 		this.removeRecognizer();
 		if (this.hammer) {
+			this.hammer.remove(this._pinchRecognizer);
+			this._pinchRecognizer = null;
 			this.dettachEvent();
 		}
 		return this;
