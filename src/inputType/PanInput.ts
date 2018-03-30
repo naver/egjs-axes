@@ -55,6 +55,7 @@ export class PanInput implements IInputType {
 	element: HTMLElement = null;
 	private observer: IInputTypeObserver;
 	private _direction: DIRECTION;
+	private panRecognizer = null;
 
 	// get user's direction
 	static getDirectionByAngle(angle: number, thresholdAngle: number): DIRECTION {
@@ -147,9 +148,11 @@ export class PanInput implements IInputType {
 			threshold: this.options.threshold,
 		};
 		if (this.hammer) { // for sharing hammer instance.
+			this.removeRecognizer();
 			this.dettachEvent();
 			// hammer remove previous PanRecognizer.
-			this.hammer.add(new Hammer.Pan(hammerOption));
+			this.panRecognizer = new Hammer.Pan(hammerOption);
+			this.hammer.add(this.panRecognizer);
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
@@ -174,6 +177,7 @@ export class PanInput implements IInputType {
 	}
 
 	disconnect() {
+		this.removeRecognizer();
 		if (this.hammer) {
 			this.dettachEvent();
 		}
@@ -188,7 +192,11 @@ export class PanInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (this.hammer) {
+		if (
+			this.hammer &&
+			this.hammer.recognizers.length === 1 &&
+			this.hammer.recognizers[0] === this.panRecognizer
+		) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];
@@ -224,6 +232,13 @@ export class PanInput implements IInputType {
 	 */
 	isEnable() {
 		return !!(this.hammer && this.hammer.get("pan").options.enable);
+	}
+
+	private removeRecognizer() {
+		if (this.hammer) {
+			this.hammer.remove(this.panRecognizer);
+			this.panRecognizer = null;
+		}
 	}
 
 	private onHammerInput(event) {

@@ -1,5 +1,6 @@
 import Axes from "../../src/Axes.ts";
 import {PanInput} from "../../src/inputType/PanInput.ts";
+import {PinchInput} from "../../src/inputType/PinchInput.ts";
 
 describe("Axes", function () {
   describe("Axes Test", function () {
@@ -301,7 +302,57 @@ describe("Axes", function () {
       input2.destroy();
       input3.destroy();
     });
+
+    it.skip("should work with pan gesture when connecting PanInput after PinchInput disconnected.", done => {
+      // Given
+      const MOVE_HORIZONTALLY = {
+        pos: [0, 0],
+        deltaX: 100,
+        deltaY: 10,
+        duration: 200,
+        easing: "linear"
+      };
+      const MOVE_VERTICALLY = {
+        pos: [0, 0],
+        deltaX: 0,
+        deltaY: 100,
+        duration: 200,
+        easing: "linear"
+      };
+      const target = document.querySelector("#sandbox");
+      const pinchInput = new PinchInput(target);
+      const panInput = new PanInput(target);
+
+      this.inst.connect("x", pinchInput);
+      this.inst.disconnect(pinchInput);
+      this.inst.connect(["x", "otherX"], panInput);
+      this.inst.on("change", function(e) {
+        console.log(e);
+      });
+      target.addEventListener("touchmove", function(e){
+        console.log(e);
+      });
+      const prevX = this.inst.get()["x"];
+      const prevY = this.inst.get()["otherX"];
+
+      // When // pan 제스춰 동작 시 동작해야함 
+			Simulator.gestures.pan(target, MOVE_HORIZONTALLY, () => {
+				Simulator.gestures.pan(target, MOVE_VERTICALLY, () => {
+          // Then
+          const currX = this.inst.get()["x"];
+          const currY = this.inst.get()["otherX"];
+
+					expect(currX).to.be.not.equal(prevX);
+          expect(currY).to.be.not.equal(prevY);
+          
+          pinchInput.destroy();
+          panInput.destroy();
+					done();
+				});
+			});
+    });
   });
+
   [
     ["pointer"], ["touch", "mouse"], ["touch"]
   ].forEach(type => {

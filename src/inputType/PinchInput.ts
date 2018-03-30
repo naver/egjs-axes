@@ -7,6 +7,7 @@ import { Axis } from "../AxisManager";
 export interface PinchInputOption {
 	scale?: number;
 	threshold?: number;
+	inputType?: string[];
 	hammerManagerOptions?: Object;
 }
 
@@ -38,10 +39,13 @@ export class PinchInput implements IInputType {
 	options: PinchInputOption;
 	axes: string[] = [];
 	hammer = null;
-  element: HTMLElement = null;
-  private observer: IInputTypeObserver;
-  private _base: number = null;
-  private _prev: number = null;
+  	element: HTMLElement = null;
+
+	private observer: IInputTypeObserver;
+	private _base: number = null;
+	private _prev: number = null;
+	private pinchRecognizer = null;
+
 	constructor(el, options?: PinchInputOption) {
 		/**
 		 * Hammer helps you add support for touch gestures to your page
@@ -59,6 +63,7 @@ export class PinchInput implements IInputType {
 			...{
 				scale: 1,
 				threshold: 0,
+				inputType: ["touch", "pointer"],
 				hammerManagerOptions: {
 					// css properties were removed due to usablility issue
 					// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
@@ -69,8 +74,9 @@ export class PinchInput implements IInputType {
 						userDrag: "none",
 					},
 				},
-			}, ...options
-    };
+			},
+			...options
+		};
 		this.onPinchStart = this.onPinchStart.bind(this);
 		this.onPinchMove = this.onPinchMove.bind(this);
 		this.onPinchEnd = this.onPinchEnd.bind(this);
@@ -81,33 +87,43 @@ export class PinchInput implements IInputType {
 	}
 
 	connect(observer: IInputTypeObserver): IInputType {
-    const hammerOption = {
-			threshold: this.options.threshold,
-		};
-    if (this.hammer) { // for sharing hammer instance.
-      this.dettachEvent();
+		const hammerOption = {threshold: this.options.threshold};
+
+		if (this.hammer) { // for sharing hammer instance.
+			this.removeRecognizer();
+			this.dettachEvent();
 			// hammer remove previous PinchRecognizer.
-			this.hammer.add(new Hammer.Pinch(hammerOption));
-    } else {
-      let keyValue: string = this.element[UNIQUEKEY];
+			this.pinchRecognizer = new Hammer.Pinch(hammerOption);
+			this.hammer.add(this.pinchRecognizer);
+		} else {
+			let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
-				this.hammer.destroy();
+				this.hammer && this.hammer.destroy();
 			} else {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
+			}			
+			const inputClass = convertInputType(this.options.inputType);
+			if (!inputClass) {
+				throw new Error("Wrong inputType parameter!");
 			}
-      this.hammer = createHammer(this.element, { ...{
-				recognizers: [
-					[Hammer.Pinch, hammerOption],
-				],
-				inputClass: Hammer.TouchInput,
-			}, ...this.options.hammerManagerOptions});
+			this.hammer = createHammer(
+				this.element,
+				{ ...{
+					recognizers: [
+						[Hammer.Pinch, hammerOption],
+					],
+					inputClass,
+				}, ...this.options.hammerManagerOptions}
+			);
 			this.element[UNIQUEKEY] = keyValue;
 		}
+		
 		this.attachEvent(observer);
 		return this;
 	}
 
-  disconnect() {
+	disconnect() {
+		this.removeRecognizer();
 		if (this.hammer) {
 			this.dettachEvent();
 		}
@@ -121,7 +137,11 @@ export class PinchInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (this.hammer) {
+		if (
+			this.hammer &&
+			this.hammer.recognizers.length === 1 &&
+			this.hammer.recognizers[0] === this.pinchRecognizer
+		) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];
@@ -129,42 +149,49 @@ export class PinchInput implements IInputType {
 		this.hammer = null;
 	}
 
-  private onPinchStart(event) {
+	private removeRecognizer() {
+		if (this.hammer) {
+			this.hammer.remove(this.pinchRecognizer);
+			this.pinchRecognizer = null;
+		}
+	}
+
+	private onPinchStart(event) {
 		this._base = this.observer.get(this)[this.axes[0]];
 		const offset = this.getOffset(event.scale);
 		this.observer.hold(this, event);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
 		this._prev = event.scale;
-  }
-  private onPinchMove(event) {
+	}
+	private onPinchMove(event) {
 		const offset = this.getOffset(event.scale, this._prev);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
-    this._prev = event.scale;
-  }
-  private onPinchEnd(event) {
+		this._prev = event.scale;
+	}
+	private onPinchEnd(event) {
 		const offset = this.getOffset(event.scale, this._prev);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
-    this.observer.release(this, event, toAxis(this.axes, [0]), 0);
+    	this.observer.release(this, event, toAxis(this.axes, [0]), 0);
 		this._base = null;
-    this._prev = null;
+    	this._prev = null;
 	}
 	private getOffset(pinchScale: number, prev: number = 1): number {
-    return this._base * (pinchScale - prev) * this.options.scale;
+    	return this._base * (pinchScale - prev) * this.options.scale;
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
-    this.observer = observer;
-    this.hammer.on("pinchstart", this.onPinchStart)
-      .on("pinchmove", this.onPinchMove)
-      .on("pinchend", this.onPinchEnd);
+		this.observer = observer;
+		this.hammer.on("pinchstart", this.onPinchStart)
+		.on("pinchmove", this.onPinchMove)
+		.on("pinchend", this.onPinchEnd);
 	}
 
 	private dettachEvent() {
-    this.hammer.off("pinchstart", this.onPinchStart)
-      .off("pinchmove", this.onPinchMove)
-      .off("pinchend", this.onPinchEnd);
-    this.observer = null;
-    this._prev = null;
+		this.hammer.off("pinchstart", this.onPinchStart)
+		.off("pinchmove", this.onPinchMove)
+		.off("pinchend", this.onPinchEnd);
+		this.observer = null;
+		this._prev = null;
 	}
 
 	/**
