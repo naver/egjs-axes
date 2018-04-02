@@ -22,6 +22,8 @@ exports.KEYMAP = {
 };
 var DIRECTION_REVERSE = -1;
 var DIRECTION_FORWARD = 1;
+var DIRECTION_HORIZONTAL = -1;
+var DIRECTION_VERTICAL = 1;
 var DELAY = 80;
 var MoveKeyInput = (function () {
     function MoveKeyInput(el, options) {
@@ -62,36 +64,35 @@ var MoveKeyInput = (function () {
         }
         var isMoveKey = true;
         var direction = DIRECTION_FORWARD;
-        var offsets;
+        var move = DIRECTION_HORIZONTAL;
         switch (e.keyCode) {
             case exports.KEYMAP.LEFT_ARROW:
             case exports.KEYMAP.A:
                 direction = DIRECTION_REVERSE;
+                break;
             case exports.KEYMAP.RIGHT_ARROW:
             case exports.KEYMAP.D:
-                if (!this.axes[0]) {
-                    isMoveKey = false;
-                    break;
-                }
-                offsets = [+this.options.scale[0] * direction, 0];
                 break;
             case exports.KEYMAP.DOWN_ARROW:
             case exports.KEYMAP.S:
                 direction = DIRECTION_REVERSE;
+                move = DIRECTION_VERTICAL;
+                break;
             case exports.KEYMAP.UP_ARROW:
             case exports.KEYMAP.W:
-                if (!this.axes[1]) {
-                    isMoveKey = false;
-                    break;
-                }
-                offsets = [0, +this.options.scale[1] * direction];
+                move = DIRECTION_VERTICAL;
                 break;
             default:
                 isMoveKey = false;
         }
+        if ((move === DIRECTION_HORIZONTAL && !this.axes[0]) ||
+            (move === DIRECTION_VERTICAL && !this.axes[1])) {
+            isMoveKey = false;
+        }
         if (!isMoveKey) {
             return;
         }
+        var offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
         if (!this._isHolded) {
             this.observer.hold(this, event);
             this._isHolded = true;

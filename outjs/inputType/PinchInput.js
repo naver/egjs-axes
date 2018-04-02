@@ -76,6 +76,8 @@ var PinchInput = (function () {
     PinchInput.prototype.disconnect = function () {
         this.removeRecognizer();
         if (this.hammer) {
+            this.hammer.remove(this.pinchRecognizer);
+            this.pinchRecognizer = null;
             this.dettachEvent();
         }
         return this;

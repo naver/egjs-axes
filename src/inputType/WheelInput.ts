@@ -70,7 +70,7 @@ export class WheelInput implements IInputType {
 	* @method eg.Axes.WheelInput#destroy
 	*/
 	destroy() {
-		this.disconnect();	
+		this.disconnect();
 		this.element = null;
 	}
 
