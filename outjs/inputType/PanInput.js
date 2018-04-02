@@ -12,54 +12,12 @@ var Hammer = require("hammerjs");
 var const_1 = require("../const");
 var utils_1 = require("../utils");
 var InputType_1 = require("./InputType");
-/**
- * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
- * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @property {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
- * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
- * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
- * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
- * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
- * @property {Object} [hammerManagerOptions={cssProps: {userSelect: "none",touchSelect: "none",touchCallout: "none",userDrag: "none"}] Options of Hammer.Manager <ko>Hammer.Manager의 옵션</ko>
-**/
-/**
- * @class eg.Axes.PanInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
- * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
- *
- * @example
- * const pan = new eg.Axes.PanInput("#area", {
- * 		inputType: ["touch"],
- * 		scale: [1, 1.3],
- * });
- *
- * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
- * // Connect the 'somethingN' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
- * axes.connect(["something2", "somethingN"], pan); // or axes.connect("something2 somethingN", pan);
- *
- * // Connect only one 'something1' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
- * axes.connect(["something1"], pan); // or axes.connect("something1", pan);
- *
- * // Connect only one 'something2' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
- * axes.connect(["", "something2"], pan); // or axes.connect(" something2", pan);
- *
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
- * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
- */
-var PanInput = /** @class */ (function () {
+var PanInput = (function () {
     function PanInput(el, options) {
         this.axes = [];
         this.hammer = null;
         this.element = null;
-        /**
-         * Hammer helps you add support for touch gestures to your page
-         *
-         * @external Hammer
-         * @see {@link http://hammerjs.github.io|Hammer.JS}
-         * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
-         * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
-         */
+        this.panRecognizer = null;
         if (typeof Hammer === "undefined") {
             throw new Error("The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/");
         }
@@ -70,8 +28,6 @@ var PanInput = /** @class */ (function () {
             thresholdAngle: 45,
             threshold: 0,
             hammerManagerOptions: {
-                // css properties were removed due to usablility issue
-                // http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
                 cssProps: {
                     userSelect: "none",
                     touchSelect: "none",
@@ -84,7 +40,6 @@ var PanInput = /** @class */ (function () {
         this.onPanmove = this.onPanmove.bind(this);
         this.onPanend = this.onPanend.bind(this);
     }
-    // get user's direction
     PanInput.getDirectionByAngle = function (angle, thresholdAngle) {
         if (thresholdAngle < 0 || thresholdAngle > 90) {
             return const_1.DIRECTION.DIRECTION_NONE;
@@ -133,9 +88,10 @@ var PanInput = /** @class */ (function () {
             threshold: this.options.threshold
         };
         if (this.hammer) {
+            this.removeRecognizer();
             this.dettachEvent();
-            // hammer remove previous PanRecognizer.
-            this.hammer.add(new Hammer.Pan(hammerOption));
+            this.panRecognizer = new Hammer.Pan(hammerOption);
+            this.hammer.add(this.panRecognizer);
         }
         else {
             var keyValue = this.element[InputType_1.UNIQUEKEY];
@@ -150,65 +106,49 @@ var PanInput = /** @class */ (function () {
                 throw new Error("Wrong inputType parameter!");
             }
             this.hammer = InputType_1.createHammer(this.element, __assign({
-                recognizers: [
-                    [Hammer.Pan, hammerOption],
-                ],
                 inputClass: inputClass
             }, this.options.hammerManagerOptions));
+            this.panRecognizer = new Hammer.Pan(hammerOption);
+            this.hammer.add(this.panRecognizer);
             this.element[InputType_1.UNIQUEKEY] = keyValue;
         }
         this.attachEvent(observer);
         return this;
     };
     PanInput.prototype.disconnect = function () {
+        this.removeRecognizer();
         if (this.hammer) {
             this.dettachEvent();
         }
         this._direction = const_1.DIRECTION.DIRECTION_NONE;
         return this;
     };
-    /**
-    * Destroys elements, properties, and events used in a module.
-    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-    * @method eg.Axes.PanInput#destroy
-    */
     PanInput.prototype.destroy = function () {
         this.disconnect();
-        if (this.hammer) {
+        if (this.hammer &&
+            this.hammer.recognizers.length === 0) {
             this.hammer.destroy();
         }
         delete this.element[InputType_1.UNIQUEKEY];
         this.element = null;
         this.hammer = null;
     };
-    /**
-     * Enables input devices
-     * @ko 입력 장치를 사용할 수 있게 한다
-     * @method eg.Axes.PanInput#enable
-     * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-     */
     PanInput.prototype.enable = function () {
         this.hammer && (this.hammer.get("pan").options.enable = true);
         return this;
     };
-    /**
-     * Disables input devices
-     * @ko 입력 장치를 사용할 수 없게 한다.
-     * @method eg.Axes.PanInput#disable
-     * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-     */
     PanInput.prototype.disable = function () {
         this.hammer && (this.hammer.get("pan").options.enable = false);
         return this;
     };
-    /**
-     * Returns whether to use an input device
-     * @ko 입력 장치를 사용 여부를 반환한다.
-     * @method eg.Axes.PanInput#isEnable
-     * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
-     */
     PanInput.prototype.isEnable = function () {
         return !!(this.hammer && this.hammer.get("pan").options.enable);
+    };
+    PanInput.prototype.removeRecognizer = function () {
+        if (this.hammer && this.panRecognizer) {
+            this.hammer.remove(this.panRecognizer);
+            this.panRecognizer = null;
+        }
     };
     PanInput.prototype.onHammerInput = function (event) {
         if (this.isEnable()) {
@@ -222,9 +162,7 @@ var PanInput = /** @class */ (function () {
     };
     PanInput.prototype.onPanmove = function (event) {
         var userDirection = PanInput.getDirectionByAngle(event.angle, this.options.thresholdAngle);
-        // not support offset properties in Hammerjs - start
         var prevInput = this.hammer.session.prevInput;
-        /* eslint-disable no-param-reassign */
         if (prevInput) {
             event.offsetX = event.deltaX - prevInput.deltaX;
             event.offsetY = event.deltaY - prevInput.deltaY;
