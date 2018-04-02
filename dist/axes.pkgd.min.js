@@ -5,7 +5,7 @@
  * @egjs/axes JavaScript library
  * https://github.com/naver/egjs-axes
  * 
- * @version 2.5.2-rc
+ * @version 2.5.2
  * 
  * All-in-one packaged file for ease use of '@egjs/axes' with below dependencies.
  * NOTE: This is not an official distribution file and is only for user convenience.

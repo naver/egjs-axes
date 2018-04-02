@@ -5,7 +5,7 @@
  * @egjs/axes JavaScript library
  * https://github.com/naver/egjs-axes
  * 
- * @version 2.5.2-rc
+ * @version 2.5.2
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
