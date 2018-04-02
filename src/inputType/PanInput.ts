@@ -165,11 +165,10 @@ export class PanInput implements IInputType {
 				throw new Error("Wrong inputType parameter!");
 			}
 			this.hammer = createHammer(this.element, { ...{
-				recognizers: [
-					[Hammer.Pan, hammerOption],
-				],
 				inputClass,
 			}, ... this.options.hammerManagerOptions });
+			this.panRecognizer = new Hammer.Pan(hammerOption);
+			this.hammer.add(this.panRecognizer);
 			this.element[UNIQUEKEY] = keyValue;
 		}
 		this.attachEvent(observer);
@@ -194,8 +193,7 @@ export class PanInput implements IInputType {
 		this.disconnect();
 		if (
 			this.hammer &&
-			this.hammer.recognizers.length === 1 &&
-			this.hammer.recognizers[0] === this.panRecognizer
+			this.hammer.recognizers.length === 0
 		) {
 			this.hammer.destroy();
 		}
@@ -235,7 +233,7 @@ export class PanInput implements IInputType {
 	}
 
 	private removeRecognizer() {
-		if (this.hammer) {
+		if (this.hammer && this.panRecognizer) {
 			this.hammer.remove(this.panRecognizer);
 			this.panRecognizer = null;
 		}
