@@ -153,9 +153,7 @@ export class PanInput implements IInputType {
 			this.dettachEvent();
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
-			if (keyValue) {
-				this.hammer && this.hammer.destroy();
-			} else {
+			if (!keyValue) {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
 			}
 			const inputClass = convertInputType(this.options.inputType);
