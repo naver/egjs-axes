@@ -48,15 +48,10 @@ var PinchInput = (function () {
         if (this.hammer) {
             this.removeRecognizer();
             this.dettachEvent();
-            this.pinchRecognizer = new Hammer.Pinch(hammerOption);
-            this.hammer.add(this.pinchRecognizer);
         }
         else {
             var keyValue = this.element[InputType_1.UNIQUEKEY];
-            if (keyValue) {
-                this.hammer && this.hammer.destroy();
-            }
-            else {
+            if (!keyValue) {
                 keyValue = String(Math.round(Math.random() * new Date().getTime()));
             }
             var inputClass = InputType_1.convertInputType(this.options.inputType);
@@ -67,9 +62,9 @@ var PinchInput = (function () {
                 inputClass: inputClass
             }, this.options.hammerManagerOptions));
             this.element[InputType_1.UNIQUEKEY] = keyValue;
-            this.pinchRecognizer = new Hammer.Pinch(hammerOption);
-            this.hammer.add(this.pinchRecognizer);
         }
+        this.pinchRecognizer = new Hammer.Pinch(hammerOption);
+        this.hammer.add(this.pinchRecognizer);
         this.attachEvent(observer);
         return this;
     };
@@ -84,8 +79,7 @@ var PinchInput = (function () {
     };
     PinchInput.prototype.destroy = function () {
         this.disconnect();
-        if (this.hammer &&
-            this.hammer.recognizers.length === 0) {
+        if (this.hammer && this.hammer.recognizers.length === 0) {
             this.hammer.destroy();
         }
         delete this.element[InputType_1.UNIQUEKEY];

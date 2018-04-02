@@ -90,15 +90,10 @@ var PanInput = (function () {
         if (this.hammer) {
             this.removeRecognizer();
             this.dettachEvent();
-            this.panRecognizer = new Hammer.Pan(hammerOption);
-            this.hammer.add(this.panRecognizer);
         }
         else {
             var keyValue = this.element[InputType_1.UNIQUEKEY];
-            if (keyValue) {
-                this.hammer && this.hammer.destroy();
-            }
-            else {
+            if (!keyValue) {
                 keyValue = String(Math.round(Math.random() * new Date().getTime()));
             }
             var inputClass = InputType_1.convertInputType(this.options.inputType);
@@ -108,10 +103,10 @@ var PanInput = (function () {
             this.hammer = InputType_1.createHammer(this.element, __assign({
                 inputClass: inputClass
             }, this.options.hammerManagerOptions));
-            this.panRecognizer = new Hammer.Pan(hammerOption);
-            this.hammer.add(this.panRecognizer);
             this.element[InputType_1.UNIQUEKEY] = keyValue;
         }
+        this.panRecognizer = new Hammer.Pan(hammerOption);
+        this.hammer.add(this.panRecognizer);
         this.attachEvent(observer);
         return this;
     };
@@ -125,8 +120,7 @@ var PanInput = (function () {
     };
     PanInput.prototype.destroy = function () {
         this.disconnect();
-        if (this.hammer &&
-            this.hammer.recognizers.length === 0) {
+        if (this.hammer && this.hammer.recognizers.length === 0) {
             this.hammer.destroy();
         }
         delete this.element[InputType_1.UNIQUEKEY];
