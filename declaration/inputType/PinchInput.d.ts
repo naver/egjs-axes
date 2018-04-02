@@ -2,6 +2,7 @@ import { IInputType, IInputTypeObserver } from "./InputType";
 export interface PinchInputOption {
     scale?: number;
     threshold?: number;
+    inputType?: string[];
     hammerManagerOptions?: Object;
 }
 export declare class PinchInput implements IInputType {
@@ -12,12 +13,13 @@ export declare class PinchInput implements IInputType {
     private observer;
     private _base;
     private _prev;
-    private _pinchRecognizer;
+    private pinchRecognizer;
     constructor(el: any, options?: PinchInputOption);
     mapAxes(axes: string[]): void;
     connect(observer: IInputTypeObserver): IInputType;
     disconnect(): this;
     destroy(): void;
+    private removeRecognizer();
     private onPinchStart(event);
     private onPinchMove(event);
     private onPinchEnd(event);

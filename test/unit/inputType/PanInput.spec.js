@@ -112,7 +112,7 @@ describe("PanInput", () => {
           });
       }); 
     });
-  });  
+  });
   describe("instance method", function() {
     beforeEach(() => {
       this.inst = new PanInput(sandbox());

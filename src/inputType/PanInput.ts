@@ -55,6 +55,7 @@ export class PanInput implements IInputType {
 	element: HTMLElement = null;
 	private observer: IInputTypeObserver;
 	private _direction: DIRECTION;
+	private panRecognizer = null;
 
 	// get user's direction
 	static getDirectionByAngle(angle: number, thresholdAngle: number): DIRECTION {
@@ -147,14 +148,12 @@ export class PanInput implements IInputType {
 			threshold: this.options.threshold,
 		};
 		if (this.hammer) { // for sharing hammer instance.
-			this.dettachEvent();
 			// hammer remove previous PanRecognizer.
-			this.hammer.add(new Hammer.Pan(hammerOption));
+			this.removeRecognizer();
+			this.dettachEvent();
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
-			if (keyValue) {
-				this.hammer && this.hammer.destroy();
-			} else {
+			if (!keyValue) {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
 			}
 			const inputClass = convertInputType(this.options.inputType);
@@ -162,18 +161,18 @@ export class PanInput implements IInputType {
 				throw new Error("Wrong inputType parameter!");
 			}
 			this.hammer = createHammer(this.element, { ...{
-				recognizers: [
-					[Hammer.Pan, hammerOption],
-				],
 				inputClass,
 			}, ... this.options.hammerManagerOptions });
 			this.element[UNIQUEKEY] = keyValue;
 		}
+		this.panRecognizer = new Hammer.Pan(hammerOption);
+		this.hammer.add(this.panRecognizer);
 		this.attachEvent(observer);
 		return this;
 	}
 
 	disconnect() {
+		this.removeRecognizer();
 		if (this.hammer) {
 			this.dettachEvent();
 		}
@@ -188,7 +187,7 @@ export class PanInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (this.hammer && this.hammer.recognizers.length === 1) {
+		if (this.hammer && this.hammer.recognizers.length === 0) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];
@@ -224,6 +223,13 @@ export class PanInput implements IInputType {
 	 */
 	isEnable() {
 		return !!(this.hammer && this.hammer.get("pan").options.enable);
+	}
+
+	private removeRecognizer() {
+		if (this.hammer && this.panRecognizer) {
+			this.hammer.remove(this.panRecognizer);
+			this.panRecognizer = null;
+		}
 	}
 
 	private onHammerInput(event) {

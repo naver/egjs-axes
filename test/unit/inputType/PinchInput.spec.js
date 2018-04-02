@@ -49,7 +49,7 @@ describe("PinchInput", () => {
   describe("enable/disable", function() {
     beforeEach(() => {
       this.el = sandbox();
-      this.inst = new PinchInput(this.el);
+      this.inst = new PinchInput(this.el, {inputType: ["touch"]});
       this.inst.mapAxes(["x"]);
       this.observer = {
         get() {
@@ -148,7 +148,7 @@ describe("PinchInput", () => {
   describe("offset value", function () {
     beforeEach(() => {
       this.el = sandbox();
-      this.input = new PinchInput(this.el); 
+      this.input = new PinchInput(this.el, {inputType: ["touch"]}); 
       this.inst = new Axes({
         x: {
           range: [10, 120]
