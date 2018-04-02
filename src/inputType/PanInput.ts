@@ -148,11 +148,9 @@ export class PanInput implements IInputType {
 			threshold: this.options.threshold,
 		};
 		if (this.hammer) { // for sharing hammer instance.
+			// hammer remove previous PanRecognizer.
 			this.removeRecognizer();
 			this.dettachEvent();
-			// hammer remove previous PanRecognizer.
-			this.panRecognizer = new Hammer.Pan(hammerOption);
-			this.hammer.add(this.panRecognizer);
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
@@ -167,10 +165,10 @@ export class PanInput implements IInputType {
 			this.hammer = createHammer(this.element, { ...{
 				inputClass,
 			}, ... this.options.hammerManagerOptions });
-			this.panRecognizer = new Hammer.Pan(hammerOption);
-			this.hammer.add(this.panRecognizer);
 			this.element[UNIQUEKEY] = keyValue;
 		}
+		this.panRecognizer = new Hammer.Pan(hammerOption);
+		this.hammer.add(this.panRecognizer);
 		this.attachEvent(observer);
 		return this;
 	}
@@ -191,10 +189,7 @@ export class PanInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (
-			this.hammer &&
-			this.hammer.recognizers.length === 0
-		) {
+		if (this.hammer && this.hammer.recognizers.length === 0) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];

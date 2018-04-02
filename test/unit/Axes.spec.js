@@ -330,9 +330,9 @@ describe("Axes", function () {
       const prevX = this.inst.get()["x"];
       const prevY = this.inst.get()["otherX"];
 
-      // When // pan 제스춰 동작 시 동작해야함 
-			Simulator.gestures.pan(target, MOVE_HORIZONTALLY, () => {
-				Simulator.gestures.pan(target, MOVE_VERTICALLY, () => {
+      // When
+      Simulator.gestures.pan(target, MOVE_HORIZONTALLY, () => {
+        Simulator.gestures.pan(target, MOVE_VERTICALLY, () => {
           // Then
           const currX = this.inst.get()["x"];
           const currY = this.inst.get()["otherX"];

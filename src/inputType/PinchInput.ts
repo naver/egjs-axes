@@ -91,11 +91,9 @@ export class PinchInput implements IInputType {
 		const hammerOption = {threshold: this.options.threshold};
 
 		if (this.hammer) { // for sharing hammer instance.
+			// hammer remove previous PinchRecognizer.
 			this.removeRecognizer();
 			this.dettachEvent();
-			// hammer remove previous PinchRecognizer.
-			this.pinchRecognizer = new Hammer.Pinch(hammerOption);
-			this.hammer.add(this.pinchRecognizer);
 		} else {
 			let keyValue: string = this.element[UNIQUEKEY];
 			if (keyValue) {
@@ -114,10 +112,9 @@ export class PinchInput implements IInputType {
 				}, ...this.options.hammerManagerOptions}
 			);
 			this.element[UNIQUEKEY] = keyValue;
-			this.pinchRecognizer = new Hammer.Pinch(hammerOption);
-			this.hammer.add(this.pinchRecognizer);
 		}
-		
+		this.pinchRecognizer = new Hammer.Pinch(hammerOption);
+		this.hammer.add(this.pinchRecognizer);
 		this.attachEvent(observer);
 		return this;
 	}
@@ -139,10 +136,7 @@ export class PinchInput implements IInputType {
 	*/
 	destroy() {
 		this.disconnect();
-		if (
-			this.hammer &&
-			this.hammer.recognizers.length === 0
-		) {
+		if (this.hammer && this.hammer.recognizers.length === 0) {
 			this.hammer.destroy();
 		}
 		delete this.element[UNIQUEKEY];
