@@ -68,7 +68,7 @@ The following are the supported browsers.
 ## Development
 
 ```bash
-# Run rc-tools server and see examples for development
+# Run webpack-dev server and see examples for development
 $ npm run start
 ```
 

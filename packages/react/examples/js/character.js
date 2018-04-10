@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Axes, {PanInput, MoveKeyInput, PinchInput, WheelInput} from "../index.js";
+import Axes, {PanInput, MoveKeyInput, PinchInput, WheelInput} from "../../src/index.js";
 
 class Sun extends Component {
   constructor(props) {
