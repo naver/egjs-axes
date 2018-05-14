@@ -109,6 +109,16 @@ export interface AxesOption {
  * axes.connect("something2", pinchInputArea);
  */
 export default class Axes extends Component {
+	/**
+	 * Version info string
+	 * @ko 버전정보 문자열
+	 * @name VERSION
+	 * @static
+	 * @type {String}
+	 * @example
+	 * eg.Axes.VERSION;  // ex) 3.3.3
+	 * @memberof eg.Axes
+	 */
 	static VERSION = "#__VERSION__#";
 	// for tree shaking
 	static PanInput;
