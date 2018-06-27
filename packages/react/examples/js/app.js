@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Axes, {PanInput} from "../index.js";
+import Axes, {PanInput} from "../../src/index.js";
 
 class App extends Component {
   constructor(prop) {
