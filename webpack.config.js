@@ -14,7 +14,7 @@ var config = {
 		libraryTarget: "umd",
 	},
 	externals: {
-		"@egjs/component" : {
+		"@egjs/component": {
 			commonjs: "@egjs/component",
 			commonjs2: "@egjs/component",
 			amd: "@egjs/component",
@@ -29,26 +29,26 @@ var config = {
 	},
 	devtool: "cheap-source-map",
 	resolve: {
-    extensions: [".ts", ".js"]
-  },
+		extensions: [".ts", ".js"]
+	},
 	module: {
 		rules: [
-		{
-			test: /\.ts$/,
-			exclude: /node_modules/,
-			loader: "awesome-typescript-loader"
-		},
-		{
-			test: /(\.js)$/,
-			loader: StringReplacePlugin.replace({
-				replacements: [{
-					pattern: /#__VERSION__#/ig,
-					replacement: function (match, p1, offset, string) {
-						return pkg.version;
-					}
-				}]
-			})
-		}]
+			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				loader: "awesome-typescript-loader"
+			},
+			{
+				test: /(\.js)$/,
+				loader: StringReplacePlugin.replace({
+					replacements: [{
+						pattern: /#__VERSION__#/ig,
+						replacement: function (match, p1, offset, string) {
+							return pkg.version;
+						}
+					}]
+				})
+			}]
 	},
 	plugins: [
 		new webpack.optimize.ModuleConcatenationPlugin(),

@@ -23,8 +23,8 @@ module.exports = {
 	entry: buildEntries(),
 	output: {
 		filename: "[name]",
-        path: `${__dirname}/examples/build/`,
-        publicPath: "/exmaples/build/"
+		path: `${__dirname}/examples/build/`,
+		publicPath: "/exmaples/build/"
 	},
 	devServer: {
 		contentBase: `${__dirname}/examples`,
@@ -36,12 +36,12 @@ module.exports = {
 				loader: "babel-loader",
 			},
 		],
-    },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: "commons",
-            filename: "commons.js",
-          }),
-        new WriteFilePlugin()
-    ]
+	},
+	plugins: [
+		new webpack.optimize.CommonsChunkPlugin({
+			name: "commons",
+			filename: "commons.js",
+		}),
+		new WriteFilePlugin()
+	]
 };
