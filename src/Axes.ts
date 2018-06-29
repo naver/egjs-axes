@@ -1,4 +1,4 @@
-import * as Component from "@egjs/component";
+import Component from "@egjs/component";
 import { AnimationManager } from "./AnimationManager";
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";

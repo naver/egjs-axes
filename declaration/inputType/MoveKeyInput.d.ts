@@ -25,10 +25,10 @@ export declare class MoveKeyInput implements IInputType {
     connect(observer: IInputTypeObserver): IInputType;
     disconnect(): this;
     destroy(): void;
-    private onKeydown(e);
-    private onKeyup(e);
-    private attachEvent(observer);
-    private dettachEvent();
+    private onKeydown;
+    private onKeyup;
+    private attachEvent;
+    private dettachEvent;
     enable(): this;
     disable(): this;
     isEnable(): boolean;

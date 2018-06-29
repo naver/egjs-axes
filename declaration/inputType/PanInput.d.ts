@@ -26,11 +26,11 @@ export declare class PanInput implements IInputType {
     enable(): this;
     disable(): this;
     isEnable(): boolean;
-    private removeRecognizer();
-    private onHammerInput(event);
-    private onPanmove(event);
-    private onPanend(event);
-    private attachEvent(observer);
-    private dettachEvent();
-    private getOffset(properties, useDirection);
+    private removeRecognizer;
+    private onHammerInput;
+    private onPanmove;
+    private onPanend;
+    private attachEvent;
+    private dettachEvent;
+    private getOffset;
 }

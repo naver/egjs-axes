@@ -9,14 +9,14 @@ export declare class InputObserver implements IInputTypeObserver {
     private em;
     private axm;
     private am;
-    constructor({options, itm, em, axm, am}: {
+    constructor({ options, itm, em, axm, am }: {
         options: any;
         itm: any;
         em: any;
         axm: any;
         am: any;
     });
-    private atOutside(pos);
+    private atOutside;
     get(input: IInputType): Axis;
     hold(input: IInputType, event: any): void;
     change(input: IInputType, event: any, offset: Axis): void;

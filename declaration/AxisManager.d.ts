@@ -13,7 +13,7 @@ export declare class AxisManager {
     private _pos;
     static equal(target: Axis, base: Axis): boolean;
     constructor(axis: any, options: AxesOption);
-    private _complementOptions();
+    private _complementOptions;
     getDelta(depaPos: Axis, destPos: Axis): Axis;
     get(axes?: string[] | Axis): Axis;
     moveTo(pos: Axis): {

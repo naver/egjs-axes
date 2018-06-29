@@ -25,25 +25,25 @@ export declare class AnimationManager {
     em: EventManager;
     axm: AxisManager;
     static getDuration(duration: number, min: number, max: number): number;
-    constructor({options, itm, em, axm}: {
+    constructor({ options, itm, em, axm }: {
         options: any;
         itm: any;
         em: any;
         axm: any;
     });
     getDuration(depaPos: Axis, destPos: Axis, wishDuration?: number): number;
-    private createAnimationParam(pos, duration, option?);
+    private createAnimationParam;
     grab(axes: string[], option?: ChangeEventOption): void;
     getEventInfo(): ChangeEventOption;
     restore(option: ChangeEventOption): void;
     animationEnd(): void;
-    private animateLoop(param, complete);
+    private animateLoop;
     getUserControll(param: AnimationParam): {
         destPos: Axis;
         duration: number;
     };
     animateTo(destPos: Axis, duration: number, option?: ChangeEventOption): void;
-    private frame(param);
+    private frame;
     easing(p: any): number;
     setTo(pos: Axis, duration?: number): this;
     setBy(pos: Axis, duration?: number): this;
