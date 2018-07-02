@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es3",
     "module": "commonjs",
+    "esModuleInterop": true,
     "lib": ["es5", "dom"],
     "removeComments": false,
     "outDir": "outjs"

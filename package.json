@@ -38,7 +38,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-axes",
 	"dependencies": {
-		"@egjs/component": "^2.0.0",
+		"@egjs/component": "^2.1.1",
 		"hammerjs": "^2.0.8"
 	},
 	"devDependencies": {
@@ -71,6 +71,7 @@
 		"karma-sourcemap-loader": "^0.3.7",
 		"karma-webpack": "^2.0.9",
 		"lite-fixture": "^1.0.2",
+		"marked": "^0.3.12",
 		"mocha": "^4.1.0",
 		"sinon": "^4.1.4",
 		"string-replace-webpack-plugin": "0.1.3",
@@ -78,13 +79,12 @@
 		"tslint": "^5.9.1",
 		"tslint-eslint-rules": "^4.1.1",
 		"tslint-loader": "^3.5.3",
-		"typescript": "^2.6.2",
+		"typescript": "^2.9.2",
 		"uglifyjs-webpack-plugin": "^1.1.6",
 		"webpack": "^3.10.0",
 		"webpack-dev-server": "^2.10.1",
 		"webpack-merge": "^4.1.1",
 		"write-file-webpack-plugin": "^4.2.0",
-		"xml2js": "^0.4.19",
-		"marked": "^0.3.12"
+		"xml2js": "^0.4.19"
 	}
 }

@@ -16,9 +16,9 @@ export declare class WheelInput implements IInputType {
     connect(observer: IInputTypeObserver): IInputType;
     disconnect(): this;
     destroy(): void;
-    private onWheel(event);
-    private attachEvent(observer);
-    private dettachEvent();
+    private onWheel;
+    private attachEvent;
+    private dettachEvent;
     enable(): this;
     disable(): this;
     isEnable(): boolean;

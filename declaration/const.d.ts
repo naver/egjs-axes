@@ -6,6 +6,6 @@ export declare enum DIRECTION {
     DIRECTION_UP = 8,
     DIRECTION_DOWN = 16,
     DIRECTION_VERTICAL = 24,
-    DIRECTION_ALL = 30,
+    DIRECTION_ALL = 30
 }
 export declare const TRANSFORM: string;
