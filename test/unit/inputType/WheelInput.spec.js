@@ -19,7 +19,7 @@ describe("WheelInput", () => {
     it("should check status after disconnect", () => {
       // Given
       this.inst.connect({});
-      
+
       // When
       this.inst.disconnect();
 
@@ -31,7 +31,7 @@ describe("WheelInput", () => {
     it("should check status after destroy", () => {
       // Given
       this.inst.connect({});
-      
+
       // When
       this.inst.destroy();
 
@@ -39,9 +39,9 @@ describe("WheelInput", () => {
       expect(this.inst.element).to.be.not.exist;
       expect(this.observer).to.be.not.exist;
       expect(this._timer).to.be.not.exist;
-      
+
       this.inst = null;
-    });
+		});
   });
   describe("enable/disable", function() {
     beforeEach(() => {
@@ -89,15 +89,60 @@ describe("WheelInput", () => {
 
       // Then
       expect(this.inst.isEnable()).to.be.true;
-    }); 
-  });
+    });
+	});
+
+	describe("simple wheel event test", function() {
+		beforeEach(() => {
+			this.el = sandbox();
+			this.input = new WheelInput(this.el);
+			this.inst = new Axes({
+				x: {
+					range: [10, 120]
+				}
+			});
+			this.inst.connect(["x"], this.input);
+		});
+
+		afterEach(() => {
+			this.el = null;
+			if (this.inst) {
+				this.inst.destroy();
+				this.inst = null;
+			}
+			if (this.input) {
+				this.input.destroy();
+				this.input = null;
+			}
+			cleanup();
+		});
+
+		it("should cleanup timer when it is detached/destroy (after firing wheel event)", done => {
+			// Given
+			const deltaY = 300;
+			// When
+			// 1. Scroll
+			TestHelper.wheelVertical(this.el, deltaY, () => {
+				// 2. detach & destroy wheel input
+				this.inst.disconnect(this.input);
+				this.input.destroy();
+				this.input = null;
+				// 3. create new wheel input
+				this.input = new WheelInput(this.el);
+				this.inst.connect(["x"], this.input);
+
+				// Then -> script error should not be occur.
+				setTimeout(done, 50);
+			});
+		});
+	});
 
   [1,2,4].forEach(function(scale) {
     [true, false].forEach(function(useNormalized) {
       describe(`wheel event test(useNormalized: ${useNormalized})`, function() {
         beforeEach(() => {
           this.el = sandbox();
-          this.input = new WheelInput(this.el, {useNormalized: useNormalized, scale: scale}); 
+          this.input = new WheelInput(this.el, {useNormalized: useNormalized, scale: scale});
           this.inst = new Axes({
             x: {
               range: [10, 120]
@@ -177,7 +222,7 @@ describe("WheelInput", () => {
           const deltaY = 1;
           const eventLog = [];
           const eventLogAnswer = ["hold", "change", "change", "release"];
-    
+
           this.inst
           .on("hold", () => {
             eventLog.push("hold");
@@ -186,7 +231,7 @@ describe("WheelInput", () => {
           }).on("release", () => {
             eventLog.push("release");
           });
-    
+
           // When
           TestHelper.wheelVertical(this.el, deltaY, () => {
             setTimeout(()=> {
@@ -197,9 +242,9 @@ describe("WheelInput", () => {
                   done();
                 }, 60);
               });
-            }, 20);		
+            }, 20);
           });
-        });
+				});
       });
     });
   });
