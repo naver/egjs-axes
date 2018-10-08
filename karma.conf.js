@@ -39,7 +39,8 @@ module.exports = function (config) {
 						use: {
 							loader: "awesome-typescript-loader",
 							options: {
-								transpileOnly: true
+								transpileOnly: true,
+								module: "es5"
 							}
 						}
 					}
