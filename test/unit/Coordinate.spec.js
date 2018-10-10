@@ -1,4 +1,4 @@
-import Coordinate from "../../src/Coordinate";
+import * as Coordinate from "../../src/Coordinate";
 
 
 describe("Coordinate", function() {

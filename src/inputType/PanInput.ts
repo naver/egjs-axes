@@ -1,6 +1,5 @@
 import Hammer, { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
-// import {aaa, bbb, ccc} from "hammerjs";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
 import { ObjectInterface } from "../const";
 
@@ -13,7 +12,7 @@ export interface PanInputOption {
 }
 
 // get user's direction
-function getDirectionByAngle(angle: number, thresholdAngle: number) {
+export function getDirectionByAngle(angle: number, thresholdAngle: number) {
 	if (thresholdAngle < 0 || thresholdAngle > 90) {
 		return DIRECTION_NONE;
 	}
@@ -23,7 +22,7 @@ function getDirectionByAngle(angle: number, thresholdAngle: number) {
 		DIRECTION_VERTICAL : DIRECTION_HORIZONTAL;
 }
 
-function getNextOffset(speeds: number[], deceleration: number) {
+export function getNextOffset(speeds: number[], deceleration: number) {
 	const normalSpeed = Math.sqrt(
 		speeds[0] * speeds[0] + speeds[1] * speeds[1],
 	);
@@ -34,7 +33,7 @@ function getNextOffset(speeds: number[], deceleration: number) {
 	];
 }
 
-function useDirection(
+export function useDirection(
 	checkType,
 	direction,
 	userDirection?): boolean {

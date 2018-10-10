@@ -1,4 +1,4 @@
-import Hammer from "hammerjs";
+import Hammer from "@egjs/hammerjs";
 import TestHelper from "./TestHelper";
 import Axes from "../../../src/Axes.ts";
 import {WheelInput} from "../../../src/inputType/WheelInput";

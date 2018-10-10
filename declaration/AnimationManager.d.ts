@@ -24,7 +24,6 @@ export declare class AnimationManager {
     itm: InterruptManager;
     em: EventManager;
     axm: AxisManager;
-    static getDuration(duration: number, min: number, max: number): number;
     constructor({ options, itm, em, axm }: {
         options: any;
         itm: any;

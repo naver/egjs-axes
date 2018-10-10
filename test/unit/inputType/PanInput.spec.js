@@ -1,8 +1,10 @@
-import Hammer from "hammerjs";
-import {PanInput} from "../../../src/inputType/PanInput";
+import Hammer from "@egjs/hammerjs";
+import {PanInput, getDirectionByAngle, getNextOffset, useDirection} from "../../../src/inputType/PanInput";
 import {PinchInput} from "../../../src/inputType/PinchInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
-import {DIRECTION} from "../../../src/const";
+import {
+  DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_LEFT,
+  DIRECTION_NONE, DIRECTION_VERTICAL} from "../../../src/const";
 
 describe("PanInput", () => {
   describe("when hammer instance is shared", function() {
@@ -130,28 +132,28 @@ describe("PanInput", () => {
 
       // then
       expect(this.inst.axes).to.be.eql(["x"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
+      expect(this.inst._direction).to.be.equal(DIRECTION_HORIZONTAL);
 
       // when
       this.inst.mapAxes(["", "y"]);
 
       // then
       expect(this.inst.axes).to.be.eql(["", "y"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_VERTICAL);
+      expect(this.inst._direction).to.be.equal(DIRECTION_VERTICAL);
 
       // when
       this.inst.mapAxes(["x", "y"]);
 
       // then
       expect(this.inst.axes).to.be.eql(["x", "y"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_ALL);
+      expect(this.inst._direction).to.be.equal(DIRECTION_ALL);
 
       // when
       this.inst.mapAxes(["x", "y", "z"]);
 
       // then
       expect(this.inst.axes).to.be.eql(["x", "y", "z"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_ALL);
+      expect(this.inst._direction).to.be.equal(DIRECTION_ALL);
     });
     it("should check status after disconnect", () => {
       // Given
@@ -166,7 +168,7 @@ describe("PanInput", () => {
       expect(this.observer).to.be.not.exist;
       expect(this.inst.element).to.be.exist;
       expect(UNIQUEKEY in this.inst.element).to.be.true;
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_NONE);
+      expect(this.inst._direction).to.be.equal(DIRECTION_NONE);
     });
     it("should check status after destroy", () => {
       // Given
@@ -181,7 +183,7 @@ describe("PanInput", () => {
       expect(this.inst.element).to.be.not.exist;
       expect(this.observer).to.be.not.exist;
       expect(UNIQUEKEY in beforeEl).to.be.false;
-      expect(this.inst._direction).to.be.equal(DIRECTION.DIRECTION_NONE);
+      expect(this.inst._direction).to.be.equal(DIRECTION_NONE);
       
       this.inst = null;
     });
@@ -309,69 +311,69 @@ describe("PanInput", () => {
       //Given
       // When thresholdAngle = 45
       // Then
-      expect(PanInput.getDirectionByAngle(0, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(20, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(45, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(100, 45)).to.be.equal(DIRECTION.DIRECTION_VERTICAL);
-      expect(PanInput.getDirectionByAngle(134, 45)).to.be.equal(DIRECTION.DIRECTION_VERTICAL);
-      expect(PanInput.getDirectionByAngle(135, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(136, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(180, 45)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(0, 45)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(20, 45)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(45, 45)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(100, 45)).to.be.equal(DIRECTION_VERTICAL);
+      expect(getDirectionByAngle(134, 45)).to.be.equal(DIRECTION_VERTICAL);
+      expect(getDirectionByAngle(135, 45)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(136, 45)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(180, 45)).to.be.equal(DIRECTION_HORIZONTAL);
 
       // When thresholdAngle = 20
       // Then
-      expect(PanInput.getDirectionByAngle(0, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(10, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(20, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(30, 20)).to.be.equal(DIRECTION.DIRECTION_VERTICAL);
-      expect(PanInput.getDirectionByAngle(50, 20)).to.be.equal(DIRECTION.DIRECTION_VERTICAL);
-      expect(PanInput.getDirectionByAngle(160, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(161, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
-      expect(PanInput.getDirectionByAngle(180, 20)).to.be.equal(DIRECTION.DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(0, 20)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(10, 20)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(20, 20)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(30, 20)).to.be.equal(DIRECTION_VERTICAL);
+      expect(getDirectionByAngle(50, 20)).to.be.equal(DIRECTION_VERTICAL);
+      expect(getDirectionByAngle(160, 20)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(161, 20)).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(getDirectionByAngle(180, 20)).to.be.equal(DIRECTION_HORIZONTAL);
 
       // When thresholdAngle = -10, 100
-      expect(PanInput.getDirectionByAngle(0, -10)).to.be.equal(DIRECTION.DIRECTION_NONE);
-      expect(PanInput.getDirectionByAngle(0, 100)).to.be.equal(DIRECTION.DIRECTION_NONE);
+      expect(getDirectionByAngle(0, -10)).to.be.equal(DIRECTION_NONE);
+      expect(getDirectionByAngle(0, 100)).to.be.equal(DIRECTION_NONE);
     });
 
     it("should check 'getNextOffset' method", () => {
       // 0.001
-      expect(PanInput.getNextOffset([1.5, 1], 0.001)).to.be.eql([1352.0817282989958, 901.3878188659972]);
-      expect(PanInput.getNextOffset([1, 1.5], 0.001)).to.be.eql([901.3878188659972, 1352.0817282989958]);
+      expect(getNextOffset([1.5, 1], 0.001)).to.be.eql([1352.0817282989958, 901.3878188659972]);
+      expect(getNextOffset([1, 1.5], 0.001)).to.be.eql([901.3878188659972, 1352.0817282989958]);
 
       // 0.01
-      expect(PanInput.getNextOffset([1.5, 1], 0.01)).to.be.eql([135.20817282989958, 90.13878188659973]);
-      expect(PanInput.getNextOffset([1, 1.5], 0.01)).to.be.eql([90.13878188659973, 135.20817282989958]);
+      expect(getNextOffset([1.5, 1], 0.01)).to.be.eql([135.20817282989958, 90.13878188659973]);
+      expect(getNextOffset([1, 1.5], 0.01)).to.be.eql([90.13878188659973, 135.20817282989958]);
     });
 
     it("should check 'useDirection' method", () => {
       // DIRECTION_HORIZONTAL
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_ALL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_VERTICAL)).to.be.false;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL)).to.be.true;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL)).to.be.true;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_VERTICAL)).to.be.false;
 
       // DIRECTION_VERTICAL
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_ALL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL)).to.be.true;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_ALL)).to.be.true;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_HORIZONTAL)).to.be.false;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL)).to.be.true;
     });
 
     it("should check 'useDirection' method (using userDirection)", () => {
       // DIRECTION_HORIZONTAL
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_ALL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_ALL, DIRECTION.DIRECTION_VERTICAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_VERTICAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL)).to.be.false;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL, DIRECTION_HORIZONTAL)).to.be.true;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL, DIRECTION_VERTICAL)).to.be.true;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL)).to.be.true;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL)).to.be.false;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL)).to.be.false;
+      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_VERTICAL)).to.be.false;
 
       // DIRECTION_VERTICAL
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_ALL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_ALL, DIRECTION.DIRECTION_VERTICAL)).to.be.true;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_HORIZONTAL, DIRECTION.DIRECTION_VERTICAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_HORIZONTAL)).to.be.false;
-      expect(PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL, DIRECTION.DIRECTION_VERTICAL)).to.be.true;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_ALL, DIRECTION_HORIZONTAL)).to.be.true;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_ALL, DIRECTION_VERTICAL)).to.be.true;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL)).to.be.false;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL)).to.be.false;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL)).to.be.false;
+      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL, DIRECTION_VERTICAL)).to.be.true;
     });
   });
   describe("options test", function() {

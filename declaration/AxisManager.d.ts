@@ -2,6 +2,7 @@ import { AxesOption } from "./Axes";
 export interface Axis {
     [key: string]: number;
 }
+export declare function equal(target: Axis, base: Axis): boolean;
 export interface AxisOption {
     range?: number[];
     bounce?: number | number[];
@@ -11,7 +12,6 @@ export declare class AxisManager {
     private axis;
     private options;
     private _pos;
-    static equal(target: Axis, base: Axis): boolean;
     constructor(axis: any, options: AxesOption);
     private _complementOptions;
     getDelta(depaPos: Axis, destPos: Axis): Axis;
@@ -22,6 +22,6 @@ export declare class AxisManager {
     set(pos: Axis): void;
     every(pos: Axis, callback: (value: number, key: string, options: AxisOption) => boolean): boolean;
     filter(pos: Axis, callback: (value: number, key: string, options: AxisOption) => boolean): Axis;
-    map(pos: Axis, callback: (value: number, key: string, options: AxisOption) => any): any;
+    map(pos: Axis, callback: (value: number, key: string, options: AxisOption) => number): Axis;
     isOutside(axes?: string[]): boolean;
 }
