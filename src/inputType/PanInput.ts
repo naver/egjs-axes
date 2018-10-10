@@ -1,16 +1,49 @@
-import { InputObserver } from "./../InputObserver";
-import * as Hammer from "hammerjs";
-import { DIRECTION } from "../const";
+import Hammer, { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
-import { UNIQUEKEY, convertInputType, createHammer, toAxis, IInputType, IInputTypeObserver } from "./InputType";
-import { Axis } from "../AxisManager";
+// import {aaa, bbb, ccc} from "hammerjs";
+import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
+import { ObjectInterface } from "../const";
 
 export interface PanInputOption {
 	inputType?: string[];
 	scale?: number[];
 	thresholdAngle?: number;
 	threshold?: number;
-	hammerManagerOptions?: Object;
+	hammerManagerOptions?: ObjectInterface;
+}
+
+// get user's direction
+function getDirectionByAngle(angle: number, thresholdAngle: number) {
+	if (thresholdAngle < 0 || thresholdAngle > 90) {
+		return DIRECTION_NONE;
+	}
+	const toAngle = Math.abs(angle);
+
+	return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
+		DIRECTION_VERTICAL : DIRECTION_HORIZONTAL;
+}
+
+function getNextOffset(speeds: number[], deceleration: number) {
+	const normalSpeed = Math.sqrt(
+		speeds[0] * speeds[0] + speeds[1] * speeds[1],
+	);
+	const duration = Math.abs(normalSpeed / -deceleration);
+	return [
+		speeds[0] / 2 * duration,
+		speeds[1] / 2 * duration,
+	];
+}
+
+function useDirection(
+	checkType,
+	direction,
+	userDirection?): boolean {
+	if (userDirection) {
+		return !!((direction === DIRECTION_ALL) ||
+			((direction & checkType) && (userDirection & checkType)));
+	} else {
+		return !!(direction & checkType);
+	}
 }
 
 /**
@@ -54,42 +87,8 @@ export class PanInput implements IInputType {
 	hammer = null;
 	element: HTMLElement = null;
 	private observer: IInputTypeObserver;
-	private _direction: DIRECTION;
+	private _direction;
 	private panRecognizer = null;
-
-	// get user's direction
-	static getDirectionByAngle(angle: number, thresholdAngle: number): DIRECTION {
-		if (thresholdAngle < 0 || thresholdAngle > 90) {
-			return DIRECTION.DIRECTION_NONE;
-		}
-		const toAngle = Math.abs(angle);
-
-		return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
-			DIRECTION.DIRECTION_VERTICAL : DIRECTION.DIRECTION_HORIZONTAL;
-	}
-
-	static getNextOffset(speeds: number[], deceleration: number) {
-		const normalSpeed = Math.sqrt(
-			speeds[0] * speeds[0] + speeds[1] * speeds[1]
-		);
-		const duration = Math.abs(normalSpeed / -deceleration);
-		return [
-			speeds[0] / 2 * duration,
-			speeds[1] / 2 * duration
-		];
-	}
-
-	static useDirection(
-		checkType: DIRECTION,
-		direction: DIRECTION,
-		userDirection?: DIRECTION): boolean {
-		if (userDirection) {
-			return !!((direction === DIRECTION.DIRECTION_ALL) ||
-				((direction & checkType) && (userDirection & checkType)));
-		} else {
-			return !!(direction & checkType);
-		}
-	}
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		/**
@@ -100,7 +99,7 @@ export class PanInput implements IInputType {
 		 * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
 		 * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
 		 */
-		if (typeof Hammer === "undefined") {
+		if (typeof Manager === "undefined") {
 			throw new Error(`The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/`);
 		}
 		this.element = $(el);
@@ -120,29 +119,29 @@ export class PanInput implements IInputType {
 						userDrag: "none",
 					},
 				},
-			}, ...options
+			}, ...options,
 		};
 		this.onHammerInput = this.onHammerInput.bind(this);
 		this.onPanmove = this.onPanmove.bind(this);
 		this.onPanend = this.onPanend.bind(this);
 	}
 
-	mapAxes(axes: string[]) {
+	public mapAxes(axes: string[]) {
 		const useHorizontal = !!axes[0];
 		const useVertical = !!axes[1];
 		if (useHorizontal && useVertical) {
-			this._direction = DIRECTION.DIRECTION_ALL;
+			this._direction = DIRECTION_ALL;
 		} else if (useHorizontal) {
-			this._direction = DIRECTION.DIRECTION_HORIZONTAL;
+			this._direction = DIRECTION_HORIZONTAL;
 		} else if (useVertical) {
-			this._direction = DIRECTION.DIRECTION_VERTICAL;
+			this._direction = DIRECTION_VERTICAL;
 		} else {
-			this._direction = DIRECTION.DIRECTION_NONE;
+			this._direction = DIRECTION_NONE;
 		}
 		this.axes = axes;
 	}
 
-	connect(observer: IInputTypeObserver): IInputType {
+	public connect(observer: IInputTypeObserver): IInputType {
 		const hammerOption = {
 			direction: this._direction,
 			threshold: this.options.threshold,
@@ -160,23 +159,26 @@ export class PanInput implements IInputType {
 			if (!inputClass) {
 				throw new Error("Wrong inputType parameter!");
 			}
-			this.hammer = createHammer(this.element, { ...{
-				inputClass,
-			}, ... this.options.hammerManagerOptions });
+			this.hammer = createHammer(this.element, {
+				...{
+					inputClass,
+				}, ... this.options.hammerManagerOptions,
+			});
 			this.element[UNIQUEKEY] = keyValue;
 		}
-		this.panRecognizer = new Hammer.Pan(hammerOption);
+		this.panRecognizer = new Pan(hammerOption);
+
 		this.hammer.add(this.panRecognizer);
 		this.attachEvent(observer);
 		return this;
 	}
 
-	disconnect() {
+	public disconnect() {
 		this.removeRecognizer();
 		if (this.hammer) {
 			this.dettachEvent();
 		}
-		this._direction = DIRECTION.DIRECTION_NONE;
+		this._direction = DIRECTION_NONE;
 		return this;
 	}
 
@@ -185,7 +187,7 @@ export class PanInput implements IInputType {
 	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 	* @method eg.Axes.PanInput#destroy
 	*/
-	destroy() {
+	public destroy() {
 		this.disconnect();
 		if (this.hammer && this.hammer.recognizers.length === 0) {
 			this.hammer.destroy();
@@ -201,7 +203,7 @@ export class PanInput implements IInputType {
 	 * @method eg.Axes.PanInput#enable
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	enable() {
+	public enable() {
 		this.hammer && (this.hammer.get("pan").options.enable = true);
 		return this;
 	}
@@ -211,7 +213,7 @@ export class PanInput implements IInputType {
 	 * @method eg.Axes.PanInput#disable
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	disable() {
+	public disable() {
 		this.hammer && (this.hammer.get("pan").options.enable = false);
 		return this;
 	}
@@ -221,7 +223,7 @@ export class PanInput implements IInputType {
 	 * @method eg.Axes.PanInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnable() {
+	public isEnable() {
 		return !!(this.hammer && this.hammer.get("pan").options.enable);
 	}
 
@@ -243,7 +245,7 @@ export class PanInput implements IInputType {
 	}
 
 	private onPanmove(event) {
-		const userDirection = PanInput.getDirectionByAngle(
+		const userDirection = getDirectionByAngle(
 			event.angle, this.options.thresholdAngle);
 
 		// not support offset properties in Hammerjs - start
@@ -260,8 +262,8 @@ export class PanInput implements IInputType {
 		const offset: number[] = this.getOffset(
 			[event.offsetX, event.offsetY],
 			[
-				PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction, userDirection),
-				PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction, userDirection)
+				useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
+				useDirection(DIRECTION_VERTICAL, this._direction, userDirection),
 			]);
 		const prevent = offset.some(v => v !== 0);
 		if (prevent) {
@@ -276,13 +278,13 @@ export class PanInput implements IInputType {
 		let offset: number[] = this.getOffset(
 			[
 				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
-				Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1)
+				Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1),
 			],
 			[
-				PanInput.useDirection(DIRECTION.DIRECTION_HORIZONTAL, this._direction),
-				PanInput.useDirection(DIRECTION.DIRECTION_VERTICAL, this._direction)
+				useDirection(DIRECTION_HORIZONTAL, this._direction),
+				useDirection(DIRECTION_VERTICAL, this._direction),
 			]);
-		offset = PanInput.getNextOffset(offset, this.observer.options.deceleration);
+		offset = getNextOffset(offset, this.observer.options.deceleration);
 		this.observer.release(this, event, toAxis(this.axes, offset));
 	}
 
@@ -300,17 +302,16 @@ export class PanInput implements IInputType {
 
 	private getOffset(
 		properties: number[],
-		useDirection: boolean[]): number[] {
+		direction: boolean[]): number[] {
 		const offset: number[] = [0, 0];
 		const scale = this.options.scale;
 
-		if (useDirection[0]) {
+		if (direction[0]) {
 			offset[0] = (properties[0] * scale[0]);
 		}
-		if (useDirection[1]) {
+		if (direction[1]) {
 			offset[1] = (properties[1] * scale[1]);
 		}
 		return offset;
 	}
 }
-
