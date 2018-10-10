@@ -1,9 +1,12 @@
 import typescript from 'rollup-plugin-typescript';
 import { uglify } from "rollup-plugin-uglify";
 import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import PrototypeMinify from "rollup-plugin-prototype-minify";
+import replace from "rollup-plugin-replace";
+
+const version = require("./package.json").version;
 var merge = require("./config/merge");
+var banner = require("./config/banner");
 
 var plugin = typescript({
   "module": "es2015",
@@ -15,8 +18,9 @@ var plugin = typescript({
   "moduleResolution": "node",
 });
 var defaultConfig = {
-  plugins: [plugin, PrototypeMinify({sourcemap: true})],
+  plugins: [plugin, PrototypeMinify({ sourcemap: true }), replace({"#__VERSION__#": version, delimiters: ["", ""]})],
   output: {
+    banner: banner.banner,
     format: "es",
     freeze: false,
     exports: "named",
@@ -41,8 +45,9 @@ var entries = [
   },
   {
     input: "src/index.umd.ts",
-    plugins: [resolve(), commonjs()],
+    plugins: [resolve()],
     output: {
+      banner: banner.pkgd,
       format: "umd",
       name: "eg.Axes",
       exports: "default",
@@ -51,8 +56,23 @@ var entries = [
   },
   {
     input: "src/index.umd.ts",
-    plugins: [resolve(), commonjs(), uglify({ sourcemap: true })],
+    plugins: [resolve(), uglify({
+      sourcemap: true,
+      output: {
+        comments: function (node, comment) {
+          const text = comment.value;
+          const type = comment.type;
+
+          if (type === "comment2") {
+            // multiline comment
+            return /@egjs\/axes/.test(text);
+          }
+          return false;
+        }
+      }
+    })],
     output: {
+      banner: banner.pkgd,
       format: "umd",
       name: "eg.Axes",
       exports: "default",
