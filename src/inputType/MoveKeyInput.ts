@@ -3,17 +3,15 @@ import { $ } from "../utils";
 import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";
 
+export const KEY_LEFT_ARROW = 37;
+export const KEY_A = 65;
+export const KEY_UP_ARROW = 38;
+export const KEY_W = 87;
+export const KEY_RIGHT_ARROW = 39;
+export const KEY_D = 68;
+export const KEY_DOWN_ARROW = 40;
+export const KEY_S = 83;
 
-export const KEYMAP = {
-	LEFT_ARROW: 37,
-	A: 65,
-	UP_ARROW: 38,
-	W: 87,
-	RIGHT_ARROW: 39,
-	D: 68,
-	DOWN_ARROW: 40,
-	S: 83,
-};
 const DIRECTION_REVERSE = -1;
 const DIRECTION_FORWARD = 1;
 const DIRECTION_HORIZONTAL = -1;
@@ -21,7 +19,7 @@ const DIRECTION_VERTICAL = 1;
 const DELAY = 80;
 
 export interface MoveKeyInputOption {
-	scale?: Array<Number>;
+	scale?: number[];
 }
 
 /**
@@ -55,14 +53,14 @@ export class MoveKeyInput implements IInputType {
 	private _isEnabled = false;
 	private _isHolded = false;
 	private _timer = null;
-  	private observer: IInputTypeObserver;
+	private observer: IInputTypeObserver;
 	constructor(el, options?: MoveKeyInputOption) {
 		this.element = $(el);
 		this.options = {
 			...{
 				scale: [1, 1],
-			}, ...options
-    	};
+			}, ...options,
+		};
 		this.onKeydown = this.onKeydown.bind(this);
 		this.onKeyup = this.onKeyup.bind(this);
 	}
@@ -83,7 +81,7 @@ export class MoveKeyInput implements IInputType {
 		return this;
 	}
 
-  	disconnect() {
+	disconnect() {
 		this.dettachEvent();
 		return this;
 	}
@@ -98,7 +96,7 @@ export class MoveKeyInput implements IInputType {
 		this.element = null;
 	}
 
-  	private onKeydown(e) {
+	private onKeydown(e) {
 		if (!this._isEnabled) {
 			return;
 		}
@@ -108,20 +106,20 @@ export class MoveKeyInput implements IInputType {
 		let move = DIRECTION_HORIZONTAL;
 
 		switch (e.keyCode) {
-			case KEYMAP.LEFT_ARROW:
-			case KEYMAP.A:
+			case KEY_LEFT_ARROW:
+			case KEY_A:
 				direction = DIRECTION_REVERSE;
 				break;
-			case KEYMAP.RIGHT_ARROW:
-			case KEYMAP.D:
+			case KEY_RIGHT_ARROW:
+			case KEY_D:
 				break;
-			case KEYMAP.DOWN_ARROW:
-			case KEYMAP.S:
+			case KEY_DOWN_ARROW:
+			case KEY_S:
 				direction = DIRECTION_REVERSE;
 				move = DIRECTION_VERTICAL;
 				break;
-			case KEYMAP.UP_ARROW:
-			case KEYMAP.W:
+			case KEY_UP_ARROW:
+			case KEY_W:
 				move = DIRECTION_VERTICAL;
 				break;
 			default:
@@ -159,7 +157,7 @@ export class MoveKeyInput implements IInputType {
 		this.element.addEventListener("keydown", this.onKeydown, false);
 		this.element.addEventListener("keypress", this.onKeydown, false);
 		this.element.addEventListener("keyup", this.onKeyup, false);
-    	this._isEnabled = true;
+		this._isEnabled = true;
 	}
 
 	private dettachEvent() {
@@ -177,7 +175,7 @@ export class MoveKeyInput implements IInputType {
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	enable() {
-    	this._isEnabled = true;
+		this._isEnabled = true;
 		return this;
 	}
 	/**
@@ -187,7 +185,7 @@ export class MoveKeyInput implements IInputType {
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	disable() {
-    	this._isEnabled = false;
+		this._isEnabled = false;
 		return this;
 	}
 	/**
@@ -199,4 +197,4 @@ export class MoveKeyInput implements IInputType {
 	isEnable() {
 		return this._isEnabled;
 	}
-};
+}
