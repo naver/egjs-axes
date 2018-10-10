@@ -109,14 +109,14 @@ export class WheelInput implements IInputType {
 	}
 
 	private dettachEvent() {
-    this.element.removeEventListener("wheel", this.onWheel);
-    this._isEnabled = false;
+		this.element.removeEventListener("wheel", this.onWheel);
+		this._isEnabled = false;
 		this.observer = null;
 
 		if (this._timer) {
 			clearTimeout(this._timer);
 			this._timer = null;
-		};
+		}
 	}
 
 	/**
