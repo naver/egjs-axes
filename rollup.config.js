@@ -34,7 +34,11 @@ var plugin = typescript({
 });
 var defaultConfig = {
   input: "src/index.umd.ts",
-  plugins: [plugin, PrototypeMinify({ sourcemap: true }), replace({ "#__VERSION__#": version, delimiters: ["", ""] })],
+  plugins: [plugin, PrototypeMinify({ sourcemap: true }), replace({
+    "#__VERSION__#": version,
+    "/** @class */": "/*#__PURE__*/",
+    delimiters: ["", ""],
+  })],
   output: {
     banner: banner.banner,
     freeze: false,

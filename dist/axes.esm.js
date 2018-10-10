@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.5.6
+@version 2.5.7
 */
 import { DIRECTION_NONE, DIRECTION_LEFT, DIRECTION_RIGHT, DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL, Manager, PointerEventInput, TouchMouseInput, TouchInput, MouseInput, Pan, Pinch } from '@egjs/hammerjs';
 import Component from '@egjs/component';
@@ -102,7 +102,7 @@ function equal(target, base) {
 }
 
 var AxisManager =
-/** @class */
+/*#__PURE__*/
 function () {
   function AxisManager(axis, options) {
     var _this = this;
@@ -352,7 +352,7 @@ function minMax(value, min, max) {
 }
 
 var AnimationManager =
-/** @class */
+/*#__PURE__*/
 function () {
   function AnimationManager(_a) {
     var options = _a.options,
@@ -606,7 +606,7 @@ function () {
 }();
 
 var EventManager =
-/** @class */
+/*#__PURE__*/
 function () {
   function EventManager(axes) {
     this.axes = axes;
@@ -924,7 +924,7 @@ function () {
 }();
 
 var InterruptManager =
-/** @class */
+/*#__PURE__*/
 function () {
   function InterruptManager(options) {
     this.options = options;
@@ -950,7 +950,7 @@ function () {
 }();
 
 var InputObserver =
-/** @class */
+/*#__PURE__*/
 function () {
   function InputObserver(_a) {
     var options = _a.options,
@@ -1222,7 +1222,7 @@ var TRANSFORM = function () {
  */
 
 var Axes =
-/** @class */
+/*#__PURE__*/
 function (_super) {
   __extends(Axes, _super);
 
@@ -1517,7 +1517,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "2.5.6";
+  Axes.VERSION = "2.5.7";
   /**
    * @name eg.Axes.TRANSFORM
    * @desc Returns the transform attribute with CSS vendor prefixes.
@@ -1704,7 +1704,7 @@ function useDirection(checkType, direction, userDirection) {
  */
 
 var PanInput =
-/** @class */
+/*#__PURE__*/
 function () {
   function PanInput(el, options) {
     this.axes = [];
@@ -1969,7 +1969,7 @@ function () {
  */
 
 var PinchInput =
-/** @class */
+/*#__PURE__*/
 function () {
   function PinchInput(el, options) {
     this.axes = [];
@@ -2193,7 +2193,7 @@ function () {
  */
 
 var WheelInput =
-/** @class */
+/*#__PURE__*/
 function () {
   function WheelInput(el, options) {
     this.axes = [];
@@ -2361,7 +2361,7 @@ var DELAY = 80;
  */
 
 var MoveKeyInput =
-/** @class */
+/*#__PURE__*/
 function () {
   function MoveKeyInput(el, options) {
     this.axes = [];

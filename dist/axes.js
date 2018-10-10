@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.5.6
+@version 2.5.7
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@egjs/hammerjs'), require('@egjs/component')) :
@@ -105,7 +105,7 @@ https://github.com/naver/egjs-axes
     }
 
     var AxisManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function AxisManager(axis, options) {
         var _this = this;
@@ -355,7 +355,7 @@ https://github.com/naver/egjs-axes
     }
 
     var AnimationManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function AnimationManager(_a) {
         var options = _a.options,
@@ -609,7 +609,7 @@ https://github.com/naver/egjs-axes
     }();
 
     var EventManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function EventManager(axes) {
         this.axes = axes;
@@ -927,7 +927,7 @@ https://github.com/naver/egjs-axes
     }();
 
     var InterruptManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function InterruptManager(options) {
         this.options = options;
@@ -953,7 +953,7 @@ https://github.com/naver/egjs-axes
     }();
 
     var InputObserver =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function InputObserver(_a) {
         var options = _a.options,
@@ -1225,7 +1225,7 @@ https://github.com/naver/egjs-axes
      */
 
     var Axes =
-    /** @class */
+    /*#__PURE__*/
     function (_super) {
       __extends(Axes, _super);
 
@@ -1520,7 +1520,7 @@ https://github.com/naver/egjs-axes
        */
 
 
-      Axes.VERSION = "2.5.6";
+      Axes.VERSION = "2.5.7";
       /**
        * @name eg.Axes.TRANSFORM
        * @desc Returns the transform attribute with CSS vendor prefixes.
@@ -1707,7 +1707,7 @@ https://github.com/naver/egjs-axes
      */
 
     var PanInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function PanInput(el, options) {
         this.axes = [];
@@ -1972,7 +1972,7 @@ https://github.com/naver/egjs-axes
      */
 
     var PinchInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function PinchInput(el, options) {
         this.axes = [];
@@ -2196,7 +2196,7 @@ https://github.com/naver/egjs-axes
      */
 
     var WheelInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function WheelInput(el, options) {
         this.axes = [];
@@ -2364,7 +2364,7 @@ https://github.com/naver/egjs-axes
      */
 
     var MoveKeyInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function MoveKeyInput(el, options) {
         this.axes = [];

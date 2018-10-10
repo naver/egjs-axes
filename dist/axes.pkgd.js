@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.5.6
+@version 2.5.7
 
 All-in-one packaged file for ease use of '@egjs/axes' with below dependencies.
 NOTE: This is not an official distribution file and is only for user convenience.
@@ -399,7 +399,7 @@ NOTE: This is not an official distribution file and is only for user convenience
     }
 
     var AxisManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function AxisManager(axis, options) {
         var _this = this;
@@ -649,7 +649,7 @@ NOTE: This is not an official distribution file and is only for user convenience
     }
 
     var AnimationManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function AnimationManager(_a) {
         var options = _a.options,
@@ -903,7 +903,7 @@ NOTE: This is not an official distribution file and is only for user convenience
     }();
 
     var EventManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function EventManager(axes) {
         this.axes = axes;
@@ -1221,7 +1221,7 @@ NOTE: This is not an official distribution file and is only for user convenience
     }();
 
     var InterruptManager =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function InterruptManager(options) {
         this.options = options;
@@ -1247,7 +1247,7 @@ NOTE: This is not an official distribution file and is only for user convenience
     }();
 
     var InputObserver =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function InputObserver(_a) {
         var options = _a.options,
@@ -4351,7 +4351,7 @@ NOTE: This is not an official distribution file and is only for user convenience
      */
 
     var Axes =
-    /** @class */
+    /*#__PURE__*/
     function (_super) {
       __extends(Axes, _super);
 
@@ -4646,7 +4646,7 @@ NOTE: This is not an official distribution file and is only for user convenience
        */
 
 
-      Axes.VERSION = "2.5.6";
+      Axes.VERSION = "2.5.7";
       /**
        * @name eg.Axes.TRANSFORM
        * @desc Returns the transform attribute with CSS vendor prefixes.
@@ -4833,7 +4833,7 @@ NOTE: This is not an official distribution file and is only for user convenience
      */
 
     var PanInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function PanInput(el, options) {
         this.axes = [];
@@ -5098,7 +5098,7 @@ NOTE: This is not an official distribution file and is only for user convenience
      */
 
     var PinchInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function PinchInput(el, options) {
         this.axes = [];
@@ -5322,7 +5322,7 @@ NOTE: This is not an official distribution file and is only for user convenience
      */
 
     var WheelInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function WheelInput(el, options) {
         this.axes = [];
@@ -5490,7 +5490,7 @@ NOTE: This is not an official distribution file and is only for user convenience
      */
 
     var MoveKeyInput =
-    /** @class */
+    /*#__PURE__*/
     function () {
       function MoveKeyInput(el, options) {
         this.axes = [];
