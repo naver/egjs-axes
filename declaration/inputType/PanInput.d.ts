@@ -7,6 +7,9 @@ export interface PanInputOption {
     threshold?: number;
     hammerManagerOptions?: ObjectInterface;
 }
+export declare function getDirectionByAngle(angle: number, thresholdAngle: number): any;
+export declare function getNextOffset(speeds: number[], deceleration: number): number[];
+export declare function useDirection(checkType: any, direction: any, userDirection?: any): boolean;
 export declare class PanInput implements IInputType {
     options: PanInputOption;
     axes: string[];
