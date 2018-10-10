@@ -1,4 +1,4 @@
-import Hammer from "hammerjs";
+import Hammer from "@egjs/hammerjs";
 import Axes from "../../../src/Axes.ts";
 import {PinchInput} from "../../../src/inputType/PinchInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";

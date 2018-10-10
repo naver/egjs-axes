@@ -1,6 +1,8 @@
 import TestHelper from "./TestHelper";
 import Axes from "../../../src/Axes.ts";
-import {MoveKeyInput, KEYMAP} from "../../../src/inputType/MoveKeyInput";
+import {MoveKeyInput,
+  KEY_A, KEY_D, KEY_DOWN_ARROW, KEY_TOP_ARROW, KEY_LEFT_ARROW,
+  KEY_RIGHT_ARROW, KEY_S, KEY_UP_ARROW, KEY_W} from "../../../src/inputType/MoveKeyInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 
 describe("MoveKeyInput", () => {
@@ -123,7 +125,7 @@ describe("MoveKeyInput", () => {
       const change = sinon.spy();
       this.inst.connect([], this.input);
       this.inst.on("change", change);
-      TestHelper.key(this.el, "keydown", {keyCode: KEYMAP.RIGHT_ARROW}, () => {
+      TestHelper.key(this.el, "keydown", {keyCode: KEY_RIGHT_ARROW}, () => {
         expect(change.calledOnce).to.be.false;
         done();
       });
@@ -132,7 +134,7 @@ describe("MoveKeyInput", () => {
       const change = sinon.spy();
       this.inst.connect([], this.input);
       this.inst.on("change", change);
-      TestHelper.key(this.el, "keydown", {keyCode: KEYMAP.TOP_ARROW}, () => {
+      TestHelper.key(this.el, "keydown", {keyCode: KEY_TOP_ARROW}, () => {
         expect(change.calledOnce).to.be.false;
         done();
       });
@@ -171,7 +173,7 @@ describe("MoveKeyInput", () => {
 
     it("no event triggering when disconnected", (done) => {
         // Given
-        const rightArrayKeyCode = {keyCode: KEYMAP.RIGHT_ARROW};
+        const rightArrayKeyCode = {keyCode: KEY_RIGHT_ARROW};
         let changeTriggered = false;
 
         this.inst
@@ -208,7 +210,7 @@ describe("MoveKeyInput", () => {
     });
 
     // left
-    [KEYMAP.LEFT_ARROW, KEYMAP.A].forEach((keyCode, idx) => {
+    [KEY_LEFT_ARROW, KEY_A].forEach((keyCode, idx) => {
         it("should trigger 'change' event to left(keyCode: "+keyCode+")", (done) => {
             // Given
             let changeTriggered = false;
@@ -234,7 +236,7 @@ describe("MoveKeyInput", () => {
     });
 
     // right
-    [KEYMAP.RIGHT_ARROW, KEYMAP.D].forEach((keyCode, idx) => {
+    [KEY_RIGHT_ARROW, KEY_D].forEach((keyCode, idx) => {
         it("should trigger 'change' event to right(keyCode: "+keyCode+")", done => {
             // Given
             let changeTriggered = false;
@@ -273,7 +275,7 @@ describe("MoveKeyInput", () => {
     });
 
     // up
-    [KEYMAP.UP_ARROW, KEYMAP.W].forEach((keyCode, idx) => {
+    [KEY_UP_ARROW, KEY_W].forEach((keyCode, idx) => {
         it("should trigger 'change' event to up("+keyCode+")", (done) => {
             // Given
             let changeTriggered = false;
@@ -313,7 +315,7 @@ describe("MoveKeyInput", () => {
     });
 
     // down
-    [KEYMAP.DOWN_ARROW, KEYMAP.S].forEach((keyCode, idx) => {
+    [KEY_DOWN_ARROW, KEY_S].forEach((keyCode, idx) => {
         it("should trigger 'change' event to down("+keyCode+")", () => {
             // Given
             let changeTriggered = false;
@@ -382,9 +384,9 @@ describe("MoveKeyInput", () => {
         });
 
         // When
-        TestHelper.key(this.el, "keydown", {keyCode: KEYMAP.DOWN_ARROW}, () => {
+        TestHelper.key(this.el, "keydown", {keyCode: KEY_DOWN_ARROW}, () => {
           setTimeout(()=> {
-            TestHelper.key(this.el, "keyup", {keyCode: KEYMAP.keyCode}, () => {
+            TestHelper.key(this.el, "keyup", {keyCode: keyCode}, () => {
               setTimeout(()=> {
                 // Then
                 expect(eventLog).to.be.deep.equal(eventLogAnswer);

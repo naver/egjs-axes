@@ -1,4 +1,4 @@
-import {AxisManager} from "../../src/AxisManager";
+import {AxisManager, equal} from "../../src/AxisManager";
 
 
 describe("AxisManager", function() {
@@ -17,8 +17,8 @@ describe("AxisManager", function() {
       }
       
       // Then
-      expect(AxisManager.equal(target1, target2)).to.be.false;
-      expect(AxisManager.equal(target2, target1)).to.be.true;
+      expect(equal(target1, target2)).to.be.false;
+      expect(equal(target2, target1)).to.be.true;
     });
 
   });

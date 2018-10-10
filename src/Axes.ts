@@ -4,15 +4,19 @@ import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
 import { InputObserver } from "./InputObserver";
-import { TRANSFORM, DIRECTION } from "./const";
+import {
+	TRANSFORM,
+	DIRECTION_NONE, DIRECTION_LEFT, DIRECTION_RIGHT,
+	DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL
+} from "./const";
 import { IInputType } from "./inputType/InputType";
 
 export interface AxesOption {
-  easing?: (x: number) => number;
-  maximumDuration?: number;
-  minimumDuration?: number;
-  deceleration?: number;
-  interruptable?: boolean;
+	easing?: (x: number) => number;
+	maximumDuration?: number;
+	minimumDuration?: number;
+	deceleration?: number;
+	interruptable?: boolean;
 }
 
 /**
@@ -142,49 +146,49 @@ export default class Axes extends Component {
 	 * @constant
 	 * @type {Number}
 	 */
-	static DIRECTION_NONE = DIRECTION.DIRECTION_NONE;
+	static DIRECTION_NONE = DIRECTION_NONE;
 	/**
 	 * @name eg.Axes.DIRECTION_LEFT
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_LEFT = DIRECTION.DIRECTION_LEFT;
+	static DIRECTION_LEFT = DIRECTION_LEFT;
 	/**
 	 * @name eg.Axes.DIRECTION_RIGHT
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_RIGHT = DIRECTION.DIRECTION_RIGHT;
+	static DIRECTION_RIGHT = DIRECTION_RIGHT;
 	/**
 	 * @name eg.Axes.DIRECTION_UP
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_UP = DIRECTION.DIRECTION_UP;
+	static DIRECTION_UP = DIRECTION_UP;
 	/**
 	 * @name eg.Axes.DIRECTION_DOWN
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_DOWN = DIRECTION.DIRECTION_DOWN;
+	static DIRECTION_DOWN = DIRECTION_DOWN;
 	/**
 	 * @name eg.Axes.DIRECTION_HORIZONTAL
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_HORIZONTAL = DIRECTION.DIRECTION_HORIZONTAL;
+	static DIRECTION_HORIZONTAL = DIRECTION_HORIZONTAL;
 	/**
 	 * @name eg.Axes.DIRECTION_VERTICAL
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_VERTICAL = DIRECTION.DIRECTION_VERTICAL;
+	static DIRECTION_VERTICAL = DIRECTION_VERTICAL;
 	/**
 	 * @name eg.Axes.DIRECTION_ALL
 	 * @constant
 	 * @type {Number}
 	*/
-	static DIRECTION_ALL = DIRECTION.DIRECTION_ALL;
+	public static DIRECTION_ALL = DIRECTION_ALL;
 
 	public options: AxesOption;
 	public em: EventManager;
@@ -205,7 +209,7 @@ export default class Axes extends Component {
 				maximumDuration: Infinity,
 				minimumDuration: 0,
 				deceleration: 0.0006,
-			}, ...options
+			}, ...options,
 		};
 
 		this.itm = new InterruptManager(this.options);
@@ -435,4 +439,4 @@ export default class Axes extends Component {
 		this.disconnect();
 		this.em.destroy();
 	}
-};
+}

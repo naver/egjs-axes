@@ -1,9 +1,10 @@
 import { IInputType, IInputTypeObserver } from "./InputType";
+import { ObjectInterface } from "../const";
 export interface PinchInputOption {
     scale?: number;
     threshold?: number;
     inputType?: string[];
-    hammerManagerOptions?: Object;
+    hammerManagerOptions?: ObjectInterface;
 }
 export declare class PinchInput implements IInputType {
     options: PinchInputOption;

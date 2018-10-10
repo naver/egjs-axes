@@ -33,19 +33,19 @@ export interface WheelInputOption {
 export class WheelInput implements IInputType {
 	options: WheelInputOption;
 	axes: string[] = [];
-  element: HTMLElement = null;
+	element: HTMLElement = null;
 	private _isEnabled = false;
 	private _isHolded = false;
 	private _timer = null;
-  private observer: IInputTypeObserver;
+	private observer: IInputTypeObserver;
 	constructor(el, options?: WheelInputOption) {
 		this.element = $(el);
 		this.options = {
 			...{
 				scale: 1,
 				useNormalized: true,
-			}, ...options
-    };
+			}, ...options,
+		};
 		this.onWheel = this.onWheel.bind(this);
 	}
 
@@ -54,12 +54,12 @@ export class WheelInput implements IInputType {
 	}
 
 	connect(observer: IInputTypeObserver): IInputType {
-    this.dettachEvent();
+		this.dettachEvent();
 		this.attachEvent(observer);
 		return this;
 	}
 
-  disconnect() {
+	disconnect() {
 		this.dettachEvent();
 		return this;
 	}
@@ -74,11 +74,11 @@ export class WheelInput implements IInputType {
 		this.element = null;
 	}
 
-  private onWheel(event) {
-    if (!this._isEnabled) {
-      return;
-    }
-    event.preventDefault();
+	private onWheel(event) {
+		if (!this._isEnabled) {
+			return;
+		}
+		event.preventDefault();
 
 		if (event.deltaY === 0) {
 			return;
@@ -100,23 +100,23 @@ export class WheelInput implements IInputType {
 				this.observer.release(this, event, toAxis(this.axes, [0]));
 			}
 		}, 50);
-  }
+	}
 
 	private attachEvent(observer: IInputTypeObserver) {
-    this.observer = observer;
-    this.element.addEventListener("wheel", this.onWheel);
-    this._isEnabled = true;
+		this.observer = observer;
+		this.element.addEventListener("wheel", this.onWheel);
+		this._isEnabled = true;
 	}
 
 	private dettachEvent() {
-    this.element.removeEventListener("wheel", this.onWheel);
-    this._isEnabled = false;
+		this.element.removeEventListener("wheel", this.onWheel);
+		this._isEnabled = false;
 		this.observer = null;
 
 		if (this._timer) {
 			clearTimeout(this._timer);
 			this._timer = null;
-		};
+		}
 	}
 
 	/**
@@ -126,7 +126,7 @@ export class WheelInput implements IInputType {
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	enable() {
-    this._isEnabled = true;
+		this._isEnabled = true;
 		return this;
 	}
 	/**
@@ -136,7 +136,7 @@ export class WheelInput implements IInputType {
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	disable() {
-    this._isEnabled = false;
+		this._isEnabled = false;
 		return this;
 	}
 	/**
@@ -147,5 +147,5 @@ export class WheelInput implements IInputType {
 	 */
 	isEnable() {
 		return this._isEnabled;
-  }
-};
+	}
+}

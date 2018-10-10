@@ -1,10 +1,14 @@
 import { IInputType } from "./inputType/InputType";
-import Coordinate from "./Coordinate";
-import { Axis, AxisManager } from "./AxisManager";
+import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from "./Coordinate";
+import { Axis, AxisManager, equal } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { requestAnimationFrame, cancelAnimationFrame } from "./utils";
 import { AxesOption } from "./Axes";
+
+function minMax(value: number, min: number, max: number): number {
+	return Math.max(Math.min(value, max), min);
+}
 
 export interface AnimationParam {
 	depaPos: Axis;
@@ -16,7 +20,7 @@ export interface AnimationParam {
 	done?: () => void;
 	startTime?: number;
 	inputEvent?;
-	input?: IInputType,
+	input?: IInputType;
 }
 
 export class AnimationManager {
@@ -27,11 +31,7 @@ export class AnimationManager {
 	public em: EventManager;
 	public axm: AxisManager;
 
-	static getDuration(duration: number, min: number, max: number): number {
-		return Math.max(Math.min(duration, max), min);
-	}
-
-	constructor({options, itm, em, axm}) {
+	constructor({ options, itm, em, axm }) {
 		this.options = options;
 		this.itm = itm;
 		this.em = em;
@@ -45,13 +45,13 @@ export class AnimationManager {
 		} else {
 			const durations: Axis = this.axm.map(
 				destPos,
-				(v, k) => Coordinate.getDuration(
+				(v, k) => getDuration(
 					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
-					this.options.deceleration)
+					this.options.deceleration),
 			);
 			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
 		}
-		return AnimationManager.getDuration(
+		return minMax(
 			duration,
 			this.options.minimumDuration,
 			this.options.maximumDuration);
@@ -64,7 +64,7 @@ export class AnimationManager {
 		return {
 			depaPos,
 			destPos,
-			duration: AnimationManager.getDuration(
+			duration: minMax(
 				duration,
 				this.options.minimumDuration,
 				this.options.maximumDuration),
@@ -72,7 +72,7 @@ export class AnimationManager {
 			inputEvent,
 			input: option && option.input || null,
 			isTrusted: !!inputEvent,
-			done: this.animationEnd
+			done: this.animationEnd,
 		};
 	}
 
@@ -80,7 +80,7 @@ export class AnimationManager {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
-				(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]));
+				(v, k, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
 				this.em.triggerChange(pos, option, !!option);
 			}
@@ -116,11 +116,11 @@ export class AnimationManager {
 		// for Circular
 		const circularTargets = this.axm.filter(
 			this.axm.get(),
-			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular as boolean[])
+			(v, k, opt) => isCircularable(v, opt.range, opt.circular as boolean[]),
 		);
 		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
 			circularTargets,
-			(v, k, opt) => Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[])
+			(v, k, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]),
 		));
 		this.itm.setInterrupt(false);
 		this.em.triggerAnimationEnd(!!beforeParam);
@@ -141,7 +141,7 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				if (self.frame(info) >= 1) {
-					if (!AxisManager.equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
+					if (!equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
 						self.em.triggerChange(param.destPos);
 					}
 					complete();
@@ -158,7 +158,7 @@ export class AnimationManager {
 	getUserControll(param: AnimationParam) {
 		const userWish = param.setTo();
 		userWish.destPos = this.axm.get(userWish.destPos);
-		userWish.duration = AnimationManager.getDuration(
+		userWish.duration = minMax(
 			userWish.duration,
 			this.options.minimumDuration,
 			this.options.maximumDuration);
@@ -176,11 +176,11 @@ export class AnimationManager {
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
 			userWish.destPos,
-			(v, k, opt) => Coordinate.isCircularable(v, opt.range, opt.circular as boolean[]))) {
+			(v, k, opt) => isCircularable(v, opt.range, opt.circular as boolean[]))) {
 			console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
 
-		if (retTrigger && !AxisManager.equal(userWish.destPos, depaPos)) {
+		if (retTrigger && !equal(userWish.destPos, depaPos)) {
 			const inputEvent = option && option.event || null;
 			this.animateLoop({
 				depaPos,
@@ -201,7 +201,7 @@ export class AnimationManager {
 		let toPos: Axis = param.depaPos;
 		toPos = this.axm.map(toPos, (v, k, opt) => {
 			v += param.delta[k] * easingPer;
-			return Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
+			return getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 		});
 		this.em.triggerChange(toPos);
 		return easingPer;
@@ -216,7 +216,7 @@ export class AnimationManager {
 		this.grab(axes);
 		const orgPos: Axis = this.axm.get(axes);
 
-		if (AxisManager.equal(pos, orgPos)) {
+		if (equal(pos, orgPos)) {
 			return this;
 		}
 		this.itm.setInterrupt(true);
@@ -227,13 +227,13 @@ export class AnimationManager {
 
 		movedPos = this.axm.map(movedPos, (v, k, opt) => {
 			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
-				return duration > 0 ? v : Coordinate.getCirculatedPos(v, opt.range, opt.circular as boolean[]);
+				return duration > 0 ? v : getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 			} else {
-				return Coordinate.getInsidePosition(v, opt.range, opt.circular as boolean[]);
+				return getInsidePosition(v, opt.range, opt.circular as boolean[]);
 			}
 		});
 
-		if (AxisManager.equal(movedPos, orgPos)) {
+		if (equal(movedPos, orgPos)) {
 			return this;
 		}
 
@@ -250,7 +250,7 @@ export class AnimationManager {
 	setBy(pos: Axis, duration = 0) {
 		return this.setTo(
 			this.axm.map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),
-			duration
+			duration,
 		);
 	}
-};
+}

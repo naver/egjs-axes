@@ -1,4 +1,4 @@
-import Hammer from "hammerjs";
+import {TouchMouseInput, PointerEventInput,TouchInput , MouseInput} from "@egjs/hammerjs";
 import {createHammer, convertInputType} from "../../../src/inputType/InputType";
 import {DIRECTION} from "../../../src/const";
 import InputInjector from "inject-loader!../../../src/inputType/InputType";
@@ -14,21 +14,21 @@ describe("InputType", () => {
       // When
       let inputType = ["pointer", "touch", "mouse" ];
       // Then
-      expect(Hammer.TouchMouseInput).to.be.ok;
-      expect(Hammer.PointerEventInput).to.be.ok;
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.PointerEventInput);
+      expect(TouchMouseInput).to.be.ok;
+      expect(PointerEventInput).to.be.ok;
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(PointerEventInput);
       MockInputInjector.SUPPORT_POINTER_EVENTS = false;
       
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchMouseInput);
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(TouchMouseInput);
       // When
       inputType = [ "touch" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.TouchInput);
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(TouchInput);
 
     // When
       inputType = [ "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
 
       // When
       inputType = [ ];
@@ -45,7 +45,7 @@ describe("InputType", () => {
       // When
       let inputType = [ "touch", "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
 
       // When
       inputType = [ "touch" ];
@@ -55,7 +55,7 @@ describe("InputType", () => {
       // When
       inputType = [ "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(Hammer.MouseInput);
+      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
 
       // When
       inputType = [ ];

@@ -1,4 +1,4 @@
-import * as Hammer from "hammerjs";
+import {Manager, PointerEventInput, TouchMouseInput, TouchInput, MouseInput} from "@egjs/hammerjs";
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
 
@@ -33,16 +33,16 @@ export function toAxis(source: string[], offset: number[]): Axis {
 		}
 		return acc;
 	}, {});
-};
+}
 export function createHammer(element: HTMLElement, options) {
 	try {
 		// create Hammer
-		return new Hammer.Manager(element, { ...options });
+		return new Manager(element, { ...options });
 	} catch (e) {
 		return null;
 	}
-};
-export function convertInputType(inputType: string[] = []) {
+}
+export function convertInputType(inputType: string[] = []): any {
 	let hasTouch = false;
 	let hasMouse = false;
 	let hasPointer = false;
@@ -50,19 +50,19 @@ export function convertInputType(inputType: string[] = []) {
 	inputType.forEach(v => {
 		switch (v) {
 			case "mouse": hasMouse = true; break;
-			case "touch": hasTouch = SUPPORT_TOUCH;break;
+			case "touch": hasTouch = SUPPORT_TOUCH; break;
 			case "pointer": hasPointer = SUPPORT_POINTER_EVENTS;
 			// no default
 		}
 	});
 	if (hasPointer) {
-		return Hammer.PointerEventInput;
+		return PointerEventInput;
 	} else if (hasTouch && hasMouse) {
-		return Hammer.TouchMouseInput;
+		return TouchMouseInput;
 	} else if (hasTouch) {
-		return Hammer.TouchInput;
+		return TouchInput;
 	} else if (hasMouse) {
-		return Hammer.MouseInput;
+		return MouseInput;
 	}
 	return null;
 }

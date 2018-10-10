@@ -12,7 +12,7 @@ export declare class EventManager {
     triggerHold(pos: Axis, option: ChangeEventOption): void;
     triggerRelease(param: AnimationParam): void;
     triggerChange(pos: Axis, option?: ChangeEventOption, holding?: boolean): void;
-    triggerAnimationStart(param: AnimationParam): Boolean;
+    triggerAnimationStart(param: AnimationParam): boolean;
     triggerAnimationEnd(isTrusted?: boolean): void;
     triggerFinish(isTrusted?: boolean): void;
     private createUserControll;

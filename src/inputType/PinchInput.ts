@@ -1,16 +1,16 @@
 import { InputObserver } from "./../InputObserver";
-import * as Hammer from "hammerjs";
+import { Manager, Pinch } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, createHammer, IInputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";
+import { ObjectInterface } from "../const";
 
 export interface PinchInputOption {
 	scale?: number;
 	threshold?: number;
 	inputType?: string[];
-	hammerManagerOptions?: Object;
+	hammerManagerOptions?: ObjectInterface;
 }
-
 
 /**
  * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
@@ -40,7 +40,7 @@ export class PinchInput implements IInputType {
 	options: PinchInputOption;
 	axes: string[] = [];
 	hammer = null;
-  element: HTMLElement = null;
+	element: HTMLElement = null;
 
 	private observer: IInputTypeObserver;
 	private _base: number = null;
@@ -56,7 +56,7 @@ export class PinchInput implements IInputType {
 		 * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
 		 * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
 		 */
-		if (typeof Hammer === "undefined") {
+		if (typeof Manager === "undefined") {
 			throw new Error(`The Hammerjs must be loaded before eg.Axes.PinchInput.\nhttp://hammerjs.github.io/`);
 		}
 		this.element = $(el);
@@ -76,7 +76,7 @@ export class PinchInput implements IInputType {
 					},
 				},
 			},
-			...options
+			...options,
 		};
 		this.onPinchStart = this.onPinchStart.bind(this);
 		this.onPinchMove = this.onPinchMove.bind(this);
@@ -88,7 +88,7 @@ export class PinchInput implements IInputType {
 	}
 
 	connect(observer: IInputTypeObserver): IInputType {
-		const hammerOption = {threshold: this.options.threshold};
+		const hammerOption = { threshold: this.options.threshold };
 
 		if (this.hammer) { // for sharing hammer instance.
 			// hammer remove previous PinchRecognizer.
@@ -98,20 +98,22 @@ export class PinchInput implements IInputType {
 			let keyValue: string = this.element[UNIQUEKEY];
 			if (!keyValue) {
 				keyValue = String(Math.round(Math.random() * new Date().getTime()));
-			}			
+			}
 			const inputClass = convertInputType(this.options.inputType);
 			if (!inputClass) {
 				throw new Error("Wrong inputType parameter!");
 			}
 			this.hammer = createHammer(
 				this.element,
-				{ ...{
-					inputClass,
-				}, ...this.options.hammerManagerOptions}
+				{
+					...{
+						inputClass,
+					}, ...this.options.hammerManagerOptions,
+				},
 			);
 			this.element[UNIQUEKEY] = keyValue;
 		}
-		this.pinchRecognizer = new Hammer.Pinch(hammerOption);
+		this.pinchRecognizer = new Pinch(hammerOption);
 		this.hammer.add(this.pinchRecognizer);
 		this.attachEvent(observer);
 		return this;
@@ -164,25 +166,25 @@ export class PinchInput implements IInputType {
 	private onPinchEnd(event) {
 		const offset = this.getOffset(event.scale, this._prev);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
-    	this.observer.release(this, event, toAxis(this.axes, [0]), 0);
+		this.observer.release(this, event, toAxis(this.axes, [0]), 0);
 		this._base = null;
-    	this._prev = null;
+		this._prev = null;
 	}
 	private getOffset(pinchScale: number, prev: number = 1): number {
-    	return this._base * (pinchScale - prev) * this.options.scale;
+		return this._base * (pinchScale - prev) * this.options.scale;
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
 		this.observer = observer;
 		this.hammer.on("pinchstart", this.onPinchStart)
-		.on("pinchmove", this.onPinchMove)
-		.on("pinchend", this.onPinchEnd);
+			.on("pinchmove", this.onPinchMove)
+			.on("pinchend", this.onPinchEnd);
 	}
 
 	private dettachEvent() {
 		this.hammer.off("pinchstart", this.onPinchStart)
-		.off("pinchmove", this.onPinchMove)
-		.off("pinchend", this.onPinchEnd);
+			.off("pinchmove", this.onPinchMove)
+			.off("pinchend", this.onPinchEnd);
 		this.observer = null;
 		this._prev = null;
 	}
@@ -217,4 +219,3 @@ export class PinchInput implements IInputType {
 		return !!(this.hammer && this.hammer.get("pinch").options.enable);
 	}
 }
-

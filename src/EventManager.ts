@@ -3,8 +3,8 @@ import { Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 
 export interface ChangeEventOption {
-	input: IInputType,
-	event,
+	input: IInputType;
+	event;
 }
 
 export class EventManager {
@@ -45,7 +45,8 @@ export class EventManager {
 		});
 	}
 
-	/** Specifies the coordinates to move after the 'change' event. It works when the holding value of the change event is true.
+	/**
+	 * Specifies the coordinates to move after the 'change' event. It works when the holding value of the change event is true.
 	 * @ko 'change' 이벤트 이후 이동할 좌표를 지정한다. change이벤트의 holding 값이 true일 경우에 동작한다
 	 * @name set
    * @function
@@ -210,7 +211,7 @@ export class EventManager {
 	 *   event.setTo({x: 10}, 2000);
 	 * });
 	 */
-	triggerAnimationStart(param: AnimationParam): Boolean {
+	triggerAnimationStart(param: AnimationParam): boolean {
 		param.setTo = this.createUserControll(param.destPos, param.duration);
 		return this.axes.trigger("animationStart", param);
 	}
@@ -269,9 +270,9 @@ export class EventManager {
 		// to controll
 		const userControl = {
 			destPos: { ...pos },
-			duration: duration
+			duration,
 		};
-		return function (toPos?: Axis, userDuration?: number): { destPos: Axis, duration: number } {
+		return (toPos?: Axis, userDuration?: number): { destPos: Axis, duration: number } => {
 			toPos && (userControl.destPos = { ...toPos });
 			(userDuration !== undefined) && (userControl.duration = userDuration);
 			return userControl;
@@ -285,4 +286,4 @@ export class EventManager {
 	destroy() {
 		this.axes.off();
 	}
-};
+}

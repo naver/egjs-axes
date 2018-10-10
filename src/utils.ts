@@ -1,6 +1,6 @@
 declare var jQuery: any;
 
-export function toArray(nodes: NodeList): Array<HTMLElement> {
+export function toArray(nodes: NodeList): HTMLElement[] {
 	// const el = Array.prototype.slice.call(nodes);
 	// for IE8
 	const el = [];
@@ -47,13 +47,12 @@ export function $(param, multi = false) {
 	return el;
 }
 
-
 let raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 let caf = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 if (raf && !caf) {
 	const keyInfo = {};
 	const oldraf = raf;
-	raf = function(callback) {
+	raf = (callback: FrameRequestCallback) => {
 		function wrapCallback(timestamp) {
 			if (keyInfo[key]) {
 				callback(timestamp);
@@ -63,12 +62,12 @@ if (raf && !caf) {
 		keyInfo[key] = true;
 		return key;
 	};
-	caf = function(key) {
+	caf = (key: number) => {
 		delete keyInfo[key];
 	};
 } else if (!(raf && caf)) {
-	raf = function(callback) {
-		return window.setTimeout(function() {
+	raf = (callback: FrameRequestCallback) => {
+		return window.setTimeout(() => {
 			callback(window.performance && window.performance.now && window.performance.now() || new Date().getTime());
 		}, 16);
 	};
@@ -82,7 +81,7 @@ if (raf && !caf) {
  */
 export function requestAnimationFrame(fp) {
 	return raf(fp);
-};
+}
 /**
 * A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
 * @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
@@ -91,4 +90,4 @@ export function requestAnimationFrame(fp) {
 */
 export function cancelAnimationFrame(key) {
 	caf(key);
-};
+}

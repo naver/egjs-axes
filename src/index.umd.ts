@@ -9,4 +9,4 @@ Axes.PinchInput = PinchInput;
 Axes.WheelInput = WheelInput;
 Axes.MoveKeyInput = MoveKeyInput;
 
-export = Axes;
+export default Axes;
