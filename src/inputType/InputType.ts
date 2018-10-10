@@ -42,7 +42,7 @@ export function createHammer(element: HTMLElement, options) {
 		return null;
 	}
 }
-export function convertInputType(inputType: string[] = []) {
+export function convertInputType(inputType: string[] = []): any {
 	let hasTouch = false;
 	let hasMouse = false;
 	let hasPointer = false;

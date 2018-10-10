@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
     "target": "es5",
-	  "module": "es2015",
+    "module": "es2015",
     "esModuleInterop": false,
-		"lib": ["es2015", "dom"],
+    "lib": [
+      "es2015",
+      "dom"
+    ],
     "sourceMap": true,
     "outDir": "outjs",
     "skipLibCheck": true,

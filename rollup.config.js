@@ -8,6 +8,21 @@ const version = require("./package.json").version;
 var merge = require("./config/merge");
 var banner = require("./config/banner");
 
+var uglifyCode = uglify({
+  sourcemap: true,
+  output: {
+    comments: function (node, comment) {
+      const text = comment.value;
+      const type = comment.type;
+
+      if (type === "comment2") {
+        // multiline comment
+        return /@egjs\/axes/.test(text);
+      }
+      return false;
+    }
+  }
+});
 var plugin = typescript({
   "module": "es2015",
   "target": "es3",
@@ -18,12 +33,13 @@ var plugin = typescript({
   "moduleResolution": "node",
 });
 var defaultConfig = {
-  plugins: [plugin, PrototypeMinify({ sourcemap: true }), replace({"#__VERSION__#": version, delimiters: ["", ""]})],
+  input: "src/index.umd.ts",
+  plugins: [plugin, PrototypeMinify({ sourcemap: true }), replace({ "#__VERSION__#": version, delimiters: ["", ""] })],
   output: {
     banner: banner.banner,
-    format: "es",
     freeze: false,
-    exports: "named",
+    format: "umd",
+    exports: "default",
     interop: false,
     sourcemap: true,
   }
@@ -33,49 +49,47 @@ var entries = [
   {
     input: "src/index.ts",
     output: {
+      format: "es",
+      exports: "named",
       file: "./dist/axes.esm.js",
     }
   },
   {
-    input: "src/index.ts",
+    external: ["@egjs/hammerjs", "@egjs/component"],
     output: {
-      format: "cjs",
-      file: "./dist/axes.common.js",
+      name: "eg.Axes",
+      file: "./dist/axes.js",
+      globals: {
+        "@egjs/hammerjs": "Hammer",
+        "@egjs/component": "eg.Component",
+      },
     }
   },
   {
-    input: "src/index.umd.ts",
+    external: ["@egjs/hammerjs", "@egjs/component"],
+    plugins: [uglifyCode],
+    output: {
+      name: "eg.Axes",
+      file: "./dist/axes.min.js",
+      globals: {
+        "@egjs/hammerjs": "Hammer",
+        "@egjs/component": "eg.Component",
+      },
+    }
+  },
+  {
     plugins: [resolve()],
     output: {
       banner: banner.pkgd,
-      format: "umd",
       name: "eg.Axes",
-      exports: "default",
       file: "./dist/axes.pkgd.js",
     }
   },
   {
-    input: "src/index.umd.ts",
-    plugins: [resolve(), uglify({
-      sourcemap: true,
-      output: {
-        comments: function (node, comment) {
-          const text = comment.value;
-          const type = comment.type;
-
-          if (type === "comment2") {
-            // multiline comment
-            return /@egjs\/axes/.test(text);
-          }
-          return false;
-        }
-      }
-    })],
+    plugins: [resolve(), uglifyCode],
     output: {
       banner: banner.pkgd,
-      format: "umd",
       name: "eg.Axes",
-      exports: "default",
       file: "./dist/axes.pkgd.min.js",
     }
   },

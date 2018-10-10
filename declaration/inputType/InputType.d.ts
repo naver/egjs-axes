@@ -1,3 +1,4 @@
+/// <reference types="hammerjs" />
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
 export interface IInputType {
@@ -23,5 +24,5 @@ export declare const SUPPORT_POINTER_EVENTS: boolean;
 export declare const SUPPORT_TOUCH: boolean;
 export declare const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export declare function toAxis(source: string[], offset: number[]): Axis;
-export declare function createHammer(element: HTMLElement, options: any): any;
+export declare function createHammer(element: HTMLElement, options: any): HammerManager;
 export declare function convertInputType(inputType?: string[]): any;
