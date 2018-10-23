@@ -9,8 +9,8 @@
 	"scripts": {
 		"start": "webpack-dev-server --open",
 		"build:webpack": "webpack --env production  && webpack --env packaged && npm run declaration",
-		"build": "rollup -c && npm run declaration",
-		"test": "test:node && karma start",
+		"build": "rollup -c && npm run declaration && npm run test:node",
+		"test": "karma start",
 		"test:node": "node ./dist/axes.pkgd.js",
 		"test:chrome": "karma start --chrome",
 		"lint": "tslint -c tslint.json -p tsconfig.json",
