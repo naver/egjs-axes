@@ -1,3 +1,5 @@
+import {window} from "./browser";
+
 declare var jQuery: any;
 
 export function toArray(nodes: NodeList): HTMLElement[] {

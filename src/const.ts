@@ -23,6 +23,9 @@ export {
 } from "@egjs/hammerjs";
 
 export const TRANSFORM = (() => {
+	if (typeof document === "undefined") {
+		return "";
+	}
 	const bodyStyle = (document.head || document.getElementsByTagName("head")[0]).style;
 	const target = ["transform", "webkitTransform", "msTransform", "mozTransform"];
 	for (let i = 0, len = target.length; i < len; i++) {

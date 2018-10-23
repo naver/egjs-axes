@@ -1,6 +1,7 @@
 import {Manager, PointerEventInput, TouchMouseInput, TouchInput, MouseInput} from "@egjs/hammerjs";
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
+import { window } from "../browser";
 
 export interface IInputType {
 	axes: string[];
