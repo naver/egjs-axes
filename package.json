@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/axes",
-	"version": "2.5.7-snapshot",
+	"version": "2.5.8",
 	"description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
 	"sideEffects": false,
 	"main": "dist/axes.js",
@@ -42,7 +42,7 @@
 	"homepage": "https://github.com/naver/egjs-axes",
 	"dependencies": {
 		"@egjs/component": "^2.1.2",
-		"@egjs/hammerjs": "^2.0.11"
+		"@egjs/hammerjs": "^2.0.12"
 	},
 	"devDependencies": {
 		"@egjs/common-demo": "github:naver/egjs#common-demo",
