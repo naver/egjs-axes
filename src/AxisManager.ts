@@ -71,7 +71,7 @@ export class AxisManager {
 	}
 	moveTo(pos: Axis): { [key: string]: Axis } {
 		const delta = this.map(this._pos, (v, key) => {
-			return pos[key] ? pos[key] - this._pos[key] : 0;
+			return key in pos ? pos[key] - this._pos[key] : 0;
 		});
 
 		this.set(pos);

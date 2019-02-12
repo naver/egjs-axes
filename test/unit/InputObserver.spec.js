@@ -5,6 +5,7 @@ import {AxisManager} from "../../src/AxisManager";
 import {InterruptManager} from "../../src/InterruptManager";
 import {EventManager} from "../../src/EventManager";
 import Component from "@egjs/component";
+import { doesNotThrow } from "assert";
 
 describe("InputObserver", function () {
   describe("observer test", function() {
@@ -73,6 +74,28 @@ describe("InputObserver", function () {
       
       // Then
       expect(this.inst.get(inputType)).to.be.eql({"y": 200});
+    });
+    it("should check delta that there is no bounce and the position is out", done => {
+      // Given
+      const inputType = {
+        axes: ["y"]
+      };
+      let y = 50;
+      this.axes.setTo({y: 50}, 0);
+      this.axes.on("change", ({pos, delta}) => {
+        // Then
+        // Find the value as approximated as possible due to floating decimal 11point problems.
+        expect(delta.y + y).to.be.closeTo(pos.y, 0.0000001);
+
+        y = pos.y;
+      });
+      this.axes.on("finish", () => {
+        done();
+      });
+
+      // When
+      // The last y position should be zero and neither should Delta.
+      this.axes.setTo({y: -100}, 300);
     });
   });
 });
