@@ -241,6 +241,7 @@ export class AnimationManager {
 			this.animateTo(movedPos, duration);
 		} else {
 			this.em.triggerChange(movedPos);
+			this.em.triggerFinish(false);
 			this.itm.setInterrupt(false);
 		}
 

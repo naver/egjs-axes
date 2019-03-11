@@ -146,6 +146,26 @@ describe("AnimationManager", function () {
     afterEach(() => {
       this.component.off();
     });
+    it("should check 'setTo' method(duration: 0)", () => {
+      // Given
+      const changeHandler = sinon.spy();
+      const finishHandler = sinon.spy();
+      this.component.on({
+        "change": changeHandler,
+        "finish": finishHandler,
+      });
+
+      // When
+      this.inst.setTo({
+        x: 100,
+        y: 200
+      }, 0);
+
+      // Then
+      expect(changeHandler.calledOnce).to.be.true;
+      expect(finishHandler.calledOnce).to.be.true;
+      expect(this.inst.axm.get()).to.be.eql({x: 100, y: 200, z: -100});
+    });
     it("should check 'setTo' method (outside)", () => {
       // Given
       const depaPos = this.inst.axm.get();
