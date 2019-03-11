@@ -2,11 +2,18 @@
  * Copyright (c) NAVER Corp.
  */
 var log = document.getElementById("log");
+var isStop = false;
 function addLog(msg) {
     log.innerHTML = msg + "\n" + log.innerHTML;
 }
 document.getElementById("clear").addEventListener("click", function(e) {
     log.innerHTML = "";
+});
+
+document.getElementById("stop").addEventListener("click", function(e) {
+	setTimeout(function () {
+		isStop = true;
+	}, 1000);
 });
 
 var dot = document.getElementById("dot");
@@ -44,11 +51,16 @@ var axes = new eg.Axes({
 	},
 	"change" : function(evt) {
 		var pos = evt.pos;
-		console.log(pos);
+		console.log(evt);
 		if(evt.holding && evt.delta.z) {
 			areaContent.style[eg.Axes.TRANSFORM] = "scale(" +  evt.pos.z + ")";
 		} else {
 			dot.style[eg.Axes.TRANSFORM] = "translate(" + pos.x + "px," + pos.y + "px)";
+		}
+
+		if (isStop) {
+			isStop = false;
+			evt.stop();
 		}
 	}
 });
