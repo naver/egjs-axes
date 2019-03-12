@@ -1,4 +1,3 @@
-import Axes from "./Axes";
 import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
@@ -8,13 +7,14 @@ import { AxesOption } from "./Axes";
 import { getCirculatedPos, isOutside, getInsidePosition } from "./Coordinate";
 
 export class InputObserver implements IInputTypeObserver {
-	isOutside = false;
-	moveDistance: Axis = null;
 	public options: AxesOption;
 	private itm: InterruptManager;
 	private em: EventManager;
 	private axm: AxisManager;
 	private am: AnimationManager;
+	private isOutside = false;
+	private moveDistance: Axis = null;
+	private isStopped = false;
 	constructor({ options, itm, em, axm, am }) {
 		this.options = options;
 		this.itm = itm;
@@ -59,6 +59,7 @@ export class InputObserver implements IInputTypeObserver {
 			input,
 			event,
 		};
+		this.isStopped = false;
 		this.itm.setInterrupt(true);
 		this.am.grab(input.axes, changeOption);
 		!this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
@@ -66,7 +67,7 @@ export class InputObserver implements IInputTypeObserver {
 		this.moveDistance = this.axm.get(input.axes);
 	}
 	change(input: IInputType, event, offset: Axis) {
-		if (!this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
+		if (this.isStopped || !this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
 			return;
 		}
 		const depaPos: Axis = this.axm.get(input.axes);
@@ -84,16 +85,19 @@ export class InputObserver implements IInputTypeObserver {
 		}
 		destPos = this.atOutside(destPos);
 
-		this.em.triggerChange(destPos, {
+		const isCanceled = !this.em.triggerChange(destPos, {
 			input,
 			event,
 		}, true);
+
+		if (isCanceled) {
+			this.isStopped = true;
+			this.moveDistance = null;
+			this.am.finish(false);
+		}
 	}
 	release(input: IInputType, event, offset: Axis, inputDuration?: number) {
-		if (!this.itm.isInterrupting()) {
-			return;
-		}
-		if (!this.moveDistance) {
+		if (this.isStopped || !this.itm.isInterrupting() || !this.moveDistance) {
 			return;
 		}
 		const pos: Axis = this.axm.get(input.axes);

@@ -397,7 +397,151 @@ describe("Axes", function () {
       }
       cleanup();
     });
+    const testNormalBehavior = done => {
+      // Given
+      const holdHandler = sinon.spy();
+      const changeHandler = sinon.spy();
+      const releaseHandler = sinon.spy();
+      const finishHandler = sinon.spy();
+      const animationStartHandler = sinon.spy();
+      const animationEndHandler = sinon.spy();
+      this.inst.off().on({
+          "hold": holdHandler,
+          "change": changeHandler,
+          "release": releaseHandler,
+          "finish": finishHandler,
+          "animationStart": animationStartHandler,
+          "animationEnd": animationEndHandler
+      });
 
+      // When
+      Simulator.gestures.pan(this.el, {
+          pos: [0, 0],
+          deltaX: 100,
+          deltaY: 100,
+          duration: 1000,
+          easing: "linear"
+      }, () => {
+          // Then
+          // for test custom event
+          setTimeout(() => {
+            expect(holdHandler.calledOnce).to.be.true;
+            expect(changeHandler.called).to.be.true;
+            expect(releaseHandler.calledOnce).to.be.true;
+            expect(finishHandler.calledOnce).to.be.true;
+            expect(animationStartHandler.calledOnce).to.be.true;
+            expect(animationEndHandler.calledOnce).to.be.true;
+            done();
+          }, 1000);
+      });
+    }
+    it("should check normal behavior test after user invokes 'stop' from change event", (done) => {
+      // Given
+      let changeCount = 0;
+      let pos = 0;
+      const changeHandler = sinon.spy(e => {
+        ++changeCount;
+
+        if (changeCount === 5) {
+          // current position
+          pos = e.pos;
+          // hold => change * 5 (stop) => finish
+          e.stop();
+        }
+      });
+      const holdHandler = sinon.spy();
+      const releaseHandler = sinon.spy();
+      const finishHandler = sinon.spy();
+      const animationStartHandler = sinon.spy();
+      const animationEndHandler = sinon.spy();
+      this.inst.on({
+        "hold": holdHandler,
+        "change": changeHandler,
+        "release": releaseHandler,
+        "finish": finishHandler,
+        "animationStart": animationStartHandler,
+        "animationEnd": animationEndHandler
+      });
+
+      // When
+      Simulator.gestures.pan(this.el, {
+          pos: [0, 0],
+          deltaX: 100,
+          deltaY: 100,
+          duration: 1000,
+          easing: "linear"
+      }, () => {
+        // Then
+        setTimeout(() => {
+          // The stopped position is the current position.
+          expect(pos).to.be.deep.equals(this.inst.get());
+          expect(holdHandler.calledOnce).to.be.true;
+          expect(changeCount).to.be.equals(5);
+          expect(changeHandler.callCount).to.be.equals(changeCount);
+          expect(finishHandler.calledOnce).to.be.true;
+
+          // not called events
+          expect(releaseHandler.callCount).to.be.equals(0);
+          expect(animationStartHandler.callCount).to.be.equals(0);
+          expect(animationEndHandler.callCount).to.be.equals(0);
+          testNormalBehavior(done);
+        }, 1000);
+      });
+    });
+    it("should check normal behavior test after user invokes 'stop' from change event(after animationStart)", (done) => {
+      // Given
+      const holdHandler = sinon.spy();
+      let changeCount = 0;
+      let pos = 0;
+      const releaseHandler = sinon.spy();
+      const finishHandler = sinon.spy();
+      const animationStartHandler = sinon.spy();
+      const animationEndHandler = sinon.spy();
+      const changeHandler = sinon.spy(e => {
+        if (animationStartHandler.calledOnce) {
+          ++changeCount;
+
+          if (changeCount === 5) {
+            // current position
+            pos = e.pos;
+            // hold => change * 5 (stop) => finish
+            e.stop();
+          }
+        }
+      });
+      this.inst.on({
+        "hold": holdHandler,
+        "change": changeHandler,
+        "release": releaseHandler,
+        "finish": finishHandler,
+        "animationStart": animationStartHandler,
+        "animationEnd": animationEndHandler
+      });
+
+      const inst = this.inst;
+      // When
+      Simulator.gestures.pan(this.el, {
+          pos: [0, 0],
+          deltaX: 100,
+          deltaY: 100,
+          duration: 1000,
+          easing: "linear"
+      }, () => {
+        // Then
+        setTimeout(() => {
+          // The stopped position is the current position.
+          expect(pos).to.be.deep.equals(inst.get());
+          expect(holdHandler.called).to.be.true;
+          expect(changeCount).to.be.equals(5);
+          expect(releaseHandler.calledOnce).to.be.true;
+          expect(animationStartHandler.calledOnce).to.be.true;
+          expect(finishHandler.calledOnce).to.be.true;
+          // not called events
+          expect(animationEndHandler.callCount).to.be.equals(0);
+          testNormalBehavior(done);
+        }, 1000);
+      });
+    });
     it("should check interrupt test when user's action is fast", (done) => {
       const holdHandler = sinon.spy(this.preventedFn);
       const changeHandler = sinon.spy(this.preventedFn);

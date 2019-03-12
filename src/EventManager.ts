@@ -1,6 +1,7 @@
 import { IInputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
+import Axes from "./Axes";
 
 export interface ChangeEventOption {
 	input: IInputType;
@@ -9,7 +10,7 @@ export interface ChangeEventOption {
 
 export class EventManager {
 	public am: AnimationManager;
-	constructor(private axes) {}
+	constructor(private axes: Axes) {}
 	/**
 	 * This event is fired when a user holds an element on the screen of the device.
 	 * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
@@ -170,9 +171,11 @@ export class EventManager {
 			input: option && option.input || eventInfo && eventInfo.input || null,
 			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
 		};
-		this.axes.trigger("change", param);
+		const result = this.axes.trigger("change", param);
 
 		inputEvent && this.am.axm.set(param.set()["destPos"]);
+
+		return result;
 	}
 
 	/**

@@ -127,10 +127,14 @@ export class AnimationManager {
 		if (this.axm.isOutside()) {
 			this.restore(beforeParam);
 		} else {
-			this.em.triggerFinish(!!beforeParam);
+			this.finish(!!beforeParam);
 		}
 	}
-
+	finish(isTrusted) {
+		this._animateParam = null;
+		this.itm.setInterrupt(false);
+		this.em.triggerFinish(isTrusted);
+	}
 	private animateLoop(param: AnimationParam, complete: () => void) {
 		this._animateParam = { ...param };
 		this._animateParam.startTime = new Date().getTime();
@@ -140,14 +144,22 @@ export class AnimationManager {
 
 			(function loop() {
 				self._raf = null;
-				if (self.frame(info) >= 1) {
+				const easingPer = self.easing((new Date().getTime() - info.startTime) / param.duration);
+				const toPos: Axis = self.axm.map(info.depaPos, (pos, key, opt) => getCirculatedPos(pos + info.delta[key] * easingPer, opt.range, opt.circular as boolean[]));
+				const isCanceled = !self.em.triggerChange(toPos);
+
+				if (easingPer >= 1) {
 					if (!equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
 						self.em.triggerChange(param.destPos);
 					}
 					complete();
 					return;
-				} // animationEnd
-				self._raf = requestAnimationFrame(loop);
+				} else if (isCanceled) {
+					self.finish(false);
+				} else {
+					// animationEnd
+					self._raf = requestAnimationFrame(loop);
+				}
 			})();
 		} else {
 			this.em.triggerChange(param.destPos);
@@ -194,19 +206,6 @@ export class AnimationManager {
 		}
 	}
 
-	// animation frame (0~1)
-	private frame(param: AnimationParam) {
-		const curTime = new Date().getTime() - param.startTime;
-		const easingPer = this.easing(curTime / param.duration);
-		let toPos: Axis = param.depaPos;
-		toPos = this.axm.map(toPos, (v, k, opt) => {
-			v += param.delta[k] * easingPer;
-			return getCirculatedPos(v, opt.range, opt.circular as boolean[]);
-		});
-		this.em.triggerChange(toPos);
-		return easingPer;
-	}
-
 	easing(p) {
 		return p > 1 ? 1 : this.options.easing(p);
 	}
@@ -241,8 +240,7 @@ export class AnimationManager {
 			this.animateTo(movedPos, duration);
 		} else {
 			this.em.triggerChange(movedPos);
-			this.em.triggerFinish(false);
-			this.itm.setInterrupt(false);
+			this.finish(false);
 		}
 
 		return this;
