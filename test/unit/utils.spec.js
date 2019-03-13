@@ -1,4 +1,4 @@
-import {$, toArray} from "../../src/utils";
+import {$, toArray, equal} from "../../src/utils";
 
 describe("Util Test", function() {
   beforeEach(() => {
@@ -6,6 +6,22 @@ describe("Util Test", function() {
   });
   afterEach(() => {
     cleanup();
+  });
+  it("should check 'equal' method", () => {
+    // Given
+    let target1 = {
+      x: 10,
+      y: 20,
+      z: 30
+    };
+    let target2 = {
+      x: 10,
+      y: 20
+    }
+    
+    // Then
+    expect(equal(target1, target2)).to.be.false;
+    expect(equal(target2, target1)).to.be.true;
   });
   it("should check `$` method", () => {
     // Given

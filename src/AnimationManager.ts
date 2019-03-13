@@ -1,9 +1,9 @@
 import { IInputType } from "./inputType/InputType";
 import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from "./Coordinate";
-import { Axis, AxisManager, equal } from "./AxisManager";
+import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
-import { requestAnimationFrame, cancelAnimationFrame } from "./utils";
+import { requestAnimationFrame, cancelAnimationFrame, map, filter, equal } from "./utils";
 import { AxesOption } from "./Axes";
 
 function minMax(value: number, min: number, max: number): number {
@@ -43,7 +43,7 @@ export class AnimationManager {
 		if (typeof wishDuration !== "undefined") {
 			duration = wishDuration;
 		} else {
-			const durations: Axis = this.axm.map(
+			const durations: Axis = map(
 				destPos,
 				(v, k) => getDuration(
 					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
@@ -80,7 +80,7 @@ export class AnimationManager {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
-				(v, k, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
+				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
 				this.em.triggerChange(pos, option, !!option);
 			}
@@ -105,7 +105,7 @@ export class AnimationManager {
 	restore(option: ChangeEventOption) {
 		const pos: Axis = this.axm.get();
 		const destPos: Axis = this.axm.map(pos,
-			(v, k, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
+			(v, opt) => Math.min(opt.range[1], Math.max(opt.range[0], v)));
 		this.animateTo(destPos, this.getDuration(pos, destPos), option);
 	}
 
@@ -116,11 +116,11 @@ export class AnimationManager {
 		// for Circular
 		const circularTargets = this.axm.filter(
 			this.axm.get(),
-			(v, k, opt) => isCircularable(v, opt.range, opt.circular as boolean[]),
+			(v, opt) => isCircularable(v, opt.range, opt.circular as boolean[]),
 		);
 		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
 			circularTargets,
-			(v, k, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]),
+			(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]),
 		));
 		this.itm.setInterrupt(false);
 		this.em.triggerAnimationEnd(!!beforeParam);
@@ -145,7 +145,7 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				const easingPer = self.easing((new Date().getTime() - info.startTime) / param.duration);
-				const toPos: Axis = self.axm.map(info.depaPos, (pos, key, opt) => getCirculatedPos(pos + info.delta[key] * easingPer, opt.range, opt.circular as boolean[]));
+				const toPos: Axis = self.axm.map(info.depaPos, (pos, opt, key) => getCirculatedPos(pos + info.delta[key] * easingPer, opt.range, opt.circular as boolean[]));
 				const isCanceled = !self.em.triggerChange(toPos);
 
 				if (easingPer >= 1) {
@@ -188,7 +188,7 @@ export class AnimationManager {
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
 			userWish.destPos,
-			(v, k, opt) => isCircularable(v, opt.range, opt.circular as boolean[]))) {
+			(v, opt) => isCircularable(v, opt.range, opt.circular as boolean[]))) {
 			console.warn("You can't stop the 'animation' event when 'circular' is true.");
 		}
 
@@ -219,12 +219,12 @@ export class AnimationManager {
 			return this;
 		}
 		this.itm.setInterrupt(true);
-		let movedPos = this.axm.filter(pos, (v, k) => orgPos[k] !== v);
+		let movedPos = filter(pos, (v, k) => orgPos[k] !== v);
 		if (!Object.keys(movedPos).length) {
 			return this;
 		}
 
-		movedPos = this.axm.map(movedPos, (v, k, opt) => {
+		movedPos = this.axm.map(movedPos, (v, opt) => {
 			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
 				return duration > 0 ? v : getCirculatedPos(v, opt.range, opt.circular as boolean[]);
 			} else {
@@ -248,7 +248,7 @@ export class AnimationManager {
 
 	setBy(pos: Axis, duration = 0) {
 		return this.setTo(
-			this.axm.map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),
+			map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),
 			duration,
 		);
 	}

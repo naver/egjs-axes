@@ -1,27 +1,7 @@
-import {AxisManager, equal} from "../../src/AxisManager";
+import {AxisManager} from "../../src/AxisManager";
 
 
 describe("AxisManager", function() {
-  describe("static method", function() {
-
-    it("should check 'equal' method", () => {
-      // Given
-      let target1 = {
-        x: 10,
-        y: 20,
-        z: 30
-      };
-      let target2 = {
-        x: 10,
-        y: 20
-      }
-      
-      // Then
-      expect(equal(target1, target2)).to.be.false;
-      expect(equal(target2, target1)).to.be.true;
-    });
-
-  });
   describe("instance method", function() {
     beforeEach(() => {
       this.inst = new AxisManager( {
@@ -125,13 +105,13 @@ describe("AxisManager", function() {
       this.inst.moveTo({x: 20, y: 0});
       
       // Then
-      expect(this.inst.every(this.inst.get(), (v, k) => v !== orgPos[k])).to.be.false;
+      expect(this.inst.every(this.inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.false;
 
       // When
       this.inst.moveTo({x: 20, y: 30, z: 0});
 
       // Then
-      expect(this.inst.every(this.inst.get(), (v, k) => v !== orgPos[k])).to.be.true;
+      expect(this.inst.every(this.inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.true;
     });
 
 
@@ -144,13 +124,13 @@ describe("AxisManager", function() {
       this.inst.moveTo({x: 20, y: 0});
       
       // Then
-      expect(this.inst.filter(this.inst.get(), (v, k) => v !== orgPos[k])).to.be.eql({x:20});
+      expect(this.inst.filter(this.inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.eql({x:20});
 
       // When
       this.inst.moveTo({x: 20, y: 30, z: 0});
 
       // Then
-      expect(this.inst.filter(this.inst.get(), (v, k) => v !== orgPos[k])).to.be.eql({x:20, y:30, z:0});
+      expect(this.inst.filter(this.inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.eql({x:20, y:30, z:0});
     });
 
     it("should check 'map' high-order method", () => {  
