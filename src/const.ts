@@ -7,8 +7,8 @@
 // export const DIRECTION_VERTICAL = 8 | 16;
 // export const DIRECTION_ALL = 2 | 4 | 8 | 16;
 
-export interface ObjectInterface {
-	[key: string]: any;
+export interface ObjectInterface<T = any> {
+	[key: string]: T;
 }
 
 export {
@@ -22,6 +22,7 @@ export {
 	DIRECTION_ALL,
 } from "@egjs/hammerjs";
 
+export const FIXED_DIGIT = 100000;
 export const TRANSFORM = (() => {
 	if (typeof document === "undefined") {
 		return "";
