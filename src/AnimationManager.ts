@@ -3,7 +3,7 @@ import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
-import { requestAnimationFrame, cancelAnimationFrame, map, filter, equal } from "./utils";
+import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, toFixed } from "./utils";
 import { AxesOption } from "./Axes";
 
 function minMax(value: number, min: number, max: number): number {
@@ -81,8 +81,8 @@ export class AnimationManager {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
 				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
-			if (!this.axm.every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(pos, option, !!option);
+			if (!every(pos, (v, k) => orgPos[k] === v)) {
+				this.em.triggerChange(pos, orgPos, option, !!option);
 			}
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
@@ -136,21 +136,25 @@ export class AnimationManager {
 		this.em.triggerFinish(isTrusted);
 	}
 	private animateLoop(param: AnimationParam, complete: () => void) {
-		this._animateParam = { ...param };
-		this._animateParam.startTime = new Date().getTime();
 		if (param.duration) {
+			this._animateParam = { ...param };
 			const info: AnimationParam = this._animateParam;
 			const self = this;
+			let prevPos = info.depaPos;
 
+			info.startTime = new Date().getTime();
 			(function loop() {
 				self._raf = null;
 				const easingPer = self.easing((new Date().getTime() - info.startTime) / param.duration);
-				const toPos: Axis = self.axm.map(info.depaPos, (pos, opt, key) => getCirculatedPos(pos + info.delta[key] * easingPer, opt.range, opt.circular as boolean[]));
-				const isCanceled = !self.em.triggerChange(toPos);
+				const toPos: Axis = map(info.depaPos, (pos, key) => pos + info.delta[key] * easingPer);
+				const isCanceled = !self.em.triggerChange(toPos, prevPos);
 
+				prevPos = map(toPos, v => toFixed(v));
 				if (easingPer >= 1) {
-					if (!equal(param.destPos, self.axm.get(Object.keys(param.destPos)))) {
-						self.em.triggerChange(param.destPos);
+					const destPos = param.destPos;
+
+					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
+						self.em.triggerChange(destPos, prevPos);
 					}
 					complete();
 					return;
@@ -225,10 +229,12 @@ export class AnimationManager {
 		}
 
 		movedPos = this.axm.map(movedPos, (v, opt) => {
-			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
-				return duration > 0 ? v : getCirculatedPos(v, opt.range, opt.circular as boolean[]);
+			const {range, circular} = opt;
+
+			if (circular && (circular[0] || circular[1])) {
+				return v;
 			} else {
-				return getInsidePosition(v, opt.range, opt.circular as boolean[]);
+				return getInsidePosition(v, range, circular as boolean[]);
 			}
 		});
 

@@ -1,5 +1,6 @@
-import { isOutside } from "./Coordinate";
+import { isOutside, getCirculatedPos } from "./Coordinate";
 import { map, filter, every } from "./utils";
+import { ObjectInterface } from "./const";
 
 export interface Axis {
 	[key: string]: number;
@@ -13,7 +14,7 @@ export interface AxisOption {
 
 export class AxisManager {
 	private _pos: Axis;
-	constructor(private axis, private options) {
+	constructor(private axis: ObjectInterface<AxisOption>, private options) {
 		this._complementOptions();
 		this._pos = Object.keys(this.axis).reduce((acc, v) => {
 			acc[v] = this.axis[v].range[0];
@@ -60,12 +61,12 @@ export class AxisManager {
 			return { ...this._pos, ...((axes || {}) as Axis) };
 		}
 	}
-	moveTo(pos: Axis): { [key: string]: Axis } {
+	moveTo(pos: Axis, depaPos: Axis = this._pos): { [key: string]: Axis } {
 		const delta = map(this._pos, (v, key) => {
-			return key in pos ? pos[key] - this._pos[key] : 0;
+			return key in pos && key in depaPos ? pos[key] - depaPos[key] : 0;
 		});
 
-		this.set(pos);
+		this.set(this.map(pos, (v, opt) => opt ? getCirculatedPos(v, opt.range, opt.circular as boolean[]) : 0));
 		return {
 			pos: { ...this._pos },
 			delta,

@@ -4,7 +4,7 @@ import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
-import { isOutside, getInsidePosition, getCirculatedPos } from "./Coordinate";
+import { isOutside, getInsidePosition } from "./Coordinate";
 import { map, equal } from "./utils";
 
 export class InputObserver implements IInputTypeObserver {
@@ -77,7 +77,6 @@ export class InputObserver implements IInputTypeObserver {
 		// for outside logic
 		destPos = map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
 		this.moveDistance && (this.moveDistance = destPos);
-		destPos = this.axm.map(destPos, (v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 
 		// from outside to inside
 		if (this.isOutside &&
@@ -86,7 +85,7 @@ export class InputObserver implements IInputTypeObserver {
 		}
 		destPos = this.atOutside(destPos);
 
-		const isCanceled = !this.em.triggerChange(destPos, {
+		const isCanceled = !this.em.triggerChange(destPos, depaPos, {
 			input,
 			event,
 		}, true);
