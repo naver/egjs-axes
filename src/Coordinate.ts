@@ -1,4 +1,5 @@
 import { Axis } from "./AxisManager";
+import { toFixed } from "./utils";
 
 export function getInsidePosition(
 	destPos: number,
@@ -15,7 +16,7 @@ export function getInsidePosition(
 	toDestPos = Math.max(targetRange[0], toDestPos);
 	toDestPos = Math.min(targetRange[1], toDestPos);
 
-	return +toDestPos.toFixed(5);
+	return +toFixed(toDestPos);
 }
 
 // determine outside
@@ -45,5 +46,5 @@ export function getCirculatedPos(pos: number, range: number[], circular: boolean
 	if (circular[0] && pos < min) { // left
 		toPos = (toPos - min) % length + max;
 	}
-	return +toPos.toFixed(5);
+	return +toFixed(toPos);
 }

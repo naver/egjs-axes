@@ -1,4 +1,5 @@
 import {window} from "./browser";
+import { ObjectInterface, FIXED_DIGIT } from "./const";
 
 declare var jQuery: any;
 
@@ -92,4 +93,37 @@ export function requestAnimationFrame(fp) {
 */
 export function cancelAnimationFrame(key) {
 	caf(key);
+}
+
+export function map<T, U>(obj: ObjectInterface<T>, callback: (value: T, key: string) => U): ObjectInterface<U> {
+	const tranformed: ObjectInterface<U> = {};
+
+	for (const k in obj) {
+		k && (tranformed[k] = callback(obj[k], k));
+	}
+	return tranformed;
+}
+
+export function filter<T>(obj: ObjectInterface<T>, callback: (value: T, key: string) => boolean): ObjectInterface<T> {
+	const filtered: ObjectInterface<T> = {};
+
+	for (const k in obj) {
+		k && callback(obj[k], k) && (filtered[k] = obj[k]);
+	}
+	return filtered;
+}
+export function every<T>(obj: ObjectInterface<T>, callback: (value: T, key: string) => boolean) {
+	for (const k in obj) {
+		if (k && !callback(obj[k], k)) {
+			return false;
+		}
+	}
+	return true;
+}
+export function equal(target: ObjectInterface, base: ObjectInterface): boolean {
+	return every(target, (v, k) => v === base[k]);
+}
+
+export function toFixed(num: number) {
+	return Math.round(num * FIXED_DIGIT) / FIXED_DIGIT;
 }

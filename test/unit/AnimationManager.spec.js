@@ -292,7 +292,7 @@ describe("AnimationManager", function () {
 
 		it("should check 'setTo' method (same position after range limit, useCircular)", (done) => {
       // Given
-      const depaPos = this.inst.axm.get();
+      // depaPos: {x: 0, y: 0, z: -100}
       const destPos = {x: -100, z: 500};
       const self = this.inst;
 			const changeHandler = sinon.spy();
@@ -305,8 +305,9 @@ describe("AnimationManager", function () {
 
 			// Then
 			setTimeout(() => {
-				expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: -100});
-				expect(changeHandler.called).to.be.false;
+        expect(self.axm.get()).to.be.eql({x: 0, y: 0, z: -100});
+        expect(changeHandler.callCount).to.be.equals(1);
+        expect(changeHandler.args[0][0].delta).to.be.eql({x: 0, y: 0, z: 600});
 				expect(ret).to.be.eq(self);
 				done();
 			}, 100);

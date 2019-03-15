@@ -1,17 +1,9 @@
-import { isOutside } from "./Coordinate";
-import { AxesOption } from "./Axes";
+import { isOutside, getCirculatedPos } from "./Coordinate";
+import { map, filter, every } from "./utils";
+import { ObjectInterface } from "./const";
 
 export interface Axis {
 	[key: string]: number;
-}
-
-export function equal(target: Axis, base: Axis): boolean {
-	for (const k in target) {
-		if (target[k] !== base[k]) {
-			return false;
-		}
-	}
-	return true;
 }
 
 export interface AxisOption {
@@ -22,7 +14,7 @@ export interface AxisOption {
 
 export class AxisManager {
 	private _pos: Axis;
-	constructor(private axis, private options: AxesOption) {
+	constructor(private axis: ObjectInterface<AxisOption>, private options) {
 		this._complementOptions();
 		this._pos = Object.keys(this.axis).reduce((acc, v) => {
 			acc[v] = this.axis[v].range[0];
@@ -55,7 +47,7 @@ export class AxisManager {
 	}
 	getDelta(depaPos: Axis, destPos: Axis): Axis {
 		const fullDepaPos = this.get(depaPos);
-		return this.map(this.get(destPos), (v, k) => v - fullDepaPos[k]);
+		return map(this.get(destPos), (v, k) => v - fullDepaPos[k]);
 	}
 	get(axes?: string[] | Axis): Axis {
 		if (axes && Array.isArray(axes)) {
@@ -69,12 +61,12 @@ export class AxisManager {
 			return { ...this._pos, ...((axes || {}) as Axis) };
 		}
 	}
-	moveTo(pos: Axis): { [key: string]: Axis } {
-		const delta = this.map(this._pos, (v, key) => {
-			return key in pos ? pos[key] - this._pos[key] : 0;
+	moveTo(pos: Axis, depaPos: Axis = this._pos): { [key: string]: Axis } {
+		const delta = map(this._pos, (v, key) => {
+			return key in pos && key in depaPos ? pos[key] - depaPos[key] : 0;
 		});
 
-		this.set(pos);
+		this.set(this.map(pos, (v, opt) => opt ? getCirculatedPos(v, opt.range, opt.circular as boolean[]) : 0));
 		return {
 			pos: { ...this._pos },
 			delta,
@@ -89,45 +81,30 @@ export class AxisManager {
 	}
 	every(
 		pos: Axis,
-		callback: (value: number, key: string, options: AxisOption) => boolean): boolean {
+		callback: (value: number, options: AxisOption, key: string) => boolean): boolean {
 		const axisOptions = this.axis;
-		for (const k in pos) {
-			if (k) {
-				if (!callback(pos[k], k, axisOptions[k])) {
-					return false;
-				}
-			}
-		}
-		return true;
+
+		return every(pos, (value, key) => callback(value, axisOptions[key], key));
 	}
 	filter(
 		pos: Axis,
-		callback: (value: number, key: string, options: AxisOption) => boolean): Axis {
-		const filtered: Axis = {};
+		callback: (value: number, options: AxisOption, key: string) => boolean): Axis {
+
 		const axisOptions = this.axis;
-		for (const k in pos) {
-			if (k) {
-				callback(pos[k], k, axisOptions[k]) && (filtered[k] = pos[k]);
-			}
-		}
-		return filtered;
+
+		return filter(pos, (value, key) => callback(value, axisOptions[key], key));
 	}
 	map(
 		pos: Axis,
-		callback: (value: number, key: string, options: AxisOption) => number): Axis {
-		const tranformed: Axis = {};
+		callback: (value: number, options: AxisOption, key: string) => number): Axis {
 		const axisOptions = this.axis;
-		for (const k in pos) {
-			if (k) {
-				tranformed[k] = callback(pos[k], k, axisOptions[k]);
-			}
-		}
-		return tranformed;
+
+		return map(pos, (value, key) => callback(value, axisOptions[key], key));
 	}
 	isOutside(axes?: string[]) {
 		return !this.every(
 			axes ? this.get(axes) : this._pos,
-			(v, k, opt) => !isOutside(v, opt.range),
+			(v, opt) => !isOutside(v, opt.range),
 		);
 	}
 }

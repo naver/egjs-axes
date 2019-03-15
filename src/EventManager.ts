@@ -158,9 +158,11 @@ export class EventManager {
 	 *   event.holding && event.set({x: 10});
 	 * });
 	 */
-	triggerChange(pos: Axis, option: ChangeEventOption = null, holding: boolean = false) {
-		const eventInfo = this.am.getEventInfo();
-		const moveTo = this.am.axm.moveTo(pos);
+	triggerChange(pos: Axis, depaPos?: Axis, option?: ChangeEventOption, holding: boolean = false) {
+		const am = this.am;
+		const axm = am.axm;
+		const eventInfo = am.getEventInfo();
+		const moveTo = axm.moveTo(pos, depaPos);
 		const inputEvent = option && option.event || eventInfo && eventInfo.event || null;
 		const param = {
 			pos: moveTo.pos,
@@ -173,7 +175,7 @@ export class EventManager {
 		};
 		const result = this.axes.trigger("change", param);
 
-		inputEvent && this.am.axm.set(param.set()["destPos"]);
+		inputEvent && axm.set(param.set()["destPos"]);
 
 		return result;
 	}

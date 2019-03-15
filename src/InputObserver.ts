@@ -1,10 +1,11 @@
 import { InterruptManager } from "./InterruptManager";
 import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
-import { AxisManager, equal, Axis } from "./AxisManager";
+import { AxisManager, Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
-import { getCirculatedPos, isOutside, getInsidePosition } from "./Coordinate";
+import { isOutside, getInsidePosition } from "./Coordinate";
+import { map, equal } from "./utils";
 
 export class InputObserver implements IInputTypeObserver {
 	public options: AxesOption;
@@ -26,7 +27,7 @@ export class InputObserver implements IInputTypeObserver {
 	// when move pointer is held in outside
 	private atOutside(pos: Axis) {
 		if (this.isOutside) {
-			return this.axm.map(pos, (v, k, opt) => {
+			return this.axm.map(pos, (v, opt) => {
 				const tn = opt.range[0] - opt.bounce[0];
 				const tx = opt.range[1] + opt.bounce[1];
 				return v > tx ? tx : (v < tn ? tn : v);
@@ -35,7 +36,7 @@ export class InputObserver implements IInputTypeObserver {
 			// when start pointer is held in inside
 			// get a initialization slope value to prevent smooth animation.
 			const initSlope = this.am.easing(0.00001) / 0.00001;
-			return this.axm.map(pos, (v, k, opt) => {
+			return this.axm.map(pos, (v, opt) => {
 				const min = opt.range[0];
 				const max = opt.range[1];
 				const out = opt.bounce;
@@ -74,18 +75,17 @@ export class InputObserver implements IInputTypeObserver {
 		let destPos: Axis;
 
 		// for outside logic
-		destPos = this.axm.map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
+		destPos = map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
 		this.moveDistance && (this.moveDistance = destPos);
-		destPos = this.axm.map(destPos, (v, k, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 
 		// from outside to inside
 		if (this.isOutside &&
-			this.axm.every(depaPos, (v, k, opt) => !isOutside(v, opt.range))) {
+			this.axm.every(depaPos, (v, opt) => !isOutside(v, opt.range))) {
 			this.isOutside = false;
 		}
 		destPos = this.atOutside(destPos);
 
-		const isCanceled = !this.em.triggerChange(destPos, {
+		const isCanceled = !this.em.triggerChange(destPos, depaPos, {
 			input,
 			event,
 		}, true);
@@ -102,7 +102,7 @@ export class InputObserver implements IInputTypeObserver {
 		}
 		const pos: Axis = this.axm.get(input.axes);
 		const depaPos: Axis = this.axm.get();
-		let destPos: Axis = this.axm.get(this.axm.map(offset, (v, k, opt) => {
+		let destPos: Axis = this.axm.get(this.axm.map(offset, (v, opt, k) => {
 			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
 				return pos[k] + v;
 			} else {
@@ -140,7 +140,7 @@ export class InputObserver implements IInputTypeObserver {
 			event,
 		};
 		if (isEqual || userWish.duration === 0) {
-			!isEqual && this.em.triggerChange(userWish.destPos, changeOption, true);
+			!isEqual && this.em.triggerChange(userWish.destPos, depaPos, changeOption, true);
 			this.itm.setInterrupt(false);
 			if (this.axm.isOutside()) {
 				this.am.restore(changeOption);
