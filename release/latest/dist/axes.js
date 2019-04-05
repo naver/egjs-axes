@@ -248,7 +248,7 @@ https://github.com/naver/egjs-axes
     function isCircularable(destPos, range, circular) {
       return circular[1] && destPos > range[1] || circular[0] && destPos < range[0];
     }
-    function getCirculatedPos(pos, range, circular) {
+    function getCirculatedPos(pos, range, circular, isAccurate) {
       var toPos = pos;
       var min = range[0];
       var max = range[1];
@@ -264,7 +264,7 @@ https://github.com/naver/egjs-axes
         toPos = (toPos - min) % length + max;
       }
 
-      return +toFixed(toPos);
+      return isAccurate ? toPos : +toFixed(toPos);
     }
 
     function minMax(value, min, max) {
@@ -327,13 +327,13 @@ https://github.com/naver/egjs-axes
         if (this._animateParam && axes.length) {
           var orgPos_1 = this.axm.get(axes);
           var pos = this.axm.map(orgPos_1, function (v, opt) {
-            return getCirculatedPos(v, opt.range, opt.circular);
+            return getCirculatedPos(v, opt.range, opt.circular, false);
           });
 
           if (!every(pos, function (v, k) {
             return orgPos_1[k] === v;
           })) {
-            this.em.triggerChange(pos, orgPos_1, option, !!option);
+            this.em.triggerChange(pos, false, orgPos_1, option, !!option);
           }
 
           this._animateParam = null;
@@ -370,7 +370,7 @@ https://github.com/naver/egjs-axes
           return isCircularable(v, opt.range, opt.circular);
         });
         Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(circularTargets, function (v, opt) {
-          return getCirculatedPos(v, opt.range, opt.circular);
+          return getCirculatedPos(v, opt.range, opt.circular, false);
         }));
         this.itm.setInterrupt(false);
         this.em.triggerAnimationEnd(!!beforeParam);
@@ -402,7 +402,7 @@ https://github.com/naver/egjs-axes
             var toPos = map(info_1.depaPos, function (pos, key) {
               return pos + info_1.delta[key] * easingPer;
             });
-            var isCanceled = !self_1.em.triggerChange(toPos, prevPos_1);
+            var isCanceled = !self_1.em.triggerChange(toPos, false, prevPos_1);
             prevPos_1 = map(toPos, function (v) {
               return toFixed(v);
             });
@@ -411,7 +411,7 @@ https://github.com/naver/egjs-axes
               var destPos = param.destPos;
 
               if (!equal(destPos, self_1.axm.get(Object.keys(destPos)))) {
-                self_1.em.triggerChange(destPos, prevPos_1);
+                self_1.em.triggerChange(destPos, true, prevPos_1);
               }
 
               complete();
@@ -424,7 +424,7 @@ https://github.com/naver/egjs-axes
             }
           })();
         } else {
-          this.em.triggerChange(param.destPos);
+          this.em.triggerChange(param.destPos, true);
           complete();
         }
       };
@@ -694,7 +694,7 @@ https://github.com/naver/egjs-axes
        */
 
 
-      __proto.triggerChange = function (pos, depaPos, option, holding) {
+      __proto.triggerChange = function (pos, isAccurate, depaPos, option, holding) {
         if (holding === void 0) {
           holding = false;
         }
@@ -702,7 +702,7 @@ https://github.com/naver/egjs-axes
         var am = this.am;
         var axm = am.axm;
         var eventInfo = am.getEventInfo();
-        var moveTo = axm.moveTo(pos, depaPos);
+        var moveTo = axm.moveTo(pos, isAccurate, depaPos);
         var inputEvent = option && option.event || eventInfo && eventInfo.event || null;
         var param = {
           pos: moveTo.pos,
@@ -943,7 +943,7 @@ https://github.com/naver/egjs-axes
         }
       };
 
-      __proto.moveTo = function (pos, depaPos) {
+      __proto.moveTo = function (pos, isAccurate, depaPos) {
         if (depaPos === void 0) {
           depaPos = this._pos;
         }
@@ -952,7 +952,7 @@ https://github.com/naver/egjs-axes
           return key in pos && key in depaPos ? pos[key] - depaPos[key] : 0;
         });
         this.set(this.map(pos, function (v, opt) {
-          return opt ? getCirculatedPos(v, opt.range, opt.circular) : 0;
+          return opt ? getCirculatedPos(v, opt.range, opt.circular, isAccurate) : 0;
         }));
         return {
           pos: __assign({}, this._pos),
@@ -1037,8 +1037,11 @@ https://github.com/naver/egjs-axes
             var min = opt.range[0];
             var max = opt.range[1];
             var out = opt.bounce;
+            var circular = opt.circular;
 
-            if (v < min) {
+            if (circular && (circular[0] || circular[1])) {
+              return v;
+            } else if (v < min) {
               // left
               return min - _this.am.easing((min - v) / (out[0] * initSlope_1)) * out[0];
             } else if (v > max) {
@@ -1079,10 +1082,10 @@ https://github.com/naver/egjs-axes
           return;
         }
 
-        var depaPos = this.axm.get(input.axes);
+        var depaPos = this.moveDistance || this.axm.get(input.axes);
         var destPos; // for outside logic
 
-        destPos = map(this.moveDistance || depaPos, function (v, k) {
+        destPos = map(depaPos, function (v, k) {
           return v + (offset[k] || 0);
         });
         this.moveDistance && (this.moveDistance = destPos); // from outside to inside
@@ -1094,7 +1097,7 @@ https://github.com/naver/egjs-axes
         }
 
         destPos = this.atOutside(destPos);
-        var isCanceled = !this.em.triggerChange(destPos, depaPos, {
+        var isCanceled = !this.em.triggerChange(destPos, false, depaPos, {
           input: input,
           event: event
         }, true);
@@ -1147,7 +1150,7 @@ https://github.com/naver/egjs-axes
         };
 
         if (isEqual || userWish.duration === 0) {
-          !isEqual && this.em.triggerChange(userWish.destPos, depaPos, changeOption, true);
+          !isEqual && this.em.triggerChange(userWish.destPos, false, depaPos, changeOption, true);
           this.itm.setInterrupt(false);
 
           if (this.axm.isOutside()) {
