@@ -2,13 +2,14 @@ import { IInputType, IInputTypeObserver } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AxesOption } from "./Axes";
 export declare class InputObserver implements IInputTypeObserver {
-    isOutside: boolean;
-    moveDistance: Axis;
     options: AxesOption;
     private itm;
     private em;
     private axm;
     private am;
+    private isOutside;
+    private moveDistance;
+    private isStopped;
     constructor({ options, itm, em, axm, am }: {
         options: any;
         itm: any;

@@ -34,7 +34,7 @@ export function isCircularable(destPos: number, range: number[], circular: boole
 	return (circular[1] && destPos > range[1]) ||
 		(circular[0] && destPos < range[0]);
 }
-export function getCirculatedPos(pos: number, range: number[], circular: boolean[]): number {
+export function getCirculatedPos(pos: number, range: number[], circular: boolean[], isAccurate: boolean): number {
 	let toPos = pos;
 	const min = range[0];
 	const max = range[1];
@@ -46,5 +46,5 @@ export function getCirculatedPos(pos: number, range: number[], circular: boolean
 	if (circular[0] && pos < min) { // left
 		toPos = (toPos - min) % length + max;
 	}
-	return +toFixed(toPos);
+	return isAccurate ? toPos : +toFixed(toPos);
 }

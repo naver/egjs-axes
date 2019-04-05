@@ -61,12 +61,12 @@ export class AxisManager {
 			return { ...this._pos, ...((axes || {}) as Axis) };
 		}
 	}
-	moveTo(pos: Axis, depaPos: Axis = this._pos): { [key: string]: Axis } {
+	moveTo(pos: Axis, isAccurate?: boolean, depaPos: Axis = this._pos): { [key: string]: Axis } {
 		const delta = map(this._pos, (v, key) => {
 			return key in pos && key in depaPos ? pos[key] - depaPos[key] : 0;
 		});
 
-		this.set(this.map(pos, (v, opt) => opt ? getCirculatedPos(v, opt.range, opt.circular as boolean[]) : 0));
+		this.set(this.map(pos, (v, opt) => opt ? getCirculatedPos(v, opt.range, opt.circular as boolean[], isAccurate) : 0));
 		return {
 			pos: { ...this._pos },
 			delta,

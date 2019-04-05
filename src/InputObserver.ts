@@ -40,7 +40,11 @@ export class InputObserver implements IInputTypeObserver {
 				const min = opt.range[0];
 				const max = opt.range[1];
 				const out = opt.bounce;
-				if (v < min) { // left
+				const circular = opt.circular;
+
+				if (circular && (circular[0] || circular[1])) {
+					return v;
+				} else if (v < min) { // left
 					return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
 				} else if (v > max) { // right
 					return max + this.am.easing((v - max) / (out[1] * initSlope)) * out[1];
@@ -71,11 +75,11 @@ export class InputObserver implements IInputTypeObserver {
 		if (this.isStopped || !this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
 			return;
 		}
-		const depaPos: Axis = this.axm.get(input.axes);
+		const depaPos: Axis = this.moveDistance || this.axm.get(input.axes);
 		let destPos: Axis;
 
 		// for outside logic
-		destPos = map(this.moveDistance || depaPos, (v, k) => v + (offset[k] || 0));
+		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
 		this.moveDistance && (this.moveDistance = destPos);
 
 		// from outside to inside
@@ -85,7 +89,7 @@ export class InputObserver implements IInputTypeObserver {
 		}
 		destPos = this.atOutside(destPos);
 
-		const isCanceled = !this.em.triggerChange(destPos, depaPos, {
+		const isCanceled = !this.em.triggerChange(destPos, false, depaPos, {
 			input,
 			event,
 		}, true);
@@ -140,7 +144,7 @@ export class InputObserver implements IInputTypeObserver {
 			event,
 		};
 		if (isEqual || userWish.duration === 0) {
-			!isEqual && this.em.triggerChange(userWish.destPos, depaPos, changeOption, true);
+			!isEqual && this.em.triggerChange(userWish.destPos, false, depaPos, changeOption, true);
 			this.itm.setInterrupt(false);
 			if (this.axm.isOutside()) {
 				this.am.restore(changeOption);

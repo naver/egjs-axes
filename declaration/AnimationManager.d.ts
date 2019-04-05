@@ -36,13 +36,13 @@ export declare class AnimationManager {
     getEventInfo(): ChangeEventOption;
     restore(option: ChangeEventOption): void;
     animationEnd(): void;
+    finish(isTrusted: any): void;
     private animateLoop;
     getUserControll(param: AnimationParam): {
         destPos: Axis;
         duration: number;
     };
     animateTo(destPos: Axis, duration: number, option?: ChangeEventOption): void;
-    private frame;
     easing(p: any): number;
     setTo(pos: Axis, duration?: number): this;
     setBy(pos: Axis, duration?: number): this;

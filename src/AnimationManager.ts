@@ -80,9 +80,9 @@ export class AnimationManager {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
-				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
+				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[], false));
 			if (!every(pos, (v, k) => orgPos[k] === v)) {
-				this.em.triggerChange(pos, orgPos, option, !!option);
+				this.em.triggerChange(pos, false, orgPos, option, !!option);
 			}
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
@@ -120,7 +120,7 @@ export class AnimationManager {
 		);
 		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
 			circularTargets,
-			(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]),
+			(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[], false),
 		));
 		this.itm.setInterrupt(false);
 		this.em.triggerAnimationEnd(!!beforeParam);
@@ -147,14 +147,14 @@ export class AnimationManager {
 				self._raf = null;
 				const easingPer = self.easing((new Date().getTime() - info.startTime) / param.duration);
 				const toPos: Axis = map(info.depaPos, (pos, key) => pos + info.delta[key] * easingPer);
-				const isCanceled = !self.em.triggerChange(toPos, prevPos);
+				const isCanceled = !self.em.triggerChange(toPos, false, prevPos);
 
 				prevPos = map(toPos, v => toFixed(v));
 				if (easingPer >= 1) {
 					const destPos = param.destPos;
 
 					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
-						self.em.triggerChange(destPos, prevPos);
+						self.em.triggerChange(destPos, true, prevPos);
 					}
 					complete();
 					return;
@@ -166,7 +166,7 @@ export class AnimationManager {
 				}
 			})();
 		} else {
-			this.em.triggerChange(param.destPos);
+			this.em.triggerChange(param.destPos, true);
 			complete();
 		}
 	}

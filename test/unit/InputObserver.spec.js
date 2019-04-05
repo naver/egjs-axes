@@ -52,7 +52,7 @@ describe("InputObserver", function () {
 
       // When
       this.inst.axm.moveTo({x: 10, y: 20, z: 30});
-      
+
       // Then
       expect(this.inst.get(inputType)).to.be.eql({"y": 20});
     });
@@ -62,7 +62,7 @@ describe("InputObserver", function () {
         axes: ["y"]
       };
 
-      
+
       // When/Then
       expect(this.inst.get(inputType)).to.be.eql({"y": 0});
 
@@ -72,7 +72,7 @@ describe("InputObserver", function () {
 
       this.inst.hold(inputType, {});
       this.inst.change(inputType, {}, {y: 250});
-      
+
       // Then
       expect(this.inst.get(inputType)).to.be.eql({"y": 200});
     });
@@ -88,18 +88,18 @@ describe("InputObserver", function () {
         this.axes.on("change", ({pos, delta}) => {
           // Then
           // Find the value as approximated as possible due to floating decimal point problems.
-  
+
           if (direction > 0 && pos.z < 180) {
             // range[0] + range[1] = 300 loop for right
             // It is not less than 0 inclusive. z >= 0
             expect(delta.z).to.be.not.lt(0);
-            expect(toFixed(delta.z + z)).to.be.closeTo(300 + pos.z, 0.0000001);  
+            expect(toFixed(delta.z + z)).to.be.closeTo(300 + pos.z, 0.0000001);
             z = 300 + pos.z;
           } else if (direction < 0 && pos.z > 0) {
             // range[0] + range[1] = 300 loop for left
             // It is not greater than 0 inclusive. z <= 0
             expect(delta.z).to.be.not.gt(0);
-            expect(toFixed(delta.z + z)).to.be.closeTo(-300 + pos.z, 0.0000001);  
+            expect(toFixed(delta.z + z)).to.be.closeTo(-300 + pos.z, 0.0000001);
             z = -300 + pos.z;
           } else {
             expect(toFixed(delta.z + z)).to.be.closeTo(pos.z, 0.0000001);
@@ -109,7 +109,7 @@ describe("InputObserver", function () {
         this.axes.on("finish", () => {
           done();
         });
-  
+
         // When
         // The last y position should be zero and neither should Delta.
         this.axes.setTo({z: destPos}, 300);
@@ -137,6 +137,33 @@ describe("InputObserver", function () {
       // When
       // The last y position should be zero and neither should Delta.
       this.axes.setTo({y: 0}, 300);
+		});
+    it("should check delta that there is circular", done => {
+			// Given
+      // start pos
+      let z = 0;
+      this.axes.setTo({z: 0}, 0);
+      this.axes.on("change", ({delta}) => {
+				z += delta.z;
+				// Delta is high if the speed is too fast.
+        expect(Math.abs(delta.z)).to.be.below(60);
+      });
+      this.axes.on("finish", () => {
+				expect(z).to.be.closeTo(1000, 0.001);
+        done();
+      });
+
+
+			// When
+			const inputType = {
+        axes: ["z"]
+      };
+			this.inst.hold(inputType);
+			// 40 * 25
+			for (let i = 0; i < 25; ++i) {
+				this.inst.change(inputType, {}, {z: 40});
+			}
+      this.inst.release(inputType);
     });
     it("should check delta that there is no bounce and the position is out", done => {
       // Given
@@ -188,6 +215,6 @@ describe("InputObserver", function () {
       this.inst.change(inputType, {}, {x: -60});
       this.inst.release(inputType);
     });
-    
+
   });
 });

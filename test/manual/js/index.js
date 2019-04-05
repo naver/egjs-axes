@@ -51,7 +51,7 @@ var axes = new eg.Axes({
 	},
 	"change" : function(evt) {
 		var pos = evt.pos;
-		console.log(evt);
+		console.log(pos.x);
 		if(evt.holding && evt.delta.z) {
 			areaContent.style[eg.Axes.TRANSFORM] = "scale(" +  evt.pos.z + ")";
 		} else {
