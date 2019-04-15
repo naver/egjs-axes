@@ -104,6 +104,42 @@ describe("InputObserver", function () {
         this.inst.change(inputType, {}, { y: sign * 30 });
         this.inst.change(inputType, {}, { y: sign * 40 });
         this.inst.release(inputType);
+			});
+
+			it(`should check delta that dragged bounce area (direction: ${direction})`, done => {
+        // Given
+        // start pos
+        let depaPos = direction > 0 ? 100 : 0;
+
+				this.axes.setTo({ x: depaPos }, 0);
+
+				let isFirstTime = false;
+        this.axes.on("change", ({ delta }) => {
+					// Then
+					if (!isFirstTime) {
+						isFirstTime = true;
+						return;
+					}
+          expect(delta.x).to.be.equals(0);
+        });
+        this.axes.on("finish", () => {
+          done();
+        });
+
+        // When
+        const inputType = {
+          axes: ["x"]
+        };
+        const sign = direction > 0 ? 1 : -1;
+        this.inst.hold(inputType);
+        // Move them approximately 150 by slope bounce to reach the end.
+        this.inst.change(inputType, {}, { x: sign * 150 });
+        this.inst.change(inputType, {}, { x: sign * 10 });
+        this.inst.change(inputType, {}, { x: sign * 10 });
+				this.inst.change(inputType, {}, { x: sign * 10 });
+
+				this.axes.off("change");
+        this.inst.release(inputType);
       });
       it(`should check delta that 'circular' option was enabled(direction: ${direction})`, done => {
         // Given
