@@ -77,6 +77,34 @@ describe("InputObserver", function () {
       expect(this.inst.get(inputType)).to.be.eql({"y": 200});
     });
     [1, -1].forEach(direction => {
+			it(`should check delta that dragged out of bounce area(direction: ${direction})`, done => {
+        // Given
+        // start pos
+        // let depaPos = direction > 0 ? 200 : 0;
+        // let destPos = direction > 0 ? 300 : -100;
+				let depaPos = 0;
+
+        this.axes.setTo({z: depaPos}, 0);
+        this.axes.on("change", ({pos, delta}) => {
+					expect(delta.y).to.be.equals(0);
+        });
+        this.axes.on("finish", () => {
+          done();
+        });
+
+        // When
+				const inputType = {
+					axes: ["y"]
+				};
+				this.inst.hold(inputType);
+				// The last y position should be zero and neither should Delta.
+				// y goes to zero without bounce.
+				this.inst.change(inputType, {}, {y: -10});
+				this.inst.change(inputType, {}, {y: -20});
+				this.inst.change(inputType, {}, {y: -30});
+				this.inst.change(inputType, {}, {y: -40});
+				this.inst.release(inputType);
+      });
       it(`should check delta that 'circular' option was enabled(direction: ${direction})`, done => {
         // Given
         // start pos
