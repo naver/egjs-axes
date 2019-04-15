@@ -84,7 +84,7 @@ describe("InputObserver", function () {
 
         this.axes.setTo({ y: depaPos }, 0);
         this.axes.on("change", ({ delta }) => {
-					// Then
+          // Then
           expect(delta.y).to.be.equals(0);
         });
         this.axes.on("finish", () => {
@@ -94,8 +94,8 @@ describe("InputObserver", function () {
         // When
         const inputType = {
           axes: ["y"]
-				};
-				const sign = direction > 0 ? 1 : -1;
+        };
+        const sign = direction > 0 ? 1 : -1;
         this.inst.hold(inputType);
         // The last y position should be zero and neither should Delta.
         // y goes to zero without bounce.
