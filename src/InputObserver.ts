@@ -80,14 +80,13 @@ export class InputObserver implements IInputTypeObserver {
 
 		// for outside logic
 		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
-		this.moveDistance && (this.moveDistance = destPos);
-
 		// from outside to inside
 		if (this.isOutside &&
 			this.axm.every(depaPos, (v, opt) => !isOutside(v, opt.range))) {
 			this.isOutside = false;
 		}
 		destPos = this.atOutside(destPos);
+		this.moveDistance && (this.moveDistance = destPos);
 
 		const isCanceled = !this.em.triggerChange(destPos, false, depaPos, {
 			input,
