@@ -113,12 +113,12 @@ describe("InputObserver", function () {
 
         this.axes.setTo({ x: depaPos }, 0);
 
-        let isFirstTime = false;
+        let isFirstTime = true;
         this.axes.on("change", ({ delta }) => {
           // Then
-          if (!isFirstTime) {
+          if (isFirstTime) {
             // bounce area
-            isFirstTime = true;
+            isFirstTime = false;
             return;
           }
           // out of bounce area
