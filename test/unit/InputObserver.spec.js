@@ -117,11 +117,11 @@ describe("InputObserver", function () {
         this.axes.on("change", ({ delta }) => {
           // Then
           if (!isFirstTime) {
-						// bounce area
+            // bounce area
             isFirstTime = true;
             return;
-					}
-					// out of bounce area
+          }
+          // out of bounce area
           expect(delta.x).to.be.equals(0);
         });
         this.axes.on("finish", () => {
@@ -134,10 +134,10 @@ describe("InputObserver", function () {
         };
         const sign = direction > 0 ? 1 : -1;
         this.inst.hold(inputType);
-				// Move them approximately 150 by slope bounce to reach the end.
-				// bounce area
-				this.inst.change(inputType, {}, { x: sign * 150 });
-				// out of bounce area
+        // Move them approximately 150 by slope bounce to reach the end.
+        // bounce area
+        this.inst.change(inputType, {}, { x: sign * 150 });
+        // out of bounce area
         this.inst.change(inputType, {}, { x: sign * 10 });
         this.inst.change(inputType, {}, { x: sign * 10 });
         this.inst.change(inputType, {}, { x: sign * 10 });
