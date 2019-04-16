@@ -75,18 +75,19 @@ export class InputObserver implements IInputTypeObserver {
 		if (this.isStopped || !this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
 			return;
 		}
-		const depaPos: Axis = this.moveDistance || this.axm.get(input.axes);
+		let depaPos: Axis = this.moveDistance || this.axm.get(input.axes);
 		let destPos: Axis;
 
 		// for outside logic
 		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
+		this.moveDistance && (this.moveDistance = destPos);
 		// from outside to inside
 		if (this.isOutside &&
 			this.axm.every(depaPos, (v, opt) => !isOutside(v, opt.range))) {
 			this.isOutside = false;
 		}
+		depaPos = this.atOutside(depaPos);
 		destPos = this.atOutside(destPos);
-		this.moveDistance && (this.moveDistance = destPos);
 
 		const isCanceled = !this.em.triggerChange(destPos, false, depaPos, {
 			input,
