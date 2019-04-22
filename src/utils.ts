@@ -94,7 +94,9 @@ export function requestAnimationFrame(fp) {
 export function cancelAnimationFrame(key) {
 	caf(key);
 }
-
+export function mapToFixed(obj: ObjectInterface<number>) {
+	return map(obj, value => toFixed(value));
+}
 export function map<T, U>(obj: ObjectInterface<T>, callback: (value: T, key: string) => U): ObjectInterface<U> {
 	const tranformed: ObjectInterface<U> = {};
 

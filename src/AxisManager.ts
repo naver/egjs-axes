@@ -94,12 +94,12 @@ export class AxisManager {
 
 		return filter(pos, (value, key) => callback(value, axisOptions[key], key));
 	}
-	map(
+	map<U>(
 		pos: Axis,
-		callback: (value: number, options: AxisOption, key: string) => number): Axis {
+		callback: (value: number, options: AxisOption, key: string) => U) {
 		const axisOptions = this.axis;
 
-		return map(pos, (value, key) => callback(value, axisOptions[key], key));
+		return map<number, U>(pos, (value, key) => callback(value, axisOptions[key], key));
 	}
 	isOutside(axes?: string[]) {
 		return !this.every(
