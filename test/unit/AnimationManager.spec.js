@@ -3,6 +3,7 @@ import {AxisManager} from "../../src/AxisManager";
 import {InterruptManager} from "../../src/InterruptManager";
 import {EventManager} from "../../src/EventManager";
 import Component from "@egjs/component";
+import { map } from "../../src/utils";
 
 describe("AnimationManager", function () {
   describe("method test", function() {
@@ -484,10 +485,41 @@ describe("AnimationManager", function () {
       setTimeout(() => {
         expect(startHandler.calledTwice).to.be.true;
         expect(changeHandler.called).to.be.true;
-        expect(endHandler.calledTwice).to.be.true;
-        expect(this.inst.axm.get()).to.eql({x:0, y:0, z:-100});
+				expect(endHandler.calledTwice).to.be.true;
+				const result = this.inst.axm.get();
+
+				expect(result.x).to.be.equal(0);
+				expect(result.y).to.be.equal(0);
+				expect(result.z).to.be.equal(-100);
         done();
       }, 500);
-    });
+		});
+		[1, -1].forEach(direction => {
+			it(`should check destPos when range changes dynamically during animateLoop(direction: ${direction})`, (done) => {
+				// Given
+				const depaPos = {z: -100};
+				const destPos = direction > 0 ? {z: 500} : {z: -600};
+				const resultPos = direction > 0 ? {z: 200} : {z: 0};
+
+				// When
+				setTimeout(() => {
+					// the right time for a range to be crossed
+					// z.range[1] 200 => 600
+					console.log("CHANGE");
+					this.axis.z.range[1] = 600;
+				}, 300)
+
+				this.inst.animateLoop({
+					duration: 1000,
+					depaPos,
+					destPos,
+					delta: {z: destPos.z - depaPos.z},
+				}, () => {
+					// Then
+					expect(this.inst.axm.get(["z"]).z).to.be.equals(resultPos.z);
+					done();
+				});
+			});
+		});
   });
 });

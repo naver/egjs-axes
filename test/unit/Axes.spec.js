@@ -96,7 +96,7 @@ describe("Axes", function () {
 
       // When
       this.inst.setBy({x: 10});
-      
+
       // Then
       expect(this.inst.get()).to.be.eql({x: 30, otherX: -100});
     });
@@ -159,7 +159,7 @@ describe("Axes", function () {
         "change": changeHandler,
         "animationEnd": endHandler
       });
-      
+
       const startHandler = sinon.spy();
       const changeHandler = sinon.spy();
       const endHandler = sinon.spy(function() {
@@ -169,10 +169,10 @@ describe("Axes", function () {
         expect(this.inst.get()).to.be.eql({x: 40, otherX: -100});
         done();
       });
-      
+
       // When
       this.inst.setBy({x: -10}, 200);
-    });    
+    });
   });
 
   describe("Axes Test with InputType", function () {
@@ -339,7 +339,7 @@ describe("Axes", function () {
 
 					expect(currX).to.be.not.equal(prevX);
           expect(currY).to.be.not.equal(prevY);
-          
+
           pinchInput.destroy();
           panInput.destroy();
 					done();
@@ -719,8 +719,11 @@ describe("Axes", function () {
           expect(this.releaseHandler.calledOnce).to.be.true;
           expect(releaseEvent.inputEvent.isFinal).to.be.true;
           expect(releaseEvent.input).to.be.equal(this.input);
-          expect(releaseEvent.isTrusted).to.be.true;
-          expect(this.inst.get()).to.be.eql({x: 0, y: 10});
+					expect(releaseEvent.isTrusted).to.be.true;
+
+					const result = this.inst.get();
+					expect(result.x).to.be.equal(0);
+					expect(result.y).to.be.equal(10);
           expect(releaseEvent.duration).to.be.equal(0);
           expect(releaseEvent.depaPos).to.deep.equal(releaseEvent.destPos);
           const animationStartEvent = this.animationStartHandler.getCall(0).args[0];
