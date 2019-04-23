@@ -153,7 +153,6 @@ export class AnimationManager {
 				const prevEasingPer = self.easing((prevTime - info.startTime) / param.duration);
 				const easingPer = self.easing((currentTime - info.startTime) / param.duration);
 				let toPos: Axis = map(prevPos, (pos, key) => pos + info.delta[key] * (easingPer - prevEasingPer));
-				const isCanceled = !self.em.triggerChange(toPos, false, mapToFixed(prevPos));
 
 				toPos = self.axm.map(toPos, (pos, options, key) => {
 					// fix absolute position to relative position
@@ -162,9 +161,11 @@ export class AnimationManager {
 					if (pos !== nextPos) {
 						// circular
 						param.destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
+						prevPos[key] += -directions[key] * (options.range[1] - options.range[0]);
 					}
 					return nextPos;
 				});
+				const isCanceled = !self.em.triggerChange(toPos, false, mapToFixed(prevPos));
 
 				prevPos = toPos;
 				prevTime = currentTime;
