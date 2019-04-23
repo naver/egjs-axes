@@ -248,7 +248,7 @@ export class AnimationManager {
 		}
 
 		movedPos = this.axm.map(movedPos, (v, opt) => {
-			const {range, circular} = opt;
+			const { range, circular } = opt;
 
 			if (circular && (circular[0] || circular[1])) {
 				return v;

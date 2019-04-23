@@ -498,8 +498,8 @@ describe("AnimationManager", function () {
 			it(`should check destPos when range changes dynamically during animateLoop(direction: ${direction}, circular: true)`, (done) => {
 				// Given
 				const depaPos = { z: -100 };
-				const destPos = direction > 0 ? { z: 500 } : { z: -600 };
-				const resultPos = direction > 0 ? { z: 200 } : { z: 0 };
+				const destPos = direction > 0 ? { z: 600 } : { z: -600 };
+				const resultPos = direction > 0 ? { z: 300 } : { z: 0 };
 
 				// When
 				setTimeout(() => {
@@ -520,23 +520,29 @@ describe("AnimationManager", function () {
 					done();
 				});
 			});
-			it.only(`should check destPos when range changes dynamically during animateLoop and change(direction: ${direction}, circular: true)`, (done) => {
+			it(`should check destPos when range changes dynamically during animateLoop and change(direction: ${direction}, circular: true)`, (done) => {
 				// Given
 				const depaPos = { z: -100 };
-				const destPos = direction > 0 ? { z: 500 } : { z: -600 };
-				const resultPos = direction > 0 ? { z: 200 } : { z: 0 };
+				const destPos = direction > 0 ? { z: 600 } : { z: -600 };
+				const resultPos = direction > 0 ? { z: 300 } : { z: 0 };
 
 				// When
-				this.component.on("change", e => {
-					if (
-						// range[0] = -100
-						(direction < -1 && e.poz.z < -95)
-						// range[1] = 200
-						|| (direction > 1 && e.pos.z > 195)
-					) {
-						this.axis.z.range[1] = 600;
-					}
-				});
+				let willChange = false;
+				setTimeout(() => {
+					// Starts with the exception of -100, which is the start position.
+					this.component.on("change", e => {
+						if (
+							// range[0] = -100
+							(direction === -1 && e.pos.z < -80)
+							// range[1] = 200
+							|| (direction === 1 && e.pos.z > 180)
+						) {
+							willChange = true;
+						} else if (willChange) {
+							this.axis.z.range[1] = 600;
+						}
+					});
+				}, 100);
 
 				this.inst.animateLoop({
 					duration: 1000,
