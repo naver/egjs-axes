@@ -141,6 +141,7 @@ export class AnimationManager {
 			const info: AnimationParam = this._animateParam;
 			const self = this;
 			let prevPos = info.depaPos;
+			let prevEasingPer = 0;
 			const directions = map(prevPos, (value, key) => {
 				return value <= info.destPos[key] ? 1 : -1;
 			});
@@ -150,7 +151,6 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				const currentTime = new Date().getTime();
-				const prevEasingPer = self.easing((prevTime - info.startTime) / param.duration);
 				const easingPer = self.easing((currentTime - info.startTime) / param.duration);
 				let toPos: Axis = map(prevPos, (pos, key) => pos + info.delta[key] * (easingPer - prevEasingPer));
 
@@ -169,6 +169,7 @@ export class AnimationManager {
 
 				prevPos = toPos;
 				prevTime = currentTime;
+				prevEasingPer = easingPer;
 				if (easingPer >= 1) {
 					const destPos = param.destPos;
 
