@@ -77,5 +77,21 @@ export default class TestHelper {
 
 		loop();
 	}
+
+	static panOnElement(el, param, callback, debugOption) {
+		const rect = el.getBoundingClientRect();
+
+		const paramByEl = Object.assign({}, param, {
+			pos: [rect.left + param.pos[0], rect.top + param.pos[1]]
+		});
+
+		// console.log(paramByEl);
+
+		Simulator.gestures.pan(el, paramByEl, callback);
+
+		if (debugOption) {
+			debugOption.clock && debugOption.clock.tick(param.duration + 100); // margin (100) is needed.
+		}
+	}
 }
 
