@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-axes",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A react component that can easily use egjs-axes.",
   "main": "dist/index.js",
   "author": {
