@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>egjs-axes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+<style>
+.axes-target {
+  position:absolute;
+  width: 300px;
+  height: 300px;
+  border: solid 1px;
+}
+
+.axes-axes {
+  position:absolute;
+  right: 0px;
+  width: 50%;
+  height: 50%;
+  border: dotted 1px;
+}
+
+#roulette {
+  position: absolute;
+  left: 25%;
+  top:25%;
+  width: 50%;
+  height: 50%;
+  opacity: .5;
+  background-color: yellow;
+  border-radius: 50%;
+}
+
+.arrow {
+  position: absolute;
+  left: 47.5%;
+  top:0%;
+  width: 5%;
+  height: 50%;
+  background-color: red
+}
+</style>
+</head>
+<body>
+  <div>
+    Angle: <span id="angle-text">--deg</span>
+  </div>
+
+  <div id="area" class="axes-target">
+    <div class="axes-axes" style="left:-1px;top:-1px"></div>
+    <div class="axes-axes" style="right:-1px;bottom:-1px;"></div>
+    <div id="roulette">
+      <div class="arrow">arrow</div>
+    </div>
+  </div>
+
+  <!-- <div id="rotate-area" style="position:absolute;left:50px;width:100px;height:100px;background-color:yellow">
+    <div style="position:absolute;left:0px;width:50px;height:1px;border:0px;background-color:red;"></div>
+    <div style="position:absolute;left:50px;width:50px;height:1px;border:0px;background-color:blue;"></div>
+  </div> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-shim.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.1.5/es5-sham.js"></script>
+  <!--[if IE 8]>
+<script type="text/javascript" src="../../node_modules/hammerjs-compatible/dist/hammerjs.compatible.js"></script>
+<![endif]-->
+  <script src="../../node_modules/@egjs/hammerjs/dist/hammer.js"></script>
+  <script src="../../node_modules/@egjs/component/dist/component.js"></script>
+  <script src="../../dist/axes.js"></script>
+  <!-- <script src="../../dist/axes.pkgd.js"></script> -->
+  <script src="js/rotate.js"></script>
+</body>
+</html>
