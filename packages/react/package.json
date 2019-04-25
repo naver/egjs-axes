@@ -9,10 +9,7 @@
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-axes",
   "dependencies": {
-    "@egjs/axes": "^2.4.3",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-scripts": "1.0.17"
+    "@egjs/axes": "^2.4.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -29,7 +26,13 @@
     "file-loader": "^1.1.11",
     "url-loader": "^1.0.1",
     "webpack": "^3.10.0",
-    "write-file-webpack-plugin": "^4.2.0"
+    "write-file-webpack-plugin": "^4.2.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "peerDependencies": {
+    "react": ">= 15",
+    "react-dom": ">= 15"
   },
   "scripts": {
     "start": "webpack-dev-server --host=0.0.0.0 ",
