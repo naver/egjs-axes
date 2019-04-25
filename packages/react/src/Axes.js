@@ -91,7 +91,7 @@ export default class Axes extends Component {
         return this.props.children(this.state);
 	}
 	componentDidUpdate() {
-		this.axes.axis = this.props.axis;
+		this.axes.axis.axis = this.props.axis;
 	}
     componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
