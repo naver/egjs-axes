@@ -129,6 +129,7 @@ export default class Axes extends Component {
 	static PinchInput;
 	static WheelInput;
 	static MoveKeyInput;
+	static RotatePanInput;
 
 	/**
 	 * @name eg.Axes.TRANSFORM

@@ -85,8 +85,8 @@ export class PanInput implements IInputType {
 	axes: string[] = [];
 	hammer = null;
 	element: HTMLElement = null;
-	private observer: IInputTypeObserver;
-	private _direction;
+	protected observer: IInputTypeObserver;
+	protected _direction;
 	private panRecognizer = null;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
@@ -233,7 +233,7 @@ export class PanInput implements IInputType {
 		}
 	}
 
-	private onHammerInput(event) {
+	protected onHammerInput(event) {
 		if (this.isEnable()) {
 			if (event.isFirst) {
 				this.observer.hold(this, event);
@@ -243,7 +243,7 @@ export class PanInput implements IInputType {
 		}
 	}
 
-	private onPanmove(event) {
+	protected onPanmove(event) {
 		const userDirection = getDirectionByAngle(
 			event.angle, this.options.thresholdAngle);
 
@@ -273,7 +273,7 @@ export class PanInput implements IInputType {
 		prevent && this.observer.change(this, event, toAxis(this.axes, offset));
 	}
 
-	private onPanend(event) {
+	protected onPanend(event) {
 		let offset: number[] = this.getOffset(
 			[
 				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
