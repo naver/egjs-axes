@@ -41,7 +41,7 @@ export default class Axes extends Component {
                 events[name.replace("on", "").toLowerCase()] = props[name];
             }
         }
-        
+
         const propsAxis = this.props.axis;
 
         for (const name in propsAxis) {
@@ -89,7 +89,10 @@ export default class Axes extends Component {
     }
     render() {
         return this.props.children(this.state);
-    }
+	}
+	componentDidUpdate() {
+		this.axes.axis = this.props.axis;
+	}
     componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
 
@@ -102,7 +105,7 @@ export default class Axes extends Component {
             const inst = input.$$typeof ? new input.type(input.props) : input;
             const props = inst.props;
             const {type, axis, options} = props;
-        
+
             this.axes.connect(axis, new type(element, options));
         });
     }
