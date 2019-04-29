@@ -12,12 +12,6 @@ export class RotatePanInput extends PanInput {
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		super(el, options);
 
-		const rect = this.element.getBoundingClientRect();
-		// TODO: how to do if element is ellipse not circle.
-		this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
-		// TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-		this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
-		this.prevAngle = null;
 		this.prevQuadrant = null;
 		this.lastDiff = 0;
 	}
@@ -30,7 +24,6 @@ export class RotatePanInput extends PanInput {
 	onHammerInput(event) {
 		if (this.isEnable()) {
 			if (event.isFirst) {
-				this.prevAngle = null;
 				this.observer.hold(this, event);
 				this.onPanstart(event);
 			} else if (event.isFinal) {
@@ -40,6 +33,19 @@ export class RotatePanInput extends PanInput {
 	}
 
 	onPanstart(event) {
+		const rect = this.element.getBoundingClientRect();
+
+		/**
+		 * Responsive
+		 */
+		// TODO: how to do if element is ellipse not circle.
+		this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
+		// TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+		this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
+
+		// init angle.
+		this.prevAngle = null;
+
 		this.triggerChange(event);
 	}
 
@@ -81,7 +87,7 @@ export class RotatePanInput extends PanInput {
 	private getDifference(prevAngle: number, angle: number, prevQuadrant: number, quadrant: number) {
 		let diff: number;
 
-		if (prevAngle === null || prevQuadrant === null) {
+		if (prevAngle === null) {
 			diff = 0;
 		} else if (prevQuadrant === 1 && quadrant === 4) {
 			diff = -prevAngle - (360 - angle);
