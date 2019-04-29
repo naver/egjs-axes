@@ -71,9 +71,9 @@ export class RotatePanInput extends PanInput {
 	private triggerAnimation(event) {
 		const vx = event.velocityX;
 		const vy = event.velocityY;
-		const normalSpeed = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-		const duration = Math.abs(normalSpeed / -this.observer.options.deceleration);
-		const distance = normalSpeed / 2 * duration;
+		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
+		const duration = Math.abs(velocity / -this.observer.options.deceleration);
+		const distance = velocity / 2 * duration;
 
 		this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
 	}
