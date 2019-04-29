@@ -17,9 +17,7 @@ describe("RotatePanInput", () => {
 
 			currAxes.setTo({angle: 0});
 
-			await new Promise(res => {
-				TestHelper.panOnElement(currEl, MOVES[i], res, {clock});
-			});
+			await TestHelper.panOnElement(currEl, MOVES[i], {clock});
 
 			resultAngles.push(currAxes.get()["angle"]);
 		};
@@ -182,9 +180,7 @@ describe("RotatePanInput", () => {
 		for (let i = 0; i < MOVES.length; i++) {
 			axes.setTo({angle: 0});
 
-			await new Promise(res => {
-				TestHelper.panOnElement(el, MOVES[i], res, {clock});
-			});
+			await TestHelper.panOnElement(el, MOVES[i], {clock});
 
 			resultAngles.push(axes.get()["angle"]);
 		};
@@ -245,5 +241,57 @@ describe("RotatePanInput", () => {
 
 		// Then
 		await testPanMove(MOVES);
+	});
+
+	it("should return correct angle by responsive", async () => {
+		const resultAngles = [];
+		const MOVE_HORIZONTALLY_ON_BIG = {
+			axes: axes,
+			target: el,
+			pos: [100, 0],	// Mid index of width 201 is 100 (201 - 1 / 2 )
+			deltaX: 100,		// Until 200
+			deltaY: 0,
+			duration: 2000,
+			expectedAngle: 45
+		};
+
+		axes.setTo({angle: 0});
+
+		await TestHelper.panOnElement(el, MOVE_HORIZONTALLY_ON_BIG, {clock});
+
+		resultAngles.push(axes.get()["angle"]);
+
+		// When
+		/**
+		 * element size is change.
+		 */
+		el.style.width = "101px";
+		el.style.height = "101px";
+
+		const MOVE_HORIZONTALLY_ON_SMALL = {
+			axes: axes,
+			target: el,
+			pos: [50, 0],	// Mid index of width 101 is 50 (101 - 1 / 2 )
+			deltaX: 50,		// Until 100
+			deltaY: 0,
+			duration: 2000,
+			expectedAngle: 45
+		};
+
+		axes.setTo({angle: 0});
+
+		await TestHelper.panOnElement(el, MOVE_HORIZONTALLY_ON_SMALL, {clock});
+
+		resultAngles.push(axes.get()["angle"]);
+
+		const MOVES = [
+			MOVE_HORIZONTALLY_ON_BIG,
+			MOVE_HORIZONTALLY_ON_SMALL
+		];
+
+		// Then
+		resultAngles.forEach((angle, i) => {
+			expect(angle).to.be.closeTo(MOVES[i].expectedAngle, 0.001);
+		});
 	});
 });

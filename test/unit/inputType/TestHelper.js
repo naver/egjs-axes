@@ -78,7 +78,7 @@ export default class TestHelper {
 		loop();
 	}
 
-	static panOnElement(el, param, callback, debugOption) {
+	static panOnElement(el, param, debugOption) {
 		const rect = el.getBoundingClientRect();
 
 		const paramByEl = Object.assign({}, param, {
@@ -86,12 +86,13 @@ export default class TestHelper {
 		});
 
 		// console.log(paramByEl);
+		return new Promise(res => {
+			Simulator.gestures.pan(el, paramByEl, res);
 
-		Simulator.gestures.pan(el, paramByEl, callback);
-
-		if (debugOption) {
-			debugOption.clock && debugOption.clock.tick(param.duration + 100); // margin (100) is needed.
-		}
+			if (debugOption) {
+				debugOption.clock && debugOption.clock.tick(param.duration + 100); // margin (100) is needed.
+			}
+		});
 	}
 }
 
