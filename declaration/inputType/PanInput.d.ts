@@ -15,8 +15,8 @@ export declare class PanInput implements IInputType {
     axes: string[];
     hammer: any;
     element: HTMLElement;
-    private observer;
-    private _direction;
+    protected observer: IInputTypeObserver;
+    protected _direction: any;
     private panRecognizer;
     constructor(el: string | HTMLElement, options?: PanInputOption);
     mapAxes(axes: string[]): void;
@@ -27,9 +27,9 @@ export declare class PanInput implements IInputType {
     disable(): this;
     isEnable(): boolean;
     private removeRecognizer;
-    private onHammerInput;
-    private onPanmove;
-    private onPanend;
+    protected onHammerInput(event: any): void;
+    protected onPanmove(event: any): void;
+    protected onPanend(event: any): void;
     private attachEvent;
     private dettachEvent;
     private getOffset;

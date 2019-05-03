@@ -21,6 +21,7 @@ export default class Axes extends Component {
     static PinchInput: any;
     static WheelInput: any;
     static MoveKeyInput: any;
+    static RotatePanInput: any;
     static TRANSFORM: string;
     static DIRECTION_NONE: number;
     static DIRECTION_LEFT: number;
