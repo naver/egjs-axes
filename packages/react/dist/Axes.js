@@ -118,6 +118,11 @@ var Axes = function (_Component) {
             return this.props.children(this.state);
         }
     }, {
+        key: "componentDidUpdate",
+        value: function componentDidUpdate() {
+            this.axes.axis.axis = this.props.axis;
+        }
+    }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             var _this2 = this;
