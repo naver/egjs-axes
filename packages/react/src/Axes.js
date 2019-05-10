@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import NativeAxes from "@egjs/axes";
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
@@ -35,13 +35,13 @@ export default class Axes extends Component {
         for (const name in props) {
             if (name in Axes.propTypes) {
                 continue;
-            } else if(name in Axes.optionsTypes) {
+            } else if (name in Axes.optionsTypes) {
                 options[name] = props[name];
             } else if (~name.search(/^on/)) {
                 events[name.replace("on", "").toLowerCase()] = props[name];
             }
         }
-        
+
         const propsAxis = this.props.axis;
 
         for (const name in propsAxis) {
@@ -90,6 +90,9 @@ export default class Axes extends Component {
     render() {
         return this.props.children(this.state);
     }
+    componentDidUpdate() {
+        this.axes.axis.axis = this.props.axis;
+    }
     componentDidMount() {
         const element = ReactDOM.findDOMNode(this);
 
@@ -101,8 +104,8 @@ export default class Axes extends Component {
         inputs.forEach(input => {
             const inst = input.$$typeof ? new input.type(input.props) : input;
             const props = inst.props;
-            const {type, axis, options} = props;
-        
+            const { type, axis, options } = props;
+
             this.axes.connect(axis, new type(element, options));
         });
     }
