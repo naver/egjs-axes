@@ -199,7 +199,7 @@ export default class Axes extends Component {
 	public io: InputObserver;
 	private _inputs: IInputType[] = [];
 
-	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption, startPos?: Axis) {
+	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption = {}, startPos?: Axis) {
 		super();
 		this.options = {
 			...{
