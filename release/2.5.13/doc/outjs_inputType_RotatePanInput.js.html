@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Source: node_modules/@egjs/component/src/component.js | egjs::axes - API</title>
+    <title>Source: outjs/inputType/RotatePanInput.js | egjs::axes - API</title>
     
     <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions." />
     
@@ -302,265 +302,147 @@
 </div>
 
     <div class="main">
-        <h1 class="page-title" data-filename="node_modules_@egjs_component_src_component.js.html">Source: node_modules/@egjs/component/src/component.js</h1>
+        <h1 class="page-title" data-filename="outjs_inputType_RotatePanInput.js.html">Source: outjs/inputType/RotatePanInput.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Copyright (c) 2015 NAVER Corp.
- * egjs projects are licensed under the MIT license
- */
-
-
-function isUndefined(value) {
-	return typeof value === "undefined";
-}
-/**
- * A class used to manage events in a component
- * @ko 컴포넌트의 이벤트을 관리할 수 있게 하는 클래스
- * @alias eg.Component
- */
-class Component {
-	/**
- * Version info string
- * @ko 버전정보 문자열
- * @name VERSION
- * @static
- * @type {String}
- * @example
- * eg.Component.VERSION;  // ex) 2.0.0
- * @memberof eg.Component
- */
-	static VERSION = "#__VERSION__#";
-	/**
-	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
-	 */
-	constructor() {
-		this._eventHandler = {};
-		this.options = {};
-	}
-	/**
-	 * Triggers a custom event.
-	 * @ko 커스텀 이벤트를 발생시킨다
-	 * @param {String} eventName The name of the custom event to be triggered &lt;ko>발생할 커스텀 이벤트의 이름&lt;/ko>
-	 * @param {Object} customEvent Event data to be sent when triggering a custom event &lt;ko>커스텀 이벤트가 발생할 때 전달할 데이터&lt;/ko>
-	 * @return {Boolean} Indicates whether the event has occurred. If the stop() method is called by a custom event handler, it will return false and prevent the event from occurring. &lt;a href="https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F">Ref&lt;/a> &lt;ko>이벤트 발생 여부. 커스텀 이벤트 핸들러에서 stop() 메서드를 호출하면 'false'를 반환하고 이벤트 발생을 중단한다. &lt;a href="https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F">참고&lt;/a>&lt;/ko>
-	 * @example
-
-class Some extends eg.Component {
-  some(){
-  	if(this.trigger("beforeHi")){ // When event call to stop return false.
-		this.trigger("hi");// fire hi event.
-  	}
-  }
-}
-
-const some = new Some();
-some.on("beforeHi", (e) => {
-	if(condition){
-		e.stop(); // When event call to stop, `hi` event not call.
-	}
-});
-some.on("hi", (e) => {
-	// `currentTarget` is component instance.
-	console.log(some === e.currentTarget); // true
-});
-// If you want to more know event design. You can see article.
-// https://github.com/naver/egjs-component/wiki/How-to-make-Component-event-design%3F
-	 */
-	trigger(eventName, customEvent = {}, ...restParam) {
-		let handlerList = this._eventHandler[eventName] || [];
-		const hasHandlerList = handlerList.length > 0;
-
-		if (!hasHandlerList) {
-			return true;
-		}
-
-		// If detach method call in handler in first time then handler list calls.
-		handlerList = handlerList.concat();
-
-		customEvent.eventType = eventName;
-
-		let isCanceled = false;
-		let arg = [customEvent];
-		let i = 0;
-
-		customEvent.stop = () => { isCanceled = true; };
-		customEvent.currentTarget = this;
-
-		if (restParam.length >= 1) {
-			arg = arg.concat(restParam);
-		}
-
-		for (i = 0; handlerList[i]; i++) {
-			handlerList[i].apply(this, arg);
-		}
-
-		return !isCanceled;
-	}
-	/**
-	 * Executed event just one time.
-	 * @ko 이벤트가 한번만 실행된다.
-	 * @param {eventName} eventName The name of the event to be attached &lt;ko>등록할 이벤트의 이름&lt;/ko>
-	 * @param {Function} handlerToAttach The handler function of the event to be attached &lt;ko>등록할 이벤트의 핸들러 함수&lt;/ko>
-	 * @return {eg.Component} An instance of a component itself&lt;ko>컴포넌트 자신의 인스턴스&lt;/ko>
-	 * @example
-class Some extends eg.Component {
-  hi() {
-    alert("hi");
-  }
-  thing() {
-    this.once("hi", this.hi);
-  }
-}
-
-var some = new Some();
-some.thing();
-some.trigger("hi");
-// fire alert("hi");
-some.trigger("hi");
-// Nothing happens
-	 */
-	once(eventName, handlerToAttach) {
-		if (typeof eventName === "object" &amp;&amp; isUndefined(handlerToAttach)) {
-			const eventHash = eventName;
-			let i;
-
-			for (i in eventHash) {
-				this.once(i, eventHash[i]);
-			}
-			return this;
-		} else if (typeof eventName === "string" &amp;&amp;
-			typeof handlerToAttach === "function") {
-			const self = this;
-
-			this.on(eventName, function listener(...arg) {
-				handlerToAttach.apply(self, arg);
-				self.off(eventName, listener);
-			});
-		}
-
-		return this;
-	}
-
-	/**
-	 * Checks whether an event has been attached to a component.
-	 * @ko 컴포넌트에 이벤트가 등록됐는지 확인한다.
-	 * @param {String} eventName The name of the event to be attached &lt;ko>등록 여부를 확인할 이벤트의 이름&lt;/ko>
-	 * @return {Boolean} Indicates whether the event is attached. &lt;ko>이벤트 등록 여부&lt;/ko>
-	 * @example
-class Some extends eg.Component {
-  some() {
-    this.hasOn("hi");// check hi event.
-  }
-}
-	 */
-	hasOn(eventName) {
-		return !!this._eventHandler[eventName];
-	}
-
-	/**
-	 * Attaches an event to a component.
-	 * @ko 컴포넌트에 이벤트를 등록한다.
-	 * @param {eventName} eventName The name of the event to be attached &lt;ko>등록할 이벤트의 이름&lt;/ko>
-	 * @param {Function} handlerToAttach The handler function of the event to be attached &lt;ko>등록할 이벤트의 핸들러 함수&lt;/ko>
-	 * @return {eg.Component} An instance of a component itself&lt;ko>컴포넌트 자신의 인스턴스&lt;/ko>
-	 * @example
-class Some extends eg.Component {
-  hi() {
-    console.log("hi");
-  }
-  some() {
-    this.on("hi",this.hi); //attach event
-  }
-}
-*/
-	on(eventName, handlerToAttach) {
-		if (typeof eventName === "object" &amp;&amp; isUndefined(handlerToAttach)) {
-			const eventHash = eventName;
-			let name;
-
-			for (name in eventHash) {
-				this.on(name, eventHash[name]);
-			}
-			return this;
-		} else if (typeof eventName === "string" &amp;&amp;
-			typeof handlerToAttach === "function") {
-			let handlerList = this._eventHandler[eventName];
-
-			if (isUndefined(handlerList)) {
-				this._eventHandler[eventName] = [];
-				handlerList = this._eventHandler[eventName];
-			}
-
-			handlerList.push(handlerToAttach);
-		}
-
-		return this;
-	}
-	/**
-	 * Detaches an event from the component.
-	 * @ko 컴포넌트에 등록된 이벤트를 해제한다
-	 * @param {eventName} eventName The name of the event to be detached &lt;ko>해제할 이벤트의 이름&lt;/ko>
-	 * @param {Function} handlerToDetach The handler function of the event to be detached &lt;ko>해제할 이벤트의 핸들러 함수&lt;/ko>
-	 * @return {eg.Component} An instance of a component itself &lt;ko>컴포넌트 자신의 인스턴스&lt;/ko>
-	 * @example
-class Some extends eg.Component {
-  hi() {
-    console.log("hi");
-  }
-  some() {
-    this.off("hi",this.hi); //detach event
-  }
-}
-	 */
-	off(eventName, handlerToDetach) {
-		// All event detach.
-		if (isUndefined(eventName)) {
-			this._eventHandler = {};
-			return this;
-		}
-
-		// All handler of specific event detach.
-		if (isUndefined(handlerToDetach)) {
-			if (typeof eventName === "string") {
-				this._eventHandler[eventName] = undefined;
-				return this;
-			} else {
-				const eventHash = eventName;
-				let name;
-
-				for (name in eventHash) {
-					this.off(name, eventHash[name]);
-				}
-				return this;
-			}
-		}
-
-		// The handler of specific event detach.
-		let handlerList = this._eventHandler[eventName];
-
-		if (handlerList) {
-			let k;
-			let handlerFunction;
-
-			for (k = 0; (handlerFunction = handlerList[k]) !== undefined; k++) {
-				if (handlerFunction === handlerToDetach) {
-					handlerList = handlerList.splice(k, 1);
-					break;
-				}
-			}
-		}
-
-		return this;
-	}
-}
-
-export default Component;
-</code></pre>
+            <pre class="prettyprint source linenums"><code>var __extends = (this &amp;&amp; this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+import Axes from "../Axes";
+import { toAxis } from "./InputType";
+import { PanInput } from "./PanInput";
+var RotatePanInput = /** @class */ (function (_super) {
+    __extends(RotatePanInput, _super);
+    function RotatePanInput(el, options) {
+        var _this = _super.call(this, el, options) || this;
+        _this.prevQuadrant = null;
+        _this.lastDiff = 0;
+        return _this;
+    }
+    RotatePanInput.prototype.mapAxes = function (axes) {
+        this._direction = Axes.DIRECTION_ALL;
+        this.axes = axes;
+    };
+    RotatePanInput.prototype.onHammerInput = function (event) {
+        if (this.isEnable()) {
+            if (event.isFirst) {
+                this.observer.hold(this, event);
+                this.onPanstart(event);
+            }
+            else if (event.isFinal) {
+                this.onPanend(event);
+            }
+        }
+    };
+    RotatePanInput.prototype.onPanstart = function (event) {
+        var rect = this.element.getBoundingClientRect();
+        /**
+         * Responsive
+         */
+        // TODO: how to do if element is ellipse not circle.
+        this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
+        // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+        this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
+        // init angle.
+        this.prevAngle = null;
+        this.triggerChange(event);
+    };
+    RotatePanInput.prototype.onPanmove = function (event) {
+        this.triggerChange(event);
+    };
+    RotatePanInput.prototype.onPanend = function (event) {
+        this.triggerChange(event);
+        this.triggerAnimation(event);
+    };
+    RotatePanInput.prototype.triggerChange = function (event) {
+        var angle = this.getAngle(event.center.x, event.center.y);
+        var quadrant = this.getQuadrant(event.center.x, event.center.y);
+        var diff = this.getDifference(this.prevAngle, angle, this.prevQuadrant, quadrant);
+        this.prevAngle = angle;
+        this.prevQuadrant = quadrant;
+        if (diff === 0) {
+            return;
+        }
+        this.lastDiff = diff;
+        this.observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
+    };
+    RotatePanInput.prototype.triggerAnimation = function (event) {
+        var vx = event.velocityX;
+        var vy = event.velocityY;
+        var velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
+        var duration = Math.abs(velocity / -this.observer.options.deceleration);
+        var distance = velocity / 2 * duration;
+        this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
+    };
+    RotatePanInput.prototype.getDifference = function (prevAngle, angle, prevQuadrant, quadrant) {
+        var diff;
+        if (prevAngle === null) {
+            diff = 0;
+        }
+        else if (prevQuadrant === 1 &amp;&amp; quadrant === 4) {
+            diff = -prevAngle - (360 - angle);
+        }
+        else if (prevQuadrant === 4 &amp;&amp; quadrant === 1) {
+            diff = (360 - prevAngle) + angle;
+        }
+        else {
+            diff = angle - prevAngle;
+        }
+        return diff;
+    };
+    RotatePanInput.prototype.getPosFromOrigin = function (posX, posY) {
+        return {
+            x: posX - this.rotateOrigin[0],
+            y: this.rotateOrigin[1] - posY,
+        };
+    };
+    RotatePanInput.prototype.getAngle = function (posX, posY) {
+        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
+        var angle = Math.atan2(y, x) * 180 / Math.PI;
+        // console.log(angle, x, y);
+        return angle &lt; 0 ? 360 + angle : angle;
+    };
+    /**
+     * Quadrant
+     *       y(+)
+     *       |
+     *   2   |    1
+     * --------------->x(+)
+     *   3   |    4
+     *       |
+     */
+    RotatePanInput.prototype.getQuadrant = function (posX, posY) {
+        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
+        var q = 0;
+        if (x >= 0 &amp;&amp; y >= 0) {
+            q = 1;
+        }
+        else if (x &lt; 0 &amp;&amp; y >= 0) {
+            q = 2;
+        }
+        else if (x &lt; 0 &amp;&amp; y &lt; 0) {
+            q = 3;
+        }
+        else if (x >= 0 &amp;&amp; y &lt; 0) {
+            q = 4;
+        }
+        return q;
+    };
+    return RotatePanInput;
+}(PanInput));
+export { RotatePanInput };
+//# sourceMappingURL=RotatePanInput.js.map</code></pre>
         </article>
     </section>
 
