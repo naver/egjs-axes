@@ -46,7 +46,7 @@ export class AnimationManager {
 			const durations: Axis = map(
 				destPos,
 				(v, k) => getDuration(
-					Math.abs(Math.abs(v) - Math.abs(depaPos[k])),
+					Math.abs(v - depaPos[k]),
 					this.options.deceleration),
 			);
 			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
