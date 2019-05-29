@@ -3,6 +3,7 @@ export declare function toArray(nodes: NodeList): HTMLElement[];
 export declare function $(param: any, multi?: boolean): any;
 export declare function requestAnimationFrame(fp: any): any;
 export declare function cancelAnimationFrame(key: any): void;
+export declare function mapToFixed(obj: ObjectInterface<number>): ObjectInterface<number>;
 export declare function map<T, U>(obj: ObjectInterface<T>, callback: (value: T, key: string) => U): ObjectInterface<U>;
 export declare function filter<T>(obj: ObjectInterface<T>, callback: (value: T, key: string) => boolean): ObjectInterface<T>;
 export declare function every<T>(obj: ObjectInterface<T>, callback: (value: T, key: string) => boolean): boolean;

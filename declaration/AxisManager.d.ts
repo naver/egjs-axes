@@ -21,6 +21,6 @@ export declare class AxisManager {
     set(pos: Axis): void;
     every(pos: Axis, callback: (value: number, options: AxisOption, key: string) => boolean): boolean;
     filter(pos: Axis, callback: (value: number, options: AxisOption, key: string) => boolean): Axis;
-    map(pos: Axis, callback: (value: number, options: AxisOption, key: string) => number): Axis;
+    map<U>(pos: Axis, callback: (value: number, options: AxisOption, key: string) => U): ObjectInterface<U>;
     isOutside(axes?: string[]): boolean;
 }

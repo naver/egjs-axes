@@ -38,9 +38,9 @@ export default class Axes extends Component {
     am: AnimationManager;
     io: InputObserver;
     private _inputs;
-    constructor(axis: {
+    constructor(axis?: {
         [key: string]: AxisOption;
-    }, options: AxesOption, startPos?: Axis);
+    }, options?: AxesOption, startPos?: Axis);
     connect(axes: string[] | string, inputType: IInputType): this;
     disconnect(inputType?: IInputType): this;
     get(axes?: string[]): Axis;
