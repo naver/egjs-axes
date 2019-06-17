@@ -153,24 +153,22 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				const currentTime = new Date().getTime();
-				const easingPer = self.easing((currentTime - info.startTime) / param.duration);
-				let toPos: Axis = map(prevPos, (pos, key) => {
-					return Math[directions[key] > 0 ? "min" : "max"](
-						pos + info.delta[key] * (easingPer - prevEasingPer),
-						destPos[key],
-					);
-				});
+				const ratio = (currentTime - info.startTime) / param.duration;
+				const easingPer = self.easing(ratio);
+				const toPos: Axis = self.axm.map(prevPos, (pos, options, key) => {
+					const nextPos = ratio >= 1
+						? destPos[key]
+						: pos + info.delta[key] * (easingPer - prevEasingPer);
 
-				toPos = self.axm.map(toPos, (pos, options, key) => {
 					// fix absolute position to relative position
 					// fix the bouncing phenomenon by changing the range.
-					const nextPos = getCirculatedPos(pos, options.range, options.circular as boolean[], true);
-					if (pos !== nextPos) {
+					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[], true);
+					if (nextPos !== circulatedPos) {
 						// circular
 						destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
 						prevPos[key] += -directions[key] * (options.range[1] - options.range[0]);
 					}
-					return nextPos;
+					return circulatedPos;
 				});
 				const isCanceled = !self.em.triggerChange(toPos, false, mapToFixed(prevPos));
 
