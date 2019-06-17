@@ -160,13 +160,15 @@ export class AnimationManager {
 						? destPos[key]
 						: pos + info.delta[key] * (easingPer - prevEasingPer);
 
-					// fix absolute position to relative position
-					// fix the bouncing phenomenon by changing the range.
+					// Recalculate the remaining distance.
+					// Fix the bouncing phenomenon by changing the range.
 					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[], true);
 					if (nextPos !== circulatedPos) {
 						// circular
-						destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
-						prevPos[key] += -directions[key] * (options.range[1] - options.range[0]);
+						const rangeOffset = directions[key] * (options.range[1] - options.range[0]);
+
+						destPos[key] -= rangeOffset;
+						prevPos[key] -= rangeOffset;
 					}
 					return circulatedPos;
 				});
