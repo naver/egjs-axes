@@ -140,10 +140,12 @@ export class AnimationManager {
 			this._animateParam = { ...param };
 			const info: AnimationParam = this._animateParam;
 			const self = this;
+			const destPos = info.destPos;
+
 			let prevPos = info.depaPos;
 			let prevEasingPer = 0;
 			const directions = map(prevPos, (value, key) => {
-				return value <= info.destPos[key] ? 1 : -1;
+				return value <= destPos[key] ? 1 : -1;
 			});
 			let prevTime = new Date().getTime();
 			info.startTime = prevTime;
@@ -152,7 +154,12 @@ export class AnimationManager {
 				self._raf = null;
 				const currentTime = new Date().getTime();
 				const easingPer = self.easing((currentTime - info.startTime) / param.duration);
-				let toPos: Axis = map(prevPos, (pos, key) => pos + info.delta[key] * (easingPer - prevEasingPer));
+				let toPos: Axis = map(prevPos, (pos, key) => {
+					return Math[directions[key] > 0 ? "min" : "max"](
+						pos + info.delta[key] * (easingPer - prevEasingPer),
+						destPos[key],
+					);
+				});
 
 				toPos = self.axm.map(toPos, (pos, options, key) => {
 					// fix absolute position to relative position
@@ -160,7 +167,7 @@ export class AnimationManager {
 					const nextPos = getCirculatedPos(pos, options.range, options.circular as boolean[], true);
 					if (pos !== nextPos) {
 						// circular
-						param.destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
+						destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
 						prevPos[key] += -directions[key] * (options.range[1] - options.range[0]);
 					}
 					return nextPos;
@@ -171,8 +178,6 @@ export class AnimationManager {
 				prevTime = currentTime;
 				prevEasingPer = easingPer;
 				if (easingPer >= 1) {
-					const destPos = param.destPos;
-
 					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
 						self.em.triggerChange(destPos, true, mapToFixed(prevPos));
 					}

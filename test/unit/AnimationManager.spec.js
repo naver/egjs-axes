@@ -458,6 +458,26 @@ describe("AnimationManager", function () {
 			// When
 			this.inst.animateTo(destPos, 1000);
 		});
+		it("should check 'animateTo' with destPos that can cause floating point", (done) => {
+			// circular: true,
+			// duration: 102
+			// depaPos: 729.5859375
+			// destPos: 1055.984375
+			// range: [-96, 1055.984375]
+
+			// Given
+			this.inst.axm.axis.z.range = [-96, 1055.984375];
+			this.inst.setTo({ z: 729.5858375 }, 0);
+
+			// When
+			this.inst.animateTo({ z: 1055.984375 }, 102);
+
+			setTimeout(() => {
+				// Then
+				expect(this.inst.axm.get().z).to.be.equals(1055.984375);
+				done();
+			}, 200);
+		});
 		it("should check position when animation is running. then, start other animation", (done) => {
 			// Given
 			const startHandler = sinon.spy();
