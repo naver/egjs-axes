@@ -140,10 +140,12 @@ export class AnimationManager {
 			this._animateParam = { ...param };
 			const info: AnimationParam = this._animateParam;
 			const self = this;
+			const destPos = info.destPos;
+
 			let prevPos = info.depaPos;
 			let prevEasingPer = 0;
 			const directions = map(prevPos, (value, key) => {
-				return value <= info.destPos[key] ? 1 : -1;
+				return value <= destPos[key] ? 1 : -1;
 			});
 			let prevTime = new Date().getTime();
 			info.startTime = prevTime;
@@ -151,19 +153,25 @@ export class AnimationManager {
 			(function loop() {
 				self._raf = null;
 				const currentTime = new Date().getTime();
-				const easingPer = self.easing((currentTime - info.startTime) / param.duration);
-				let toPos: Axis = map(prevPos, (pos, key) => pos + info.delta[key] * (easingPer - prevEasingPer));
+				const ratio = (currentTime - info.startTime) / param.duration;
+				const easingPer = self.easing(ratio);
+				const toPos: Axis = self.axm.map(prevPos, (pos, options, key) => {
+					const nextPos = ratio >= 1
+						? destPos[key]
+						: pos + info.delta[key] * (easingPer - prevEasingPer);
 
-				toPos = self.axm.map(toPos, (pos, options, key) => {
-					// fix absolute position to relative position
-					// fix the bouncing phenomenon by changing the range.
-					const nextPos = getCirculatedPos(pos, options.range, options.circular as boolean[], true);
-					if (pos !== nextPos) {
+					// Subtract distance from distance already moved.
+					// Recalculate the remaining distance.
+					// Fix the bouncing phenomenon by changing the range.
+					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[], true);
+					if (nextPos !== circulatedPos) {
 						// circular
-						param.destPos[key] += -directions[key] * (options.range[1] - options.range[0]);
-						prevPos[key] += -directions[key] * (options.range[1] - options.range[0]);
+						const rangeOffset = directions[key] * (options.range[1] - options.range[0]);
+
+						destPos[key] -= rangeOffset;
+						prevPos[key] -= rangeOffset;
 					}
-					return nextPos;
+					return circulatedPos;
 				});
 				const isCanceled = !self.em.triggerChange(toPos, false, mapToFixed(prevPos));
 
@@ -171,8 +179,6 @@ export class AnimationManager {
 				prevTime = currentTime;
 				prevEasingPer = easingPer;
 				if (easingPer >= 1) {
-					const destPos = param.destPos;
-
 					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
 						self.em.triggerChange(destPos, true, mapToFixed(prevPos));
 					}
