@@ -160,6 +160,7 @@ export class AnimationManager {
 						? destPos[key]
 						: pos + info.delta[key] * (easingPer - prevEasingPer);
 
+					// Subtract distance from distance already moved.
 					// Recalculate the remaining distance.
 					// Fix the bouncing phenomenon by changing the range.
 					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[], true);
