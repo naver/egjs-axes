@@ -124,17 +124,15 @@ export function equal(target: ObjectInterface, base: ObjectInterface): boolean {
 	return every(target, (v, k) => v === base[k]);
 }
 
-let lastRoundNum = -1;
-let roundNumFunc = null;
+const roundNumFunc = {};
 
 export function roundNumber(num: number, roundUnit: number) {
 	// Cache for performance
-	if (!roundNumFunc || lastRoundNum !== roundUnit) {
-		roundNumFunc = getRoundFunc(roundUnit);
-		lastRoundNum = roundUnit;
+	if (!roundNumFunc[roundUnit]) {
+		roundNumFunc[roundUnit] = getRoundFunc(roundUnit);
 	}
 
-	return roundNumFunc(num);
+	return roundNumFunc[roundUnit](num);
 }
 
 export function roundNumbers(num: ObjectInterface<number>, roundUnit: ObjectInterface<number> | number) {
@@ -145,24 +143,33 @@ export function roundNumbers(num: ObjectInterface<number>, roundUnit: ObjectInte
 	return map(num, (value, key) => roundNumber(value, isNumber ? roundUnit : roundUnit[key]));
 }
 
-// https://jsperf.com/precision-calculation
 export function getDecimalPlace(val: number): number {
 	if (!isFinite(val)) {
 		return 0;
 	}
 
-	let p = 0;
-	let e = 1;
+	const v = (val + "");
 
-	while (Math.round(val * e) / e !== val) {
-		e *= 10;
-		p++;
+	if (v.indexOf("e") >= 0) {
+		// Exponential Format
+		// 1e-10, 1e-12
+		let p = 0;
+		let e = 1;
+
+		while (Math.round(val * e) / e !== val) {
+			e *= 10;
+			p++;
+		}
+
+		return p;
 	}
 
-	return p;
+	// In general, following has performance benefit.
+	// https://jsperf.com/precision-calculation
+	return v.indexOf(".") >= 0 ? (v.length - v.indexOf(".") - 1) : 0;
 }
 
-export function reversePow(n: number) {
+export function inversePow(n: number) {
 	// replace Math.pow(10, -n) to solve floating point issue.
 	// eg. Math.pow(10, -4) => 0.00009999999999999999
 	return 1 / Math.pow(10, n);

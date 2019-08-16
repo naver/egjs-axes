@@ -69,8 +69,8 @@ describe("Util Test", function() {
 
 	it("should return decimal place", () => {
 		// Given
-		const inputValues = [100, 10, 1, 0, 0.1, 0.01, 0.001, 0.0001];
-		const expectValues = [0, 0, 0, 0, 1, 2, 3, 4];
+		const inputValues = [1e+3, 100, 10, 1, 0, 0.1, 0.01, 0.001, 0.0001, 1e-5];
+		const expectValues = [0, 0, 0, 0, 0, 1, 2, 3, 4, 5];
 
 		// When
 		const result = inputValues.map(input => getDecimalPlace(input));

@@ -10,5 +10,5 @@ export declare function equal(target: ObjectInterface, base: ObjectInterface): b
 export declare function roundNumber(num: number, roundUnit: number): any;
 export declare function roundNumbers(num: ObjectInterface<number>, roundUnit: ObjectInterface<number> | number): ObjectInterface<any>;
 export declare function getDecimalPlace(val: number): number;
-export declare function reversePow(n: number): number;
+export declare function inversePow(n: number): number;
 export declare function getRoundFunc(v: number): (n: number) => number;

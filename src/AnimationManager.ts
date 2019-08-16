@@ -3,7 +3,7 @@ import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
-import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, reversePow } from "./utils";
+import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, inversePow } from "./utils";
 import { AxesOption } from "./Axes";
 import { ObjectInterface } from "./const";
 
@@ -236,10 +236,10 @@ export class AnimationManager {
 		if (!roundUnit) {
 			// Get minimum round unit
 			const options = this.axm.getAxisOptions(key);
-			minRoundUnit = Math.min(
-				reversePow(getDecimalPlace(options.range[0])),
-				reversePow(getDecimalPlace(options.range[1])),
-				reversePow(getDecimalPlace(val)));
+			minRoundUnit = inversePow(Math.max(
+				getDecimalPlace(options.range[0]),
+				getDecimalPlace(options.range[1]),
+				getDecimalPlace(val)));
 		}
 
 		return minRoundUnit || roundUnit;
