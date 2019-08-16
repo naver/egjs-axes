@@ -202,12 +202,12 @@ export class AnimationManager {
 
 	/**
 	 * Get estimated final value.
-	 * 
+	 *
 	 * If destPos is within the 'error range' of the original intended position, the initial intended position is returned.
 	 *   - eg. original intended pos: 100, destPos: 100.0000000004 ==> return 100;
 	 * If dest Pos is outside the 'range of error' compared to the originally intended pos, it is returned rounded based on the originally intended pos.
 	 *   - eg. original intended pos: 100.123 destPos: 50.12345 => return 50.123
-	 * 
+	 *
 	 * @param originalIndendedPos
 	 * @param destPos
 	 */
