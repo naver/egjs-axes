@@ -147,7 +147,7 @@ export class AnimationManager {
 			const directions = map(prevPos, (value, key) => {
 				return value <= destPos[key] ? 1 : -1;
 			});
-			const originalIndendedPos = map(destPos, v => v);
+			const originalIntendedPos = map(destPos, v => v);
 			let prevTime = new Date().getTime();
 			info.startTime = prevTime;
 
@@ -180,7 +180,7 @@ export class AnimationManager {
 				prevTime = currentTime;
 				prevEasingPer = easingPer;
 				if (easingPer >= 1) {
-					destPos = self.getFinalPos(destPos, originalIndendedPos);
+					destPos = self.getFinalPos(destPos, originalIntendedPos);
 
 					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
 						self.em.triggerChange(destPos, true, prevPos);
@@ -208,16 +208,16 @@ export class AnimationManager {
 	 * If dest Pos is outside the 'range of error' compared to the originally intended pos, it is returned rounded based on the originally intended pos.
 	 *   - eg. original intended pos: 100.123 destPos: 50.12345 => return 50.123
 	 *
-	 * @param originalIndendedPos
+	 * @param originalIntendedPos
 	 * @param destPos
 	 */
-	private getFinalPos(destPos: ObjectInterface<number>, originalIndendedPos: ObjectInterface<number>) {
-		// compare destPos and originalIndendedPos
+	private getFinalPos(destPos: ObjectInterface<number>, originalIntendedPos: ObjectInterface<number>) {
+		// compare destPos and originalIntendedPos
 		const ERROR_LIMIT = 0.000001;
 		const finalPos = map(destPos, (value, key) => {
-			if (value >= originalIndendedPos[key] - ERROR_LIMIT && value <= originalIndendedPos[key] + ERROR_LIMIT) {
+			if (value >= originalIntendedPos[key] - ERROR_LIMIT && value <= originalIntendedPos[key] + ERROR_LIMIT) {
 				// In error range, return original intended
-				return originalIndendedPos[key];
+				return originalIntendedPos[key];
 			} else {
 				// Out of error range, return rounded pos.
 				const roundUnit = this.getRoundUnit(value, key);
