@@ -1,6 +1,7 @@
 import Axes from "../../src/Axes.ts";
 import {PanInput} from "../../src/inputType/PanInput.ts";
 import {PinchInput} from "../../src/inputType/PinchInput.ts";
+import { getDecimalPlace, roundNumber } from "../../src/utils";
 
 describe("Axes", function () {
   describe("Axes Test", function () {
@@ -88,7 +89,7 @@ describe("Axes", function () {
         deceleration: 0.001
       });
       // When
-      let ret = this.inst.setTo({x: 20});
+			let ret = this.inst.setTo({x: 20});
 
       // Then
       expect(this.inst.get()).to.be.eql({x: 20, otherX: -100});
@@ -132,7 +133,7 @@ describe("Axes", function () {
       });
 
       // When
-      this.inst.setTo({x: 20}, 200);
+			this.inst.setTo({x: 20}, 200);
     });
 
     it("should check `setBy` method (with duration)", () => {
@@ -151,7 +152,7 @@ describe("Axes", function () {
       }, {
         deceleration: 0.001
       });
-      this.inst.setTo({x: 50});
+			this.inst.setTo({x: 50});
       expect(this.inst.get()).to.be.eql({x: 50, otherX: -100});
 
       this.inst.on({
@@ -349,7 +350,7 @@ describe("Axes", function () {
   });
 
   [
-    ["pointer"], ["touch", "mouse"], ["touch"]
+		["pointer"], ["touch", "mouse"], ["touch"]
   ].forEach(type => {
   describe(`Axes Custom Event Test with interruptable(${type})`, function () {
     beforeEach(() => {
@@ -395,8 +396,13 @@ describe("Axes", function () {
         this.input.destroy();
         this.input = null;
       }
-      cleanup();
-    });
+			cleanup();
+		});
+		after(() => {
+			// Simulator type should be "touch" type after test complete.
+			// Otherwise this test will affect other simulation test.
+			Simulator.setType("touch");
+		});
     const testNormalBehavior = done => {
       // Given
       const holdHandler = sinon.spy();
@@ -473,7 +479,7 @@ describe("Axes", function () {
       }, () => {
         // Then
         setTimeout(() => {
-          // The stopped position is the current position.
+					// The stopped position is the current position.
           expect(pos).to.be.deep.equals(this.inst.get());
           expect(holdHandler.calledOnce).to.be.true;
           expect(changeCount).to.be.equals(5);
@@ -529,7 +535,7 @@ describe("Axes", function () {
       }, () => {
         // Then
         setTimeout(() => {
-          // The stopped position is the current position.
+					// The stopped position is the current position.
           expect(pos).to.be.deep.equals(inst.get());
           expect(holdHandler.called).to.be.true;
           expect(changeCount).to.be.equals(5);
@@ -618,7 +624,7 @@ describe("Axes", function () {
         "finish": this.finishHandler,
         "animationStart": this.animationStartHandler,
         "animationEnd": this.animationEndHandler
-      }).connect(["x", "y"], this.input);
+			}).connect(["x", "y"], this.input);
     });
     afterEach(() => {
       if (this.inst) {
@@ -634,9 +640,13 @@ describe("Axes", function () {
       this.finishHandler.resetHistory();
       this.animationStartHandler.resetHistory();
       this.animationEndHandler.resetHistory();
-      cleanup();
+			cleanup();
     });
-
+		after(() => {
+			// Simulator type should be "touch" type after test complete.
+			// Otherwise this test will affect other simulation test.
+			Simulator.setType("touch");
+		})
     it("should check slow movement test (no-velocity)", (done) => {
       // Given
       const changeHandler = sinon.spy();
@@ -708,14 +718,14 @@ describe("Axes", function () {
         // Then
         // for test animation event
         setTimeout(() => {
-          const holdEvent = this.holdHandler.getCall(0).args[0];
+					const holdEvent = this.holdHandler.getCall(0).args[0];
           expect(this.holdHandler.calledOnce).to.be.true;
           expect(holdEvent.pos.x).to.be.equal(0);
           expect(holdEvent.pos.y).to.be.equal(0);
           expect(holdEvent.inputEvent.isFirst).to.be.true;
           expect(holdEvent.input).to.be.equal(this.input);
           expect(holdEvent.isTrusted).to.be.true;
-          const releaseEvent = this.releaseHandler.getCall(0).args[0];
+					const releaseEvent = this.releaseHandler.getCall(0).args[0];
           expect(this.releaseHandler.calledOnce).to.be.true;
           expect(releaseEvent.inputEvent.isFinal).to.be.true;
           expect(releaseEvent.input).to.be.equal(this.input);
@@ -855,7 +865,134 @@ describe("Axes", function () {
           done();
         });
 			})
+		});
+  });
+	});
+
+	describe("round final value of animation automatically by value range and dest pos", () => {
+		[
+			{range: [0.12345, 100], destPos: 50.1234}, // max decimal place at range[0]
+			{range: [0, 100.123456789], destPos: 50.1234}, // max decimal place at range[1]
+			{range: [0, 100], destPos: 50.1234}, // max decimal place at dest pos,
+			{range: [0, 100], destPos: 50}, // no decimal
+			{range: [0, 1000], destPos: 445.17079889807155}, // number to resolve flicking test failure.
+			{range: [0, 1000], destPos: 240.79930795847713}, // comparison value that works correctly.
+		].forEach((val => {
+			it(`should round final value of animation by max decimal place(${val.range[0]}, ${val.range[1]}, ${val.destPos})`, async () => {
+				this.inst = new Axes({
+					x: {
+						range: val.range
+					}
+				});
+
+				this.inst.setTo({x: val.destPos}, 100);
+				await new Promise(res => this.inst.on("finish", res));
+
+				expect(this.inst.get().x).to.be.equal(val.destPos);
+			});
+		}));
+	})
+
+	describe("round option", () => {
+		[100, 10, 1, 0.1, 0.01, 0.001, 0.0001, 0.00001].forEach(round => {
+			it(`should round value by option value of 1 unit (${round})`, async () => {
+				// Given, When
+				const dividables = await checkAnimatedValueIsRound(round);
+
+				// Then
+				const allDividable = dividables.every(val => val);
+				expect(allDividable).to.be.equal(true);
+			});
+		});
+
+		[10, 5, 0.05, 0.002, 0.0005].forEach(round => {
+			it(`should round value by option value of dividable unit (${round})`, async () => {
+				// Given, When
+				const dividables = await checkAnimatedValueIsRound(round);
+
+				// Then
+				const allDividable = dividables.every(val => val);
+				expect(allDividable).to.be.equal(true);
+			});
+		});
+
+		[3, 7, 11, 0.03, 0.007].forEach(round => {
+			it(`should round value by option value of undividable unit (${round})`, async () => {
+				// Given, When
+				const dividables = await checkAnimatedValueIsRound(round);
+
+				// Then
+				const allDividable = dividables.every(val => val);
+				expect(allDividable).to.be.equal(true);
+			});
+		});
+
+		/**
+		 * I found delta is zero although delta is not zero
+		 * when 'round' is specified
+		 */
+		it("should fire change event with changed value / delta although round is specified", done => {
+			// Given
+			let result = [];
+			let delta = [];
+			const inst = new Axes({
+				x: {
+					range: [0, 200],
+				}
+			}, {round: 1});
+
+			inst.on("change", e => {
+				result.push(e.pos.x);
+				delta.push(e.delta.x);
+			});
+			// When
+			const expectPos = [30, 60, 90];
+
+			expectPos.forEach(v => inst.setBy({x: 30}));
+
+			// Then
+			setTimeout(() => {
+				expect(result.length).to.be.equal(expectPos.length);
+				delta.forEach(v=> expect(v).to.be.equal(30));
+				result.forEach((v, i) => expect(v).to.be.equal(expectPos[i]));
+				done();
+			}, 100);
+
     });
-  });
-  });
+
+		function isDividable(dividend, divisor) {
+			// Round 'dividend / divsior' because it may has decimal error.
+			const result = roundNumber(dividend / divisor, 0.000001);
+			// Decimal place should be 0
+			return getDecimalPlace(result) === 0;
+		}
+
+		async function checkAnimatedValueIsRound(round) {
+			// Given
+			let dividables = [];
+			const inst = new Axes({
+				x: {
+					range: [0, 200],
+				}
+			}, {round}).on({
+				"animationStart": (e) => {
+					dividables.push(isDividable(e.destPos.x, round));
+				},
+				"change": (e) => {
+					dividables.push(isDividable(e.pos.x, round));
+				},
+				"finish": () => {
+					dividables.push(isDividable(inst.get().x, round));
+				}
+			})
+
+			// When
+			inst.setTo({x: 100}, 100);
+
+			await new Promise(res => setTimeout(res, 150));
+			inst.destroy();
+
+			return dividables;
+		}
+	});
 });

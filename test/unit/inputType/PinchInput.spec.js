@@ -19,7 +19,7 @@ describe("PinchInput", () => {
       // Given
       const beforeHammer = this.inst.hammer;
       this.inst.connect({});
-      
+
       // When
       this.inst.disconnect();
 
@@ -33,7 +33,7 @@ describe("PinchInput", () => {
     it("should check status after destroy", () => {
       // Given
       this.inst.connect({});
-      
+
       // When
       this.inst.destroy();
 
@@ -42,7 +42,7 @@ describe("PinchInput", () => {
       expect(this.inst.element).to.be.not.exist;
       expect(this.observer).to.be.not.exist;
       expect(this._prev).to.be.not.exist;
-      
+
       this.inst = null;
     });
   });
@@ -99,7 +99,7 @@ describe("PinchInput", () => {
       // Then
       expect(this.inst.hammer).to.be.exist;
       expect(this.inst.isEnable()).to.be.true;
-    });    
+    });
     it("should check event when enable method is called", (done) => {
       // Given
       this.inst.connect(this.observer);
@@ -142,18 +142,18 @@ describe("PinchInput", () => {
           this.inst.hammer.handlers["pinchend"][0] = beforeHandler;
           done();
       });
-    });  
+    });
   });
 
   describe("offset value", function () {
     beforeEach(() => {
       this.el = sandbox();
-      this.input = new PinchInput(this.el, {inputType: ["touch"]}); 
+      this.input = new PinchInput(this.el, {inputType: ["touch"]});
       this.inst = new Axes({
         x: {
           range: [10, 120]
         }
-      }, {}, {
+      }, {round: 1}, {
         x: 50
       });
       this.inst.connect(["x"], this.input);
@@ -172,7 +172,7 @@ describe("PinchInput", () => {
 
     it("The offset value should be returned using the position value when the hold event is triggered.", (done) => {
       // Given
-      this.input.options.scale = 1; 
+      this.input.options.scale = 1;
       // When
       Simulator.gestures.pinch(this.el, {
         duration: 500,
@@ -186,13 +186,13 @@ describe("PinchInput", () => {
 
     it("The offset value should apply scale option", (done) => {
       // Given
-      this.input.options.scale = 1; 
+      this.input.options.scale = 1;
       // When
       Simulator.gestures.pinch(this.el, {
         duration: 500,
         scale: 0.9
       }, () => {
-          // Then
+					// Then
           expect(this.inst.get(['x']).x).to.be.equal(45);
           done();
       });
@@ -220,7 +220,7 @@ describe("PinchInput", () => {
           userDrag: "none",
         }
       });
-      
+
       // When
       this.inst.connect({});
 
@@ -230,7 +230,7 @@ describe("PinchInput", () => {
     it("should check hammerManager Options", () => {
       // Given
       this.inst.options.hammerManagerOptions.cssProps.userSelect = "auto";
-      
+
       // When
       this.inst.connect({});
 

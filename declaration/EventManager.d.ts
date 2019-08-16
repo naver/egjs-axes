@@ -19,4 +19,5 @@ export declare class EventManager {
     private createUserControll;
     setAnimationManager(am: AnimationManager): void;
     destroy(): void;
+    private getRoundPos;
 }

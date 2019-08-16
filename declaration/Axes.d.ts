@@ -11,6 +11,7 @@ export interface AxesOption {
     minimumDuration?: number;
     deceleration?: number;
     interruptable?: boolean;
+    round?: number;
 }
 export default class Axes extends Component {
     axis: {

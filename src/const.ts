@@ -22,7 +22,6 @@ export {
 	DIRECTION_ALL,
 } from "@egjs/hammerjs";
 
-export const FIXED_DIGIT = 100000;
 export const TRANSFORM = (() => {
 	if (typeof document === "undefined") {
 		return "";

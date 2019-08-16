@@ -6,7 +6,6 @@ import { InterruptManager } from "../../src/InterruptManager";
 import { EventManager } from "../../src/EventManager";
 import Component from "@egjs/component";
 import { doesNotThrow } from "assert";
-import { toFixed } from "../../src/utils";
 
 describe("InputObserver", function () {
   describe("observer test", function () {
@@ -66,7 +65,7 @@ describe("InputObserver", function () {
       // When/Then
       expect(this.inst.get(inputType)).to.be.eql({ "y": 0 });
 
-      // When
+			// When
       this.inst.change(inputType, {}, {});
       expect(this.inst.get(inputType)).to.be.not.eql({ "y": 200 });
 
@@ -155,22 +154,22 @@ describe("InputObserver", function () {
         this.axes.setTo({ z: depaPos }, 0);
         this.axes.on("change", ({ pos, delta }) => {
           // Then
-          // Find the value as approximated as possible due to floating decimal point problems.
+					// Find the value as approximated as possible due to floating decimal point problems.
 
           if (direction > 0 && pos.z < 180) {
             // range[0] + range[1] = 300 loop for right
             // It is not less than 0 inclusive. z >= 0
             expect(delta.z).to.be.not.lt(0);
-            expect(toFixed(delta.z + z)).to.be.closeTo(300 + pos.z, 0.0000001);
+            expect(delta.z + z).to.be.closeTo(300 + pos.z, 0.0000001);
             z = 300 + pos.z;
           } else if (direction < 0 && pos.z > 0) {
             // range[0] + range[1] = 300 loop for left
             // It is not greater than 0 inclusive. z <= 0
             expect(delta.z).to.be.not.gt(0);
-            expect(toFixed(delta.z + z)).to.be.closeTo(-300 + pos.z, 0.0000001);
+            expect(delta.z + z).to.be.closeTo(-300 + pos.z, 0.0000001);
             z = -300 + pos.z;
           } else {
-            expect(toFixed(delta.z + z)).to.be.closeTo(pos.z, 0.0000001);
+            expect(delta.z + z).to.be.closeTo(pos.z, 0.0000001);
             z = pos.z;
           }
         });
@@ -179,8 +178,8 @@ describe("InputObserver", function () {
         });
 
         // When
-        // The last y position should be zero and neither should Delta.
-        this.axes.setTo({ z: destPos }, 300);
+				// The last y position should be zero and neither should Delta.
+				this.axes.setTo({ z: destPos }, 300);
       });
     });
     it("should check delta that there is no bounce and the position goes to zero.", done => {
@@ -194,7 +193,7 @@ describe("InputObserver", function () {
       this.axes.on("change", ({ pos, delta }) => {
         // Then
         // Find the value as approximated as possible due to floating decimal point problems.
-        expect(toFixed(delta.y + y)).to.be.closeTo(pos.y, 0.0000001);
+        expect(delta.y + y).to.be.closeTo(pos.y, 0.0000001);
 
         y = pos.y;
       });
@@ -269,8 +268,8 @@ describe("InputObserver", function () {
       this.axes.setTo({ x: 50 }, 0);
       this.axes.on("change", ({ pos, delta }) => {
         // Then
-        // Find the value as approximated as possible due to floating decimal point problems.
-        expect(toFixed(delta.x + x)).to.be.closeTo(pos.x, 0.0000001);
+				// Find the value as approximated as possible due to floating decimal point problems.
+        expect(delta.x + x).to.be.closeTo(pos.x, 0.0000001);
         x = pos.x;
       });
       this.axes.on("finish", () => {
