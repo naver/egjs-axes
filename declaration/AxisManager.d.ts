@@ -15,7 +15,7 @@ export declare class AxisManager {
     private _complementOptions;
     getDelta(depaPos: Axis, destPos: Axis): Axis;
     get(axes?: string[] | Axis): Axis;
-    moveTo(pos: Axis, isAccurate?: boolean, depaPos?: Axis): {
+    moveTo(pos: Axis, depaPos?: Axis): {
         [key: string]: Axis;
     };
     set(pos: Axis): void;
@@ -23,4 +23,5 @@ export declare class AxisManager {
     filter(pos: Axis, callback: (value: number, options: AxisOption, key: string) => boolean): Axis;
     map<U>(pos: Axis, callback: (value: number, options: AxisOption, key: string) => U): ObjectInterface<U>;
     isOutside(axes?: string[]): boolean;
+    getAxisOptions(key: string): AxisOption;
 }

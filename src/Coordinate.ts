@@ -1,6 +1,3 @@
-import { Axis } from "./AxisManager";
-import { toFixed } from "./utils";
-
 export function getInsidePosition(
 	destPos: number,
 	range: number[],
@@ -16,7 +13,7 @@ export function getInsidePosition(
 	toDestPos = Math.max(targetRange[0], toDestPos);
 	toDestPos = Math.min(targetRange[1], toDestPos);
 
-	return +toFixed(toDestPos);
+	return toDestPos;
 }
 
 // determine outside
@@ -34,7 +31,7 @@ export function isCircularable(destPos: number, range: number[], circular: boole
 	return (circular[1] && destPos > range[1]) ||
 		(circular[0] && destPos < range[0]);
 }
-export function getCirculatedPos(pos: number, range: number[], circular: boolean[], isAccurate: boolean): number {
+export function getCirculatedPos(pos: number, range: number[], circular: boolean[]): number {
 	let toPos = pos;
 	const min = range[0];
 	const max = range[1];
@@ -46,5 +43,5 @@ export function getCirculatedPos(pos: number, range: number[], circular: boolean
 	if (circular[0] && pos < min) { // left
 		toPos = (toPos - min) % length + max;
 	}
-	return isAccurate ? toPos : +toFixed(toPos);
+	return toPos;
 }

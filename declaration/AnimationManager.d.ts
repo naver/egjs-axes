@@ -38,6 +38,8 @@ export declare class AnimationManager {
     animationEnd(): void;
     finish(isTrusted: any): void;
     private animateLoop;
+    private getFinalPos;
+    private getRoundUnit;
     getUserControll(param: AnimationParam): {
         destPos: Axis;
         duration: number;

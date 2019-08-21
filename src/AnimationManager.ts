@@ -3,8 +3,9 @@ import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
-import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, toFixed, mapToFixed } from "./utils";
+import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, inversePow } from "./utils";
 import { AxesOption } from "./Axes";
+import { ObjectInterface } from "./const";
 
 function minMax(value: number, min: number, max: number): number {
 	return Math.max(Math.min(value, max), min);
@@ -80,7 +81,7 @@ export class AnimationManager {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
-				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[], false));
+				(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]));
 			if (!every(pos, (v, k) => orgPos[k] === v)) {
 				this.em.triggerChange(pos, false, orgPos, option, !!option);
 			}
@@ -120,7 +121,7 @@ export class AnimationManager {
 		);
 		Object.keys(circularTargets).length > 0 && this.setTo(this.axm.map(
 			circularTargets,
-			(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[], false),
+			(v, opt) => getCirculatedPos(v, opt.range, opt.circular as boolean[]),
 		));
 		this.itm.setInterrupt(false);
 		this.em.triggerAnimationEnd(!!beforeParam);
@@ -140,13 +141,13 @@ export class AnimationManager {
 			this._animateParam = { ...param };
 			const info: AnimationParam = this._animateParam;
 			const self = this;
-			const destPos = info.destPos;
-
+			let destPos = info.destPos;
 			let prevPos = info.depaPos;
 			let prevEasingPer = 0;
 			const directions = map(prevPos, (value, key) => {
 				return value <= destPos[key] ? 1 : -1;
 			});
+			const originalIntendedPos = map(destPos, v => v);
 			let prevTime = new Date().getTime();
 			info.startTime = prevTime;
 
@@ -163,7 +164,7 @@ export class AnimationManager {
 					// Subtract distance from distance already moved.
 					// Recalculate the remaining distance.
 					// Fix the bouncing phenomenon by changing the range.
-					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[], true);
+					const circulatedPos = getCirculatedPos(nextPos, options.range, options.circular as boolean[]);
 					if (nextPos !== circulatedPos) {
 						// circular
 						const rangeOffset = directions[key] * (options.range[1] - options.range[0]);
@@ -173,14 +174,16 @@ export class AnimationManager {
 					}
 					return circulatedPos;
 				});
-				const isCanceled = !self.em.triggerChange(toPos, false, mapToFixed(prevPos));
+				const isCanceled = !self.em.triggerChange(toPos, false, prevPos);
 
 				prevPos = toPos;
 				prevTime = currentTime;
 				prevEasingPer = easingPer;
 				if (easingPer >= 1) {
+					destPos = self.getFinalPos(destPos, originalIntendedPos);
+
 					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
-						self.em.triggerChange(destPos, true, mapToFixed(prevPos));
+						self.em.triggerChange(destPos, true, prevPos);
 					}
 					complete();
 					return;
@@ -195,6 +198,51 @@ export class AnimationManager {
 			this.em.triggerChange(param.destPos, true);
 			complete();
 		}
+	}
+
+	/**
+	 * Get estimated final value.
+	 *
+	 * If destPos is within the 'error range' of the original intended position, the initial intended position is returned.
+	 *   - eg. original intended pos: 100, destPos: 100.0000000004 ==> return 100;
+	 * If dest Pos is outside the 'range of error' compared to the originally intended pos, it is returned rounded based on the originally intended pos.
+	 *   - eg. original intended pos: 100.123 destPos: 50.12345 => return 50.123
+	 *
+	 * @param originalIntendedPos
+	 * @param destPos
+	 */
+	private getFinalPos(destPos: ObjectInterface<number>, originalIntendedPos: ObjectInterface<number>) {
+		// compare destPos and originalIntendedPos
+		const ERROR_LIMIT = 0.000001;
+		const finalPos = map(destPos, (value, key) => {
+			if (value >= originalIntendedPos[key] - ERROR_LIMIT && value <= originalIntendedPos[key] + ERROR_LIMIT) {
+				// In error range, return original intended
+				return originalIntendedPos[key];
+			} else {
+				// Out of error range, return rounded pos.
+				const roundUnit = this.getRoundUnit(value, key);
+				const result = roundNumber(value, roundUnit);
+				return result;
+			}
+		});
+		return finalPos;
+	}
+
+	private getRoundUnit(val: number, key: string) {
+		const roundUnit = this.options.round; // manual mode
+		let minRoundUnit = null; // auto mode
+
+		// auto mode
+		if (!roundUnit) {
+			// Get minimum round unit
+			const options = this.axm.getAxisOptions(key);
+			minRoundUnit = inversePow(Math.max(
+				getDecimalPlace(options.range[0]),
+				getDecimalPlace(options.range[1]),
+				getDecimalPlace(val)));
+		}
+
+		return minRoundUnit || roundUnit;
 	}
 
 	getUserControll(param: AnimationParam) {

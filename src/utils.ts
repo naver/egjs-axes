@@ -1,5 +1,5 @@
 import {window} from "./browser";
-import { ObjectInterface, FIXED_DIGIT } from "./const";
+import { ObjectInterface } from "./const";
 
 declare var jQuery: any;
 
@@ -94,9 +94,7 @@ export function requestAnimationFrame(fp) {
 export function cancelAnimationFrame(key) {
 	caf(key);
 }
-export function mapToFixed(obj: ObjectInterface<number>) {
-	return map(obj, value => toFixed(value));
-}
+
 export function map<T, U>(obj: ObjectInterface<T>, callback: (value: T, key: string) => U): ObjectInterface<U> {
 	const tranformed: ObjectInterface<U> = {};
 
@@ -126,6 +124,65 @@ export function equal(target: ObjectInterface, base: ObjectInterface): boolean {
 	return every(target, (v, k) => v === base[k]);
 }
 
-export function toFixed(num: number) {
-	return Math.round(num * FIXED_DIGIT) / FIXED_DIGIT;
+const roundNumFunc = {};
+
+export function roundNumber(num: number, roundUnit: number) {
+	// Cache for performance
+	if (!roundNumFunc[roundUnit]) {
+		roundNumFunc[roundUnit] = getRoundFunc(roundUnit);
+	}
+
+	return roundNumFunc[roundUnit](num);
+}
+
+export function roundNumbers(num: ObjectInterface<number>, roundUnit: ObjectInterface<number> | number) {
+	if (!num || !roundUnit) {
+		return num;
+	}
+	const isNumber = typeof roundUnit === "number";
+	return map(num, (value, key) => roundNumber(value, isNumber ? roundUnit : roundUnit[key]));
+}
+
+export function getDecimalPlace(val: number): number {
+	if (!isFinite(val)) {
+		return 0;
+	}
+
+	const v = (val + "");
+
+	if (v.indexOf("e") >= 0) {
+		// Exponential Format
+		// 1e-10, 1e-12
+		let p = 0;
+		let e = 1;
+
+		while (Math.round(val * e) / e !== val) {
+			e *= 10;
+			p++;
+		}
+
+		return p;
+	}
+
+	// In general, following has performance benefit.
+	// https://jsperf.com/precision-calculation
+	return v.indexOf(".") >= 0 ? (v.length - v.indexOf(".") - 1) : 0;
+}
+
+export function inversePow(n: number) {
+	// replace Math.pow(10, -n) to solve floating point issue.
+	// eg. Math.pow(10, -4) => 0.00009999999999999999
+	return 1 / Math.pow(10, n);
+}
+
+export function getRoundFunc(v: number) {
+	const p = v < 1 ? Math.pow(10, getDecimalPlace(v)) : 1;
+
+	return (n: number) => {
+		if (v === 0) {
+			return 0;
+		}
+
+		return Math.round(Math.round(n / v) * v * p) / p;
+	};
 }

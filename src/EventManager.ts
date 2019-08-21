@@ -2,6 +2,7 @@ import { IInputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AnimationParam, AnimationManager } from "./AnimationManager";
 import Axes from "./Axes";
+import { roundNumbers } from "./utils";
 
 export interface ChangeEventOption {
 	input: IInputType;
@@ -38,8 +39,10 @@ export class EventManager {
 	 * });
 	 */
 	triggerHold(pos: Axis, option: ChangeEventOption) {
+		const {roundPos} = this.getRoundPos(pos);
+
 		this.axes.trigger("hold", {
-			pos,
+			pos: roundPos,
 			input: option.input || null,
 			inputEvent: option.event || null,
 			isTrusted: true,
@@ -118,6 +121,9 @@ export class EventManager {
 	 * });
 	 */
 	triggerRelease(param: AnimationParam) {
+		const {roundPos, roundDepa} = this.getRoundPos(param.destPos, param.depaPos);
+		param.destPos = roundPos;
+		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
 		this.axes.trigger("release", param);
 	}
@@ -162,7 +168,8 @@ export class EventManager {
 		const am = this.am;
 		const axm = am.axm;
 		const eventInfo = am.getEventInfo();
-		const moveTo = axm.moveTo(pos, isAccurate, depaPos);
+		const {roundPos, roundDepa} = this.getRoundPos(pos, depaPos);
+		const moveTo = axm.moveTo(roundPos, roundDepa);
 		const inputEvent = option && option.event || eventInfo && eventInfo.event || null;
 		const param = {
 			pos: moveTo.pos,
@@ -217,6 +224,9 @@ export class EventManager {
 	 * });
 	 */
 	triggerAnimationStart(param: AnimationParam): boolean {
+		const {roundPos, roundDepa} = this.getRoundPos(param.destPos, param.depaPos);
+		param.destPos = roundPos;
+		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
 		return this.axes.trigger("animationStart", param);
 	}
@@ -290,5 +300,18 @@ export class EventManager {
 
 	destroy() {
 		this.axes.off();
+	}
+
+	private getRoundPos(pos: Axis, depaPos?: Axis) {
+		// round value if round exist
+		const roundUnit = this.axes.options.round;
+
+		// if (round == null) {
+		// 	return {pos, depaPos}; // undefined, undefined
+		// }
+		return {
+			roundPos: roundNumbers(pos, roundUnit),
+			roundDepa: roundNumbers(depaPos, roundUnit),
+		};
 	}
 }
