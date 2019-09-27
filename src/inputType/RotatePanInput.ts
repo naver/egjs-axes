@@ -2,6 +2,27 @@ import Axes from "../Axes";
 import { toAxis } from "./InputType";
 import { PanInput, PanInputOption } from "./PanInput";
 
+/**
+ * @class eg.Axes.RotatePanInput
+ * @classdesc A module that passes the angle moved by touch to Axes and uses one axis of rotation.<br>[Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
+ * @ko 터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.<br>[상세내용](https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4)
+ *
+ * @example
+ * const input = new eg.Axes.RotatePanInput("#area");
+ *
+ * var axes = new eg.Axes({
+ *	// property name('angle') could be anything you want (eg. x, y, z...)
+ * 	angle: {
+ * 		range: [-180, 180] // from -180deg to 180deg
+ * 	}
+ * });
+ *
+ * axes.connect("angle", input)
+ *
+ * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.RotatePanInput module <ko>eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @extends eg.Axes.PanInput
+ */
 export class RotatePanInput extends PanInput {
 	private rotateOrigin: number[];
 	private prevAngle: number;
