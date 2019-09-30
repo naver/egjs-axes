@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.6.0-rc
+@version 2.6.0
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@egjs/hammerjs'), require('@egjs/component')) :
@@ -1433,7 +1433,7 @@ https://github.com/naver/egjs-axes
           * eg.Axes.VERSION;  // ex) 3.3.3
           * @memberof eg.Axes
           */
-      Axes.VERSION = "2.6.0-rc";
+      Axes.VERSION = "2.6.0";
       /**
                                        * @name eg.Axes.TRANSFORM
                                        * @desc Returns the transform attribute with CSS vendor prefixes.

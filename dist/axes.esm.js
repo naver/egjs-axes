@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.6.0-rc
+@version 2.6.0
 */
 import { DIRECTION_NONE, DIRECTION_LEFT, DIRECTION_RIGHT, DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL, Manager, PointerEventInput, TouchMouseInput, TouchInput, MouseInput, Pan, Pinch } from '@egjs/hammerjs';
 import Component from '@egjs/component';
@@ -1430,7 +1430,7 @@ var Axes = /*#__PURE__*/function (_super) {
       * eg.Axes.VERSION;  // ex) 3.3.3
       * @memberof eg.Axes
       */
-  Axes.VERSION = "2.6.0-rc";
+  Axes.VERSION = "2.6.0";
   /**
                                    * @name eg.Axes.TRANSFORM
                                    * @desc Returns the transform attribute with CSS vendor prefixes.

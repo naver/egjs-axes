@@ -5,7 +5,7 @@ Copyright (c) 2017 NAVER Corp.
 @egjs/axes JavaScript library
 https://github.com/naver/egjs-axes
 
-@version 2.6.0-rc
+@version 2.6.0
 
 All-in-one packaged file for ease use of '@egjs/axes' with below dependencies.
 NOTE: This is not an official distribution file and is only for user convenience.
@@ -4508,7 +4508,7 @@ NOTE: This is not an official distribution file and is only for user convenience
           * eg.Axes.VERSION;  // ex) 3.3.3
           * @memberof eg.Axes
           */
-      Axes.VERSION = "2.6.0-rc";
+      Axes.VERSION = "2.6.0";
       /**
                                        * @name eg.Axes.TRANSFORM
                                        * @desc Returns the transform attribute with CSS vendor prefixes.
