@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Source: outjs/inputType/RotatePanInput.js | egjs::axes - API</title>
+    <title>Source: outjs/AnimationManager.js | egjs::axes - API</title>
     
     <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions." />
     
@@ -336,168 +336,287 @@
 </div>
 
     <div class="main">
-        <h1 class="page-title" data-filename="outjs_inputType_RotatePanInput.js.html">Source: outjs/inputType/RotatePanInput.js</h1>
+        <h1 class="page-title" data-filename="outjs_AnimationManager.js.html">Source: outjs/AnimationManager.js</h1>
         
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>var __extends = (this &amp;&amp; this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-import Axes from "../Axes";
-import { toAxis } from "./InputType";
-import { PanInput } from "./PanInput";
-/**
- * @class eg.Axes.RotatePanInput
- * @classdesc A module that passes the angle moved by touch to Axes and uses one axis of rotation.&lt;br>[Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
- * @ko 터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.&lt;br>[상세내용](https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4)
- *
- * @example
- * const input = new eg.Axes.RotatePanInput("#area");
- *
- * var axes = new eg.Axes({
- *	// property name('angle') could be anything you want (eg. x, y, z...)
- * 	angle: {
- * 		range: [-180, 180] // from -180deg to 180deg
- * 	}
- * });
- *
- * axes.connect("angle", input)
- *
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.RotatePanInput module &lt;ko>eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트&lt;/ko>
- * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module&lt;ko>eg.Axes.PanInput 모듈의 옵션 객체&lt;/ko>
- * @extends eg.Axes.PanInput
- */
-var RotatePanInput = /** @class */ (function (_super) {
-    __extends(RotatePanInput, _super);
-    function RotatePanInput(el, options) {
-        var _this = _super.call(this, el, options) || this;
-        _this.prevQuadrant = null;
-        _this.lastDiff = 0;
-        return _this;
+            <pre class="prettyprint source linenums"><code>var __assign = (this &amp;&amp; this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i &lt; n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
     }
-    RotatePanInput.prototype.mapAxes = function (axes) {
-        this._direction = Axes.DIRECTION_ALL;
-        this.axes = axes;
-    };
-    RotatePanInput.prototype.onHammerInput = function (event) {
-        if (this.isEnable()) {
-            if (event.isFirst) {
-                this.observer.hold(this, event);
-                this.onPanstart(event);
-            }
-            else if (event.isFinal) {
-                this.onPanend(event);
-            }
-        }
-    };
-    RotatePanInput.prototype.onPanstart = function (event) {
-        var rect = this.element.getBoundingClientRect();
-        /**
-         * Responsive
-         */
-        // TODO: how to do if element is ellipse not circle.
-        this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
-        // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-        this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
-        // init angle.
-        this.prevAngle = null;
-        this.triggerChange(event);
-    };
-    RotatePanInput.prototype.onPanmove = function (event) {
-        this.triggerChange(event);
-    };
-    RotatePanInput.prototype.onPanend = function (event) {
-        this.triggerChange(event);
-        this.triggerAnimation(event);
-    };
-    RotatePanInput.prototype.triggerChange = function (event) {
-        var angle = this.getAngle(event.center.x, event.center.y);
-        var quadrant = this.getQuadrant(event.center.x, event.center.y);
-        var diff = this.getDifference(this.prevAngle, angle, this.prevQuadrant, quadrant);
-        this.prevAngle = angle;
-        this.prevQuadrant = quadrant;
-        if (diff === 0) {
-            return;
-        }
-        this.lastDiff = diff;
-        this.observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
-    };
-    RotatePanInput.prototype.triggerAnimation = function (event) {
-        var vx = event.velocityX;
-        var vy = event.velocityY;
-        var velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-        var duration = Math.abs(velocity / -this.observer.options.deceleration);
-        var distance = velocity / 2 * duration;
-        this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
-    };
-    RotatePanInput.prototype.getDifference = function (prevAngle, angle, prevQuadrant, quadrant) {
-        var diff;
-        if (prevAngle === null) {
-            diff = 0;
-        }
-        else if (prevQuadrant === 1 &amp;&amp; quadrant === 4) {
-            diff = -prevAngle - (360 - angle);
-        }
-        else if (prevQuadrant === 4 &amp;&amp; quadrant === 1) {
-            diff = (360 - prevAngle) + angle;
+    return t;
+};
+import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from "./Coordinate";
+import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, inversePow } from "./utils";
+function minMax(value, min, max) {
+    return Math.max(Math.min(value, max), min);
+}
+var AnimationManager = /** @class */ (function () {
+    function AnimationManager(_a) {
+        var options = _a.options, itm = _a.itm, em = _a.em, axm = _a.axm;
+        this.options = options;
+        this.itm = itm;
+        this.em = em;
+        this.axm = axm;
+        this.animationEnd = this.animationEnd.bind(this);
+    }
+    AnimationManager.prototype.getDuration = function (depaPos, destPos, wishDuration) {
+        var _this = this;
+        var duration;
+        if (typeof wishDuration !== "undefined") {
+            duration = wishDuration;
         }
         else {
-            diff = angle - prevAngle;
+            var durations_1 = map(destPos, function (v, k) { return getDuration(Math.abs(v - depaPos[k]), _this.options.deceleration); });
+            duration = Object.keys(durations_1).reduce(function (max, v) { return Math.max(max, durations_1[v]); }, -Infinity);
         }
-        return diff;
+        return minMax(duration, this.options.minimumDuration, this.options.maximumDuration);
     };
-    RotatePanInput.prototype.getPosFromOrigin = function (posX, posY) {
+    AnimationManager.prototype.createAnimationParam = function (pos, duration, option) {
+        var depaPos = this.axm.get();
+        var destPos = pos;
+        var inputEvent = option &amp;&amp; option.event || null;
         return {
-            x: posX - this.rotateOrigin[0],
-            y: this.rotateOrigin[1] - posY,
+            depaPos: depaPos,
+            destPos: destPos,
+            duration: minMax(duration, this.options.minimumDuration, this.options.maximumDuration),
+            delta: this.axm.getDelta(depaPos, destPos),
+            inputEvent: inputEvent,
+            input: option &amp;&amp; option.input || null,
+            isTrusted: !!inputEvent,
+            done: this.animationEnd,
         };
     };
-    RotatePanInput.prototype.getAngle = function (posX, posY) {
-        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
-        var angle = Math.atan2(y, x) * 180 / Math.PI;
-        // console.log(angle, x, y);
-        return angle &lt; 0 ? 360 + angle : angle;
+    AnimationManager.prototype.grab = function (axes, option) {
+        if (this._animateParam &amp;&amp; axes.length) {
+            var orgPos_1 = this.axm.get(axes);
+            var pos = this.axm.map(orgPos_1, function (v, opt) { return getCirculatedPos(v, opt.range, opt.circular); });
+            if (!every(pos, function (v, k) { return orgPos_1[k] === v; })) {
+                this.em.triggerChange(pos, false, orgPos_1, option, !!option);
+            }
+            this._animateParam = null;
+            this._raf &amp;&amp; cancelAnimationFrame(this._raf);
+            this._raf = null;
+            this.em.triggerAnimationEnd(!!(option &amp;&amp; option.event));
+        }
+    };
+    AnimationManager.prototype.getEventInfo = function () {
+        if (this._animateParam &amp;&amp; this._animateParam.input &amp;&amp; this._animateParam.inputEvent) {
+            return {
+                input: this._animateParam.input,
+                event: this._animateParam.inputEvent,
+            };
+        }
+        else {
+            return null;
+        }
+    };
+    AnimationManager.prototype.restore = function (option) {
+        var pos = this.axm.get();
+        var destPos = this.axm.map(pos, function (v, opt) { return Math.min(opt.range[1], Math.max(opt.range[0], v)); });
+        this.animateTo(destPos, this.getDuration(pos, destPos), option);
+    };
+    AnimationManager.prototype.animationEnd = function () {
+        var beforeParam = this.getEventInfo();
+        this._animateParam = null;
+        // for Circular
+        var circularTargets = this.axm.filter(this.axm.get(), function (v, opt) { return isCircularable(v, opt.range, opt.circular); });
+        Object.keys(circularTargets).length > 0 &amp;&amp; this.setTo(this.axm.map(circularTargets, function (v, opt) { return getCirculatedPos(v, opt.range, opt.circular); }));
+        this.itm.setInterrupt(false);
+        this.em.triggerAnimationEnd(!!beforeParam);
+        if (this.axm.isOutside()) {
+            this.restore(beforeParam);
+        }
+        else {
+            this.finish(!!beforeParam);
+        }
+    };
+    AnimationManager.prototype.finish = function (isTrusted) {
+        this._animateParam = null;
+        this.itm.setInterrupt(false);
+        this.em.triggerFinish(isTrusted);
+    };
+    AnimationManager.prototype.animateLoop = function (param, complete) {
+        if (param.duration) {
+            this._animateParam = __assign({}, param);
+            var info_1 = this._animateParam;
+            var self_1 = this;
+            var destPos_1 = info_1.destPos;
+            var prevPos_1 = info_1.depaPos;
+            var prevEasingPer_1 = 0;
+            var directions_1 = map(prevPos_1, function (value, key) {
+                return value &lt;= destPos_1[key] ? 1 : -1;
+            });
+            var originalIntendedPos_1 = map(destPos_1, function (v) { return v; });
+            var prevTime_1 = new Date().getTime();
+            info_1.startTime = prevTime_1;
+            (function loop() {
+                self_1._raf = null;
+                var currentTime = new Date().getTime();
+                var ratio = (currentTime - info_1.startTime) / param.duration;
+                var easingPer = self_1.easing(ratio);
+                var toPos = self_1.axm.map(prevPos_1, function (pos, options, key) {
+                    var nextPos = ratio >= 1
+                        ? destPos_1[key]
+                        : pos + info_1.delta[key] * (easingPer - prevEasingPer_1);
+                    // Subtract distance from distance already moved.
+                    // Recalculate the remaining distance.
+                    // Fix the bouncing phenomenon by changing the range.
+                    var circulatedPos = getCirculatedPos(nextPos, options.range, options.circular);
+                    if (nextPos !== circulatedPos) {
+                        // circular
+                        var rangeOffset = directions_1[key] * (options.range[1] - options.range[0]);
+                        destPos_1[key] -= rangeOffset;
+                        prevPos_1[key] -= rangeOffset;
+                    }
+                    return circulatedPos;
+                });
+                var isCanceled = !self_1.em.triggerChange(toPos, false, prevPos_1);
+                prevPos_1 = toPos;
+                prevTime_1 = currentTime;
+                prevEasingPer_1 = easingPer;
+                if (easingPer >= 1) {
+                    destPos_1 = self_1.getFinalPos(destPos_1, originalIntendedPos_1);
+                    if (!equal(destPos_1, self_1.axm.get(Object.keys(destPos_1)))) {
+                        self_1.em.triggerChange(destPos_1, true, prevPos_1);
+                    }
+                    complete();
+                    return;
+                }
+                else if (isCanceled) {
+                    self_1.finish(false);
+                }
+                else {
+                    // animationEnd
+                    self_1._raf = requestAnimationFrame(loop);
+                }
+            })();
+        }
+        else {
+            this.em.triggerChange(param.destPos, true);
+            complete();
+        }
     };
     /**
-     * Quadrant
-     *       y(+)
-     *       |
-     *   2   |    1
-     * --------------->x(+)
-     *   3   |    4
-     *       |
+     * Get estimated final value.
+     *
+     * If destPos is within the 'error range' of the original intended position, the initial intended position is returned.
+     *   - eg. original intended pos: 100, destPos: 100.0000000004 ==> return 100;
+     * If dest Pos is outside the 'range of error' compared to the originally intended pos, it is returned rounded based on the originally intended pos.
+     *   - eg. original intended pos: 100.123 destPos: 50.12345 => return 50.123
+     *
+     * @param originalIntendedPos
+     * @param destPos
      */
-    RotatePanInput.prototype.getQuadrant = function (posX, posY) {
-        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
-        var q = 0;
-        if (x >= 0 &amp;&amp; y >= 0) {
-            q = 1;
-        }
-        else if (x &lt; 0 &amp;&amp; y >= 0) {
-            q = 2;
-        }
-        else if (x &lt; 0 &amp;&amp; y &lt; 0) {
-            q = 3;
-        }
-        else if (x >= 0 &amp;&amp; y &lt; 0) {
-            q = 4;
-        }
-        return q;
+    AnimationManager.prototype.getFinalPos = function (destPos, originalIntendedPos) {
+        var _this = this;
+        // compare destPos and originalIntendedPos
+        var ERROR_LIMIT = 0.000001;
+        var finalPos = map(destPos, function (value, key) {
+            if (value >= originalIntendedPos[key] - ERROR_LIMIT &amp;&amp; value &lt;= originalIntendedPos[key] + ERROR_LIMIT) {
+                // In error range, return original intended
+                return originalIntendedPos[key];
+            }
+            else {
+                // Out of error range, return rounded pos.
+                var roundUnit = _this.getRoundUnit(value, key);
+                var result = roundNumber(value, roundUnit);
+                return result;
+            }
+        });
+        return finalPos;
     };
-    return RotatePanInput;
-}(PanInput));
-export { RotatePanInput };
-//# sourceMappingURL=RotatePanInput.js.map</code></pre>
+    AnimationManager.prototype.getRoundUnit = function (val, key) {
+        var roundUnit = this.options.round; // manual mode
+        var minRoundUnit = null; // auto mode
+        // auto mode
+        if (!roundUnit) {
+            // Get minimum round unit
+            var options = this.axm.getAxisOptions(key);
+            minRoundUnit = inversePow(Math.max(getDecimalPlace(options.range[0]), getDecimalPlace(options.range[1]), getDecimalPlace(val)));
+        }
+        return minRoundUnit || roundUnit;
+    };
+    AnimationManager.prototype.getUserControll = function (param) {
+        var userWish = param.setTo();
+        userWish.destPos = this.axm.get(userWish.destPos);
+        userWish.duration = minMax(userWish.duration, this.options.minimumDuration, this.options.maximumDuration);
+        return userWish;
+    };
+    AnimationManager.prototype.animateTo = function (destPos, duration, option) {
+        var _this = this;
+        var param = this.createAnimationParam(destPos, duration, option);
+        var depaPos = __assign({}, param.depaPos);
+        var retTrigger = this.em.triggerAnimationStart(param);
+        // to control
+        var userWish = this.getUserControll(param);
+        // You can't stop the 'animationStart' event when 'circular' is true.
+        if (!retTrigger &amp;&amp; this.axm.every(userWish.destPos, function (v, opt) { return isCircularable(v, opt.range, opt.circular); })) {
+            console.warn("You can't stop the 'animation' event when 'circular' is true.");
+        }
+        if (retTrigger &amp;&amp; !equal(userWish.destPos, depaPos)) {
+            var inputEvent = option &amp;&amp; option.event || null;
+            this.animateLoop({
+                depaPos: depaPos,
+                destPos: userWish.destPos,
+                duration: userWish.duration,
+                delta: this.axm.getDelta(depaPos, userWish.destPos),
+                isTrusted: !!inputEvent,
+                inputEvent: inputEvent,
+                input: option &amp;&amp; option.input || null,
+            }, function () { return _this.animationEnd(); });
+        }
+    };
+    AnimationManager.prototype.easing = function (p) {
+        return p > 1 ? 1 : this.options.easing(p);
+    };
+    AnimationManager.prototype.setTo = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        var axes = Object.keys(pos);
+        this.grab(axes);
+        var orgPos = this.axm.get(axes);
+        if (equal(pos, orgPos)) {
+            return this;
+        }
+        this.itm.setInterrupt(true);
+        var movedPos = filter(pos, function (v, k) { return orgPos[k] !== v; });
+        if (!Object.keys(movedPos).length) {
+            return this;
+        }
+        movedPos = this.axm.map(movedPos, function (v, opt) {
+            var range = opt.range, circular = opt.circular;
+            if (circular &amp;&amp; (circular[0] || circular[1])) {
+                return v;
+            }
+            else {
+                return getInsidePosition(v, range, circular);
+            }
+        });
+        if (equal(movedPos, orgPos)) {
+            return this;
+        }
+        if (duration > 0) {
+            this.animateTo(movedPos, duration);
+        }
+        else {
+            this.em.triggerChange(movedPos);
+            this.finish(false);
+        }
+        return this;
+    };
+    AnimationManager.prototype.setBy = function (pos, duration) {
+        if (duration === void 0) { duration = 0; }
+        return this.setTo(map(this.axm.get(Object.keys(pos)), function (v, k) { return v + pos[k]; }), duration);
+    };
+    return AnimationManager;
+}());
+export { AnimationManager };
+//# sourceMappingURL=AnimationManager.js.map</code></pre>
         </article>
     </section>
 

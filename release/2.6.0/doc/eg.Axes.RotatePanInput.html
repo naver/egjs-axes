@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Source: outjs/inputType/RotatePanInput.js | egjs::axes - API</title>
+    <title>Class: RotatePanInput | egjs::axes - API</title>
     
     <meta name="description" content="A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions." />
     
@@ -336,171 +336,684 @@
 </div>
 
     <div class="main">
-        <h1 class="page-title" data-filename="outjs_inputType_RotatePanInput.js.html">Source: outjs/inputType/RotatePanInput.js</h1>
+        <h1 class="page-title" data-filename="eg.Axes.RotatePanInput.html">Class: RotatePanInput</h1>
+        
+
+
+
+<section>
+
+<header>
+    <h2>
+        <span class="ancestors">eg<a href="eg.Axes.html">.Axes</a>.</span>
+    
+    
+        <span>RotatePanInput</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="RotatePanInput">
+            
+            new eg.Axes.RotatePanInput<span class="signature">(element, <span class="optional">options</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_RotatePanInput.js.html">RotatePanInput.js</a>, <a href="outjs_inputType_RotatePanInput.js.html#line14">line 14</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>A module that passes the angle moved by touch to Axes and uses one axis of rotation.<br><a href="https://github.com/naver/egjs-axes/wiki/RotatePanInput">Details</a></p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.<br><a href="https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4">상세내용</a></p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>element</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">jQuery</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>An element to use the eg.Axes.RotatePanInput module </p></div>
+            <div class="description ko"><p>eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>options</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type"><a href="global.html#PanInputOption">PanInputOption</a></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>The option object of the eg.Axes.PanInput module</p></div>
+            <div class="description ko"><p>eg.Axes.PanInput 모듈의 옵션 객체</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>const input = new eg.Axes.RotatePanInput(&quot;#area&quot;);</p>
+<p>var axes = new eg.Axes({<br>    // property name('angle') could be anything you want (eg. x, y, z...)<br>    angle: {<br>        range: [-180, 180] // from -180deg to 180deg<br>    }<br>});</p>
+<p>axes.connect(&quot;angle&quot;, input)</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+
+
         
 
 
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>var __extends = (this &amp;&amp; this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-import Axes from "../Axes";
-import { toAxis } from "./InputType";
-import { PanInput } from "./PanInput";
-/**
- * @class eg.Axes.RotatePanInput
- * @classdesc A module that passes the angle moved by touch to Axes and uses one axis of rotation.&lt;br>[Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
- * @ko 터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.&lt;br>[상세내용](https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4)
- *
- * @example
- * const input = new eg.Axes.RotatePanInput("#area");
- *
- * var axes = new eg.Axes({
- *	// property name('angle') could be anything you want (eg. x, y, z...)
- * 	angle: {
- * 		range: [-180, 180] // from -180deg to 180deg
- * 	}
- * });
- *
- * axes.connect("angle", input)
- *
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.RotatePanInput module &lt;ko>eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트&lt;/ko>
- * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module&lt;ko>eg.Axes.PanInput 모듈의 옵션 객체&lt;/ko>
- * @extends eg.Axes.PanInput
- */
-var RotatePanInput = /** @class */ (function (_super) {
-    __extends(RotatePanInput, _super);
-    function RotatePanInput(el, options) {
-        var _this = _super.call(this, el, options) || this;
-        _this.prevQuadrant = null;
-        _this.lastDiff = 0;
-        return _this;
-    }
-    RotatePanInput.prototype.mapAxes = function (axes) {
-        this._direction = Axes.DIRECTION_ALL;
-        this.axes = axes;
-    };
-    RotatePanInput.prototype.onHammerInput = function (event) {
-        if (this.isEnable()) {
-            if (event.isFirst) {
-                this.observer.hold(this, event);
-                this.onPanstart(event);
-            }
-            else if (event.isFinal) {
-                this.onPanend(event);
-            }
-        }
-    };
-    RotatePanInput.prototype.onPanstart = function (event) {
-        var rect = this.element.getBoundingClientRect();
-        /**
-         * Responsive
-         */
-        // TODO: how to do if element is ellipse not circle.
-        this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
-        // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-        this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
-        // init angle.
-        this.prevAngle = null;
-        this.triggerChange(event);
-    };
-    RotatePanInput.prototype.onPanmove = function (event) {
-        this.triggerChange(event);
-    };
-    RotatePanInput.prototype.onPanend = function (event) {
-        this.triggerChange(event);
-        this.triggerAnimation(event);
-    };
-    RotatePanInput.prototype.triggerChange = function (event) {
-        var angle = this.getAngle(event.center.x, event.center.y);
-        var quadrant = this.getQuadrant(event.center.x, event.center.y);
-        var diff = this.getDifference(this.prevAngle, angle, this.prevQuadrant, quadrant);
-        this.prevAngle = angle;
-        this.prevQuadrant = quadrant;
-        if (diff === 0) {
-            return;
-        }
-        this.lastDiff = diff;
-        this.observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
-    };
-    RotatePanInput.prototype.triggerAnimation = function (event) {
-        var vx = event.velocityX;
-        var vy = event.velocityY;
-        var velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-        var duration = Math.abs(velocity / -this.observer.options.deceleration);
-        var distance = velocity / 2 * duration;
-        this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
-    };
-    RotatePanInput.prototype.getDifference = function (prevAngle, angle, prevQuadrant, quadrant) {
-        var diff;
-        if (prevAngle === null) {
-            diff = 0;
-        }
-        else if (prevQuadrant === 1 &amp;&amp; quadrant === 4) {
-            diff = -prevAngle - (360 - angle);
-        }
-        else if (prevQuadrant === 4 &amp;&amp; quadrant === 1) {
-            diff = (360 - prevAngle) + angle;
-        }
-        else {
-            diff = angle - prevAngle;
-        }
-        return diff;
-    };
-    RotatePanInput.prototype.getPosFromOrigin = function (posX, posY) {
-        return {
-            x: posX - this.rotateOrigin[0],
-            y: this.rotateOrigin[1] - posY,
-        };
-    };
-    RotatePanInput.prototype.getAngle = function (posX, posY) {
-        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
-        var angle = Math.atan2(y, x) * 180 / Math.PI;
-        // console.log(angle, x, y);
-        return angle &lt; 0 ? 360 + angle : angle;
-    };
-    /**
-     * Quadrant
-     *       y(+)
-     *       |
-     *   2   |    1
-     * --------------->x(+)
-     *   3   |    4
-     *       |
-     */
-    RotatePanInput.prototype.getQuadrant = function (posX, posY) {
-        var _a = this.getPosFromOrigin(posX, posY), x = _a.x, y = _a.y;
-        var q = 0;
-        if (x >= 0 &amp;&amp; y >= 0) {
-            q = 1;
-        }
-        else if (x &lt; 0 &amp;&amp; y >= 0) {
-            q = 2;
-        }
-        else if (x &lt; 0 &amp;&amp; y &lt; 0) {
-            q = 3;
-        }
-        else if (x >= 0 &amp;&amp; y &lt; 0) {
-            q = 4;
-        }
-        return q;
-    };
-    return RotatePanInput;
-}(PanInput));
-export { RotatePanInput };
-//# sourceMappingURL=RotatePanInput.js.map</code></pre>
-        </article>
-    </section>
+    </div>
 
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        <ul>
+            <li>
+            	
+            	<a href="eg.Axes.PanInput.html">eg.Axes.PanInput</a>
+            	
+            </li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="destroy">
+            
+                <span class="inherited"><a href="eg.Axes.PanInput.html#destroy">inherited</a></span>
+            
+            destroy<span class="signature">()</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line165">line 165</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Destroys elements, properties, and events used in a module.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="disable">
+            
+                <span class="inherited"><a href="eg.Axes.PanInput.html#disable">inherited</a></span>
+            
+            disable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Axes.PanInput.html">eg.Axes.PanInput</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line189">line 189</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Disables input devices</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용할 수 없게 한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Axes.PanInput.html">eg.Axes.PanInput</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself </div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="enable">
+            
+                <span class="inherited"><a href="eg.Axes.PanInput.html#enable">inherited</a></span>
+            
+            enable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.Axes.PanInput.html">eg.Axes.PanInput</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line179">line 179</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Enables input devices</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용할 수 있게 한다</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.Axes.PanInput.html">eg.Axes.PanInput</a>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">An instance of a module itself </div>
+                <div class="ko"><p>모듈 자신의 인스턴스</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer inherited">
+        <h4 class="name" id="isEnable">
+            
+                <span class="inherited"><a href="eg.Axes.PanInput.html#isEnable">inherited</a></span>
+            
+            isEnable<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Boolean}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="outjs_inputType_PanInput.js.html">PanInput.js</a>, <a href="outjs_inputType_PanInput.js.html#line199">line 199</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Returns whether to use an input device</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>입력 장치를 사용 여부를 반환한다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        Boolean
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en">Whether to use an input device </div>
+                <div class="ko"><p>입력장치 사용여부</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
