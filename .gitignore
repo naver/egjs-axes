@@ -211,4 +211,4 @@ demo/release/
 CHANGELOG.md
 build/
 outjs/
-dist/
+# dist/
