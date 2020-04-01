@@ -266,8 +266,10 @@ export class PanInput implements IInputType {
 			]);
 		const prevent = offset.some(v => v !== 0);
 		if (prevent) {
-			event.srcEvent.preventDefault();
-			event.srcEvent.stopPropagation();
+			const srcEvent = event.srcEvent;
+
+			srcEvent.cancelable && srcEvent.preventDefault();
+			srcEvent.stopPropagation();
 		}
 		event.preventSystemEvent = prevent;
 		prevent && this.observer.change(this, event, toAxis(this.axes, offset));
