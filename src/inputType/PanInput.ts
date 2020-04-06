@@ -2,6 +2,7 @@ import Hammer, { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_
 import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
 import { ObjectInterface } from "../const";
+import { window } from "../browser";
 
 export interface PanInputOption {
 	inputType?: string[];
@@ -11,6 +12,8 @@ export interface PanInputOption {
 	hammerManagerOptions?: ObjectInterface;
 }
 
+const IS_IOS_SAFARI = "ontouchstart" in window
+	&& window.navigator.userAgent.toLowerCase().indexOf("safari") > -1;
 // get user's direction
 export function getDirectionByAngle(angle: number, thresholdAngle: number) {
 	if (thresholdAngle < 0 || thresholdAngle > 90) {
@@ -88,6 +91,9 @@ export class PanInput implements IInputType {
 	protected observer: IInputTypeObserver;
 	protected _direction;
 	private panRecognizer = null;
+	private isRightEdge = false;
+	private rightEdgeTimer = 0;
+	private panFlag = false;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		/**
@@ -237,6 +243,8 @@ export class PanInput implements IInputType {
 		if (this.isEnable()) {
 			if (event.isFirst) {
 				this.observer.hold(this, event);
+				this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - 20;
+				this.panFlag = true;
 			} else if (event.isFinal) {
 				this.onPanend(event);
 			}
@@ -244,12 +252,45 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanmove(event) {
+		if (!this.panFlag) {
+			return;
+		}
 		const userDirection = getDirectionByAngle(
 			event.angle, this.options.thresholdAngle);
 
 		// not support offset properties in Hammerjs - start
 		const prevInput = this.hammer.session.prevInput;
+		const clientX = event.center.x;
 
+		if (prevInput && IS_IOS_SAFARI && clientX < 0) {
+			// iOS swipe left => right
+			this.onPanend({
+				...prevInput,
+				velocityX: 0,
+				velocityY: 0,
+				offsetX: 0,
+				offsetY: 0,
+			});
+			return;
+		} else if (this.isRightEdge) {
+			clearTimeout(this.rightEdgeTimer);
+
+			// - is right to left 
+			if (event.deltaX < -20) {
+				this.isRightEdge = false;
+			} else {
+				// iOS swipe right => left
+				this.rightEdgeTimer = window.setTimeout(() => {
+					this.onPanend({
+						...prevInput,
+						velocityX: 0,
+						velocityY: 0,
+						offsetX: 0,
+						offsetY: 0,
+					});
+				}, 100);
+			}
+		}
 		/* eslint-disable no-param-reassign */
 		if (prevInput) {
 			event.offsetX = event.deltaX - prevInput.deltaX;
@@ -274,6 +315,10 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanend(event) {
+		if (!this.panFlag) {
+			return;
+		}
+		this.panFlag = false;
 		let offset: number[] = this.getOffset(
 			[
 				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
