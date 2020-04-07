@@ -3,7 +3,6 @@ import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
 import { ObjectInterface, IS_IOS_SAFARI } from "../const";
 
-
 export interface PanInputOption {
 	inputType?: string[];
 	scale?: number[];
