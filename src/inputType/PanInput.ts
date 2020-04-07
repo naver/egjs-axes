@@ -1,8 +1,8 @@
-import Hammer, { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
+import { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { ObjectInterface } from "../const";
-import { window } from "../browser";
+import { ObjectInterface, IS_IOS_SAFARI } from "../const";
+
 
 export interface PanInputOption {
 	inputType?: string[];
@@ -12,8 +12,6 @@ export interface PanInputOption {
 	hammerManagerOptions?: ObjectInterface;
 }
 
-const IS_IOS_SAFARI = "ontouchstart" in window
-	&& window.navigator.userAgent.toLowerCase().indexOf("safari") > -1;
 // get user's direction
 export function getDirectionByAngle(angle: number, thresholdAngle: number) {
 	if (thresholdAngle < 0 || thresholdAngle > 90) {
@@ -242,9 +240,13 @@ export class PanInput implements IInputType {
 	protected onHammerInput(event) {
 		if (this.isEnable()) {
 			if (event.isFirst) {
-				this.observer.hold(this, event);
-				this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - 20;
-				this.panFlag = true;
+				this.panFlag = false;
+
+				if (event.srcEvent.cancelable !== false) {
+					this.observer.hold(this, event);
+					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - 20;
+					this.panFlag = true;
+				}
 			} else if (event.isFinal) {
 				this.onPanend(event);
 			}
@@ -262,33 +264,35 @@ export class PanInput implements IInputType {
 		const prevInput = this.hammer.session.prevInput;
 		const clientX = event.center.x;
 
-		if (prevInput && IS_IOS_SAFARI && clientX < 0) {
-			// iOS swipe left => right
-			this.onPanend({
-				...prevInput,
-				velocityX: 0,
-				velocityY: 0,
-				offsetX: 0,
-				offsetY: 0,
-			});
-			return;
-		} else if (this.isRightEdge) {
-			clearTimeout(this.rightEdgeTimer);
+		if (prevInput && IS_IOS_SAFARI) {
+			if (clientX < 0) {
+				// iOS swipe left => right
+				this.onPanend({
+					...prevInput,
+					velocityX: 0,
+					velocityY: 0,
+					offsetX: 0,
+					offsetY: 0,
+				});
+				return;
+			} else if (this.isRightEdge) {
+				clearTimeout(this.rightEdgeTimer);
 
-			// - is right to left 
-			if (event.deltaX < -20) {
-				this.isRightEdge = false;
-			} else {
-				// iOS swipe right => left
-				this.rightEdgeTimer = window.setTimeout(() => {
-					this.onPanend({
-						...prevInput,
-						velocityX: 0,
-						velocityY: 0,
-						offsetX: 0,
-						offsetY: 0,
-					});
-				}, 100);
+				// - is right to left
+				if (event.deltaX < -20) {
+					this.isRightEdge = false;
+				} else {
+					// iOS swipe right => left
+					this.rightEdgeTimer = window.setTimeout(() => {
+						this.onPanend({
+							...prevInput,
+							velocityX: 0,
+							velocityY: 0,
+							offsetX: 0,
+							offsetY: 0,
+						});
+					}, 100);
+				}
 			}
 		}
 		/* eslint-disable no-param-reassign */
@@ -306,9 +310,14 @@ export class PanInput implements IInputType {
 				useDirection(DIRECTION_VERTICAL, this._direction, userDirection),
 			]);
 		const prevent = offset.some(v => v !== 0);
+
 		if (prevent) {
-			event.srcEvent.preventDefault();
-			event.srcEvent.stopPropagation();
+			const srcEvent = event.srcEvent;
+
+			if (srcEvent.cancelable !== false) {
+				srcEvent.preventDefault();
+			}
+			srcEvent.stopPropagation();
 		}
 		event.preventSystemEvent = prevent;
 		prevent && this.observer.change(this, event, toAxis(this.axes, offset));
@@ -318,6 +327,7 @@ export class PanInput implements IInputType {
 		if (!this.panFlag) {
 			return;
 		}
+		clearTimeout(this.rightEdgeTimer);
 		this.panFlag = false;
 		let offset: number[] = this.getOffset(
 			[
