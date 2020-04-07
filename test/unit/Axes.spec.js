@@ -2,6 +2,7 @@ import Axes from "../../src/Axes.ts";
 import {PanInput} from "../../src/inputType/PanInput.ts";
 import {PinchInput} from "../../src/inputType/PinchInput.ts";
 import { getDecimalPlace, roundNumber } from "../../src/utils";
+import PanInputInjector from "inject-loader!../../src/inputType/PanInput.ts";
 
 describe("Axes", function () {
 	describe("Axes Test", function () {
@@ -348,7 +349,132 @@ describe("Axes", function () {
 			});
 		});
 	});
+	describe(`Axes iOS Edge Test`, function () {
+		beforeEach(() => {
+			this.inst = new Axes({
+				x: {
+					range: [0, 300],
+					bounce: 100
+				},
+				y: {
+					range: [0, 400],
+					bounce: 100
+				}
+			}, {
+					deceleration: 0.001
+				});
+			this.el = sandbox();
+			this.el.innerHTML = `<div id="area"
+	style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
 
+			this.releaseHandler = sinon.spy();
+			this.finishHandler = sinon.spy();
+			const MockPanInputInjector = PanInputInjector({
+				"../const": {
+					IS_IOS_SAFARI: true,
+				},
+			});
+			this.input = new MockPanInputInjector.PanInput(this.el, {
+				inputType: ["touch"],
+			});
+			this.inst.on({
+				"release": this.releaseHandler,
+				"finish": this.finishHandler,
+			}).connect(["x", "y"], this.input);
+
+			const touchTrigger = Simulator.events.touch.trigger;
+
+			Simulator.events.touch.originalTrigger = touchTrigger;
+			Simulator.events.touch.trigger = function(touches, element, type) {
+				if (type === "end") {
+					return;
+				}
+				touchTrigger.call(Simulator.events.touch, touches, element, type);
+			};
+		});
+		afterEach(() => {
+			Simulator.events.touch.trigger = Simulator.events.touch.originalTrigger;
+			if (this.inst) {
+				this.inst.destroy();
+				this.inst = null;
+			}
+			if (this.input) {
+				this.input.destroy();
+				this.input = null;
+			}
+			this.releaseHandler.resetHistory();
+			this.finishHandler.resetHistory();
+			cleanup();
+		});
+		it("should check release event occurs when swiping on ios safari edge. (left to right)", (done) => {
+			// Given, When
+			// clientX + => -
+			Simulator.gestures.pan(this.el, {
+				pos: [30, 30],
+				deltaX: -50,
+				deltaY: 10,
+				duration: 200,
+				easing: "linear"
+			}, () => {
+				// Then
+				// for test animation event
+				setTimeout(() => {
+					const releaseEvent = this.releaseHandler.getCall(0).args[0];
+					expect(this.releaseHandler.calledOnce).to.be.true;
+					expect(releaseEvent.inputEvent.isFinal).to.be.false;
+					expect(releaseEvent.isTrusted).to.be.true;
+
+					const finishEvent = this.finishHandler.getCall(0).args[0];
+					expect(this.finishHandler.called).to.be.true;
+					expect(finishEvent.isTrusted).to.be.true;
+					done();
+				}, 500);
+			});
+		});
+		it("should check release event occurs when swiping a little on ios safari edge. (right to left)", (done) => {
+			// Given, When
+			// window.innerWidth => window.innerWidth - 15
+			Simulator.gestures.pan(this.el, {
+				pos: [window.innerWidth, 30],
+				deltaX: -15,
+				deltaY: 0,
+				duration: 200,
+				easing: "linear"
+			}, () => {
+				// Then
+				// for test animation event
+				setTimeout(() => {
+					const releaseEvent = this.releaseHandler.getCall(0).args[0];
+					expect(this.releaseHandler.calledOnce).to.be.true;
+					expect(releaseEvent.inputEvent.isFinal).to.be.false;
+					// expect(releaseEvent.isTrusted).to.be.true;
+
+					// const finishEvent = this.finishHandler.getCall(0).args[0];
+					// expect(this.finishHandler.called).to.be.true;
+					// expect(finishEvent.isTrusted).to.be.true;
+					done();
+				}, 500);
+			});
+		});
+		it("should check release event not occurs when swiping a lot on ios safari edge. (right to left)", (done) => {
+			// Given, When
+			// window.innerWidth => window.innerWidth - 30
+			Simulator.gestures.pan(this.el, {
+				pos: [window.innerWidth, 30],
+				deltaX: -30,
+				deltaY: 0,
+				duration: 200,
+				easing: "linear"
+			}, () => {
+				// Then
+				// for test animation event
+				setTimeout(() => {
+					expect(this.releaseHandler.callCount).to.be.equals(0);
+					done();
+				}, 500);
+			});
+		});
+	});
 	[
 		["pointer"], ["touch", "mouse"], ["touch"]
 	].forEach(type => {
@@ -691,7 +817,6 @@ describe("Axes", function () {
 					done();
 				});
 			});
-
 			it("should check slow movement test (no-velocity), release outside", (done) => {
 				// Given
 				this.inst.on("change", (e) => {
