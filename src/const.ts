@@ -21,6 +21,11 @@ export {
 	DIRECTION_VERTICAL,
 	DIRECTION_ALL,
 } from "@egjs/hammerjs";
+import getAgent from "@egjs/agent";
+import { window } from "./browser";
+
+export const IS_IOS_SAFARI = "ontouchstart" in window
+	&& getAgent(window.navigator.userAgent).browser.name.indexOf("safari") > -1;
 
 export const TRANSFORM = (() => {
 	if (typeof document === "undefined") {

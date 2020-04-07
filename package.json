@@ -41,6 +41,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-axes",
 	"dependencies": {
+		"@egjs/agent": "^2.1.5",
 		"@egjs/component": "^2.1.2",
 		"@egjs/hammerjs": "^2.0.15"
 	},
