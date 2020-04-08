@@ -263,9 +263,9 @@ export class PanInput implements IInputType {
 		const prevInput = this.hammer.session.prevInput;
 
 		if (prevInput && IS_IOS_SAFARI) {
-			const SwipeLeftToRight = event.center.x < 0;
+			const swipeLeftToRight = event.center.x < 0;
 
-			if (SwipeLeftToRight) {
+			if (swipeLeftToRight) {
 				// iOS swipe left => right
 				this.onPanend({
 					...prevInput,
@@ -279,9 +279,9 @@ export class PanInput implements IInputType {
 				clearTimeout(this.rightEdgeTimer);
 
 				// - is right to left
-				const SwipeRightToLeft = event.deltaX < -EDGE_DISTANCE;
+				const swipeRightToLeft = event.deltaX < -EDGE_DISTANCE;
 
-				if (SwipeRightToLeft) {
+				if (swipeRightToLeft) {
 					this.isRightEdge = false;
 				} else {
 					// iOS swipe right => left
