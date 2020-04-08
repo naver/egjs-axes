@@ -1,7 +1,7 @@
 import { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { ObjectInterface, IS_IOS_SAFARI } from "../const";
+import { ObjectInterface, IS_IOS_SAFARI, EDGE_DISTANCE } from "../const";
 
 export interface PanInputOption {
 	inputType?: string[];
@@ -243,7 +243,7 @@ export class PanInput implements IInputType {
 
 				if (event.srcEvent.cancelable !== false) {
 					this.observer.hold(this, event);
-					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - 20;
+					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - EDGE_DISTANCE;
 					this.panFlag = true;
 				}
 			} else if (event.isFinal) {
@@ -261,10 +261,11 @@ export class PanInput implements IInputType {
 
 		// not support offset properties in Hammerjs - start
 		const prevInput = this.hammer.session.prevInput;
-		const clientX = event.center.x;
 
 		if (prevInput && IS_IOS_SAFARI) {
-			if (clientX < 0) {
+			const SwipeLeftToRight = event.center.x < 0;
+
+			if (SwipeLeftToRight) {
 				// iOS swipe left => right
 				this.onPanend({
 					...prevInput,
@@ -278,7 +279,9 @@ export class PanInput implements IInputType {
 				clearTimeout(this.rightEdgeTimer);
 
 				// - is right to left
-				if (event.deltaX < -20) {
+				const SwipeRightToLeft = event.deltaX < -EDGE_DISTANCE;
+
+				if (SwipeRightToLeft) {
 					this.isRightEdge = false;
 				} else {
 					// iOS swipe right => left

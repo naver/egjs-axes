@@ -24,6 +24,7 @@ export {
 import getAgent from "@egjs/agent";
 import { window } from "./browser";
 
+export const EDGE_DISTANCE = 20;
 export const IS_IOS_SAFARI = "ontouchstart" in window
 	&& getAgent(window.navigator.userAgent).browser.name.indexOf("safari") > -1;
 
