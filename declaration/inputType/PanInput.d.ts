@@ -18,6 +18,9 @@ export declare class PanInput implements IInputType {
     protected observer: IInputTypeObserver;
     protected _direction: any;
     private panRecognizer;
+    private isRightEdge;
+    private rightEdgeTimer;
+    private panFlag;
     constructor(el: string | HTMLElement, options?: PanInputOption);
     mapAxes(axes: string[]): void;
     connect(observer: IInputTypeObserver): IInputType;
