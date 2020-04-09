@@ -14,6 +14,8 @@ You can easily create a UI that responds to user actions.
 - [How to create an ui that responds to user actions using eg.axes](https://medium.com/@sculove/how-to-create-a-ui-that-responds-to-user-actions-using-eg-axes-5037d180d5ab)
 - [How to create a custom InputType](https://github.com/naver/egjs-axes/wiki/How-to-create-a-custom-InputType)
 
+
+
 ## Third party applications
  - [@egjs/react-axes](https://github.com/naver/egjs-axes/tree/master/packages/react): A react component that can easily use egjs-axes
 
@@ -70,6 +72,19 @@ egjs-axes has the dependencies for the following libraries:
 |[egjs-component](http://github.com/naver/egjs-component)|[Hammer.JS](http://hammerjs.github.io/)|
 |----|----|
 |2.0.0+|2.0.4+|
+
+
+
+## Edge swipe issue in iOS Safari
+When swipe on iOS safari edge, clientX bounces or stops the touch event.
+
+* When swiping from left to right, clientX is minus.
+* Swiping from right to left stops the touch event.
+
+In Axes, this was solved by forcing the `release` event in this problem.
+
+* hold -> change -> **release(forced release)**
+
 
 
 ## How to start developing egjs-axes?

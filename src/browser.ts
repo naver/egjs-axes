@@ -4,7 +4,11 @@ let win: any;
 
 if (typeof window === "undefined") {
 	// window is undefined in node.js
-	win = {};
+	win = {
+		navigator: {
+			userAgent: "",
+		},
+	};
 } else {
 	win = window;
 }
