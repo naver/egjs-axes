@@ -1,7 +1,7 @@
 import { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { ObjectInterface, IS_IOS_SAFARI, EDGE_DISTANCE } from "../const";
+import { ObjectInterface, IS_IOS_SAFARI, IOS_EDGE_THRESHOLD } from "../const";
 
 export interface PanInputOption {
 	inputType?: string[];
@@ -9,6 +9,7 @@ export interface PanInputOption {
 	thresholdAngle?: number;
 	threshold?: number;
 	hammerManagerOptions?: ObjectInterface;
+	iOSEdgeSwipeThreshold?: number;
 }
 
 // get user's direction
@@ -105,23 +106,24 @@ export class PanInput implements IInputType {
 			throw new Error(`The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/`);
 		}
 		this.element = $(el);
+
 		this.options = {
-			...{
-				inputType: ["touch", "mouse", "pointer"],
-				scale: [1, 1],
-				thresholdAngle: 45,
-				threshold: 0,
-				hammerManagerOptions: {
-					// css properties were removed due to usablility issue
-					// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-					cssProps: {
-						userSelect: "none",
-						touchSelect: "none",
-						touchCallout: "none",
-						userDrag: "none",
-					},
+			inputType: ["touch", "mouse", "pointer"],
+			scale: [1, 1],
+			thresholdAngle: 45,
+			threshold: 0,
+			iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
+			hammerManagerOptions: {
+				// css properties were removed due to usablility issue
+				// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
+				cssProps: {
+					userSelect: "none",
+					touchSelect: "none",
+					touchCallout: "none",
+					userDrag: "none",
 				},
-			}, ...options,
+			},
+			...options,
 		};
 		this.onHammerInput = this.onHammerInput.bind(this);
 		this.onPanmove = this.onPanmove.bind(this);
@@ -242,8 +244,10 @@ export class PanInput implements IInputType {
 				this.panFlag = false;
 
 				if (event.srcEvent.cancelable !== false) {
+					const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
+
 					this.observer.hold(this, event);
-					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - EDGE_DISTANCE;
+					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - edgeThreshold;
 					this.panFlag = true;
 				}
 			} else if (event.isFinal) {
@@ -279,7 +283,8 @@ export class PanInput implements IInputType {
 				clearTimeout(this.rightEdgeTimer);
 
 				// - is right to left
-				const swipeRightToLeft = event.deltaX < -EDGE_DISTANCE;
+				const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
+				const swipeRightToLeft = event.deltaX < -edgeThreshold;
 
 				if (swipeRightToLeft) {
 					this.isRightEdge = false;
