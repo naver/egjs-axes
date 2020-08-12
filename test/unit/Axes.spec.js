@@ -450,11 +450,11 @@ describe("Axes", function () {
 						const releaseEvent = this.releaseHandler.getCall(0).args[0];
 						expect(this.releaseHandler.calledOnce).to.be.true;
 						expect(releaseEvent.inputEvent.isFinal).to.be.false;
-						// expect(releaseEvent.isTrusted).to.be.true;
+						expect(releaseEvent.isTrusted).to.be.true;
 
-						// const finishEvent = this.finishHandler.getCall(0).args[0];
-						// expect(this.finishHandler.called).to.be.true;
-						// expect(finishEvent.isTrusted).to.be.true;
+						const finishEvent = this.finishHandler.getCall(0).args[0];
+						expect(this.finishHandler.called).to.be.true;
+						expect(finishEvent.isTrusted).to.be.true;
 						done();
 					}, 500);
 				});
