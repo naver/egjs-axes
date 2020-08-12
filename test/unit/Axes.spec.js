@@ -438,7 +438,7 @@ describe("Axes", function () {
 				// Given, When
 				// window.innerWidth => window.innerWidth - 15
 				Simulator.gestures.pan(this.el, {
-					pos: [window.innerWidth, 30],
+					pos: [window.innerWidth - iOSEdgeSwipeThreshold + 1, 30],
 					deltaX: -15,
 					deltaY: 0,
 					duration: 200,
