@@ -1,6 +1,6 @@
 import Axes from "../../src/Axes.ts";
-import {PanInput} from "../../src/inputType/PanInput.ts";
-import {PinchInput} from "../../src/inputType/PinchInput.ts";
+import { PanInput } from "../../src/inputType/PanInput.ts";
+import { PinchInput } from "../../src/inputType/PinchInput.ts";
 import { getDecimalPlace, roundNumber } from "../../src/utils";
 import PanInputInjector from "inject-loader!../../src/inputType/PanInput.ts";
 
@@ -59,11 +59,11 @@ describe("Axes", function () {
 					circular: [false, true]
 				}
 			}, {
-					deceleration: 0.001
-				}, {
-					x: 50,
-					otherX: 0,
-				});
+				deceleration: 0.001
+			}, {
+				x: 50,
+				otherX: 0,
+			});
 
 			// Then
 			expect(this.inst.axis.x.bounce).to.deep.equal([30, 50]);
@@ -87,31 +87,31 @@ describe("Axes", function () {
 					circular: [false, true]
 				}
 			}, {
-					deceleration: 0.001
-				});
+				deceleration: 0.001
+			});
 			// When
-			let ret = this.inst.setTo({x: 20});
+			let ret = this.inst.setTo({ x: 20 });
 
 			// Then
-			expect(this.inst.get()).to.be.eql({x: 20, otherX: -100});
+			expect(this.inst.get()).to.be.eql({ x: 20, otherX: -100 });
 			expect(ret).to.be.equal(this.inst);
 
 			// When
-			this.inst.setBy({x: 10});
+			this.inst.setBy({ x: 10 });
 
 			// Then
-			expect(this.inst.get()).to.be.eql({x: 30, otherX: -100});
+			expect(this.inst.get()).to.be.eql({ x: 30, otherX: -100 });
 		});
 
 		it("should check `setTo` method (with duration)", () => {
 			// Given
 			const startHandler = sinon.spy();
 			const changeHandler = sinon.spy();
-			const endHandler = sinon.spy(function() {
+			const endHandler = sinon.spy(function () {
 				// Then
 				expect(startHandler.callCount).to.be.equal(1);
 				expect(changeHandler.called).to.be.true;
-				expect(this.inst.get()).to.be.eql({x: 20, otherX: -100});
+				expect(this.inst.get()).to.be.eql({ x: 20, otherX: -100 });
 				done();
 			});
 			this.inst = new Axes({
@@ -126,15 +126,15 @@ describe("Axes", function () {
 					circular: [false, true]
 				}
 			}, {
-					deceleration: 0.001
-				}).on({
-					"animationStart": startHandler,
-					"change": changeHandler,
-					"animationEnd": endHandler
-				});
+				deceleration: 0.001
+			}).on({
+				"animationStart": startHandler,
+				"change": changeHandler,
+				"animationEnd": endHandler
+			});
 
 			// When
-			this.inst.setTo({x: 20}, 200);
+			this.inst.setTo({ x: 20 }, 200);
 		});
 
 		it("should check `setBy` method (with duration)", () => {
@@ -151,10 +151,10 @@ describe("Axes", function () {
 					circular: [false, true]
 				}
 			}, {
-					deceleration: 0.001
-				});
-			this.inst.setTo({x: 50});
-			expect(this.inst.get()).to.be.eql({x: 50, otherX: -100});
+				deceleration: 0.001
+			});
+			this.inst.setTo({ x: 50 });
+			expect(this.inst.get()).to.be.eql({ x: 50, otherX: -100 });
 
 			this.inst.on({
 				"animationStart": startHandler,
@@ -164,16 +164,16 @@ describe("Axes", function () {
 
 			const startHandler = sinon.spy();
 			const changeHandler = sinon.spy();
-			const endHandler = sinon.spy(function() {
+			const endHandler = sinon.spy(function () {
 				// Then
 				expect(startHandler.callCount).to.be.equal(1);
 				expect(changeHandler.called).to.be.true;
-				expect(this.inst.get()).to.be.eql({x: 40, otherX: -100});
+				expect(this.inst.get()).to.be.eql({ x: 40, otherX: -100 });
 				done();
 			});
 
 			// When
-			this.inst.setBy({x: -10}, 200);
+			this.inst.setBy({ x: -10 }, 200);
 		});
 	});
 
@@ -191,8 +191,8 @@ describe("Axes", function () {
 					circular: [false, true]
 				}
 			}, {
-					deceleration: 0.001
-				});
+				deceleration: 0.001
+			});
 			sandbox();
 		});
 		afterEach(() => {
@@ -322,8 +322,8 @@ describe("Axes", function () {
 				easing: "linear"
 			};
 			const target = document.querySelector("#sandbox");
-			const pinchInput = new PinchInput(target, {inputType: ["touch"]});
-			const panInput = new PanInput(target, {inputType: ["touch"]});
+			const pinchInput = new PinchInput(target, { inputType: ["touch"] });
+			const panInput = new PanInput(target, { inputType: ["touch"] });
 
 			this.inst.connect("x", pinchInput);
 			this.inst.disconnect(pinchInput);
@@ -349,129 +349,133 @@ describe("Axes", function () {
 			});
 		});
 	});
-	describe(`Axes iOS Edge Test`, function () {
-		beforeEach(() => {
-			this.inst = new Axes({
-				x: {
-					range: [0, 300],
-					bounce: 100
-				},
-				y: {
-					range: [0, 400],
-					bounce: 100
-				}
-			}, {
+	[20, 30, 40, 50].forEach(iOSEdgeSwipeThreshold => {
+		describe(`Axes iOS Edge Test (iOSEdgeSwipeThreshold: ${iOSEdgeSwipeThreshold})`, function () {
+			beforeEach(() => {
+				this.inst = new Axes({
+					x: {
+						range: [0, 300],
+						bounce: 100
+					},
+					y: {
+						range: [0, 400],
+						bounce: 100
+					}
+				}, {
 					deceleration: 0.001
 				});
-			this.el = sandbox();
-			this.el.innerHTML = `<div id="area"
-	style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
+				this.el = sandbox();
+				this.el.innerHTML = `<div id="area"
+		style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
 
-			this.releaseHandler = sinon.spy();
-			this.finishHandler = sinon.spy();
-			const MockPanInputInjector = PanInputInjector({
-				"../const": {
-					IS_IOS_SAFARI: true,
-				},
+				this.releaseHandler = sinon.spy();
+				this.finishHandler = sinon.spy();
+				const MockPanInputInjector = PanInputInjector({
+					"../const": {
+						IOS_EDGE_THRESHOLD: 30,
+						IS_IOS_SAFARI: true,
+					},
+				});
+				this.input = new MockPanInputInjector.PanInput(this.el, {
+					iOSEdgeSwipeThreshold,
+					inputType: ["touch"],
+				});
+				this.inst.on({
+					"release": this.releaseHandler,
+					"finish": this.finishHandler,
+				}).connect(["x", "y"], this.input);
+
+				const touchTrigger = Simulator.events.touch.trigger;
+
+				Simulator.events.touch.originalTrigger = touchTrigger;
+				Simulator.events.touch.trigger = function (touches, element, type) {
+					if (type === "end") {
+						return;
+					}
+					touchTrigger.call(Simulator.events.touch, touches, element, type);
+				};
 			});
-			this.input = new MockPanInputInjector.PanInput(this.el, {
-				inputType: ["touch"],
-			});
-			this.inst.on({
-				"release": this.releaseHandler,
-				"finish": this.finishHandler,
-			}).connect(["x", "y"], this.input);
-
-			const touchTrigger = Simulator.events.touch.trigger;
-
-			Simulator.events.touch.originalTrigger = touchTrigger;
-			Simulator.events.touch.trigger = function(touches, element, type) {
-				if (type === "end") {
-					return;
+			afterEach(() => {
+				Simulator.events.touch.trigger = Simulator.events.touch.originalTrigger;
+				if (this.inst) {
+					this.inst.destroy();
+					this.inst = null;
 				}
-				touchTrigger.call(Simulator.events.touch, touches, element, type);
-			};
-		});
-		afterEach(() => {
-			Simulator.events.touch.trigger = Simulator.events.touch.originalTrigger;
-			if (this.inst) {
-				this.inst.destroy();
-				this.inst = null;
-			}
-			if (this.input) {
-				this.input.destroy();
-				this.input = null;
-			}
-			this.releaseHandler.resetHistory();
-			this.finishHandler.resetHistory();
-			cleanup();
-		});
-		it("should check release event occurs when swiping on ios safari edge. (left to right)", (done) => {
-			// Given, When
-			// clientX + => -
-			Simulator.gestures.pan(this.el, {
-				pos: [30, 30],
-				deltaX: -50,
-				deltaY: 10,
-				duration: 200,
-				easing: "linear"
-			}, () => {
-				// Then
-				// for test animation event
-				setTimeout(() => {
-					const releaseEvent = this.releaseHandler.getCall(0).args[0];
-					expect(this.releaseHandler.calledOnce).to.be.true;
-					expect(releaseEvent.inputEvent.isFinal).to.be.false;
-					expect(releaseEvent.isTrusted).to.be.true;
-
-					const finishEvent = this.finishHandler.getCall(0).args[0];
-					expect(this.finishHandler.called).to.be.true;
-					expect(finishEvent.isTrusted).to.be.true;
-					done();
-				}, 500);
+				if (this.input) {
+					this.input.destroy();
+					this.input = null;
+				}
+				this.releaseHandler.resetHistory();
+				this.finishHandler.resetHistory();
+				cleanup();
 			});
-		});
-		it("should check release event occurs when swiping a little on ios safari edge. (right to left)", (done) => {
-			// Given, When
-			// window.innerWidth => window.innerWidth - 15
-			Simulator.gestures.pan(this.el, {
-				pos: [window.innerWidth, 30],
-				deltaX: -15,
-				deltaY: 0,
-				duration: 200,
-				easing: "linear"
-			}, () => {
-				// Then
-				// for test animation event
-				setTimeout(() => {
-					const releaseEvent = this.releaseHandler.getCall(0).args[0];
-					expect(this.releaseHandler.calledOnce).to.be.true;
-					expect(releaseEvent.inputEvent.isFinal).to.be.false;
-					// expect(releaseEvent.isTrusted).to.be.true;
+			it("should check release event occurs when swiping on ios safari edge. (left to right)", (done) => {
+				// Given, When
+				// clientX + => -
+				Simulator.gestures.pan(this.el, {
+					pos: [30, 30],
+					deltaX: -50,
+					deltaY: 10,
+					duration: 200,
+					easing: "linear"
+				}, () => {
+					// Then
+					// for test animation event
+					setTimeout(() => {
+						const releaseEvent = this.releaseHandler.getCall(0).args[0];
+						expect(this.releaseHandler.calledOnce).to.be.true;
+						expect(releaseEvent.inputEvent.isFinal).to.be.false;
+						expect(releaseEvent.isTrusted).to.be.true;
 
-					// const finishEvent = this.finishHandler.getCall(0).args[0];
-					// expect(this.finishHandler.called).to.be.true;
-					// expect(finishEvent.isTrusted).to.be.true;
-					done();
-				}, 500);
+						const finishEvent = this.finishHandler.getCall(0).args[0];
+						expect(this.finishHandler.called).to.be.true;
+						expect(finishEvent.isTrusted).to.be.true;
+						done();
+					}, 500);
+				});
 			});
-		});
-		it("should check release event not occurs when swiping a lot on ios safari edge. (right to left)", (done) => {
-			// Given, When
-			// window.innerWidth => window.innerWidth - 30
-			Simulator.gestures.pan(this.el, {
-				pos: [window.innerWidth, 30],
-				deltaX: -30,
-				deltaY: 0,
-				duration: 200,
-				easing: "linear"
-			}, () => {
-				// Then
-				// for test animation event
-				setTimeout(() => {
-					expect(this.releaseHandler.callCount).to.be.equals(0);
-					done();
-				}, 500);
+			it("should check release event occurs when swiping a little on ios safari edge. (right to left)", (done) => {
+				// Given, When
+				// window.innerWidth => window.innerWidth - 15
+				Simulator.gestures.pan(this.el, {
+					pos: [window.innerWidth - iOSEdgeSwipeThreshold + 1, 30],
+					deltaX: -15,
+					deltaY: 0,
+					duration: 200,
+					easing: "linear"
+				}, () => {
+					// Then
+					// for test animation event
+					setTimeout(() => {
+						const releaseEvent = this.releaseHandler.getCall(0).args[0];
+						expect(this.releaseHandler.calledOnce).to.be.true;
+						expect(releaseEvent.inputEvent.isFinal).to.be.false;
+						expect(releaseEvent.isTrusted).to.be.true;
+
+						const finishEvent = this.finishHandler.getCall(0).args[0];
+						expect(this.finishHandler.called).to.be.true;
+						expect(finishEvent.isTrusted).to.be.true;
+						done();
+					}, 500);
+				});
+			});
+			it("should check release event not occurs when swiping a lot on ios safari edge. (right to left)", (done) => {
+				// Given, When
+				// window.innerWidth => window.innerWidth - 30
+				Simulator.gestures.pan(this.el, {
+					pos: [window.innerWidth, 30],
+					deltaX: -60,
+					deltaY: 0,
+					duration: 200,
+					easing: "linear"
+				}, () => {
+					// Then
+					// for test animation event
+					setTimeout(() => {
+						expect(this.releaseHandler.callCount).to.be.equals(0);
+						done();
+					}, 500);
+				});
 			});
 		});
 	});
@@ -495,17 +499,17 @@ describe("Axes", function () {
 						bounce: 100
 					}
 				}, {
-						deceleration: 0.001,
-						interruptable: false
-					});
+					deceleration: 0.001,
+					interruptable: false
+				});
 				this.el = sandbox();
 				this.el.innerHTML = `<div id="area"
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
 				const self = this.inst;
-				this.preventedFn = function() {
+				this.preventedFn = function () {
 					expect(self.itm._prevented).to.be.true;
 				};
-				this.notPreventedFn = function() {
+				this.notPreventedFn = function () {
 					expect(self.itm._prevented).to.be.false;
 				};
 				this.input = new PanInput(this.el, {
@@ -729,8 +733,8 @@ describe("Axes", function () {
 						bounce: 100
 					}
 				}, {
-						deceleration: 0.001
-					});
+					deceleration: 0.001
+				});
 				this.el = sandbox();
 				this.el.innerHTML = `<div id="area"
         style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
@@ -806,7 +810,7 @@ describe("Axes", function () {
 					expect(releaseEvent.inputEvent.isFinal).to.be.true;
 					expect(releaseEvent.input).to.be.equal(this.input);
 					expect(releaseEvent.isTrusted).to.be.true;
-					expect(this.inst.get()).to.be.eql({x: 10, y: 10});
+					expect(this.inst.get()).to.be.eql({ x: 10, y: 10 });
 
 					const finishEvent = this.finishHandler.getCall(0).args[0];
 					expect(this.finishHandler.calledOnce).to.be.true;
@@ -915,7 +919,7 @@ describe("Axes", function () {
 			it("should check movement test when stop method was called in 'animationStart' event", (done) => {
 				// Given
 				const holdHandler = sinon.spy();
-				const changeHandler = sinon.spy(function(e) {
+				const changeHandler = sinon.spy(function (e) {
 					if (animationStartHandler.called) {
 						expect(e.holding).to.be.false;
 					} else {
@@ -926,7 +930,7 @@ describe("Axes", function () {
 				const finishHandler = sinon.spy();
 				const animationStartHandler = sinon.spy(e => {
 					e.stop();
-					setTimeout(function() {
+					setTimeout(function () {
 						e.done();
 					}, e.duration);
 				});
@@ -996,12 +1000,12 @@ describe("Axes", function () {
 
 	describe("round final value of animation automatically by value range and dest pos", () => {
 		[
-			{range: [0.12345, 100], destPos: 50.1234}, // max decimal place at range[0]
-			{range: [0, 100.123456789], destPos: 50.1234}, // max decimal place at range[1]
-			{range: [0, 100], destPos: 50.1234}, // max decimal place at dest pos,
-			{range: [0, 100], destPos: 50}, // no decimal
-			{range: [0, 1000], destPos: 445.17079889807155}, // number to resolve flicking test failure.
-			{range: [0, 1000], destPos: 240.79930795847713}, // comparison value that works correctly.
+			{ range: [0.12345, 100], destPos: 50.1234 }, // max decimal place at range[0]
+			{ range: [0, 100.123456789], destPos: 50.1234 }, // max decimal place at range[1]
+			{ range: [0, 100], destPos: 50.1234 }, // max decimal place at dest pos,
+			{ range: [0, 100], destPos: 50 }, // no decimal
+			{ range: [0, 1000], destPos: 445.17079889807155 }, // number to resolve flicking test failure.
+			{ range: [0, 1000], destPos: 240.79930795847713 }, // comparison value that works correctly.
 		].forEach((val => {
 			it(`should round final value of animation by max decimal place(${val.range[0]}, ${val.range[1]}, ${val.destPos})`, async () => {
 				this.inst = new Axes({
@@ -1010,7 +1014,7 @@ describe("Axes", function () {
 					}
 				});
 
-				this.inst.setTo({x: val.destPos}, 100);
+				this.inst.setTo({ x: val.destPos }, 100);
 				await new Promise(res => this.inst.on("finish", res));
 
 				expect(this.inst.get().x).to.be.equal(val.destPos);
@@ -1064,7 +1068,7 @@ describe("Axes", function () {
 				x: {
 					range: [0, 200],
 				}
-			}, {round: 1});
+			}, { round: 1 });
 
 			inst.on("change", e => {
 				result.push(e.pos.x);
@@ -1073,7 +1077,7 @@ describe("Axes", function () {
 			// When
 			const expectPos = [30, 60, 90];
 
-			expectPos.forEach(v => inst.setBy({x: 30}));
+			expectPos.forEach(v => inst.setBy({ x: 30 }));
 
 			// Then
 			setTimeout(() => {
@@ -1099,7 +1103,7 @@ describe("Axes", function () {
 				x: {
 					range: [0, 200],
 				}
-			}, {round}).on({
+			}, { round }).on({
 				"animationStart": (e) => {
 					dividables.push(isDividable(e.destPos.x, round));
 				},
@@ -1112,7 +1116,7 @@ describe("Axes", function () {
 			})
 
 			// When
-			inst.setTo({x: 100}, 100);
+			inst.setTo({ x: 100 }, 100);
 
 			await new Promise(res => setTimeout(res, 150));
 			inst.destroy();
