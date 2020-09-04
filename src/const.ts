@@ -25,8 +25,7 @@ import getAgent from "@egjs/agent";
 import { window } from "./browser";
 
 export const IOS_EDGE_THRESHOLD = 30;
-export const IS_IOS_SAFARI = "ontouchstart" in window
-	&& getAgent(window.navigator.userAgent).browser.name.indexOf("safari") > -1;
+export const IS_IOS_SAFARI = "ontouchstart" in window && getAgent().browser.name === "safari";
 
 export const TRANSFORM = (() => {
 	if (typeof document === "undefined") {
