@@ -212,3 +212,4 @@ CHANGELOG.md
 build/
 outjs/
 declaration/
+dist/
