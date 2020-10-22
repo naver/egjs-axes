@@ -90,7 +90,7 @@
 		"tslint": "^5.9.1",
 		"tslint-eslint-rules": "^4.1.1",
 		"tslint-loader": "^3.5.3",
-		"typescript": "^2.9.2",
+		"typescript": "^3.9.7",
 		"uglifyjs-webpack-plugin": "^1.1.6",
 		"webpack": "^3.10.0",
 		"webpack-dev-server": "^2.10.1",

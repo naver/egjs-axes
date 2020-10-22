@@ -1,4 +1,3 @@
-import { IInputType } from "./inputType/InputType";
 import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
