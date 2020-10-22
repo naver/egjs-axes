@@ -267,7 +267,6 @@ export class AnimationManager {
 				isTrusted: !!inputEvent,
 				inputEvent,
 				input: option && option.input || null,
-				done: () => {},
 			}, () => this.animationEnd());
 		}
 	}
