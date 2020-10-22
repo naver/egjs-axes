@@ -10,6 +10,7 @@ import {
 	DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL
 } from "./const";
 import { IInputType } from "./inputType/InputType";
+import { AxesEvents, ObjectInterface } from "./types";
 
 export interface AxesOption {
 	easing?: (x: number) => number;
@@ -114,7 +115,7 @@ export interface AxesOption {
  * // [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
  * axes.connect("something2", pinchInputArea);
  */
-export default class Axes extends Component {
+export default class Axes extends Component<AxesEvents> {
 	/**
 	 * Version info string
 	 * @ko 버전정보 문자열
@@ -201,7 +202,7 @@ export default class Axes extends Component {
 	public io: InputObserver;
 	private _inputs: IInputType[] = [];
 
-	constructor(public axis: { [key: string]: AxisOption } = {}, options: AxesOption = {}, startPos?: Axis) {
+	constructor(public axis: ObjectInterface<AxisOption> = {}, options: AxesOption = {}, startPos?: Axis) {
 		super();
 		this.options = {
 			...{
