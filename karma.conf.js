@@ -37,10 +37,12 @@ module.exports = function (config) {
 						test: /\.ts$/,
 						exclude: /node_modules/,
 						use: {
-							loader: "awesome-typescript-loader",
+							loader: "ts-loader",
 							options: {
 								transpileOnly: true,
-								module: "es5"
+								compilerOptions: {
+									module: "es5",
+								},
 							}
 						}
 					}
