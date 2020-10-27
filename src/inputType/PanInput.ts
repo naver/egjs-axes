@@ -1,7 +1,8 @@
 import { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { ObjectInterface, IS_IOS_SAFARI, IOS_EDGE_THRESHOLD } from "../const";
+import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD } from "../const";
+import { ObjectInterface } from "../types";
 
 export interface PanInputOption {
 	inputType?: string[];

@@ -1,6 +1,6 @@
 import { isOutside, getCirculatedPos } from "./Coordinate";
 import { map, filter, every } from "./utils";
-import { ObjectInterface } from "./const";
+import { ObjectInterface } from "./types";
 
 export interface Axis {
 	[key: string]: number;

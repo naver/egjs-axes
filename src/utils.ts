@@ -1,5 +1,5 @@
 import {window} from "./browser";
-import { ObjectInterface } from "./const";
+import { ObjectInterface } from "./types";
 
 declare var jQuery: any;
 

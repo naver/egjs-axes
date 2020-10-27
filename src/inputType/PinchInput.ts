@@ -1,9 +1,7 @@
-import { InputObserver } from "./../InputObserver";
 import { Manager, Pinch } from "@egjs/hammerjs";
 import { $ } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, createHammer, IInputType, IInputTypeObserver } from "./InputType";
-import { Axis } from "../AxisManager";
-import { ObjectInterface } from "../const";
+import { ObjectInterface } from "../types";
 
 export interface PinchInputOption {
 	scale?: number;

@@ -1,8 +1,9 @@
 import { IInputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
-import { AnimationParam, AnimationManager } from "./AnimationManager";
+import { AnimationManager } from "./AnimationManager";
 import Axes from "./Axes";
 import { roundNumbers } from "./utils";
+import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
 
 export interface ChangeEventOption {
 	input: IInputType;
@@ -125,7 +126,7 @@ export class EventManager {
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
-		this.axes.trigger("release", param);
+		this.axes.trigger("release", param as OnRelease);
 	}
 
 	/**
@@ -228,7 +229,7 @@ export class EventManager {
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
-		return this.axes.trigger("animationStart", param);
+		return this.axes.trigger("animationStart", param as OnAnimationStart);
 	}
 
 	/**

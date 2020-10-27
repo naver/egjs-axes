@@ -1,27 +1,13 @@
-import { IInputType } from "./inputType/InputType";
 import { getInsidePosition, isCircularable, getCirculatedPos, getDuration } from "./Coordinate";
 import { Axis, AxisManager } from "./AxisManager";
 import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, inversePow } from "./utils";
 import { AxesOption } from "./Axes";
-import { ObjectInterface } from "./const";
+import { AnimationParam, ObjectInterface } from "./types";
 
 function minMax(value: number, min: number, max: number): number {
 	return Math.max(Math.min(value, max), min);
-}
-
-export interface AnimationParam {
-	depaPos: Axis;
-	destPos: Axis;
-	duration: number;
-	delta: Axis;
-	isTrusted?: boolean;
-	setTo?: (destPos?: Axis, duration?: number) => { destPos: Axis, duration: number };
-	done?: () => void;
-	startTime?: number;
-	inputEvent?;
-	input?: IInputType;
 }
 
 export class AnimationManager {

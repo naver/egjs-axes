@@ -5,3 +5,4 @@ export { PinchInput } from "./inputType/PinchInput";
 export { WheelInput } from "./inputType/WheelInput";
 export { MoveKeyInput } from "./inputType/MoveKeyInput";
 export default Axes;
+export * from "./types";
