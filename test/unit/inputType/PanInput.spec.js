@@ -1,9 +1,8 @@
-import Hammer from "@egjs/hammerjs";
 import {PanInput, getDirectionByAngle, getNextOffset, useDirection} from "../../../src/inputType/PanInput";
 import {PinchInput} from "../../../src/inputType/PinchInput";
 import {UNIQUEKEY} from "../../../src/inputType/InputType";
 import {
-  DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_LEFT,
+  DIRECTION_ALL, DIRECTION_HORIZONTAL,
   DIRECTION_NONE, DIRECTION_VERTICAL} from "../../../src/const";
 
 describe("PanInput", () => {
@@ -38,12 +37,12 @@ describe("PanInput", () => {
       this.onPanstart = sinon.spy(this.beforePanstart);
       this.onPinchstart = sinon.spy(this.beforePinchstart);
       this.inst1.hammer.handlers["panstart"][0] = this.onPanstart;
-      this.inst2.hammer.handlers["pinchstart"][0] = this.onPinchstart;      
+      this.inst2.hammer.handlers["pinchstart"][0] = this.onPinchstart;
     });
     afterEach(() => {
       this.inst1.hammer.handlers["panstart"][0] = this.beforePanstart;
       this.inst2.hammer.handlers["pinchstart"][0] = this.beforePinchstart;
-              
+
       if (this.inst1) {
         this.inst1.destroy();
         this.inst1 = null;
@@ -56,7 +55,7 @@ describe("PanInput", () => {
     });
     it("should check multi event (pan/pinch)", (done) => {
       // Given
-      
+
       // When
       expect(this.inst1.hammer).to.be.equal(this.inst2.hammer);
       expect(this.inst1.element).to.be.equal(this.inst2.element);
@@ -72,7 +71,7 @@ describe("PanInput", () => {
           // Then
           expect(this.onPanstart.called).to.be.true;
           expect(this.onPinchstart.called).to.be.false;
-          
+
           Simulator.gestures.pinch(this.el, {
               duration: 500,
               scale: 0.5
@@ -82,7 +81,7 @@ describe("PanInput", () => {
               expect(this.onPinchstart.callCount).to.be.equal(1);
               done();
           });
-      }); 
+      });
     });
     it("should check multi dettached event (pan/pinch)", (done) => {
       // Given
@@ -112,7 +111,7 @@ describe("PanInput", () => {
               expect(this.onPanstart.called).to.be.false;
               done();
           });
-      }); 
+      });
     });
   });
   describe("instance method", function() {
@@ -159,7 +158,7 @@ describe("PanInput", () => {
       // Given
       const beforeHammer = this.inst.hammer;
       this.inst.connect({});
-      
+
       // When
       this.inst.disconnect();
 
@@ -174,7 +173,7 @@ describe("PanInput", () => {
       // Given
       this.inst.connect({});
       const beforeEl = this.inst.element;
-      
+
       // When
       this.inst.destroy();
 
@@ -184,20 +183,20 @@ describe("PanInput", () => {
       expect(this.observer).to.be.not.exist;
       expect(UNIQUEKEY in beforeEl).to.be.false;
       expect(this.inst._direction).to.be.equal(DIRECTION_NONE);
-      
+
       this.inst = null;
     });
     it("should check connect when hammer instance is null and element has key property", () => {
       // Given
       this.inst.element[UNIQUEKEY] = "someting";
-      
-      // When 
+
+      // When
       expect(this.inst.hammer).to.be.not.exist;
       this.inst.connect({});
-      
+
       // Then
       expect(this.inst.hammer).to.be.exist;
-    });    
+    });
   });
   describe("enable/disable", function() {
     beforeEach(() => {
@@ -254,7 +253,7 @@ describe("PanInput", () => {
       // Then
       expect(this.inst.hammer).to.be.exist;
       expect(this.inst.isEnable()).to.be.true;
-    });    
+    });
     it("should check event when enable method is called", (done) => {
       // Given
       this.inst.connect(this.observer);
@@ -303,7 +302,7 @@ describe("PanInput", () => {
           this.inst.hammer.handlers["panstart"][0] = beforeHandler;
           done();
       });
-    });  
+    });
   });
 
   describe("static method", function() {
@@ -397,7 +396,7 @@ describe("PanInput", () => {
           userDrag: "none",
         }
       });
-      
+
       // When
       this.inst.connect({});
 
@@ -407,7 +406,7 @@ describe("PanInput", () => {
     it("should check hammerManager Options", () => {
       // Given
       this.inst.options.hammerManagerOptions.cssProps.userSelect = "auto";
-      
+
       // When
       this.inst.connect({});
 
