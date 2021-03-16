@@ -11,6 +11,7 @@ export interface PanInputOption {
 	threshold?: number;
 	hammerManagerOptions?: ObjectInterface;
 	iOSEdgeSwipeThreshold?: number;
+	releaseOnScroll?: boolean;
 }
 
 // get user's direction
@@ -115,6 +116,7 @@ export class PanInput implements IInputType {
 			thresholdAngle: 45,
 			threshold: 0,
 			iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
+			releaseOnScroll: false,
 			hammerManagerOptions: {
 				// css properties were removed due to usablility issue
 				// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
@@ -262,11 +264,24 @@ export class PanInput implements IInputType {
 		if (!this.panFlag) {
 			return;
 		}
+
+		const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
 		const userDirection = getDirectionByAngle(
 			event.angle, this.options.thresholdAngle);
 
 		// not support offset properties in Hammerjs - start
 		const prevInput = this.hammer.session.prevInput;
+
+		if (releaseOnScroll && !event.srcEvent.cancelable) {
+			this.onPanend({
+				...event,
+				velocityX: 0,
+				velocityY: 0,
+				offsetX: 0,
+				offsetY: 0,
+			});
+			return;
+		}
 
 		if (prevInput && IS_IOS_SAFARI) {
 			const swipeLeftToRight = event.center.x < 0;
@@ -285,8 +300,7 @@ export class PanInput implements IInputType {
 				clearTimeout(this.rightEdgeTimer);
 
 				// - is right to left
-				const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
-				const swipeRightToLeft = event.deltaX < -edgeThreshold;
+				const swipeRightToLeft = event.deltaX < -iOSEdgeSwipeThreshold;
 
 				if (swipeRightToLeft) {
 					this.isRightEdge = false;

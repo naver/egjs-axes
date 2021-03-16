@@ -163,7 +163,7 @@ demo/dist
 demo/doc
 .sass-cache/
 .jekyll-metadata
-
+.jekyll-cache/
 
 ### SublimeText ###
 # cache files for sublime text
