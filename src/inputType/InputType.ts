@@ -1,12 +1,11 @@
-import {Manager, PointerEventInput, TouchMouseInput, TouchInput, MouseInput} from "@egjs/hammerjs";
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
 import { window } from "../browser";
+import { ActiveInput } from "..";
 
 export interface IInputType {
 	axes: string[];
 	element: HTMLElement;
-	hammer?;
 	mapAxes(axes: string[]);
 	connect(observer: IInputTypeObserver): IInputType;
 	disconnect();
@@ -24,7 +23,7 @@ export interface IInputTypeObserver {
 	release(inputType: IInputType, event, offset: Axis, duration?: number);
 }
 
-export const SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window;
+export const SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window; // TODO: support pointer events at Pan, Pinch
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export function toAxis(source: string[], offset: number[]): Axis {
@@ -35,35 +34,24 @@ export function toAxis(source: string[], offset: number[]): Axis {
 		return acc;
 	}, {});
 }
-export function createHammer(element: HTMLElement, options) {
-	try {
-		// create Hammer
-		return new Manager(element, { ...options });
-	} catch (e) {
-		return null;
-	}
-}
-export function convertInputType(inputType: string[] = []): any {
+
+export function convertInputType(inputType: string[] = []): ActiveInput {
 	let hasTouch = false;
 	let hasMouse = false;
-	let hasPointer = false;
 
 	inputType.forEach(v => {
 		switch (v) {
 			case "mouse": hasMouse = true; break;
-			case "touch": hasTouch = SUPPORT_TOUCH; break;
-			case "pointer": hasPointer = SUPPORT_POINTER_EVENTS;
+			case "touch": hasTouch = SUPPORT_TOUCH;
 			// no default
 		}
 	});
-	if (hasPointer) {
-		return PointerEventInput;
-	} else if (hasTouch && hasMouse) {
-		return TouchMouseInput;
+	if (hasTouch && hasMouse) {
+		return 'touchmouse';
 	} else if (hasTouch) {
-		return TouchInput;
+		return 'touch';
 	} else if (hasMouse) {
-		return MouseInput;
+		return 'mouse';
 	}
 	return null;
 }

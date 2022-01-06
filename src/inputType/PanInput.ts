@@ -1,15 +1,13 @@
-import { DIRECTION_ALL, DIRECTION_HORIZONTAL, DIRECTION_NONE, DIRECTION_VERTICAL, Manager, Pan } from "@egjs/hammerjs";
-import { $ } from "../utils";
-import { convertInputType, createHammer, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD } from "../const";
-import { ObjectInterface } from "../types";
+import { $, getAngle, getCenter, getMovement } from "../utils";
+import { convertInputType, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
+import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL } from "../const";
+import { ActiveInput, InputEventType, PanEvent } from "..";
 
 export interface PanInputOption {
 	inputType?: string[];
 	scale?: number[];
 	thresholdAngle?: number;
 	threshold?: number;
-	hammerManagerOptions?: ObjectInterface;
 	iOSEdgeSwipeThreshold?: number;
 	releaseOnScroll?: boolean;
 }
@@ -58,7 +56,6 @@ export function useDirection(
  * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
  * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
  * @property {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
- * @property {Object} [hammerManagerOptions={cssProps: {userSelect: "none",touchSelect: "none",touchCallout: "none",userDrag: "none"}] Options of Hammer.Manager <ko>Hammer.Manager의 옵션</ko>
 **/
 /**
  * @class eg.Axes.PanInput
@@ -87,49 +84,28 @@ export function useDirection(
 export class PanInput implements IInputType {
 	options: PanInputOption;
 	axes: string[] = [];
-	hammer = null;
 	element: HTMLElement = null;
 	protected observer: IInputTypeObserver;
 	protected _direction;
-	private panRecognizer = null;
+	private activeInput: ActiveInput = null;
+	private isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
-	private panFlag = false;
+	protected panFlag = false;
+	protected prevInput: PanEvent = null;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
-		/**
-		 * Hammer helps you add support for touch gestures to your page
-		 *
-		 * @external Hammer
-		 * @see {@link http://hammerjs.github.io|Hammer.JS}
-		 * @see {@link http://hammerjs.github.io/jsdoc/Hammer.html|Hammer.JS API documents}
-		 * @see Hammer.JS applies specific CSS properties by {@link http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html|default} when creating an instance. The eg.Axes module removes all default CSS properties provided by Hammer.JS
-		 */
-		if (typeof Manager === "undefined") {
-			throw new Error(`The Hammerjs must be loaded before eg.Axes.PanInput.\nhttp://hammerjs.github.io/`);
-		}
 		this.element = $(el);
-
 		this.options = {
-			inputType: ["touch", "mouse", "pointer"],
+			inputType: ["touch", "mouse"],
 			scale: [1, 1],
 			thresholdAngle: 45,
 			threshold: 0,
 			iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
 			releaseOnScroll: false,
-			hammerManagerOptions: {
-				// css properties were removed due to usablility issue
-				// http://hammerjs.github.io/jsdoc/Hammer.defaults.cssProps.html
-				cssProps: {
-					userSelect: "none",
-					touchSelect: "none",
-					touchCallout: "none",
-					userDrag: "none",
-				},
-			},
 			...options,
 		};
-		this.onHammerInput = this.onHammerInput.bind(this);
+		this.onPanstart = this.onPanstart.bind(this);
 		this.onPanmove = this.onPanmove.bind(this);
 		this.onPanend = this.onPanend.bind(this);
 	}
@@ -150,42 +126,18 @@ export class PanInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
-		const hammerOption = {
-			direction: this._direction,
-			threshold: this.options.threshold,
-		};
-		if (this.hammer) { // for sharing hammer instance.
-			// hammer remove previous PanRecognizer.
-			this.removeRecognizer();
-			this.dettachEvent();
-		} else {
-			let keyValue: string = this.element[UNIQUEKEY];
-			if (!keyValue) {
-				keyValue = String(Math.round(Math.random() * new Date().getTime()));
-			}
-			const inputClass = convertInputType(this.options.inputType);
-			if (!inputClass) {
-				throw new Error("Wrong inputType parameter!");
-			}
-			this.hammer = createHammer(this.element, {
-				...{
-					inputClass,
-				}, ... this.options.hammerManagerOptions,
-			});
-			this.element[UNIQUEKEY] = keyValue;
+		this.dettachEvent();
+		let keyValue: string = this.element[UNIQUEKEY];
+		if (!keyValue) {
+			keyValue = String(Math.round(Math.random() * new Date().getTime()));
 		}
-		this.panRecognizer = new Pan(hammerOption);
-
-		this.hammer.add(this.panRecognizer);
+		this.element[UNIQUEKEY] = keyValue;
 		this.attachEvent(observer);
 		return this;
 	}
 
 	public disconnect() {
-		this.removeRecognizer();
-		if (this.hammer) {
-			this.dettachEvent();
-		}
+		this.dettachEvent();
 		this._direction = DIRECTION_NONE;
 		return this;
 	}
@@ -197,12 +149,8 @@ export class PanInput implements IInputType {
 	*/
 	public destroy() {
 		this.disconnect();
-		if (this.hammer && this.hammer.recognizers.length === 0) {
-			this.hammer.destroy();
-		}
 		delete this.element[UNIQUEKEY];
 		this.element = null;
-		this.hammer = null;
 	}
 
 	/**
@@ -212,7 +160,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this.hammer && (this.hammer.get("pan").options.enable = true);
+		this.isEnabled = true;
 		return this;
 	}
 	/**
@@ -222,7 +170,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this.hammer && (this.hammer.get("pan").options.enable = false);
+		this.isEnabled = false;
 		return this;
 	}
 	/**
@@ -232,64 +180,49 @@ export class PanInput implements IInputType {
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
 	public isEnable() {
-		return !!(this.hammer && this.hammer.get("pan").options.enable);
+		return this.isEnabled;
 	}
 
-	private removeRecognizer() {
-		if (this.hammer && this.panRecognizer) {
-			this.hammer.remove(this.panRecognizer);
-			this.panRecognizer = null;
-		}
-	}
-
-	protected onHammerInput(event) {
-		if (this.isEnable()) {
-			if (event.isFirst) {
-				this.panFlag = false;
-
-				if (event.srcEvent.cancelable !== false) {
-					const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
-
-					this.observer.hold(this, event);
-					this.isRightEdge = IS_IOS_SAFARI && event.center.x > window.innerWidth - edgeThreshold;
-					this.panFlag = true;
-				}
-			} else if (event.isFinal) {
-				this.onPanend(event);
-			}
-		}
-	}
-
-	protected onPanmove(event) {
-		if (!this.panFlag) {
+	protected onPanstart(event: InputEventType) {
+		if (!this.isEnable()) {
 			return;
 		}
 
+		const panEvent = this.transformEvent(event);
+		this.panFlag = false;
+
+		if (panEvent.srcEvent.cancelable !== false) {
+			const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
+
+			this.observer.hold(this, panEvent);
+			this.isRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
+			this.panFlag = true;
+			this.prevInput = null;
+		}
+	}
+
+	protected onPanmove(event: InputEventType) {
+		if (!this.panFlag || !this.isEnable()) {
+			return;
+		}
+
+		const panEvent = this.transformEvent(event);
 		const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
 		const userDirection = getDirectionByAngle(
-			event.angle, this.options.thresholdAngle);
+			panEvent.angle, this.options.thresholdAngle);
 
-		// not support offset properties in Hammerjs - start
-		const prevInput = this.hammer.session.prevInput;
-
-		if (releaseOnScroll && !event.srcEvent.cancelable) {
-			this.onPanend({
-				...event,
-				velocityX: 0,
-				velocityY: 0,
-				offsetX: 0,
-				offsetY: 0,
-			});
+		if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
+			this.onPanend(event);
 			return;
 		}
 
-		if (prevInput && IS_IOS_SAFARI) {
-			const swipeLeftToRight = event.center.x < 0;
+		if (this.prevInput && IS_IOS_SAFARI) {
+			const swipeLeftToRight = panEvent.center.x < 0;
 
 			if (swipeLeftToRight) {
 				// iOS swipe left => right
-				this.onPanend({
-					...prevInput,
+				this.release({
+					...this.prevInput,
 					velocityX: 0,
 					velocityY: 0,
 					offsetX: 0,
@@ -300,15 +233,15 @@ export class PanInput implements IInputType {
 				clearTimeout(this.rightEdgeTimer);
 
 				// - is right to left
-				const swipeRightToLeft = event.deltaX < -iOSEdgeSwipeThreshold;
+				const swipeRightToLeft = panEvent.deltaX < -iOSEdgeSwipeThreshold;
 
 				if (swipeRightToLeft) {
 					this.isRightEdge = false;
 				} else {
 					// iOS swipe right => left
 					this.rightEdgeTimer = window.setTimeout(() => {
-						this.onPanend({
-							...prevInput,
+						this.release({
+							...this.prevInput,
 							velocityX: 0,
 							velocityY: 0,
 							offsetX: 0,
@@ -318,16 +251,8 @@ export class PanInput implements IInputType {
 				}
 			}
 		}
-		/* eslint-disable no-param-reassign */
-		if (prevInput) {
-			event.offsetX = event.deltaX - prevInput.deltaX;
-			event.offsetY = event.deltaY - prevInput.deltaY;
-		} else {
-			event.offsetX = 0;
-			event.offsetY = 0;
-		}
 		const offset: number[] = this.getOffset(
-			[event.offsetX, event.offsetY],
+			[panEvent.offsetX, panEvent.offsetY],
 			[
 				useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
 				useDirection(DIRECTION_VERTICAL, this._direction, userDirection),
@@ -335,23 +260,56 @@ export class PanInput implements IInputType {
 		const prevent = offset.some(v => v !== 0);
 
 		if (prevent) {
-			const srcEvent = event.srcEvent;
-
-			if (srcEvent.cancelable !== false) {
-				srcEvent.preventDefault();
+			if (panEvent.srcEvent.cancelable !== false) {
+				panEvent.srcEvent.preventDefault();
 			}
-			srcEvent.stopPropagation();
+			panEvent.srcEvent.stopPropagation();
 		}
-		event.preventSystemEvent = prevent;
-		prevent && this.observer.change(this, event, toAxis(this.axes, offset));
+		panEvent.preventSystemEvent = prevent;
+		prevent && this.observer.change(this, panEvent, toAxis(this.axes, offset));
+		this.prevInput = panEvent;
 	}
 
-	protected onPanend(event) {
-		if (!this.panFlag) {
+	protected onPanend(event: InputEventType) {
+		if (!this.panFlag || !this.isEnable()) {
 			return;
 		}
-		clearTimeout(this.rightEdgeTimer);
+
+		const panEvent = this.transformEvent(event);
+		this.release(panEvent);
+	}
+
+	protected transformEvent(event: InputEventType): PanEvent {
+		const prev = this.prevInput;
+		if (event.type === 'mouseup' || event.type === 'touchend') {
+			return prev;
+		}
+		const center = getCenter(event);
+		const movement = getMovement(event, prev ? prev.srcEvent : null);
+		const angle = prev ? getAngle(center.x - prev.center.x, center.y - prev.center.y) : 0;
+		const deltaX = prev ? prev.deltaX + movement.x : movement.x;
+		const deltaY = prev ? prev.deltaY + movement.y : movement.y;
+		const offsetX = prev ? (deltaX - prev.deltaX) : 0;
+		const offsetY = prev ? (deltaY - prev.deltaY) : 0;
+		const velocityX = prev ? offsetX / (event.timeStamp - prev.srcEvent.timeStamp) : 0;
+		const velocityY = prev ? offsetY / (event.timeStamp - prev.srcEvent.timeStamp) : 0;
+		return {
+			srcEvent: event,
+			angle,
+			center,
+			deltaX,
+			deltaY,
+			offsetX,
+			offsetY,
+			velocityX,
+			velocityY,
+			preventSystemEvent: true,
+		};
+	}
+
+	private release(event: PanEvent) {
 		this.panFlag = false;
+		clearTimeout(this.rightEdgeTimer);
 		let offset: number[] = this.getOffset(
 			[
 				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
@@ -367,13 +325,38 @@ export class PanInput implements IInputType {
 
 	private attachEvent(observer: IInputTypeObserver) {
 		this.observer = observer;
-		this.hammer.on("hammer.input", this.onHammerInput)
-			.on("panstart panmove", this.onPanmove);
+		this.isEnabled = true;
+		this.activeInput = convertInputType(this.options.inputType);
+		if (!this.activeInput) {
+			throw new Error("Wrong inputType parameter!");
+		}
+
+		if (this.activeInput === 'mouse' || this.activeInput === 'touchmouse') {
+			this.element.addEventListener("mousedown", this.onPanstart, false);
+			window.addEventListener("mousemove", this.onPanmove, false);
+			window.addEventListener("mouseup", this.onPanend, false);
+		}
+		if (this.activeInput === 'touch' || this.activeInput === 'touchmouse') {
+			this.element.addEventListener("touchstart", this.onPanstart, false);
+			window.addEventListener("touchmove", this.onPanmove, false);
+			window.addEventListener("touchend", this.onPanend, false);
+			window.addEventListener("touchcancel", this.onPanend, false);
+		}
 	}
 
 	private dettachEvent() {
-		this.hammer.off("hammer.input", this.onHammerInput)
-			.off("panstart panmove", this.onPanmove);
+		if (this.activeInput === 'mouse' || this.activeInput === 'touchmouse') {
+			this.element.removeEventListener("mousedown", this.onPanstart, false);
+			window.removeEventListener("mousemove", this.onPanmove, false);
+			window.removeEventListener("mouseup", this.onPanend, false);
+		}
+		if (this.activeInput === 'touch' || this.activeInput === 'touchmouse') {
+			this.element.removeEventListener("touchstart", this.onPanstart, false);
+			window.removeEventListener("touchmove", this.onPanmove, false);
+			window.removeEventListener("touchend", this.onPanend, false);
+			window.removeEventListener("touchcancel", this.onPanend, false);
+		}
+		this.isEnabled = false;
 		this.observer = null;
 	}
 

@@ -76,3 +76,27 @@ export type OnAnimationEnd = {
 export type OnFinish = {
 	isTrusted: boolean;
 };
+
+export type ActiveInput = 'touchmouse' | 'touch' | 'mouse';
+export type InputEventType = MouseEvent | TouchEvent;
+
+export type PanEvent = {
+	srcEvent: InputEventType;
+	angle: number;
+	center: {
+		x: number;
+		y: number;
+	};
+	deltaX: number;
+	deltaY: number;
+	offsetX: number;
+	offsetY: number;
+	velocityX: number;
+	velocityY: number;
+	preventSystemEvent: boolean;
+};
+
+export type PinchEvent = {
+	srcEvent: InputEventType;
+	scale: number;
+};

@@ -1,3 +1,4 @@
+import { InputEventType } from ".";
 import {window} from "./browser";
 import { ObjectInterface } from "./types";
 
@@ -184,5 +185,42 @@ export function getRoundFunc(v: number) {
 		}
 
 		return Math.round(Math.round(n / v) * v * p) / p;
+	};
+}
+
+export function getAngle(posX: number, posY: number) {
+	const angle = Math.atan2(posY, posX) * 180 / Math.PI;
+	return angle < 0 ? 360 + angle : angle;
+}
+
+export function getCenter(event: InputEventType) {
+	if (event instanceof TouchEvent) {
+		return {
+		  x: event.touches[0].clientX,
+		  y: event.touches[0].clientY,
+		};
+	}
+	return {
+		x: event.clientX,
+		y: event.clientY,
+	};
+}
+
+export function getMovement(event: InputEventType, prev: InputEventType) {
+	if (event instanceof TouchEvent) {
+		if (prev) {
+			return {
+				x: event.touches[0].pageX - (prev as TouchEvent).touches[0].pageX,
+				y: event.touches[0].pageY - (prev as TouchEvent).touches[0].pageY,
+			}
+		}
+		return {
+		  x: 0,
+		  y: 0,
+		};
+	}
+	return {
+		x: event.movementX,
+		y: event.movementY,
 	};
 }

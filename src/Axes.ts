@@ -262,13 +262,6 @@ export default class Axes extends Component<AxesEvents> {
 			this.disconnect(inputType);
 		}
 
-		// check same element in hammer type for share
-		if ("hammer" in inputType) {
-			const targets = this._inputs.filter(v => v.hammer && v.element === inputType.element);
-			if (targets.length) {
-				inputType.hammer = targets[0].hammer;
-			}
-		}
 		inputType.mapAxes(mapped);
 		inputType.connect(this.io);
 		this._inputs.push(inputType);
