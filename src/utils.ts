@@ -196,8 +196,8 @@ export function getAngle(posX: number, posY: number) {
 export function getCenter(event: InputEventType) {
 	if (event instanceof TouchEvent) {
 		return {
-		  x: event.touches[0].clientX,
-		  y: event.touches[0].clientY,
+			x: event.touches[0].clientX,
+			y: event.touches[0].clientY,
 		};
 	}
 	return {
@@ -212,11 +212,11 @@ export function getMovement(event: InputEventType, prev: InputEventType) {
 			return {
 				x: event.touches[0].pageX - (prev as TouchEvent).touches[0].pageX,
 				y: event.touches[0].pageY - (prev as TouchEvent).touches[0].pageY,
-			}
+			};
 		}
 		return {
-		  x: 0,
-		  y: 0,
+			x: 0,
+			y: 0,
 		};
 	}
 	return {

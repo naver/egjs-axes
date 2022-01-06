@@ -102,7 +102,7 @@ export class PinchInput implements IInputType {
 	 * @method eg.Axes.PinchInput#disable
 	 * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	 public disable() {
+	public disable() {
 		this.isEnabled = false;
 		return this;
 	}
@@ -157,7 +157,7 @@ export class PinchInput implements IInputType {
 		return {
 			srcEvent: event,
 			scale: this.getScale(this.firstInput.touches, event.touches),
-		}
+		};
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
@@ -192,8 +192,8 @@ export class PinchInput implements IInputType {
 	}
 
 	private getDistance(p1, p2) {
-		let x = p2.clientX - p1.clientX;
-		let y = p2.clientY - p1.clientY;
+		const x = p2.clientX - p1.clientX;
+		const y = p2.clientY - p1.clientY;
 		return Math.sqrt((x * x) + (y * y));
 	}
 }

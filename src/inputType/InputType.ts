@@ -47,11 +47,11 @@ export function convertInputType(inputType: string[] = []): ActiveInput {
 		}
 	});
 	if (hasTouch && hasMouse) {
-		return 'touchmouse';
+		return "touchmouse";
 	} else if (hasTouch) {
-		return 'touch';
+		return "touch";
 	} else if (hasMouse) {
-		return 'mouse';
+		return "mouse";
 	}
 	return null;
 }

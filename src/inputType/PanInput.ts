@@ -281,7 +281,7 @@ export class PanInput implements IInputType {
 
 	protected transformEvent(event: InputEventType): PanEvent {
 		const prev = this.prevInput;
-		if (event.type === 'mouseup' || event.type === 'touchend') {
+		if (event.type === "mouseup" || event.type === "touchend") {
 			return prev;
 		}
 		const center = getCenter(event);
@@ -331,12 +331,12 @@ export class PanInput implements IInputType {
 			throw new Error("Wrong inputType parameter!");
 		}
 
-		if (this.activeInput === 'mouse' || this.activeInput === 'touchmouse') {
+		if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
 			this.element.addEventListener("mousedown", this.onPanstart, false);
 			window.addEventListener("mousemove", this.onPanmove, false);
 			window.addEventListener("mouseup", this.onPanend, false);
 		}
-		if (this.activeInput === 'touch' || this.activeInput === 'touchmouse') {
+		if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
 			this.element.addEventListener("touchstart", this.onPanstart, false);
 			window.addEventListener("touchmove", this.onPanmove, false);
 			window.addEventListener("touchend", this.onPanend, false);
@@ -345,12 +345,12 @@ export class PanInput implements IInputType {
 	}
 
 	private dettachEvent() {
-		if (this.activeInput === 'mouse' || this.activeInput === 'touchmouse') {
+		if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
 			this.element.removeEventListener("mousedown", this.onPanstart, false);
 			window.removeEventListener("mousemove", this.onPanmove, false);
 			window.removeEventListener("mouseup", this.onPanend, false);
 		}
-		if (this.activeInput === 'touch' || this.activeInput === 'touchmouse') {
+		if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
 			this.element.removeEventListener("touchstart", this.onPanstart, false);
 			window.removeEventListener("touchmove", this.onPanmove, false);
 			window.removeEventListener("touchend", this.onPanend, false);
