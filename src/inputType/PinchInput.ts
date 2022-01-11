@@ -1,6 +1,6 @@
 import { $ } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
-import { ActiveInput, PinchEvent } from "..";
+import { ActiveInput, InputEventType, PinchEvent } from "..";
 
 export interface PinchInputOption {
 	scale?: number;
@@ -39,7 +39,9 @@ export class PinchInput implements IInputType {
 	private isEnabled = false;
 	private pinchFlag = false;
 	private baseValue: number = null;
-	private firstInput: TouchEvent = null;
+	private firstTouch: TouchEvent = null;
+	private firstPointers: PointerEvent[] = [];
+	private eventCache: PointerEvent[] = [];
 	private prevInput: PinchEvent = null;
 
 	constructor(el: string | HTMLElement, options?: PinchInputOption) {
@@ -47,7 +49,7 @@ export class PinchInput implements IInputType {
 		this.options = {
 			scale: 1,
 			threshold: 0,
-			inputType: ["touch"],
+			inputType: ["touch", "pointer"],
 			...options,
 		};
 		this.onPinchStart = this.onPinchStart.bind(this);
@@ -117,21 +119,27 @@ export class PinchInput implements IInputType {
 		return this.isEnabled;
 	}
 
-	private onPinchStart(event: TouchEvent) {
-		if (!this.isEnable() || event.touches.length !== 2) {
+	private onPinchStart(event: InputEventType) {
+		if (event instanceof PointerEvent) {
+			this.addPointerEvent(event);
+		}
+		if (!this.isEnable() || this.getTouches(event) !== 2) {
 			return;
 		}
 
 		this.baseValue = this.observer.get(this)[this.axes[0]];
-		this.firstInput = event;
+		this.firstTouch = event instanceof TouchEvent ? event : null;
 		this.observer.hold(this, event);
 		this.pinchFlag = true;
 		const pinchEvent = this.transformEvent(event);
 		this.prevInput = pinchEvent;
 	}
 
-	private onPinchMove(event: TouchEvent) {
-		if (!this.pinchFlag || !this.isEnable() || event.touches.length !== 2) {
+	private onPinchMove(event: InputEventType) {
+		if (event instanceof PointerEvent) {
+			this.addPointerEvent(event);
+		}
+		if (!this.pinchFlag || !this.isEnable() || this.getTouches(event) !== 2) {
 			return;
 		}
 
@@ -141,59 +149,124 @@ export class PinchInput implements IInputType {
 		this.prevInput = pinchEvent;
 	}
 
-	private onPinchEnd(event: TouchEvent) {
-		if (!this.pinchFlag || !this.isEnable() || event.touches.length > 2) {
+	private onPinchEnd(event: InputEventType) {
+		if (event instanceof PointerEvent) {
+			this.removePointerEvent(event);
+		}
+		if (!this.pinchFlag || !this.isEnable() || this.getTouches(event) > 2) {
 			return;
 		}
 
 		this.observer.release(this, event, toAxis(this.axes, [0]), 0);
 		this.baseValue = null;
 		this.pinchFlag = false;
-		this.firstInput = null;
+		this.firstTouch = null;
 		this.prevInput = null;
 	}
 
-	private transformEvent(event: TouchEvent): PinchEvent {
-		return {
-			srcEvent: event,
-			scale: this.getScale(this.firstInput.touches, event.touches),
-		};
+	private transformEvent(event: InputEventType): PinchEvent {
+		if (event instanceof PointerEvent) {
+			return {
+				srcEvent: event,
+				scale: this.getScaleFromPointers(),
+			};
+		} else if (event instanceof TouchEvent) {
+			return {
+				srcEvent: event,
+				scale: this.getScaleFromTouch(this.firstTouch.touches, event.touches),
+			};
+		}
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
 		this.observer = observer;
 		this.isEnabled = true;
 		this.activeInput = convertInputType(this.options.inputType);
-		if (!this.activeInput) {
-			throw new Error("Wrong inputType parameter!");
+		if (this.activeInput === "pointer") {
+			if ("PointerEvent" in window) {
+				this.element.addEventListener("pointerdown", this.onPinchStart, false);
+				this.element.addEventListener("pointermove", this.onPinchMove, false);
+				this.element.addEventListener("pointerup", this.onPinchEnd, false);
+				this.element.addEventListener("pointercancel", this.onPinchEnd, false);
+			} else if ("MSPointerEvent" in window) {
+				this.element.addEventListener("MSPointerDown", this.onPinchStart, false);
+				this.element.addEventListener("MSPointerMove", this.onPinchMove, false);
+				this.element.addEventListener("MSPointerUp", this.onPinchEnd, false);
+				this.element.addEventListener("MSPointerCancel", this.onPinchEnd, false);
+			}
+		} else {
+			this.element.addEventListener("touchstart", this.onPinchStart, false);
+			this.element.addEventListener("touchmove", this.onPinchMove, false);
+			this.element.addEventListener("touchend", this.onPinchEnd, false);
+			this.element.addEventListener("touchcancel", this.onPinchEnd, false);
 		}
-
-		this.element.addEventListener("touchstart", this.onPinchStart, false);
-		this.element.addEventListener("touchmove", this.onPinchMove, false);
-		this.element.addEventListener("touchend", this.onPinchEnd, false);
-		this.element.addEventListener("touchcancel", this.onPinchEnd, false);
 	}
 
 	private dettachEvent() {
-		this.element.removeEventListener("touchstart", this.onPinchStart, false);
-		this.element.removeEventListener("touchmove", this.onPinchMove, false);
-		this.element.removeEventListener("touchend", this.onPinchEnd, false);
-		this.element.removeEventListener("touchcancel", this.onPinchEnd, false);
+		if (this.activeInput === "pointer") {
+			if ("PointerEvent" in window) {
+				this.element.removeEventListener("pointerdown", this.onPinchStart, false);
+				this.element.removeEventListener("pointermove", this.onPinchMove, false);
+				this.element.removeEventListener("pointerup", this.onPinchEnd, false);
+				this.element.removeEventListener("pointercancel", this.onPinchEnd, false);
+			} else if ("MSPointerEvent" in window) {
+				this.element.removeEventListener("MSPointerDown", this.onPinchStart, false);
+				this.element.removeEventListener("MSPointerMove", this.onPinchMove, false);
+				this.element.removeEventListener("MSPointerUp", this.onPinchEnd, false);
+				this.element.removeEventListener("MSPointerCancel", this.onPinchEnd, false);
+			}
+		} else {
+			this.element.removeEventListener("touchstart", this.onPinchStart, false);
+			this.element.removeEventListener("touchmove", this.onPinchMove, false);
+			this.element.removeEventListener("touchend", this.onPinchEnd, false);
+			this.element.removeEventListener("touchcancel", this.onPinchEnd, false);
+		}
 		this.isEnabled = false;
 		this.observer = null;
+	}
+
+	private getTouches(event: InputEventType) {
+		if (event instanceof PointerEvent) {
+			return this.eventCache.length;
+		} else if (event instanceof TouchEvent) {
+			return event.touches.length;
+		}
 	}
 
 	private getOffset(pinchScale: number, prev: number = 1): number {
 		return this.baseValue * (pinchScale - prev) * this.options.scale;
 	}
 
-	private getScale(start, end) {
-		return this.getDistance(end[0], end[1]) / this.getDistance(start[0], start[1]);
+	private getScaleFromPointers() {
+		return this.getDistanceFromTouch(this.eventCache[0], this.eventCache[1]) / this.getDistanceFromTouch(this.firstPointers[0], this.firstPointers[1]);
 	}
 
-	private getDistance(p1, p2) {
+	private getScaleFromTouch(start: TouchList, end: TouchList) {
+		return this.getDistanceFromTouch(end[0], end[1]) / this.getDistanceFromTouch(start[0], start[1]);
+	}
+
+	private getDistanceFromTouch(p1: Touch | PointerEvent, p2: Touch | PointerEvent) {
 		const x = p2.clientX - p1.clientX;
 		const y = p2.clientY - p1.clientY;
 		return Math.sqrt((x * x) + (y * y));
+	}
+
+	private addPointerEvent(event: PointerEvent) {
+		let addFlag = false;
+		this.eventCache.forEach((e, i) => {
+			if (e.pointerId === event.pointerId) {
+				addFlag = true;
+				this.eventCache[i] = event;
+			}
+		});
+		if (!addFlag) {
+			this.firstPointers.push(event);
+			this.eventCache.push(event);
+		}
+	}
+
+	private removePointerEvent(event: PointerEvent) {
+		this.firstPointers = this.firstPointers.filter(x => x.pointerId !== event.pointerId);
+		this.eventCache = this.eventCache.filter(x => x.pointerId !== event.pointerId);
 	}
 }

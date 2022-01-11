@@ -97,7 +97,7 @@ export class PanInput implements IInputType {
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		this.element = $(el);
 		this.options = {
-			inputType: ["touch", "mouse"],
+			inputType: ["touch", "mouse", "pointer"],
 			scale: [1, 1],
 			thresholdAngle: 45,
 			threshold: 0,
@@ -327,34 +327,58 @@ export class PanInput implements IInputType {
 		this.observer = observer;
 		this.isEnabled = true;
 		this.activeInput = convertInputType(this.options.inputType);
-		if (!this.activeInput) {
-			throw new Error("Wrong inputType parameter!");
-		}
-
-		if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
-			this.element.addEventListener("mousedown", this.onPanstart, false);
-			window.addEventListener("mousemove", this.onPanmove, false);
-			window.addEventListener("mouseup", this.onPanend, false);
-		}
-		if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
-			this.element.addEventListener("touchstart", this.onPanstart, false);
-			window.addEventListener("touchmove", this.onPanmove, false);
-			window.addEventListener("touchend", this.onPanend, false);
-			window.addEventListener("touchcancel", this.onPanend, false);
+		if (this.activeInput === "pointer") {
+			if ("PointerEvent" in window) {
+				this.element.addEventListener("pointerdown", this.onPanstart, false);
+				window.addEventListener("pointermove", this.onPanmove, false);
+				window.addEventListener("pointerup", this.onPanend, false);
+				window.addEventListener("pointercancel", this.onPanend, false);
+			} else if ("MSPointerEvent" in window) {
+				this.element.addEventListener("MSPointerDown", this.onPanstart, false);
+				window.addEventListener("MSPointerMove", this.onPanmove, false);
+				window.addEventListener("MSPointerUp", this.onPanend, false);
+				window.addEventListener("MSPointerCancel", this.onPanend, false);
+			}
+		} else {
+			if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
+				this.element.addEventListener("mousedown", this.onPanstart, false);
+				window.addEventListener("mousemove", this.onPanmove, false);
+				window.addEventListener("mouseup", this.onPanend, false);
+			}
+			if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
+				this.element.addEventListener("touchstart", this.onPanstart, false);
+				window.addEventListener("touchmove", this.onPanmove, false);
+				window.addEventListener("touchend", this.onPanend, false);
+				window.addEventListener("touchcancel", this.onPanend, false);
+			}
 		}
 	}
 
 	private dettachEvent() {
-		if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
-			this.element.removeEventListener("mousedown", this.onPanstart, false);
-			window.removeEventListener("mousemove", this.onPanmove, false);
-			window.removeEventListener("mouseup", this.onPanend, false);
-		}
-		if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
-			this.element.removeEventListener("touchstart", this.onPanstart, false);
-			window.removeEventListener("touchmove", this.onPanmove, false);
-			window.removeEventListener("touchend", this.onPanend, false);
-			window.removeEventListener("touchcancel", this.onPanend, false);
+		if (this.activeInput === "pointer") {
+			if ("PointerEvent" in window) {
+				this.element.removeEventListener("pointerdown", this.onPanstart, false);
+				window.removeEventListener("pointermove", this.onPanmove, false);
+				window.removeEventListener("pointerup", this.onPanend, false);
+				window.removeEventListener("pointercancel", this.onPanend, false);
+			} else if ("MSPointerEvent" in window) {
+				this.element.removeEventListener("MSPointerDown", this.onPanstart, false);
+				window.removeEventListener("MSPointerMove", this.onPanmove, false);
+				window.removeEventListener("MSPointerUp", this.onPanend, false);
+				window.removeEventListener("MSPointerCancel", this.onPanend, false);
+			}
+		} else {
+			if (this.activeInput === "mouse" || this.activeInput === "touchmouse") {
+				this.element.removeEventListener("mousedown", this.onPanstart, false);
+				window.removeEventListener("mousemove", this.onPanmove, false);
+				window.removeEventListener("mouseup", this.onPanend, false);
+			}
+			if (this.activeInput === "touch" || this.activeInput === "touchmouse") {
+				this.element.removeEventListener("touchstart", this.onPanstart, false);
+				window.removeEventListener("touchmove", this.onPanmove, false);
+				window.removeEventListener("touchend", this.onPanend, false);
+				window.removeEventListener("touchcancel", this.onPanend, false);
+			}
 		}
 		this.isEnabled = false;
 		this.observer = null;

@@ -23,7 +23,7 @@ export interface IInputTypeObserver {
 	release(inputType: IInputType, event, offset: Axis, duration?: number);
 }
 
-export const SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window; // TODO: support pointer events at Pan, Pinch
+export const SUPPORT_POINTER_EVENTS = "PointerEvent" in window || "MSPointerEvent" in window;
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export function toAxis(source: string[], offset: number[]): Axis {
@@ -38,15 +38,19 @@ export function toAxis(source: string[], offset: number[]): Axis {
 export function convertInputType(inputType: string[] = []): ActiveInput {
 	let hasTouch = false;
 	let hasMouse = false;
+	let hasPointer = false;
 
 	inputType.forEach(v => {
 		switch (v) {
 			case "mouse": hasMouse = true; break;
-			case "touch": hasTouch = SUPPORT_TOUCH;
+			case "touch": hasTouch = SUPPORT_TOUCH; break;
+			case "pointer": hasPointer = SUPPORT_POINTER_EVENTS;
 			// no default
 		}
 	});
-	if (hasTouch && hasMouse) {
+	if (hasPointer) {
+		return "pointer";
+	} else if (hasTouch && hasMouse) {
 		return "touchmouse";
 	} else if (hasTouch) {
 		return "touch";
