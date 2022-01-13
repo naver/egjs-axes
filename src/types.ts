@@ -77,7 +77,11 @@ export type OnFinish = {
 	isTrusted: boolean;
 };
 
-export type ActiveInput = "pointer" | "touchmouse" | "touch" | "mouse";
+export type ActiveInput = {
+	start: string[],
+	move: string[],
+	end: string[],
+};
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
 
 export type PanEvent = {

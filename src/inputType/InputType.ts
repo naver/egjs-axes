@@ -48,14 +48,40 @@ export function convertInputType(inputType: string[] = []): ActiveInput {
 			// no default
 		}
 	});
-	if (hasPointer) {
-		return "pointer";
+	if (hasPointer && "PointerEvent" in window) {
+		return {
+			start: ["pointerdown"],
+			move: ["pointermove"],
+			end: ["pointerup", "pointercancel"],
+		};
+	} else if (hasPointer && "MSPointerEvent" in window) {
+		return {
+			start: ["MSPointerDown"],
+			move: ["MSPointerMove"],
+			end: ["MSPointerUp", "MSPointerCancel"],
+		};
 	} else if (hasTouch && hasMouse) {
-		return "touchmouse";
+		return {
+			start: ["mousedown", "touchstart"],
+			move: ["mousemove", "touchmove"],
+			end: ["mouseup", "touchend", "touchcancel"],
+		};
 	} else if (hasTouch) {
-		return "touch";
+		return {
+			start: ["touchstart"],
+			move: ["touchmove"],
+			end: ["touchend", "touchcancel"],
+		};
 	} else if (hasMouse) {
-		return "mouse";
+		return {
+			start: ["mousedown"],
+			move: ["mousemove"],
+			end: ["mouseup"],
+		};
 	}
-	return null;
+	return {
+		start: [],
+		move: [],
+		end: [],
+	};
 }

@@ -35,7 +35,11 @@ export class PinchInput implements IInputType {
 	axes: string[] = [];
 	element: HTMLElement = null;
 	private observer: IInputTypeObserver;
-	private activeInput: ActiveInput = null;
+	private activeInput: ActiveInput = {
+		start: [],
+		move: [],
+		end: [],
+	};
 	private isEnabled = false;
 	private pinchFlag = false;
 	private baseValue: number = null;
@@ -182,45 +186,27 @@ export class PinchInput implements IInputType {
 		this.observer = observer;
 		this.isEnabled = true;
 		this.activeInput = convertInputType(this.options.inputType);
-		if (this.activeInput === "pointer") {
-			if ("PointerEvent" in window) {
-				this.element.addEventListener("pointerdown", this.onPinchStart, false);
-				this.element.addEventListener("pointermove", this.onPinchMove, false);
-				this.element.addEventListener("pointerup", this.onPinchEnd, false);
-				this.element.addEventListener("pointercancel", this.onPinchEnd, false);
-			} else if ("MSPointerEvent" in window) {
-				this.element.addEventListener("MSPointerDown", this.onPinchStart, false);
-				this.element.addEventListener("MSPointerMove", this.onPinchMove, false);
-				this.element.addEventListener("MSPointerUp", this.onPinchEnd, false);
-				this.element.addEventListener("MSPointerCancel", this.onPinchEnd, false);
-			}
-		} else {
-			this.element.addEventListener("touchstart", this.onPinchStart, false);
-			this.element.addEventListener("touchmove", this.onPinchMove, false);
-			this.element.addEventListener("touchend", this.onPinchEnd, false);
-			this.element.addEventListener("touchcancel", this.onPinchEnd, false);
-		}
+		this.activeInput.start.forEach(event => {
+			this.element.addEventListener(event, this.onPinchStart, false);
+		});
+		this.activeInput.move.forEach(event => {
+			this.element.addEventListener(event, this.onPinchMove, false);
+		});
+		this.activeInput.end.forEach(event => {
+			this.element.addEventListener(event, this.onPinchEnd, false);
+		});
 	}
 
 	private dettachEvent() {
-		if (this.activeInput === "pointer") {
-			if ("PointerEvent" in window) {
-				this.element.removeEventListener("pointerdown", this.onPinchStart, false);
-				this.element.removeEventListener("pointermove", this.onPinchMove, false);
-				this.element.removeEventListener("pointerup", this.onPinchEnd, false);
-				this.element.removeEventListener("pointercancel", this.onPinchEnd, false);
-			} else if ("MSPointerEvent" in window) {
-				this.element.removeEventListener("MSPointerDown", this.onPinchStart, false);
-				this.element.removeEventListener("MSPointerMove", this.onPinchMove, false);
-				this.element.removeEventListener("MSPointerUp", this.onPinchEnd, false);
-				this.element.removeEventListener("MSPointerCancel", this.onPinchEnd, false);
-			}
-		} else {
-			this.element.removeEventListener("touchstart", this.onPinchStart, false);
-			this.element.removeEventListener("touchmove", this.onPinchMove, false);
-			this.element.removeEventListener("touchend", this.onPinchEnd, false);
-			this.element.removeEventListener("touchcancel", this.onPinchEnd, false);
-		}
+		this.activeInput.start.forEach(event => {
+			this.element.removeEventListener(event, this.onPinchStart, false);
+		});
+		this.activeInput.move.forEach(event => {
+			this.element.removeEventListener(event, this.onPinchMove, false);
+		});
+		this.activeInput.end.forEach(event => {
+			this.element.removeEventListener(event, this.onPinchEnd, false);
+		});
 		this.isEnabled = false;
 		this.observer = null;
 	}
