@@ -224,3 +224,12 @@ export function getMovement(event: InputEventType, prev: InputEventType) {
 		y: event.movementY,
 	};
 }
+
+export function getTouches(event: InputEventType, eventCache: PointerEvent[]) {
+	if (event instanceof PointerEvent) {
+		return eventCache.length;
+	} else if (event instanceof TouchEvent) {
+		return event.touches.length;
+	}
+	return 0; // case of MouseEvent
+}

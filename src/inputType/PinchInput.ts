@@ -1,4 +1,4 @@
-import { $ } from "../utils";
+import { $, getTouches } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
 import { ActiveInput, InputEventType, PinchEvent } from "..";
 
@@ -127,7 +127,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.isEnable() || this.getTouches(event) !== 2) {
+		if (!this.isEnable() || getTouches(event, this.eventCache) !== 2) {
 			return;
 		}
 
@@ -143,7 +143,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.pinchFlag || !this.isEnable() || this.getTouches(event) !== 2) {
+		if (!this.pinchFlag || !this.isEnable() || getTouches(event, this.eventCache) !== 2) {
 			return;
 		}
 
@@ -157,7 +157,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this.pinchFlag || !this.isEnable() || this.getTouches(event) > 2) {
+		if (!this.pinchFlag || !this.isEnable() || getTouches(event, this.eventCache) > 2) {
 			return;
 		}
 
@@ -209,14 +209,6 @@ export class PinchInput implements IInputType {
 		});
 		this.isEnabled = false;
 		this.observer = null;
-	}
-
-	private getTouches(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			return this.eventCache.length;
-		} else if (event instanceof TouchEvent) {
-			return event.touches.length;
-		}
 	}
 
 	private getOffset(pinchScale: number, prev: number = 1): number {

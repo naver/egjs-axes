@@ -1,4 +1,4 @@
-import { $, getAngle, getCenter, getMovement } from "../utils";
+import { $, getAngle, getCenter, getMovement, getTouches } from "../utils";
 import { convertInputType, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
 import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL } from "../const";
 import { ActiveInput, InputEventType, PanEvent } from "..";
@@ -95,6 +95,7 @@ export class PanInput implements IInputType {
 	private isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
+	private eventCache: PointerEvent[] = [];
 	protected panFlag = false;
 	protected prevInput: PanEvent = null;
 
@@ -188,7 +189,10 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanstart(event: InputEventType) {
-		if (!this.isEnable()) {
+		if (event instanceof PointerEvent) {
+			this.addPointerEvent(event);
+		}
+		if (!this.isEnable() || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
@@ -206,14 +210,13 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanmove(event: InputEventType) {
-		if (!this.panFlag || !this.isEnable()) {
+		if (!this.panFlag || !this.isEnable() || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
 		const panEvent = this.transformEvent(event);
 		const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
-		const userDirection = getDirectionByAngle(
-			panEvent.angle, this.options.thresholdAngle);
+		const userDirection = getDirectionByAngle(panEvent.angle, this.options.thresholdAngle);
 
 		if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
 			this.onPanend(event);
@@ -275,7 +278,10 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanend(event: InputEventType) {
-		if (!this.panFlag || !this.isEnable()) {
+		if (event instanceof PointerEvent) {
+			this.removePointerEvent(event);
+		}
+		if (!this.panFlag || !this.isEnable() || getTouches(event, this.eventCache) !== 0) {
 			return;
 		}
 
@@ -369,5 +375,13 @@ export class PanInput implements IInputType {
 			offset[1] = (properties[1] * scale[1]);
 		}
 		return offset;
+	}
+
+	private addPointerEvent(event: PointerEvent) {
+		this.eventCache.push(event);
+	}
+
+	private removePointerEvent(event: PointerEvent) {
+		this.eventCache = this.eventCache.filter(x => x.pointerId !== event.pointerId);
 	}
 }
