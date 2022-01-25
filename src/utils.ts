@@ -207,21 +207,18 @@ export function getCenter(event: InputEventType) {
 	};
 }
 
-export function getMovement(event: InputEventType, prev: InputEventType) {
-	if (prev) {
-		if (event instanceof TouchEvent) {
-			return {
-				x: event.touches[0].pageX - (prev as TouchEvent).touches[0].pageX,
-				y: event.touches[0].pageY - (prev as TouchEvent).touches[0].pageY,
-			};
-		} else if (event instanceof MouseEvent) {
-			return {
-				x: event.pageX - (prev as MouseEvent).pageX,
-				y: event.pageY - (prev as MouseEvent).pageY,
-			};
-		}
-	}
-	return {
+export function getMovement(next: InputEventType, prev: InputEventType) {
+	const [nextSpot, prevSpot] = [next, prev].map(event => {
+		return {
+			id: event instanceof TouchEvent ? event.touches[0].identifier : event instanceof PointerEvent ? event.pointerId : 0,
+			x: event instanceof TouchEvent ? event.touches[0].pageX : event.pageX,
+			y: event instanceof TouchEvent ? event.touches[0].pageY : event.pageY,
+		};
+	});
+	return nextSpot.id === prevSpot.id ? {
+		x: nextSpot.x - prevSpot.x,
+		y: nextSpot.y - prevSpot.y,
+	} : {
 		x: 0,
 		y: 0,
 	};

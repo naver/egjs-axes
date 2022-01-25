@@ -210,7 +210,7 @@ export class PanInput implements IInputType {
 			this.observer.hold(this, panEvent);
 			this.isRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
 			this.panFlag = true;
-			this.prevInput = null;
+			this.prevInput = panEvent;
 		}
 	}
 
@@ -300,7 +300,7 @@ export class PanInput implements IInputType {
 			return prev;
 		}
 		const center = getCenter(event);
-		const movement = getMovement(event, prev ? prev.srcEvent : null);
+		const movement = prev ? getMovement(event, prev.srcEvent) : { x: 0, y: 0 };
 		const angle = prev ? getAngle(center.x - prev.center.x, center.y - prev.center.y) : 0;
 		const deltaX = prev ? prev.deltaX + movement.x : movement.x;
 		const deltaY = prev ? prev.deltaY + movement.y : movement.y;
