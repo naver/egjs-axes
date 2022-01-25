@@ -1,5 +1,6 @@
 import { InputEventType } from ".";
 import {window} from "./browser";
+import { cssProps } from "./const";
 import { ObjectInterface } from "./types";
 
 declare var jQuery: any;
@@ -207,21 +208,22 @@ export function getCenter(event: InputEventType) {
 }
 
 export function getMovement(event: InputEventType, prev: InputEventType) {
-	if (event instanceof TouchEvent) {
-		if (prev) {
+	if (prev) {
+		if (event instanceof TouchEvent) {
 			return {
 				x: event.touches[0].pageX - (prev as TouchEvent).touches[0].pageX,
 				y: event.touches[0].pageY - (prev as TouchEvent).touches[0].pageY,
 			};
+		} else if (event instanceof MouseEvent) {
+			return {
+				x: event.pageX - (prev as MouseEvent).pageX,
+				y: event.pageY - (prev as MouseEvent).pageY,
+			};
 		}
-		return {
-			x: 0,
-			y: 0,
-		};
 	}
 	return {
-		x: event.movementX,
-		y: event.movementY,
+		x: 0,
+		y: 0,
 	};
 }
 
@@ -232,4 +234,16 @@ export function getTouches(event: InputEventType, eventCache: PointerEvent[]) {
 		return event.touches.length;
 	}
 	return 0; // case of MouseEvent
+}
+
+export function setCssProps(element: HTMLElement, originalCssProps?: { [key: string]: string; }): { [key: string]: string; } {
+	const oldCssProps = {};
+	if (element.style) {
+		const newCssProps = originalCssProps ? originalCssProps : cssProps;
+		Object.keys(newCssProps).forEach(prop => {
+			oldCssProps[prop] = element.style[prop];
+			element.style[prop] = newCssProps[prop];
+		});
+	}
+	return oldCssProps;
 }

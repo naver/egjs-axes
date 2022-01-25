@@ -1,6 +1,6 @@
-import { $, getAngle, getCenter, getMovement, getTouches } from "../utils";
+import { $, setCssProps, getAngle, getCenter, getMovement, getTouches } from "../utils";
 import { convertInputType, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
-import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL } from "../const";
+import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL, cssProps } from "../const";
 import { ActiveInput, InputEventType, PanEvent } from "..";
 
 export interface PanInputOption {
@@ -85,6 +85,7 @@ export class PanInput implements IInputType {
 	options: PanInputOption;
 	axes: string[] = [];
 	element: HTMLElement = null;
+	originalCssProps: { [key: string]: string; } = {};
 	protected observer: IInputTypeObserver;
 	protected _direction;
 	private activeInput: ActiveInput = {
@@ -138,11 +139,15 @@ export class PanInput implements IInputType {
 		}
 		this.element[UNIQUEKEY] = keyValue;
 		this.attachEvent(observer);
+		this.originalCssProps = setCssProps(this.element);
 		return this;
 	}
 
 	public disconnect() {
 		this.dettachEvent();
+		if (this.originalCssProps !== cssProps) {
+			setCssProps(this.element, this.originalCssProps);
+		}
 		this._direction = DIRECTION_NONE;
 		return this;
 	}

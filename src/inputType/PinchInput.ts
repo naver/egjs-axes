@@ -1,6 +1,7 @@
-import { $, getTouches } from "../utils";
+import { $, getTouches, setCssProps } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
 import { ActiveInput, InputEventType, PinchEvent } from "..";
+import { cssProps } from "../const";
 
 export interface PinchInputOption {
 	scale?: number;
@@ -34,6 +35,7 @@ export class PinchInput implements IInputType {
 	options: PinchInputOption;
 	axes: string[] = [];
 	element: HTMLElement = null;
+	originalCssProps: { [key: string]: string; } = {};
 	private observer: IInputTypeObserver;
 	private activeInput: ActiveInput = {
 		start: [],
@@ -73,11 +75,15 @@ export class PinchInput implements IInputType {
 		}
 		this.element[UNIQUEKEY] = keyValue;
 		this.attachEvent(observer);
+		this.originalCssProps = setCssProps(this.element);
 		return this;
 	}
 
 	public disconnect() {
 		this.dettachEvent();
+		if (this.originalCssProps !== cssProps) {
+			setCssProps(this.element, this.originalCssProps);
+		}
 		return this;
 	}
 

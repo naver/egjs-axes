@@ -26,3 +26,9 @@ export const TRANSFORM = (() => {
 	}
 	return "";
 })();
+
+export const cssProps = {
+	"touch-action": "none",
+	"user-select": "none",
+	"-webkit-user-drag": "none",
+};
