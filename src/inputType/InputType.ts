@@ -50,13 +50,13 @@ export function convertInputType(inputType: string[] = []): ActiveInput {
 			// no default
 		}
 	});
-	if (hasPointer && "PointerEvent" in window) {
+	if (hasPointer && SUPPORT_POINTER) {
 		return {
 			start: ["pointerdown"],
 			move: ["pointermove"],
 			end: ["pointerup", "pointercancel"],
 		};
-	} else if (hasPointer && "MSPointerEvent" in window) {
+	} else if (hasPointer && SUPPORT_MSPOINTER) {
 		return {
 			start: ["MSPointerDown"],
 			move: ["MSPointerMove"],
