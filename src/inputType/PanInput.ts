@@ -1,7 +1,7 @@
 import { $, setCssProps, getAngle, getCenter, getMovement, getTouches } from "../utils";
 import { convertInputType, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
 import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL, cssProps } from "../const";
-import { ActiveInput, InputEventType, PanEvent } from "..";
+import { ActiveInput, InputEventType, PanEvent } from "../types";
 
 export interface PanInputOption {
 	inputType?: string[];

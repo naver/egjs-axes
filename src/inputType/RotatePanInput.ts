@@ -1,4 +1,4 @@
-import { PanEvent } from "..";
+import { PanEvent } from "../types";
 import Axes from "../Axes";
 import { getAngle } from "../utils";
 import { toAxis } from "./InputType";

@@ -1,6 +1,6 @@
 import { $, getTouches, setCssProps } from "../utils";
 import { UNIQUEKEY, toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
-import { ActiveInput, InputEventType, PinchEvent } from "..";
+import { ActiveInput, InputEventType, PinchEvent } from "../types";
 import { cssProps } from "../const";
 
 export interface PinchInputOption {

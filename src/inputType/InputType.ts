@@ -1,7 +1,7 @@
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
 import { window } from "../browser";
-import { ActiveInput } from "..";
+import { ActiveInput } from "../types";
 
 export interface IInputType {
 	axes: string[];
