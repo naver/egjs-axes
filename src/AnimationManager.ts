@@ -44,6 +44,17 @@ export class AnimationManager {
 			this.options.maximumDuration);
 	}
 
+	getDisplacement(velocity: number[]): number[] {
+		const totalVelocity = Math.pow(velocity.reduce((total, v) => total + v * v, 0), 1 / (velocity.length));
+		const duration = Math.abs(totalVelocity / -this.options.deceleration);
+		return velocity.map(v => v / 2 * duration);
+	}
+
+	interpolate(displacement: number, threshold: number): number {
+		const initSlope = this.easing(0.00001) / 0.00001;
+		return this.easing(displacement / (threshold * initSlope)) * threshold;
+	}
+
 	private createAnimationParam(pos: Axis, duration: number, option?: ChangeEventOption): AnimationParam {
 		const depaPos: Axis = this.axm.get();
 		const destPos: Axis = pos;

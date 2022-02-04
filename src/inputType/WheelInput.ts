@@ -97,7 +97,7 @@ export class WheelInput implements IInputType {
 		this._timer = setTimeout(() => {
 			if (this._isHolded) {
 				this._isHolded = false;
-				this.observer.release(this, event, toAxis(this.axes, [0]));
+				this.observer.release(this, event, [0]);
 			}
 		}, 50);
 	}

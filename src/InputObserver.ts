@@ -1,5 +1,5 @@
 import { InterruptManager } from "./InterruptManager";
-import { IInputType, IInputTypeObserver } from "./inputType/InputType";
+import { IInputType, IInputTypeObserver, toAxis } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
@@ -34,9 +34,6 @@ export class InputObserver implements IInputTypeObserver {
 				return v > tx ? tx : (v < tn ? tn : v);
 			});
 		} else {
-			// when start pointer is held in inside
-			// get a initialization slope value to prevent smooth animation.
-			const initSlope = this.am.easing(0.00001) / 0.00001;
 			return this.axm.map(pos, (v, opt) => {
 				const min = opt.range[0];
 				const max = opt.range[1];
@@ -46,9 +43,9 @@ export class InputObserver implements IInputTypeObserver {
 				if (circular && (circular[0] || circular[1])) {
 					return v;
 				} else if (v < min) { // left
-					return min - this.am.easing((min - v) / (out[0] * initSlope)) * out[0];
+					return min - this.am.interpolate(min - v, out[0]);
 				} else if (v > max) { // right
-					return max + this.am.easing((v - max) / (out[1] * initSlope)) * out[1];
+					return max + this.am.interpolate(v - max, out[1]);
 				}
 				return v;
 			});
@@ -101,12 +98,14 @@ export class InputObserver implements IInputTypeObserver {
 			this.am.finish(false);
 		}
 	}
-	release(input: IInputType, event, offset: Axis, inputDuration?: number) {
+	release(input: IInputType, event, velocity: number[], inputDuration?: number) {
 		if (this.isStopped || !this.itm.isInterrupting() || !this.moveDistance) {
 			return;
 		}
 		const pos: Axis = this.axm.get(input.axes);
 		const depaPos: Axis = this.axm.get();
+		const displacement = this.am.getDisplacement(velocity);
+		const offset = toAxis(input.axes, displacement);
 		let destPos: Axis = this.axm.get(this.axm.map(offset, (v, opt, k) => {
 			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
 				return pos[k] + v;
