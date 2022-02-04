@@ -129,7 +129,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.isEnable() || getTouches(event, this.eventCache) !== 2) {
+		if (!this.isEnabled || getTouches(event, this.eventCache) !== 2) {
 			return;
 		}
 
@@ -145,7 +145,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.pinchFlag || !this.isEnable() || getTouches(event, this.eventCache) !== 2) {
+		if (!this.pinchFlag || !this.isEnabled || getTouches(event, this.eventCache) !== 2) {
 			return;
 		}
 
@@ -159,7 +159,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this.pinchFlag || !this.isEnable() || getTouches(event, this.eventCache) > 2) {
+		if (!this.pinchFlag || !this.isEnabled || getTouches(event, this.eventCache) > 2) {
 			return;
 		}
 

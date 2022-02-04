@@ -89,7 +89,7 @@ export class PanInput implements IInputType {
 	protected observer: IInputTypeObserver;
 	protected _direction;
 	private activeInput: ActiveInput;
-	private isEnabled = false;
+	protected isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
 	private eventCache: PointerEvent[] = [];
@@ -193,7 +193,7 @@ export class PanInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.isEnable() || getTouches(event, this.eventCache) > 1) {
+		if (!this.isEnabled || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
@@ -211,7 +211,7 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanmove(event: InputEventType) {
-		if (!this.panFlag || !this.isEnable() || getTouches(event, this.eventCache) > 1) {
+		if (!this.panFlag || !this.isEnabled || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
@@ -282,7 +282,7 @@ export class PanInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this.panFlag || !this.isEnable() || getTouches(event, this.eventCache) !== 0) {
+		if (!this.panFlag || !this.isEnabled || getTouches(event, this.eventCache) !== 0) {
 			return;
 		}
 

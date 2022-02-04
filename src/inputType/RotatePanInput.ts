@@ -42,7 +42,7 @@ export class RotatePanInput extends PanInput {
 	}
 
 	onPanstart(event: MouseEvent) {
-		if (!this.isEnable()) {
+		if (!this.isEnabled) {
 			return;
 		}
 
@@ -67,7 +67,7 @@ export class RotatePanInput extends PanInput {
 	}
 
 	onPanmove(event: MouseEvent) {
-		if (!this.panFlag || !this.isEnable()) {
+		if (!this.panFlag || !this.isEnabled) {
 			return;
 		}
 
@@ -82,7 +82,7 @@ export class RotatePanInput extends PanInput {
 	}
 
 	onPanend(event: MouseEvent) {
-		if (!this.panFlag || !this.isEnable()) {
+		if (!this.panFlag || !this.isEnabled) {
 			return;
 		}
 
