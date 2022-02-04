@@ -85,20 +85,16 @@ export class PanInput implements IInputType {
 	options: PanInputOption;
 	axes: string[] = [];
 	element: HTMLElement = null;
-	originalCssProps: { [key: string]: string; } = {};
+	private originalCssProps: { [key: string]: string; };
 	protected observer: IInputTypeObserver;
 	protected _direction;
-	private activeInput: ActiveInput = {
-		start: [],
-		move: [],
-		end: [],
-	};
+	private activeInput: ActiveInput;
 	private isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
 	private eventCache: PointerEvent[] = [];
 	protected panFlag = false;
-	protected prevInput: PanEvent = null;
+	protected prevInput: PanEvent;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		this.element = $(el);

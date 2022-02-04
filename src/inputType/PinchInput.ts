@@ -35,20 +35,16 @@ export class PinchInput implements IInputType {
 	options: PinchInputOption;
 	axes: string[] = [];
 	element: HTMLElement = null;
-	originalCssProps: { [key: string]: string; } = {};
+	private originalCssProps: { [key: string]: string; };
 	private observer: IInputTypeObserver;
-	private activeInput: ActiveInput = {
-		start: [],
-		move: [],
-		end: [],
-	};
+	private activeInput: ActiveInput;
 	private isEnabled = false;
 	private pinchFlag = false;
-	private baseValue: number = null;
-	private firstTouch: TouchEvent = null;
+	private baseValue: number;
+	private firstTouch: TouchEvent;
 	private firstPointers: PointerEvent[] = [];
 	private eventCache: PointerEvent[] = [];
-	private prevInput: PinchEvent = null;
+	private prevInput: PinchEvent;
 
 	constructor(el: string | HTMLElement, options?: PinchInputOption) {
 		this.element = $(el);

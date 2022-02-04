@@ -28,15 +28,12 @@ import { PanInput, PanInputOption } from "./PanInput";
 export class RotatePanInput extends PanInput {
 	private rotateOrigin: number[];
 	private prevAngle: number;
-	private prevQuadrant: number;
-	private lastDiff: number;
+	private prevQuadrant: number = null;
+	private lastDiff = 0;
 	private coefficientForDistanceToAngle: number;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		super(el, options);
-
-		this.prevQuadrant = null;
-		this.lastDiff = 0;
 	}
 
 	mapAxes(axes: string[]) {
