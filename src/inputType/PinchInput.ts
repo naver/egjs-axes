@@ -1,5 +1,5 @@
 import { $, getTouches, setCssProps } from "../utils";
-import { UNIQUEKEY, toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
+import { toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
 import { ActiveInput, InputEventType, PinchEvent } from "../types";
 import { cssProps } from "../const";
 
@@ -64,11 +64,6 @@ export class PinchInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
-		let keyValue: string = this.element[UNIQUEKEY];
-		if (!keyValue) {
-			keyValue = String(Math.round(Math.random() * new Date().getTime()));
-		}
-		this.element[UNIQUEKEY] = keyValue;
 		this.attachEvent(observer);
 		this.originalCssProps = setCssProps(this.element);
 		return this;
@@ -89,7 +84,6 @@ export class PinchInput implements IInputType {
 	*/
 	public destroy() {
 		this.disconnect();
-		delete this.element[UNIQUEKEY];
 		this.element = null;
 	}
 

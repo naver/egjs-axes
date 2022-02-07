@@ -1,5 +1,5 @@
 import { $, setCssProps, getAngle, getCenter, getMovement, getTouches } from "../utils";
-import { convertInputType, IInputType, IInputTypeObserver, toAxis, UNIQUEKEY } from "./InputType";
+import { convertInputType, IInputType, IInputTypeObserver, toAxis } from "./InputType";
 import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL, cssProps } from "../const";
 import { ActiveInput, InputEventType, PanEvent } from "../types";
 
@@ -128,11 +128,6 @@ export class PanInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
-		let keyValue: string = this.element[UNIQUEKEY];
-		if (!keyValue) {
-			keyValue = String(Math.round(Math.random() * new Date().getTime()));
-		}
-		this.element[UNIQUEKEY] = keyValue;
 		this.attachEvent(observer);
 		this.originalCssProps = setCssProps(this.element);
 		return this;
@@ -154,7 +149,6 @@ export class PanInput implements IInputType {
 	*/
 	public destroy() {
 		this.disconnect();
-		delete this.element[UNIQUEKEY];
 		this.element = null;
 	}
 

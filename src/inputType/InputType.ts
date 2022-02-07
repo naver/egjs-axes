@@ -27,7 +27,6 @@ export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const SUPPORT_POINTER = "PointerEvent" in window;
 export const SUPPORT_MSPOINTER = "MSPointerEvent" in window;
 export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
-export const UNIQUEKEY = "_EGJS_AXES_INPUTTYPE_";
 export function toAxis(source: string[], offset: number[]): Axis {
 	return offset.reduce((acc, v, i) => {
 		if (source[i]) {
