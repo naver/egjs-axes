@@ -89,7 +89,7 @@ export class PanInput implements IInputType {
 	protected observer: IInputTypeObserver;
 	protected _direction;
 	private activeInput: ActiveInput;
-	protected isEnabled = false;
+	protected _isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
 	private eventCache: PointerEvent[] = [];
@@ -134,7 +134,7 @@ export class PanInput implements IInputType {
 	}
 
 	public disconnect() {
-		this.dettachEvent();
+		this.detachEvent();
 		if (this.originalCssProps !== cssProps) {
 			setCssProps(this.element, this.originalCssProps);
 		}
@@ -159,7 +159,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this.isEnabled = true;
+		this._isEnabled = true;
 		return this;
 	}
 	/**
@@ -169,7 +169,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this.isEnabled = false;
+		this._isEnabled = false;
 		return this;
 	}
 	/**
@@ -178,15 +178,15 @@ export class PanInput implements IInputType {
 	 * @method eg.Axes.PanInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	public isEnable() {
-		return this.isEnabled;
+	public isEnabled() {
+		return this._isEnabled;
 	}
 
 	protected onPanstart(event: InputEventType) {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this.isEnabled || getTouches(event, this.eventCache) > 1) {
+		if (!this._isEnabled || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
@@ -204,7 +204,7 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanmove(event: InputEventType) {
-		if (!this.panFlag || !this.isEnabled || getTouches(event, this.eventCache) > 1) {
+		if (!this.panFlag || !this._isEnabled || getTouches(event, this.eventCache) > 1) {
 			return;
 		}
 
@@ -275,7 +275,7 @@ export class PanInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this.panFlag || !this.isEnabled || getTouches(event, this.eventCache) !== 0) {
+		if (!this.panFlag || !this._isEnabled || getTouches(event, this.eventCache) !== 0) {
 			return;
 		}
 
@@ -330,7 +330,7 @@ export class PanInput implements IInputType {
 	private attachEvent(observer: IInputTypeObserver) {
 		const activeInput = convertInputType(this.options.inputType);
 		this.observer = observer;
-		this.isEnabled = true;
+		this._isEnabled = true;
 		this.activeInput = activeInput;
 		activeInput.start.forEach(event => {
 			this.element.addEventListener(event, this.onPanstart, false);
@@ -343,7 +343,7 @@ export class PanInput implements IInputType {
 		});
 	}
 
-	private dettachEvent() {
+	private detachEvent() {
 		const activeInput = this.activeInput;
 		activeInput.start.forEach(event => {
 			this.element.removeEventListener(event, this.onPanstart, false);
@@ -354,7 +354,7 @@ export class PanInput implements IInputType {
 		activeInput.end.forEach(event => {
 			window.removeEventListener(event, this.onPanend, false);
 		});
-		this.isEnabled = false;
+		this._isEnabled = false;
 		this.observer = null;
 	}
 

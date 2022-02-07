@@ -54,13 +54,13 @@ export class WheelInput implements IInputType {
 	}
 
 	connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
+		this.detachEvent();
 		this.attachEvent(observer);
 		return this;
 	}
 
 	disconnect() {
-		this.dettachEvent();
+		this.detachEvent();
 		return this;
 	}
 
@@ -108,7 +108,7 @@ export class WheelInput implements IInputType {
 		this._isEnabled = true;
 	}
 
-	private dettachEvent() {
+	private detachEvent() {
 		this.element.removeEventListener("wheel", this.onWheel);
 		this._isEnabled = false;
 		this.observer = null;
@@ -145,7 +145,7 @@ export class WheelInput implements IInputType {
 	 * @method eg.Axes.WheelInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnable() {
+	isEnabled() {
 		return this._isEnabled;
 	}
 }

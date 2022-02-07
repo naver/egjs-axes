@@ -70,7 +70,7 @@ export class MoveKeyInput implements IInputType {
 	}
 
 	connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
+		this.detachEvent();
 
 		// add tabindex="0" to the container for making it focusable
 		if (this.element.getAttribute("tabindex") !== "0") {
@@ -82,7 +82,7 @@ export class MoveKeyInput implements IInputType {
 	}
 
 	disconnect() {
-		this.dettachEvent();
+		this.detachEvent();
 		return this;
 	}
 
@@ -160,7 +160,7 @@ export class MoveKeyInput implements IInputType {
 		this._isEnabled = true;
 	}
 
-	private dettachEvent() {
+	private detachEvent() {
 		this.element.removeEventListener("keydown", this.onKeydown, false);
 		this.element.removeEventListener("keypress", this.onKeydown, false);
 		this.element.removeEventListener("keyup", this.onKeyup, false);
@@ -194,7 +194,7 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnable() {
+	isEnabled() {
 		return this._isEnabled;
 	}
 }
