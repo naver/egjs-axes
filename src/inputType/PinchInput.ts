@@ -37,7 +37,7 @@ export class PinchInput implements IInputType {
 	element: HTMLElement = null;
 	private originalCssProps: { [key: string]: string; };
 	private observer: IInputTypeObserver;
-	private activeInput: ActiveInput;
+	private activeInput: ActiveInput = null;
 	private _isEnabled = false;
 	private pinchFlag = false;
 	private baseValue: number;
@@ -64,6 +64,9 @@ export class PinchInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
+		if (this.activeInput) {
+			this.detachEvent();
+		}
 		this.attachEvent(observer);
 		this.originalCssProps = setCssProps(this.element);
 		return this;

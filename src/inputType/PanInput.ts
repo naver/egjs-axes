@@ -88,7 +88,7 @@ export class PanInput implements IInputType {
 	private originalCssProps: { [key: string]: string; };
 	protected observer: IInputTypeObserver;
 	protected _direction;
-	private activeInput: ActiveInput;
+	private activeInput: ActiveInput = null;
 	protected _isEnabled = false;
 	private isRightEdge = false;
 	private rightEdgeTimer = 0;
@@ -128,6 +128,9 @@ export class PanInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
+		if (this.activeInput) {
+			this.detachEvent();
+		}
 		this.attachEvent(observer);
 		this.originalCssProps = setCssProps(this.element);
 		return this;
