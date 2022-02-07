@@ -64,7 +64,6 @@ export class PinchInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
 		let keyValue: string = this.element[UNIQUEKEY];
 		if (!keyValue) {
 			keyValue = String(Math.round(Math.random() * new Date().getTime()));
@@ -185,28 +184,30 @@ export class PinchInput implements IInputType {
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
+		const activeInput = convertInputType(this.options.inputType);
 		this.observer = observer;
 		this.isEnabled = true;
-		this.activeInput = convertInputType(this.options.inputType);
-		this.activeInput.start.forEach(event => {
+		this.activeInput = activeInput;
+		activeInput.start.forEach(event => {
 			this.element.addEventListener(event, this.onPinchStart, false);
 		});
-		this.activeInput.move.forEach(event => {
+		activeInput.move.forEach(event => {
 			this.element.addEventListener(event, this.onPinchMove, false);
 		});
-		this.activeInput.end.forEach(event => {
+		activeInput.end.forEach(event => {
 			this.element.addEventListener(event, this.onPinchEnd, false);
 		});
 	}
 
 	private dettachEvent() {
-		this.activeInput.start.forEach(event => {
+		const activeInput = this.activeInput;
+		activeInput.start.forEach(event => {
 			this.element.removeEventListener(event, this.onPinchStart, false);
 		});
-		this.activeInput.move.forEach(event => {
+		activeInput.move.forEach(event => {
 			this.element.removeEventListener(event, this.onPinchMove, false);
 		});
-		this.activeInput.end.forEach(event => {
+		activeInput.end.forEach(event => {
 			this.element.removeEventListener(event, this.onPinchEnd, false);
 		});
 		this.isEnabled = false;

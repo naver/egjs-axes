@@ -128,7 +128,6 @@ export class PanInput implements IInputType {
 	}
 
 	public connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
 		let keyValue: string = this.element[UNIQUEKEY];
 		if (!keyValue) {
 			keyValue = String(Math.round(Math.random() * new Date().getTime()));
@@ -335,28 +334,30 @@ export class PanInput implements IInputType {
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
+		const activeInput = convertInputType(this.options.inputType);
 		this.observer = observer;
 		this.isEnabled = true;
-		this.activeInput = convertInputType(this.options.inputType);
-		this.activeInput.start.forEach(event => {
+		this.activeInput = activeInput;
+		activeInput.start.forEach(event => {
 			this.element.addEventListener(event, this.onPanstart, false);
 		});
-		this.activeInput.move.forEach(event => {
+		activeInput.move.forEach(event => {
 			window.addEventListener(event, this.onPanmove, false);
 		});
-		this.activeInput.end.forEach(event => {
+		activeInput.end.forEach(event => {
 			window.addEventListener(event, this.onPanend, false);
 		});
 	}
 
 	private dettachEvent() {
-		this.activeInput.start.forEach(event => {
+		const activeInput = this.activeInput;
+		activeInput.start.forEach(event => {
 			this.element.removeEventListener(event, this.onPanstart, false);
 		});
-		this.activeInput.move.forEach(event => {
+		activeInput.move.forEach(event => {
 			window.removeEventListener(event, this.onPanmove, false);
 		});
-		this.activeInput.end.forEach(event => {
+		activeInput.end.forEach(event => {
 			window.removeEventListener(event, this.onPanend, false);
 		});
 		this.isEnabled = false;
