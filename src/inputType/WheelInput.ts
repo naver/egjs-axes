@@ -35,8 +35,8 @@ export class WheelInput implements IInputType {
 	axes: string[] = [];
 	element: HTMLElement = null;
 	private _observer: IInputTypeObserver;
-	private _isEnabled = false;
-	private _isHolded = false;
+	private _enabled = false;
+	private _holding = false;
 	private _timer = null;
 
 	constructor(el, options?: WheelInputOption) {
@@ -76,7 +76,7 @@ export class WheelInput implements IInputType {
 	}
 
 	private onWheel(event) {
-		if (!this._isEnabled) {
+		if (!this._enabled) {
 			return;
 		}
 		event.preventDefault();
@@ -85,9 +85,9 @@ export class WheelInput implements IInputType {
 			return;
 		}
 
-		if (!this._isHolded) {
+		if (!this._holding) {
 			this._observer.hold(this, event);
-			this._isHolded = true;
+			this._holding = true;
 		}
 		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
 
@@ -96,8 +96,8 @@ export class WheelInput implements IInputType {
 		const inst = this;
 
 		this._timer = setTimeout(() => {
-			if (this._isHolded) {
-				this._isHolded = false;
+			if (this._holding) {
+				this._holding = false;
 				this._observer.release(this, event, toAxis(this.axes, [0]));
 			}
 		}, 50);
@@ -106,12 +106,12 @@ export class WheelInput implements IInputType {
 	private attachEvent(observer: IInputTypeObserver) {
 		this._observer = observer;
 		this.element.addEventListener("wheel", this.onWheel);
-		this._isEnabled = true;
+		this._enabled = true;
 	}
 
 	private detachEvent() {
 		this.element.removeEventListener("wheel", this.onWheel);
-		this._isEnabled = false;
+		this._enabled = false;
 		this._observer = null;
 
 		if (this._timer) {
@@ -127,7 +127,7 @@ export class WheelInput implements IInputType {
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this._isEnabled = true;
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -137,7 +137,7 @@ export class WheelInput implements IInputType {
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this._isEnabled = false;
+		this._enabled = false;
 		return this;
 	}
 	/**
@@ -147,6 +147,6 @@ export class WheelInput implements IInputType {
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
 	public isEnabled() {
-		return this._isEnabled;
+		return this._enabled;
 	}
 }

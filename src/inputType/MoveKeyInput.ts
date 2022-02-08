@@ -51,8 +51,8 @@ export class MoveKeyInput implements IInputType {
 	public axes: string[] = [];
 	public element: HTMLElement = null;
 	private _observer: IInputTypeObserver;
-	private _isEnabled = false;
-	private _isHolded = false;
+	private _enabled = false;
+	private _holding = false;
 	private _timer = null;
 
 	constructor(el, options?: MoveKeyInputOption) {
@@ -98,7 +98,7 @@ export class MoveKeyInput implements IInputType {
 	}
 
 	private onKeydown(e) {
-		if (!this._isEnabled) {
+		if (!this._enabled) {
 			return;
 		}
 
@@ -135,21 +135,21 @@ export class MoveKeyInput implements IInputType {
 		}
 		const offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
 
-		if (!this._isHolded) {
+		if (!this._holding) {
 			this._observer.hold(this, event);
-			this._isHolded = true;
+			this._holding = true;
 		}
 		clearTimeout(this._timer);
 		this._observer.change(this, event, toAxis(this.axes, offsets));
 	}
 	private onKeyup(e) {
-		if (!this._isHolded) {
+		if (!this._holding) {
 			return;
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
 			this._observer.release(this, e, toAxis(this.axes, [0, 0]));
-			this._isHolded = false;
+			this._holding = false;
 		}, DELAY);
 	}
 
@@ -158,14 +158,14 @@ export class MoveKeyInput implements IInputType {
 		this.element.addEventListener("keydown", this.onKeydown, false);
 		this.element.addEventListener("keypress", this.onKeydown, false);
 		this.element.addEventListener("keyup", this.onKeyup, false);
-		this._isEnabled = true;
+		this._enabled = true;
 	}
 
 	private detachEvent() {
 		this.element.removeEventListener("keydown", this.onKeydown, false);
 		this.element.removeEventListener("keypress", this.onKeydown, false);
 		this.element.removeEventListener("keyup", this.onKeyup, false);
-		this._isEnabled = false;
+		this._enabled = false;
 		this._observer = null;
 	}
 
@@ -176,7 +176,7 @@ export class MoveKeyInput implements IInputType {
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this._isEnabled = true;
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -186,7 +186,7 @@ export class MoveKeyInput implements IInputType {
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this._isEnabled = false;
+		this._enabled = false;
 		return this;
 	}
 	/**
@@ -196,6 +196,6 @@ export class MoveKeyInput implements IInputType {
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
 	public isEnabled() {
-		return this._isEnabled;
+		return this._enabled;
 	}
 }

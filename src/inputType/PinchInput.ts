@@ -37,7 +37,7 @@ export class PinchInput implements IInputType {
 	public element: HTMLElement = null;
 	private _observer: IInputTypeObserver;
 	private _pinchFlag = false;
-	private _isEnabled = false;
+	private _enabled = false;
 	private _originalCssProps: { [key: string]: string; };
 	private _activeInput: ActiveInput = null;
 	private _baseValue: number;
@@ -97,7 +97,7 @@ export class PinchInput implements IInputType {
 	 * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this._isEnabled = true;
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -107,7 +107,7 @@ export class PinchInput implements IInputType {
 	 * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this._isEnabled = false;
+		this._enabled = false;
 		return this;
 	}
 
@@ -118,14 +118,14 @@ export class PinchInput implements IInputType {
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
 	public isEnabled() {
-		return this._isEnabled;
+		return this._enabled;
 	}
 
 	private onPinchStart(event: InputEventType) {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this._isEnabled || getTouches(event, this._eventCache) !== 2) {
+		if (!this._enabled || getTouches(event, this._eventCache) !== 2) {
 			return;
 		}
 
@@ -141,7 +141,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this._pinchFlag || !this._isEnabled || getTouches(event, this._eventCache) !== 2) {
+		if (!this._pinchFlag || !this._enabled || getTouches(event, this._eventCache) !== 2) {
 			return;
 		}
 
@@ -155,7 +155,7 @@ export class PinchInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this._pinchFlag || !this._isEnabled || getTouches(event, this._eventCache) > 2) {
+		if (!this._pinchFlag || !this._enabled || getTouches(event, this._eventCache) > 2) {
 			return;
 		}
 
@@ -183,7 +183,7 @@ export class PinchInput implements IInputType {
 	private attachEvent(observer: IInputTypeObserver) {
 		const activeInput = convertInputType(this.options.inputType);
 		this._observer = observer;
-		this._isEnabled = true;
+		this._enabled = true;
 		this._activeInput = activeInput;
 		activeInput.start.forEach(event => {
 			this.element.addEventListener(event, this.onPinchStart, false);
@@ -207,7 +207,7 @@ export class PinchInput implements IInputType {
 		activeInput.end.forEach(event => {
 			this.element.removeEventListener(event, this.onPinchEnd, false);
 		});
-		this._isEnabled = false;
+		this._enabled = false;
 		this._observer = null;
 	}
 

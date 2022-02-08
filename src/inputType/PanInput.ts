@@ -88,11 +88,11 @@ export class PanInput implements IInputType {
 	protected _observer: IInputTypeObserver;
 	protected _direction;
 	protected _panFlag = false;
-	protected _isEnabled = false;
+	protected _enabled = false;
 	protected _prevInput: PanEvent;
 	private _originalCssProps: { [key: string]: string; };
 	private _activeInput: ActiveInput = null;
-	private _isRightEdge = false;
+	private _atRightEdge = false;
 	private _rightEdgeTimer = 0;
 	private _eventCache: PointerEvent[] = [];
 
@@ -162,7 +162,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public enable() {
-		this._isEnabled = true;
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -172,7 +172,7 @@ export class PanInput implements IInputType {
 	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
 	public disable() {
-		this._isEnabled = false;
+		this._enabled = false;
 		return this;
 	}
 	/**
@@ -182,14 +182,14 @@ export class PanInput implements IInputType {
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
 	public isEnabled() {
-		return this._isEnabled;
+		return this._enabled;
 	}
 
 	protected onPanstart(event: InputEventType) {
 		if (event instanceof PointerEvent) {
 			this.addPointerEvent(event);
 		}
-		if (!this._isEnabled || getTouches(event, this._eventCache) > 1) {
+		if (!this._enabled || getTouches(event, this._eventCache) > 1) {
 			return;
 		}
 
@@ -200,14 +200,14 @@ export class PanInput implements IInputType {
 			const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
 
 			this._observer.hold(this, panEvent);
-			this._isRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
+			this._atRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
 			this._panFlag = true;
 			this._prevInput = panEvent;
 		}
 	}
 
 	protected onPanmove(event: InputEventType) {
-		if (!this._panFlag || !this._isEnabled || getTouches(event, this._eventCache) > 1) {
+		if (!this._panFlag || !this._enabled || getTouches(event, this._eventCache) > 1) {
 			return;
 		}
 
@@ -233,14 +233,14 @@ export class PanInput implements IInputType {
 					offsetY: 0,
 				});
 				return;
-			} else if (this._isRightEdge) {
+			} else if (this._atRightEdge) {
 				clearTimeout(this._rightEdgeTimer);
 
 				// - is right to left
 				const swipeRightToLeft = panEvent.deltaX < -iOSEdgeSwipeThreshold;
 
 				if (swipeRightToLeft) {
-					this._isRightEdge = false;
+					this._atRightEdge = false;
 				} else {
 					// iOS swipe right => left
 					this._rightEdgeTimer = window.setTimeout(() => {
@@ -278,7 +278,7 @@ export class PanInput implements IInputType {
 		if (event instanceof PointerEvent) {
 			this.removePointerEvent(event);
 		}
-		if (!this._panFlag || !this._isEnabled || getTouches(event, this._eventCache) !== 0) {
+		if (!this._panFlag || !this._enabled || getTouches(event, this._eventCache) !== 0) {
 			return;
 		}
 
@@ -333,7 +333,7 @@ export class PanInput implements IInputType {
 	private attachEvent(observer: IInputTypeObserver) {
 		const activeInput = convertInputType(this.options.inputType);
 		this._observer = observer;
-		this._isEnabled = true;
+		this._enabled = true;
 		this._activeInput = activeInput;
 		activeInput.start.forEach(event => {
 			this.element.addEventListener(event, this.onPanstart, false);
@@ -357,7 +357,7 @@ export class PanInput implements IInputType {
 		activeInput.end.forEach(event => {
 			window.removeEventListener(event, this.onPanend, false);
 		});
-		this._isEnabled = false;
+		this._enabled = false;
 		this._observer = null;
 	}
 
