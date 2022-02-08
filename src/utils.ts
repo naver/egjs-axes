@@ -1,6 +1,6 @@
 import { InputEventType } from ".";
 import {window} from "./browser";
-import { cssProps } from "./const";
+import { PREVENT_SCROLL_CSSPROPS } from "./const";
 import { ObjectInterface } from "./types";
 
 declare var jQuery: any;
@@ -236,7 +236,7 @@ export function getTouches(event: InputEventType, eventCache: PointerEvent[]) {
 export function setCssProps(element: HTMLElement, originalCssProps?: { [key: string]: string; }): { [key: string]: string; } {
 	const oldCssProps = {};
 	if (element.style) {
-		const newCssProps = originalCssProps ? originalCssProps : cssProps;
+		const newCssProps = originalCssProps ? originalCssProps : PREVENT_SCROLL_CSSPROPS;
 		Object.keys(newCssProps).forEach(prop => {
 			oldCssProps[prop] = element.style[prop];
 			element.style[prop] = newCssProps[prop];

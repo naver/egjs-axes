@@ -1,7 +1,7 @@
 import { $, getTouches, setCssProps } from "../utils";
 import { toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
 import { ActiveInput, InputEventType, PinchEvent } from "../types";
-import { cssProps } from "../const";
+import { PREVENT_SCROLL_CSSPROPS } from "../const";
 
 export interface PinchInputOption {
 	scale?: number;
@@ -74,7 +74,7 @@ export class PinchInput implements IInputType {
 
 	public disconnect() {
 		this.detachEvent();
-		if (this.originalCssProps !== cssProps) {
+		if (this.originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
 			setCssProps(this.element, this.originalCssProps);
 		}
 		return this;

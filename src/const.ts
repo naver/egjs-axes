@@ -27,7 +27,7 @@ export const TRANSFORM = (() => {
 	return "";
 })();
 
-export const cssProps = {
+export const PREVENT_SCROLL_CSSPROPS = {
 	"touch-action": "none",
 	"user-select": "none",
 	"-webkit-user-drag": "none",
