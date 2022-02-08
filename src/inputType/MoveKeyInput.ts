@@ -47,13 +47,14 @@ export interface MoveKeyInputOption {
  * @param {MoveKeyInputOption} [options] The option object of the eg.Axes.MoveKeyInput module<ko>eg.Axes.MoveKeyInput 모듈의 옵션 객체</ko>
  */
 export class MoveKeyInput implements IInputType {
-	options: MoveKeyInputOption;
-	axes: string[] = [];
-	element: HTMLElement = null;
+	public options: MoveKeyInputOption;
+	public axes: string[] = [];
+	public element: HTMLElement = null;
+	private _observer: IInputTypeObserver;
 	private _isEnabled = false;
 	private _isHolded = false;
 	private _timer = null;
-	private observer: IInputTypeObserver;
+
 	constructor(el, options?: MoveKeyInputOption) {
 		this.element = $(el);
 		this.options = {
@@ -65,11 +66,11 @@ export class MoveKeyInput implements IInputType {
 		this.onKeyup = this.onKeyup.bind(this);
 	}
 
-	mapAxes(axes: string[]) {
+	public mapAxes(axes: string[]) {
 		this.axes = axes;
 	}
 
-	connect(observer: IInputTypeObserver): IInputType {
+	public connect(observer: IInputTypeObserver): IInputType {
 		this.detachEvent();
 
 		// add tabindex="0" to the container for making it focusable
@@ -81,7 +82,7 @@ export class MoveKeyInput implements IInputType {
 		return this;
 	}
 
-	disconnect() {
+	public disconnect() {
 		this.detachEvent();
 		return this;
 	}
@@ -91,7 +92,7 @@ export class MoveKeyInput implements IInputType {
 	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 	* @method eg.Axes.MoveKeyInput#destroy
 	*/
-	destroy() {
+	public destroy() {
 		this.disconnect();
 		this.element = null;
 	}
@@ -135,11 +136,11 @@ export class MoveKeyInput implements IInputType {
 		const offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
 
 		if (!this._isHolded) {
-			this.observer.hold(this, event);
+			this._observer.hold(this, event);
 			this._isHolded = true;
 		}
 		clearTimeout(this._timer);
-		this.observer.change(this, event, toAxis(this.axes, offsets));
+		this._observer.change(this, event, toAxis(this.axes, offsets));
 	}
 	private onKeyup(e) {
 		if (!this._isHolded) {
@@ -147,13 +148,13 @@ export class MoveKeyInput implements IInputType {
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
-			this.observer.release(this, e, toAxis(this.axes, [0, 0]));
+			this._observer.release(this, e, toAxis(this.axes, [0, 0]));
 			this._isHolded = false;
 		}, DELAY);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
-		this.observer = observer;
+		this._observer = observer;
 		this.element.addEventListener("keydown", this.onKeydown, false);
 		this.element.addEventListener("keypress", this.onKeydown, false);
 		this.element.addEventListener("keyup", this.onKeyup, false);
@@ -165,7 +166,7 @@ export class MoveKeyInput implements IInputType {
 		this.element.removeEventListener("keypress", this.onKeydown, false);
 		this.element.removeEventListener("keyup", this.onKeyup, false);
 		this._isEnabled = false;
-		this.observer = null;
+		this._observer = null;
 	}
 
 	/**
@@ -174,7 +175,7 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#enable
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	enable() {
+	public enable() {
 		this._isEnabled = true;
 		return this;
 	}
@@ -184,7 +185,7 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#disable
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	disable() {
+	public disable() {
 		this._isEnabled = false;
 		return this;
 	}
@@ -194,7 +195,7 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnabled() {
+	public isEnabled() {
 		return this._isEnabled;
 	}
 }

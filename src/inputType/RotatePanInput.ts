@@ -26,22 +26,22 @@ import { PanInput, PanInputOption } from "./PanInput";
  * @extends eg.Axes.PanInput
  */
 export class RotatePanInput extends PanInput {
-	private rotateOrigin: number[];
-	private prevAngle: number;
-	private prevQuadrant: number = null;
-	private lastDiff = 0;
-	private coefficientForDistanceToAngle: number;
+	private _rotateOrigin: number[];
+	private _prevAngle: number;
+	private _prevQuadrant: number = null;
+	private _lastDiff = 0;
+	private _coefficientForDistanceToAngle: number;
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		super(el, options);
 	}
 
-	mapAxes(axes: string[]) {
+	public mapAxes(axes: string[]) {
 		this._direction = Axes.DIRECTION_ALL;
 		this.axes = axes;
 	}
 
-	onPanstart(event: MouseEvent) {
+	public onPanstart(event: MouseEvent) {
 		if (!this.isEnabled) {
 			return;
 		}
@@ -49,25 +49,25 @@ export class RotatePanInput extends PanInput {
 		const rect = this.element.getBoundingClientRect();
 		const panEvent = this.transformEvent(event);
 
-		this.observer.hold(this, panEvent);
-		this.panFlag = true;
+		this._observer.hold(this, panEvent);
+		this._panFlag = true;
 		/**
 		 * Responsive
 		 */
 		// TODO: how to do if element is ellipse not circle.
-		this.coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
+		this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
 		// TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-		this.rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
+		this._rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
 
 		// init angle.
-		this.prevInput = null;
-		this.prevAngle = null;
+		this._prevInput = null;
+		this._prevAngle = null;
 
 		this.triggerChange(panEvent);
 	}
 
-	onPanmove(event: MouseEvent) {
-		if (!this.panFlag || !this.isEnabled) {
+	public onPanmove(event: MouseEvent) {
+		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
 
@@ -78,45 +78,45 @@ export class RotatePanInput extends PanInput {
 		}
 		panEvent.srcEvent.stopPropagation();
 		this.triggerChange(panEvent);
-		this.prevInput = panEvent;
+		this._prevInput = panEvent;
 	}
 
-	onPanend(event: MouseEvent) {
-		if (!this.panFlag || !this.isEnabled) {
+	public onPanend(event: MouseEvent) {
+		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
 
 		const panEvent = this.transformEvent(event);
 		this.triggerChange(panEvent);
 		this.triggerAnimation(panEvent);
-		this.panFlag = false;
+		this._panFlag = false;
 	}
 
 	private triggerChange(event: PanEvent) {
 		const { x, y } = this.getPosFromOrigin(event.center.x, event.center.y);
 		const angle = getAngle(x, y);
 		const quadrant = this.getQuadrant(event.center.x, event.center.y);
-		const diff = this.getDifference(this.prevAngle, angle, this.prevQuadrant, quadrant);
+		const diff = this.getDifference(this._prevAngle, angle, this._prevQuadrant, quadrant);
 
-		this.prevAngle = angle;
-		this.prevQuadrant = quadrant;
+		this._prevAngle = angle;
+		this._prevQuadrant = quadrant;
 
 		if (diff === 0) {
 			return;
 		}
 
-		this.lastDiff = diff;
-		this.observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
+		this._lastDiff = diff;
+		this._observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
 	}
 
 	private triggerAnimation(event: PanEvent) {
 		const vx = event.velocityX;
 		const vy = event.velocityY;
-		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-		const duration = Math.abs(velocity / -this.observer.options.deceleration);
+		const velocity = Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
+		const duration = Math.abs(velocity / -this._observer.options.deceleration);
 		const distance = velocity / 2 * duration;
 
-		this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
+		this._observer.release(this, event, toAxis(this.axes, [distance * this._coefficientForDistanceToAngle]));
 	}
 
 	private getDifference(prevAngle: number, angle: number, prevQuadrant: number, quadrant: number) {
@@ -137,8 +137,8 @@ export class RotatePanInput extends PanInput {
 
 	private getPosFromOrigin(posX: number, posY: number) {
 		return {
-			x: posX - this.rotateOrigin[0],
-			y: this.rotateOrigin[1] - posY,
+			x: posX - this._rotateOrigin[0],
+			y: this._rotateOrigin[1] - posY,
 		};
 	}
 
