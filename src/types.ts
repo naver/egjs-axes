@@ -1,4 +1,9 @@
 import { Axis } from "./AxisManager";
+import { MouseEventInput } from "./eventInput/MouseEventInput";
+import { TouchEventInput } from "./eventInput/TouchEventInput";
+import { PointerEventInput } from "./eventInput/PointerEventInput";
+import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
+
 import { IInputType } from "./inputType/InputType";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
@@ -77,16 +82,14 @@ export type OnFinish = {
 	isTrusted: boolean;
 };
 
-export type ActiveInput = {
-	start: string[],
-	move: string[],
-	end: string[],
-};
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
 
-export type PanEvent = {
+export type ActiveInput = MouseEventInput | TouchEventInput | TouchMouseEventInput | PointerEventInput;
+
+export type ExtendedEvent = {
 	srcEvent: InputEventType;
 	angle: number;
+	scale: number;
 	center: {
 		x: number;
 		y: number;
@@ -98,9 +101,4 @@ export type PanEvent = {
 	velocityX: number;
 	velocityY: number;
 	preventSystemEvent: boolean;
-};
-
-export type PinchEvent = {
-	srcEvent: InputEventType;
-	scale: number;
 };

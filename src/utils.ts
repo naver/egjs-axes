@@ -194,45 +194,6 @@ export function getAngle(posX: number, posY: number) {
 	return angle < 0 ? 360 + angle : angle;
 }
 
-export function getCenter(event: InputEventType) {
-	if (event instanceof TouchEvent) {
-		return {
-			x: event.touches[0].clientX,
-			y: event.touches[0].clientY,
-		};
-	}
-	return {
-		x: event.clientX,
-		y: event.clientY,
-	};
-}
-
-export function getMovement(next: InputEventType, prev: InputEventType) {
-	const [nextSpot, prevSpot] = [next, prev].map(event => {
-		return {
-			id: event instanceof TouchEvent ? event.touches[0].identifier : event instanceof PointerEvent ? event.pointerId : 0,
-			x: event instanceof TouchEvent ? event.touches[0].pageX : event.pageX,
-			y: event instanceof TouchEvent ? event.touches[0].pageY : event.pageY,
-		};
-	});
-	return nextSpot.id === prevSpot.id ? {
-		x: nextSpot.x - prevSpot.x,
-		y: nextSpot.y - prevSpot.y,
-	} : {
-		x: 0,
-		y: 0,
-	};
-}
-
-export function getTouches(event: InputEventType, eventCache: PointerEvent[]) {
-	if (event instanceof PointerEvent) {
-		return eventCache.length;
-	} else if (event instanceof TouchEvent) {
-		return event.touches.length;
-	}
-	return 0; // case of MouseEvent
-}
-
 export function setCssProps(element: HTMLElement, originalCssProps?: { [key: string]: string; }): { [key: string]: string; } {
 	const oldCssProps = {};
 	if (element.style) {

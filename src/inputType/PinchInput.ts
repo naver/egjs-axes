@@ -1,6 +1,6 @@
-import { $, getTouches, setCssProps } from "../utils";
+import { $, setCssProps } from "../utils";
 import { toAxis, convertInputType, IInputType, IInputTypeObserver } from "./InputType";
-import { ActiveInput, InputEventType, PinchEvent } from "../types";
+import { ActiveInput, InputEventType } from "../types";
 import { PREVENT_SCROLL_CSSPROPS } from "../const";
 
 export interface PinchInputOption {
@@ -41,10 +41,6 @@ export class PinchInput implements IInputType {
 	private _originalCssProps: { [key: string]: string; };
 	private _activeInput: ActiveInput = null;
 	private _baseValue: number;
-	private _firstTouch: TouchEvent;
-	private _firstPointers: PointerEvent[] = [];
-	private _eventCache: PointerEvent[] = [];
-	private _prevInput: PinchEvent;
 
 	constructor(el: string | HTMLElement, options?: PinchInputOption) {
 		this.element = $(el);
@@ -122,62 +118,40 @@ export class PinchInput implements IInputType {
 	}
 
 	private onPinchStart(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			this.addPointerEvent(event);
-		}
-		if (!this._enabled || getTouches(event, this._eventCache) !== 2) {
+		this._activeInput.onEventStart(event);
+		if (!this._enabled || this._activeInput.getTouches(event) !== 2) {
 			return;
 		}
 
 		this._baseValue = this._observer.get(this)[this.axes[0]];
-		this._firstTouch = event instanceof TouchEvent ? event : null;
 		this._observer.hold(this, event);
 		this._pinchFlag = true;
-		const pinchEvent = this.transformEvent(event);
-		this._prevInput = pinchEvent;
+		const pinchEvent = this._activeInput.extendEvent(event);
+		this._activeInput.prevEvent = pinchEvent;
 	}
 
 	private onPinchMove(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			this.addPointerEvent(event);
-		}
-		if (!this._pinchFlag || !this._enabled || getTouches(event, this._eventCache) !== 2) {
+		this._activeInput.onEventMove(event);
+		if (!this._pinchFlag || !this._enabled || this._activeInput.getTouches(event) !== 2) {
 			return;
 		}
 
-		const pinchEvent = this.transformEvent(event);
-		const offset = this.getOffset(pinchEvent.scale, this._prevInput.scale);
+		const pinchEvent = this._activeInput.extendEvent(event);
+		const offset = this.getOffset(pinchEvent.scale, this._activeInput.prevEvent.scale);
 		this._observer.change(this, event, toAxis(this.axes, [offset]));
-		this._prevInput = pinchEvent;
+		this._activeInput.prevEvent = pinchEvent;
 	}
 
 	private onPinchEnd(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			this.removePointerEvent(event);
-		}
-		if (!this._pinchFlag || !this._enabled || getTouches(event, this._eventCache) > 2) {
+		this._activeInput.onEventEnd(event);
+		if (!this._pinchFlag || !this._enabled || this._activeInput.getTouches(event) > 2) {
 			return;
 		}
 
 		this._observer.release(this, event, toAxis(this.axes, [0]), 0);
 		this._baseValue = null;
 		this._pinchFlag = false;
-		this._firstTouch = null;
-		this._prevInput = null;
-	}
-
-	private transformEvent(event: InputEventType): PinchEvent {
-		if (event instanceof PointerEvent) {
-			return {
-				srcEvent: event,
-				scale: this.getScaleFromPointers(),
-			};
-		} else if (event instanceof TouchEvent) {
-			return {
-				srcEvent: event,
-				scale: this.getScaleFromTouch(this._firstTouch.touches, event.touches),
-			};
-		}
+		this._activeInput.prevEvent = null;
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
@@ -213,38 +187,5 @@ export class PinchInput implements IInputType {
 
 	private getOffset(pinchScale: number, prev: number = 1): number {
 		return this._baseValue * (pinchScale - prev) * this.options.scale;
-	}
-
-	private getScaleFromPointers() {
-		return this.getDistanceFromTouch(this._eventCache[0], this._eventCache[1]) / this.getDistanceFromTouch(this._firstPointers[0], this._firstPointers[1]);
-	}
-
-	private getScaleFromTouch(start: TouchList, end: TouchList) {
-		return this.getDistanceFromTouch(end[0], end[1]) / this.getDistanceFromTouch(start[0], start[1]);
-	}
-
-	private getDistanceFromTouch(p1: Touch | PointerEvent, p2: Touch | PointerEvent) {
-		const x = p2.clientX - p1.clientX;
-		const y = p2.clientY - p1.clientY;
-		return Math.sqrt((x * x) + (y * y));
-	}
-
-	private addPointerEvent(event: PointerEvent) {
-		let addFlag = false;
-		this._eventCache.forEach((e, i) => {
-			if (e.pointerId === event.pointerId) {
-				addFlag = true;
-				this._eventCache[i] = event;
-			}
-		});
-		if (!addFlag) {
-			this._firstPointers.push(event);
-			this._eventCache.push(event);
-		}
-	}
-
-	private removePointerEvent(event: PointerEvent) {
-		this._firstPointers = this._firstPointers.filter(x => x.pointerId !== event.pointerId);
-		this._eventCache = this._eventCache.filter(x => x.pointerId !== event.pointerId);
 	}
 }

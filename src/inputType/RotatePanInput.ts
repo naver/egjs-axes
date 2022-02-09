@@ -1,4 +1,4 @@
-import { PanEvent } from "../types";
+import { ExtendedEvent } from "../types";
 import Axes from "../Axes";
 import { getAngle } from "../utils";
 import { toAxis } from "./InputType";
@@ -42,12 +42,13 @@ export class RotatePanInput extends PanInput {
 	}
 
 	public onPanstart(event: MouseEvent) {
+		this._activeInput.onEventStart(event);
 		if (!this.isEnabled) {
 			return;
 		}
 
 		const rect = this.element.getBoundingClientRect();
-		const panEvent = this.transformEvent(event);
+		const panEvent = this._activeInput.extendEvent(event);
 
 		this._observer.hold(this, panEvent);
 		this._panFlag = true;
@@ -60,39 +61,40 @@ export class RotatePanInput extends PanInput {
 		this._rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
 
 		// init angle.
-		this._prevInput = null;
 		this._prevAngle = null;
 
 		this.triggerChange(panEvent);
+		this._activeInput.prevEvent = panEvent;
 	}
 
 	public onPanmove(event: MouseEvent) {
+		this._activeInput.onEventMove(event);
 		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
 
-		const panEvent = this.transformEvent(event);
+		const panEvent = this._activeInput.extendEvent(event);
 
 		if (panEvent.srcEvent.cancelable !== false) {
 			panEvent.srcEvent.preventDefault();
 		}
 		panEvent.srcEvent.stopPropagation();
 		this.triggerChange(panEvent);
-		this._prevInput = panEvent;
+		this._activeInput.prevEvent = panEvent;
 	}
 
 	public onPanend(event: MouseEvent) {
+		this._activeInput.onEventEnd(event);
 		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
 
-		const panEvent = this.transformEvent(event);
-		this.triggerChange(panEvent);
-		this.triggerAnimation(panEvent);
+		this.triggerChange(this._activeInput.prevEvent);
+		this.triggerAnimation(this._activeInput.prevEvent);
 		this._panFlag = false;
 	}
 
-	private triggerChange(event: PanEvent) {
+	private triggerChange(event: ExtendedEvent) {
 		const { x, y } = this.getPosFromOrigin(event.center.x, event.center.y);
 		const angle = getAngle(x, y);
 		const quadrant = this.getQuadrant(event.center.x, event.center.y);
@@ -109,7 +111,7 @@ export class RotatePanInput extends PanInput {
 		this._observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
 	}
 
-	private triggerAnimation(event: PanEvent) {
+	private triggerAnimation(event: ExtendedEvent) {
 		const vx = event.velocityX;
 		const vy = event.velocityY;
 		const velocity = Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise

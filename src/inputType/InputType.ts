@@ -1,7 +1,11 @@
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
-import { window } from "../browser";
 import { ActiveInput } from "../types";
+import { MouseEventInput } from "../eventInput/MouseEventInput";
+import { TouchEventInput } from "../eventInput/TouchEventInput";
+import { PointerEventInput } from "../eventInput/PointerEventInput";
+import { TouchMouseEventInput } from "../eventInput/TouchMouseEventInput";
+import { SUPPORT_POINTER_EVENTS, SUPPORT_TOUCH } from "../eventInput/EventInput";
 
 export interface IInputType {
 	axes: string[];
@@ -23,10 +27,6 @@ export interface IInputTypeObserver {
 	release(inputType: IInputType, event, offset: Axis, duration?: number);
 }
 
-export const SUPPORT_TOUCH = "ontouchstart" in window;
-export const SUPPORT_POINTER = "PointerEvent" in window;
-export const SUPPORT_MSPOINTER = "MSPointerEvent" in window;
-export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
 export function toAxis(source: string[], offset: number[]): Axis {
 	return offset.reduce((acc, v, i) => {
 		if (source[i]) {
@@ -49,40 +49,14 @@ export function convertInputType(inputType: string[] = []): ActiveInput {
 			// no default
 		}
 	});
-	if (hasPointer && SUPPORT_POINTER) {
-		return {
-			start: ["pointerdown"],
-			move: ["pointermove"],
-			end: ["pointerup", "pointercancel"],
-		};
-	} else if (hasPointer && SUPPORT_MSPOINTER) {
-		return {
-			start: ["MSPointerDown"],
-			move: ["MSPointerMove"],
-			end: ["MSPointerUp", "MSPointerCancel"],
-		};
+	if (hasPointer) {
+		return new PointerEventInput();
 	} else if (hasTouch && hasMouse) {
-		return {
-			start: ["mousedown", "touchstart"],
-			move: ["mousemove", "touchmove"],
-			end: ["mouseup", "touchend", "touchcancel"],
-		};
+		return new TouchMouseEventInput();
 	} else if (hasTouch) {
-		return {
-			start: ["touchstart"],
-			move: ["touchmove"],
-			end: ["touchend", "touchcancel"],
-		};
+		return new TouchEventInput();
 	} else if (hasMouse) {
-		return {
-			start: ["mousedown"],
-			move: ["mousemove"],
-			end: ["mouseup"],
-		};
+		return new MouseEventInput();
 	}
-	return {
-		start: [],
-		move: [],
-		end: [],
-	};
+	return null;
 }

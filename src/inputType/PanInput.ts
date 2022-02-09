@@ -1,7 +1,7 @@
-import { $, setCssProps, getAngle, getCenter, getMovement, getTouches } from "../utils";
+import { $, setCssProps } from "../utils";
 import { convertInputType, IInputType, IInputTypeObserver, toAxis } from "./InputType";
 import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL, PREVENT_SCROLL_CSSPROPS } from "../const";
-import { ActiveInput, InputEventType, PanEvent } from "../types";
+import { ActiveInput, InputEventType, ExtendedEvent } from "../types";
 
 export interface PanInputOption {
 	inputType?: string[];
@@ -89,12 +89,10 @@ export class PanInput implements IInputType {
 	protected _direction;
 	protected _panFlag = false;
 	protected _enabled = false;
-	protected _prevInput: PanEvent;
+	protected _activeInput: ActiveInput = null;
 	private _originalCssProps: { [key: string]: string; };
-	private _activeInput: ActiveInput = null;
 	private _atRightEdge = false;
 	private _rightEdgeTimer = 0;
-	private _eventCache: PointerEvent[] = [];
 
 	constructor(el: string | HTMLElement, options?: PanInputOption) {
 		this.element = $(el);
@@ -186,14 +184,12 @@ export class PanInput implements IInputType {
 	}
 
 	protected onPanstart(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			this.addPointerEvent(event);
-		}
-		if (!this._enabled || getTouches(event, this._eventCache) > 1) {
+		this._activeInput.onEventStart(event);
+		if (!this._enabled || this._activeInput.getTouches(event) > 1) {
 			return;
 		}
 
-		const panEvent = this.transformEvent(event);
+		const panEvent = this._activeInput.extendEvent(event);
 		this._panFlag = false;
 
 		if (panEvent.srcEvent.cancelable !== false) {
@@ -202,16 +198,17 @@ export class PanInput implements IInputType {
 			this._observer.hold(this, panEvent);
 			this._atRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
 			this._panFlag = true;
-			this._prevInput = panEvent;
+			this._activeInput.prevEvent = panEvent;
 		}
 	}
 
 	protected onPanmove(event: InputEventType) {
-		if (!this._panFlag || !this._enabled || getTouches(event, this._eventCache) > 1) {
+		this._activeInput.onEventMove(event);
+		if (!this._panFlag || !this._enabled || this._activeInput.getTouches(event) > 1) {
 			return;
 		}
 
-		const panEvent = this.transformEvent(event);
+		const panEvent = this._activeInput.extendEvent(event);
 		const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
 		const userDirection = getDirectionByAngle(panEvent.angle, this.options.thresholdAngle);
 
@@ -220,13 +217,13 @@ export class PanInput implements IInputType {
 			return;
 		}
 
-		if (this._prevInput && IS_IOS_SAFARI) {
+		if (this._activeInput.prevEvent && IS_IOS_SAFARI) {
 			const swipeLeftToRight = panEvent.center.x < 0;
 
 			if (swipeLeftToRight) {
 				// iOS swipe left => right
 				this.release({
-					...this._prevInput,
+					...this._activeInput.prevEvent,
 					velocityX: 0,
 					velocityY: 0,
 					offsetX: 0,
@@ -245,7 +242,7 @@ export class PanInput implements IInputType {
 					// iOS swipe right => left
 					this._rightEdgeTimer = window.setTimeout(() => {
 						this.release({
-							...this._prevInput,
+							...this._activeInput.prevEvent,
 							velocityX: 0,
 							velocityY: 0,
 							offsetX: 0,
@@ -271,50 +268,19 @@ export class PanInput implements IInputType {
 		}
 		panEvent.preventSystemEvent = prevent;
 		prevent && this._observer.change(this, panEvent, toAxis(this.axes, offset));
-		this._prevInput = panEvent;
+		this._activeInput.prevEvent = panEvent;
 	}
 
 	protected onPanend(event: InputEventType) {
-		if (event instanceof PointerEvent) {
-			this.removePointerEvent(event);
-		}
-		if (!this._panFlag || !this._enabled || getTouches(event, this._eventCache) !== 0) {
+		this._activeInput.onEventEnd(event);
+		if (!this._panFlag || !this._enabled || this._activeInput.getTouches(event) !== 0) {
 			return;
 		}
 
-		const panEvent = this.transformEvent(event);
-		this.release(panEvent);
+		this.release(this._activeInput.prevEvent);
 	}
 
-	protected transformEvent(event: InputEventType): PanEvent {
-		const prev = this._prevInput;
-		if (this._activeInput.end.indexOf(event.type) !== -1) {
-			return prev;
-		}
-		const center = getCenter(event);
-		const movement = prev ? getMovement(event, prev.srcEvent) : { x: 0, y: 0 };
-		const angle = prev ? getAngle(center.x - prev.center.x, center.y - prev.center.y) : 0;
-		const deltaX = prev ? prev.deltaX + movement.x : movement.x;
-		const deltaY = prev ? prev.deltaY + movement.y : movement.y;
-		const offsetX = prev ? (deltaX - prev.deltaX) : 0;
-		const offsetY = prev ? (deltaY - prev.deltaY) : 0;
-		const velocityX = prev ? offsetX / (event.timeStamp - prev.srcEvent.timeStamp) : 0;
-		const velocityY = prev ? offsetY / (event.timeStamp - prev.srcEvent.timeStamp) : 0;
-		return {
-			srcEvent: event,
-			angle,
-			center,
-			deltaX,
-			deltaY,
-			offsetX,
-			offsetY,
-			velocityX,
-			velocityY,
-			preventSystemEvent: true,
-		};
-	}
-
-	private release(event: PanEvent) {
+	private release(event: ExtendedEvent) {
 		this._panFlag = false;
 		clearTimeout(this._rightEdgeTimer);
 		let offset: number[] = this.getOffset(
@@ -374,13 +340,5 @@ export class PanInput implements IInputType {
 			offset[1] = (properties[1] * scale[1]);
 		}
 		return offset;
-	}
-
-	private addPointerEvent(event: PointerEvent) {
-		this._eventCache.push(event);
-	}
-
-	private removePointerEvent(event: PointerEvent) {
-		this._eventCache = this._eventCache.filter(x => x.pointerId !== event.pointerId);
 	}
 }
