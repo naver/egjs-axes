@@ -285,8 +285,8 @@ export class PanInput implements IInputType {
 		clearTimeout(this._rightEdgeTimer);
 		let offset: number[] = this.getOffset(
 			[
-				Math.abs(event.velocityX) * (event.deltaX < 0 ? -1 : 1),
-				Math.abs(event.velocityY) * (event.deltaY < 0 ? -1 : 1),
+				Math.abs(event.velocityX) * (event.offsetX < 0 ? -1 : 1),
+				Math.abs(event.velocityY) * (event.offsetY < 0 ? -1 : 1),
 			],
 			[
 				useDirection(DIRECTION_HORIZONTAL, this._direction),
