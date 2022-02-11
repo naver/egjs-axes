@@ -76,7 +76,10 @@ export class RotatePanInput extends PanInput {
 
 	onPanend(event) {
 		this.triggerChange(event);
-		this.triggerAnimation(event);
+		const vx = event.velocityX;
+		const vy = event.velocityY;
+		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
+		this.observer.release(this, event, [velocity * this.coefficientForDistanceToAngle]);
 	}
 
 	private triggerChange(event) {
@@ -93,16 +96,6 @@ export class RotatePanInput extends PanInput {
 
 		this.lastDiff = diff;
 		this.observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
-	}
-
-	private triggerAnimation(event) {
-		const vx = event.velocityX;
-		const vy = event.velocityY;
-		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-		const duration = Math.abs(velocity / -this.observer.options.deceleration);
-		const distance = velocity / 2 * duration;
-
-		this.observer.release(this, event, toAxis(this.axes, [distance * this.coefficientForDistanceToAngle]));
 	}
 
 	private getDifference(prevAngle: number, angle: number, prevQuadrant: number, quadrant: number) {

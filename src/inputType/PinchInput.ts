@@ -164,7 +164,7 @@ export class PinchInput implements IInputType {
 	private onPinchEnd(event) {
 		const offset = this.getOffset(event.scale, this._prev);
 		this.observer.change(this, event, toAxis(this.axes, [offset]));
-		this.observer.release(this, event, toAxis(this.axes, [0]), 0);
+		this.observer.release(this, event, [0], 0);
 		this._base = null;
 		this._prev = null;
 	}
