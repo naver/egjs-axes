@@ -1,7 +1,6 @@
 const buildHelper = require("@egjs/build-helper");
 
 const external = {
-	"@egjs/hammerjs": "Hammer",
 	"@egjs/agent": "eg.agent",
 	"@egjs/component": "eg.Component",
 };

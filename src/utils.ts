@@ -1,4 +1,6 @@
+import { InputEventType } from ".";
 import {window} from "./browser";
+import { PREVENT_SCROLL_CSSPROPS } from "./const";
 import { ObjectInterface } from "./types";
 
 declare var jQuery: any;
@@ -185,4 +187,21 @@ export function getRoundFunc(v: number) {
 
 		return Math.round(Math.round(n / v) * v * p) / p;
 	};
+}
+
+export function getAngle(posX: number, posY: number) {
+	const angle = Math.atan2(posY, posX) * 180 / Math.PI;
+	return angle < 0 ? 360 + angle : angle;
+}
+
+export function setCssProps(element: HTMLElement, originalCssProps?: { [key: string]: string; }): { [key: string]: string; } {
+	const oldCssProps = {};
+	if (element.style) {
+		const newCssProps = originalCssProps ? originalCssProps : PREVENT_SCROLL_CSSPROPS;
+		Object.keys(newCssProps).forEach(prop => {
+			oldCssProps[prop] = element.style[prop];
+			element.style[prop] = newCssProps[prop];
+		});
+	}
+	return oldCssProps;
 }

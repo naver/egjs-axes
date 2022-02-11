@@ -1,6 +1,6 @@
 import { InputObserver } from "./../InputObserver";
 import { $ } from "../utils";
-import { UNIQUEKEY, toAxis, IInputType, IInputTypeObserver } from "./InputType";
+import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
 import { Axis } from "../AxisManager";
 
 export interface WheelInputOption {
@@ -34,10 +34,11 @@ export class WheelInput implements IInputType {
 	options: WheelInputOption;
 	axes: string[] = [];
 	element: HTMLElement = null;
-	private _isEnabled = false;
-	private _isHolded = false;
+	private _observer: IInputTypeObserver;
+	private _enabled = false;
+	private _holding = false;
 	private _timer = null;
-	private observer: IInputTypeObserver;
+
 	constructor(el, options?: WheelInputOption) {
 		this.element = $(el);
 		this.options = {
@@ -49,18 +50,18 @@ export class WheelInput implements IInputType {
 		this.onWheel = this.onWheel.bind(this);
 	}
 
-	mapAxes(axes: string[]) {
+	public mapAxes(axes: string[]) {
 		this.axes = axes;
 	}
 
-	connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
+	public connect(observer: IInputTypeObserver): IInputType {
+		this.detachEvent();
 		this.attachEvent(observer);
 		return this;
 	}
 
-	disconnect() {
-		this.dettachEvent();
+	public disconnect() {
+		this.detachEvent();
 		return this;
 	}
 
@@ -69,13 +70,13 @@ export class WheelInput implements IInputType {
 	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 	* @method eg.Axes.WheelInput#destroy
 	*/
-	destroy() {
+	public destroy() {
 		this.disconnect();
 		this.element = null;
 	}
 
 	private onWheel(event) {
-		if (!this._isEnabled) {
+		if (!this._enabled) {
 			return;
 		}
 		event.preventDefault();
@@ -84,18 +85,18 @@ export class WheelInput implements IInputType {
 			return;
 		}
 
-		if (!this._isHolded) {
-			this.observer.hold(this, event);
-			this._isHolded = true;
+		if (!this._holding) {
+			this._observer.hold(this, event);
+			this._holding = true;
 		}
 		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
 
-		this.observer.change(this, event, toAxis(this.axes, [offset]));
+		this._observer.change(this, event, toAxis(this.axes, [offset]));
 		clearTimeout(this._timer);
 		const inst = this;
 
 		this._timer = setTimeout(() => {
-			if (this._isHolded) {
+			if (this._holding) {
 				this._isHolded = false;
 				this.observer.release(this, event, [0]);
 			}
@@ -103,15 +104,15 @@ export class WheelInput implements IInputType {
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
-		this.observer = observer;
+		this._observer = observer;
 		this.element.addEventListener("wheel", this.onWheel);
-		this._isEnabled = true;
+		this._enabled = true;
 	}
 
-	private dettachEvent() {
+	private detachEvent() {
 		this.element.removeEventListener("wheel", this.onWheel);
-		this._isEnabled = false;
-		this.observer = null;
+		this._enabled = false;
+		this._observer = null;
 
 		if (this._timer) {
 			clearTimeout(this._timer);
@@ -125,8 +126,8 @@ export class WheelInput implements IInputType {
 	 * @method eg.Axes.WheelInput#enable
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	enable() {
-		this._isEnabled = true;
+	public enable() {
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -135,8 +136,8 @@ export class WheelInput implements IInputType {
 	 * @method eg.Axes.WheelInput#disable
 	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	disable() {
-		this._isEnabled = false;
+	public disable() {
+		this._enabled = false;
 		return this;
 	}
 	/**
@@ -145,7 +146,7 @@ export class WheelInput implements IInputType {
 	 * @method eg.Axes.WheelInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnable() {
-		return this._isEnabled;
+	public isEnabled() {
+		return this._enabled;
 	}
 }

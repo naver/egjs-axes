@@ -47,13 +47,14 @@ export interface MoveKeyInputOption {
  * @param {MoveKeyInputOption} [options] The option object of the eg.Axes.MoveKeyInput module<ko>eg.Axes.MoveKeyInput 모듈의 옵션 객체</ko>
  */
 export class MoveKeyInput implements IInputType {
-	options: MoveKeyInputOption;
-	axes: string[] = [];
-	element: HTMLElement = null;
-	private _isEnabled = false;
-	private _isHolded = false;
+	public options: MoveKeyInputOption;
+	public axes: string[] = [];
+	public element: HTMLElement = null;
+	private _observer: IInputTypeObserver;
+	private _enabled = false;
+	private _holding = false;
 	private _timer = null;
-	private observer: IInputTypeObserver;
+
 	constructor(el, options?: MoveKeyInputOption) {
 		this.element = $(el);
 		this.options = {
@@ -65,12 +66,12 @@ export class MoveKeyInput implements IInputType {
 		this.onKeyup = this.onKeyup.bind(this);
 	}
 
-	mapAxes(axes: string[]) {
+	public mapAxes(axes: string[]) {
 		this.axes = axes;
 	}
 
-	connect(observer: IInputTypeObserver): IInputType {
-		this.dettachEvent();
+	public connect(observer: IInputTypeObserver): IInputType {
+		this.detachEvent();
 
 		// add tabindex="0" to the container for making it focusable
 		if (this.element.getAttribute("tabindex") !== "0") {
@@ -81,8 +82,8 @@ export class MoveKeyInput implements IInputType {
 		return this;
 	}
 
-	disconnect() {
-		this.dettachEvent();
+	public disconnect() {
+		this.detachEvent();
 		return this;
 	}
 
@@ -91,13 +92,13 @@ export class MoveKeyInput implements IInputType {
 	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
 	* @method eg.Axes.MoveKeyInput#destroy
 	*/
-	destroy() {
+	public destroy() {
 		this.disconnect();
 		this.element = null;
 	}
 
 	private onKeydown(event: KeyboardEvent) {
-		if (!this._isEnabled) {
+		if (!this._enabled) {
 			return;
 		}
 
@@ -135,38 +136,38 @@ export class MoveKeyInput implements IInputType {
 		event.preventDefault();
 		const offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
 
-		if (!this._isHolded) {
-			this.observer.hold(this, event);
-			this._isHolded = true;
+		if (!this._holding) {
+			this._observer.hold(this, event);
+			this._holding = true;
 		}
 		clearTimeout(this._timer);
-		this.observer.change(this, event, toAxis(this.axes, offsets));
+		this._observer.change(this, event, toAxis(this.axes, offsets));
 	}
 	private onKeyup(event: KeyboardEvent) {
-		if (!this._isHolded) {
+		if (!this._holding) {
 			return;
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
 			this.observer.release(this, event, [0, 0]);
-			this._isHolded = false;
+			this._holding = false;
 		}, DELAY);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
-		this.observer = observer;
+		this._observer = observer;
 		this.element.addEventListener("keydown", this.onKeydown, false);
 		this.element.addEventListener("keypress", this.onKeydown, false);
 		this.element.addEventListener("keyup", this.onKeyup, false);
-		this._isEnabled = true;
+		this._enabled = true;
 	}
 
-	private dettachEvent() {
+	private detachEvent() {
 		this.element.removeEventListener("keydown", this.onKeydown, false);
 		this.element.removeEventListener("keypress", this.onKeydown, false);
 		this.element.removeEventListener("keyup", this.onKeyup, false);
-		this._isEnabled = false;
-		this.observer = null;
+		this._enabled = false;
+		this._observer = null;
 	}
 
 	/**
@@ -175,8 +176,8 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#enable
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	enable() {
-		this._isEnabled = true;
+	public enable() {
+		this._enabled = true;
 		return this;
 	}
 	/**
@@ -185,8 +186,8 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#disable
 	 * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 */
-	disable() {
-		this._isEnabled = false;
+	public disable() {
+		this._enabled = false;
 		return this;
 	}
 	/**
@@ -195,7 +196,7 @@ export class MoveKeyInput implements IInputType {
 	 * @method eg.Axes.MoveKeyInput#isEnable
 	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
 	 */
-	isEnable() {
-		return this._isEnabled;
+	public isEnabled() {
+		return this._enabled;
 	}
 }

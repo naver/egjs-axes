@@ -1,4 +1,9 @@
 import { Axis } from "./AxisManager";
+import { MouseEventInput } from "./eventInput/MouseEventInput";
+import { TouchEventInput } from "./eventInput/TouchEventInput";
+import { PointerEventInput } from "./eventInput/PointerEventInput";
+import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
+
 import { IInputType } from "./inputType/InputType";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
@@ -77,4 +82,25 @@ export type OnAnimationEnd = {
 
 export type OnFinish = {
 	isTrusted: boolean;
+};
+
+export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
+
+export type ActiveInput = MouseEventInput | TouchEventInput | TouchMouseEventInput | PointerEventInput;
+
+export type ExtendedEvent = {
+	srcEvent: InputEventType;
+	angle: number;
+	scale: number;
+	center: {
+		x: number;
+		y: number;
+	};
+	deltaX: number;
+	deltaY: number;
+	offsetX: number;
+	offsetY: number;
+	velocityX: number;
+	velocityY: number;
+	preventSystemEvent: boolean;
 };
