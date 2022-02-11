@@ -126,7 +126,10 @@ export class EventManager {
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
-		this.axes.trigger("release", param as OnRelease);
+		this.axes.trigger("release", {
+			...param,
+			bounceRatio: this.getBounceRatio(roundPos),
+		} as OnRelease);
 	}
 
 	/**
@@ -175,6 +178,7 @@ export class EventManager {
 		const param = {
 			pos: moveTo.pos,
 			delta: moveTo.delta,
+			bounceRatio: this.getBounceRatio(moveTo.pos),
 			holding,
 			inputEvent,
 			isTrusted: !!inputEvent,
@@ -314,5 +318,17 @@ export class EventManager {
 			roundPos: roundNumbers(pos, roundUnit),
 			roundDepa: roundNumbers(depaPos, roundUnit),
 		};
+	}
+
+	private getBounceRatio(pos: Axis): Axis {
+		return this.axes.axm.map(pos, (v, opt) => {
+			if (v < opt.range[0] && opt.bounce[0] !== 0) {
+				return (opt.range[0] - v) / opt.bounce[0];
+			} else if (v > opt.range[1] && opt.bounce[1] !== 0) {
+				return (v - opt.range[1]) / opt.bounce[1];
+			} else {
+				return 0;
+			}
+		});
 	}
 }
