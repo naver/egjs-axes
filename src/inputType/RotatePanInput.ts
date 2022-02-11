@@ -88,12 +88,12 @@ export class RotatePanInput extends PanInput {
 		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
-    const prevEvent = this._activeInput.prevEvent;
+		const prevEvent = this._activeInput.prevEvent;
 		this.triggerChange(prevEvent);
 		const vx = prevEvent.velocityX;
 		const vy = prevEvent.velocityY;
-		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
-		this.observer.release(this, prevEvent, [velocity * this.coefficientForDistanceToAngle]);
+		const velocity = Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
+		this._observer.release(this, prevEvent, [velocity * this._coefficientForDistanceToAngle]);
 		this._panFlag = false;
 	}
 
