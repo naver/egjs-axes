@@ -23,17 +23,6 @@ export function getDirectionByAngle(angle: number, thresholdAngle: number) {
 		DIRECTION_VERTICAL : DIRECTION_HORIZONTAL;
 }
 
-export function getNextOffset(speeds: number[], deceleration: number) {
-	const normalSpeed = Math.sqrt(
-		speeds[0] * speeds[0] + speeds[1] * speeds[1],
-	);
-	const duration = Math.abs(normalSpeed / -deceleration);
-	return [
-		speeds[0] / 2 * duration,
-		speeds[1] / 2 * duration,
-	];
-}
-
 export function useDirection(
 	checkType,
 	direction,
@@ -276,24 +265,19 @@ export class PanInput implements IInputType {
 		if (!this._panFlag || !this._enabled || this._activeInput.getTouches(event) !== 0) {
 			return;
 		}
-
-		this.release(this._activeInput.prevEvent);
-	}
-
-	private release(event: ExtendedEvent) {
 		this._panFlag = false;
 		clearTimeout(this._rightEdgeTimer);
-		let offset: number[] = this.getOffset(
+    const prevEvent = this._activeInput.prevEvent;
+		const velocity = this.getOffset(
 			[
-				Math.abs(event.velocityX) * (event.offsetX < 0 ? -1 : 1),
-				Math.abs(event.velocityY) * (event.offsetY < 0 ? -1 : 1),
+				Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
+				Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
 			],
 			[
 				useDirection(DIRECTION_HORIZONTAL, this._direction),
 				useDirection(DIRECTION_VERTICAL, this._direction),
 			]);
-		offset = getNextOffset(offset, this._observer.options.deceleration);
-		this._observer.release(this, event, toAxis(this.axes, offset));
+		this.observer.release(this, prevEvent, velocity);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {

@@ -54,6 +54,7 @@ export type OnAnimationStart = {
 export type OnChange = {
 	pos: Axis;
 	delta: Axis;
+	bounceRatio: Axis;
 	holding: boolean;
 	inputEvent: any;
 	isTrusted: boolean;
@@ -67,6 +68,7 @@ export type OnRelease = {
 	destPos: Axis;
 	duration: number;
 	delta: Axis;
+	bounceRatio: Axis;
 	isTrusted?: boolean;
 	startTime?: number;
 	inputEvent?: any;

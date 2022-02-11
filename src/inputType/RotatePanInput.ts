@@ -88,9 +88,12 @@ export class RotatePanInput extends PanInput {
 		if (!this._panFlag || !this.isEnabled) {
 			return;
 		}
-
-		this.triggerChange(this._activeInput.prevEvent);
-		this.triggerAnimation(this._activeInput.prevEvent);
+    const prevEvent = this._activeInput.prevEvent;
+		this.triggerChange(prevEvent);
+		const vx = prevEvent.velocityX;
+		const vy = prevEvent.velocityY;
+		const velocity = Math.sqrt(vx * vx + vy * vy) * (this.lastDiff > 0 ? -1 : 1); // clockwise
+		this.observer.release(this, prevEvent, [velocity * this.coefficientForDistanceToAngle]);
 		this._panFlag = false;
 	}
 
@@ -109,16 +112,6 @@ export class RotatePanInput extends PanInput {
 
 		this._lastDiff = diff;
 		this._observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
-	}
-
-	private triggerAnimation(event: ExtendedEvent) {
-		const vx = event.velocityX;
-		const vy = event.velocityY;
-		const velocity = Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
-		const duration = Math.abs(velocity / -this._observer.options.deceleration);
-		const distance = velocity / 2 * duration;
-
-		this._observer.release(this, event, toAxis(this.axes, [distance * this._coefficientForDistanceToAngle]));
 	}
 
 	private getDifference(prevAngle: number, angle: number, prevQuadrant: number, quadrant: number) {

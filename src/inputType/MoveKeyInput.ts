@@ -97,7 +97,7 @@ export class MoveKeyInput implements IInputType {
 		this.element = null;
 	}
 
-	private onKeydown(e) {
+	private onKeydown(event: KeyboardEvent) {
 		if (!this._enabled) {
 			return;
 		}
@@ -106,7 +106,7 @@ export class MoveKeyInput implements IInputType {
 		let direction = DIRECTION_FORWARD;
 		let move = DIRECTION_HORIZONTAL;
 
-		switch (e.keyCode) {
+		switch (event.keyCode) {
 			case KEY_LEFT_ARROW:
 			case KEY_A:
 				direction = DIRECTION_REVERSE;
@@ -133,6 +133,7 @@ export class MoveKeyInput implements IInputType {
 		if (!isMoveKey) {
 			return;
 		}
+		event.preventDefault();
 		const offsets = move === DIRECTION_HORIZONTAL ? [+this.options.scale[0] * direction, 0] : [0, +this.options.scale[1] * direction];
 
 		if (!this._holding) {
@@ -142,13 +143,13 @@ export class MoveKeyInput implements IInputType {
 		clearTimeout(this._timer);
 		this._observer.change(this, event, toAxis(this.axes, offsets));
 	}
-	private onKeyup(e) {
+	private onKeyup(event: KeyboardEvent) {
 		if (!this._holding) {
 			return;
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
-			this._observer.release(this, e, toAxis(this.axes, [0, 0]));
+			this.observer.release(this, event, [0, 0]);
 			this._holding = false;
 		}, DELAY);
 	}
