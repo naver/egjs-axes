@@ -184,6 +184,7 @@ export class EventManager {
 			isTrusted: !!inputEvent,
 			input: option && option.input || eventInfo && eventInfo.input || null,
 			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
+			stop: () => { },
 		};
 		const result = this.axes.trigger("change", param);
 
@@ -228,7 +229,7 @@ export class EventManager {
 	 *   event.setTo({x: 10}, 2000);
 	 * });
 	 */
-	triggerAnimationStart(param: AnimationParam): boolean {
+	triggerAnimationStart(param: AnimationParam): Axes {
 		const {roundPos, roundDepa} = this.getRoundPos(param.destPos, param.depaPos);
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
