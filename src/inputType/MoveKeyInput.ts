@@ -147,7 +147,7 @@ export class MoveKeyInput implements IInputType {
 		}
 		clearTimeout(this._timer);
 		this._timer = setTimeout(() => {
-			this.observer.release(this, e, toAxis(this.axes, [0, 0]));
+			this.observer.release(this, e, [0, 0]);
 			this._isHolded = false;
 		}, DELAY);
 	}
