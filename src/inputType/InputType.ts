@@ -22,9 +22,9 @@ export interface IInputType {
 export interface IInputTypeObserver {
 	options: AxesOption;
 	get(inputType: IInputType): Axis;
-	change(inputType: IInputType, event, offset: Axis);
+	change(inputType: IInputType, event, offset: Axis, useDuration?: boolean);
 	hold(inputType: IInputType, event);
-	release(inputType: IInputType, event, velocity: number[], duration?: number);
+	release(inputType: IInputType, event, velocity: number[], inputDuration?: number);
 }
 
 export function toAxis(source: string[], offset: number[]): Axis {

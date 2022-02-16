@@ -74,7 +74,7 @@ export class AnimationManager {
 		};
 	}
 
-	grab(axes: string[], option?: ChangeEventOption) {
+	stop(axes: string[], option?: ChangeEventOption) {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
@@ -287,7 +287,7 @@ export class AnimationManager {
 
 	setTo(pos: Axis, duration: number = 0) {
 		const axes: string[] = Object.keys(pos);
-		this.grab(axes);
+		this.stop(axes);
 		const orgPos: Axis = this.axm.get(axes);
 
 		if (equal(pos, orgPos)) {
