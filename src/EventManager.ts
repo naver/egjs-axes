@@ -1,3 +1,4 @@
+import { ComponentEvent } from "@egjs/component";
 import { IInputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
@@ -42,12 +43,12 @@ export class EventManager {
 	triggerHold(pos: Axis, option: ChangeEventOption) {
 		const {roundPos} = this.getRoundPos(pos);
 
-		this.axes.trigger("hold", {
+		this.axes.trigger(new ComponentEvent("hold", {
 			pos: roundPos,
 			input: option.input || null,
 			inputEvent: option.event || null,
 			isTrusted: true,
-		});
+		}));
 	}
 
 	/**
@@ -126,10 +127,10 @@ export class EventManager {
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
-		this.axes.trigger("release", {
+		this.axes.trigger(new ComponentEvent("release", {
 			...param,
 			bounceRatio: this.getBounceRatio(roundPos),
-		} as OnRelease);
+		} as OnRelease));
 	}
 
 	/**
@@ -186,7 +187,7 @@ export class EventManager {
 			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
 			stop: () => { },
 		};
-		const result = this.axes.trigger("change", param);
+		const result = this.axes.trigger(new ComponentEvent("change", param));
 
 		inputEvent && axm.set(param.set()["destPos"]);
 
@@ -234,7 +235,7 @@ export class EventManager {
 		param.destPos = roundPos;
 		param.depaPos = roundDepa;
 		param.setTo = this.createUserControll(param.destPos, param.duration);
-		return this.axes.trigger("animationStart", param as OnAnimationStart);
+		return this.axes.trigger(new ComponentEvent("animationStart", param as OnAnimationStart));
 	}
 
 	/**
@@ -258,9 +259,9 @@ export class EventManager {
 	 * });
 	 */
 	triggerAnimationEnd(isTrusted: boolean = false) {
-		this.axes.trigger("animationEnd", {
+		this.axes.trigger(new ComponentEvent("animationEnd", {
 			isTrusted,
-		});
+		}));
 	}
 	/**
 	 * This event is fired when all actions have been completed.
@@ -283,9 +284,9 @@ export class EventManager {
 	 * });
 	 */
 	triggerFinish(isTrusted: boolean = false) {
-		this.axes.trigger("finish", {
+		this.axes.trigger(new ComponentEvent("finish", {
 			isTrusted,
-		});
+		}));
 	}
 	private createUserControll(pos: Axis, duration: number = 0) {
 		// to controll

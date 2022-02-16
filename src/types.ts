@@ -8,15 +8,20 @@ import { IInputType } from "./inputType/InputType";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
 
-export type AxesEvents = {
+export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
+
+export type ActiveInput = MouseEventInput | TouchEventInput | TouchMouseEventInput | PointerEventInput;
+
+export interface AxesEvents {
 	hold: OnHold;
 	change: OnChange;
 	release: OnRelease;
 	animationStart: OnAnimationStart;
 	animationEnd: OnAnimationEnd;
 	finish: OnFinish;
-};
-export type AnimationParam = {
+}
+
+export interface AnimationParam {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
@@ -28,16 +33,16 @@ export type AnimationParam = {
 	startTime?: number;
 	inputEvent?;
 	input?: IInputType;
-};
+}
 
-export type OnHold = {
+export interface OnHold {
 	pos: Record<string, any>;
 	input: IInputType | null;
 	inputEvent: any;
 	isTrusted: boolean;
-};
+}
 
-export type OnAnimationStart = {
+export interface OnAnimationStart {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
@@ -49,9 +54,9 @@ export type OnAnimationStart = {
 	setTo(destPos?: Axis, duration?: number): void;
 	done(): void;
 	stop(): void;
-};
+}
 
-export type OnChange = {
+export interface OnChange {
 	pos: Axis;
 	delta: Axis;
 	bounceRatio: Axis;
@@ -61,9 +66,9 @@ export type OnChange = {
 	input: IInputType | null;
 	set(toPos?: Axis, userDuration?: number): void;
 	stop(): void;
-};
+}
 
-export type OnRelease = {
+export interface OnRelease {
 	depaPos: Axis;
 	destPos: Axis;
 	duration: number;
@@ -75,20 +80,16 @@ export type OnRelease = {
 	input?: IInputType | null;
 	setTo(destPos?: Axis, duration?: number): void;
 	done(): void;
-};
-export type OnAnimationEnd = {
+}
+export interface OnAnimationEnd {
 	isTrusted: boolean;
-};
+}
 
-export type OnFinish = {
+export interface OnFinish {
 	isTrusted: boolean;
-};
+}
 
-export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
-
-export type ActiveInput = MouseEventInput | TouchEventInput | TouchMouseEventInput | PointerEventInput;
-
-export type ExtendedEvent = {
+export interface ExtendedEvent {
 	srcEvent: InputEventType;
 	angle: number;
 	scale: number;
@@ -103,4 +104,4 @@ export type ExtendedEvent = {
 	velocityX: number;
 	velocityY: number;
 	preventSystemEvent: boolean;
-};
+}
