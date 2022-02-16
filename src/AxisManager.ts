@@ -7,9 +7,9 @@ export interface Axis {
 }
 
 export interface AxisOption {
-	range?: number[];
-	bounce?: number | number[];
-	circular?: boolean | boolean[];
+	range?: [number, number];
+	bounce?: number | [number, number];
+	circular?: boolean | [boolean, boolean];
 }
 
 export class AxisManager {
