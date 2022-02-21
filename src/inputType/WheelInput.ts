@@ -3,7 +3,7 @@ import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
 
 export interface WheelInputOption {
 	scale?: number;
-	releaseThreshold?: number;
+	releaseDelay?: number;
 	useNormalized?: boolean;
 }
 
@@ -11,7 +11,7 @@ export interface WheelInputOption {
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [releaseThreshold=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
+ * @property {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
 **/
 
 /**
@@ -44,7 +44,7 @@ export class WheelInput implements IInputType {
 		this.options = {
 			...{
 				scale: 1,
-				releaseThreshold: 300,
+				releaseDelay: 300,
 				useNormalized: true,
 			}, ...options,
 		};
@@ -99,7 +99,7 @@ export class WheelInput implements IInputType {
 				this._holding = false;
 				this._observer.release(this, event, [0]);
 			}
-		}, this.options.releaseThreshold);
+		}, this.options.releaseDelay);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
