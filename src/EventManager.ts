@@ -185,7 +185,6 @@ export class EventManager {
 			isTrusted: !!inputEvent,
 			input: option && option.input || eventInfo && eventInfo.input || null,
 			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
-			stop: () => { },
 		};
 		const result = this.axes.trigger(new ComponentEvent("change", param));
 
