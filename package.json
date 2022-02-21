@@ -44,7 +44,7 @@
 	"homepage": "https://github.com/naver/egjs-axes",
 	"dependencies": {
 		"@egjs/agent": "^2.2.1",
-		"@egjs/component": "^2.2.2"
+		"@egjs/component": "^3.0.1"
 	},
 	"devDependencies": {
 		"@egjs/build-helper": "^0.1.2",

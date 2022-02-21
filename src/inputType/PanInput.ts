@@ -211,13 +211,7 @@ export class PanInput implements IInputType {
 
 			if (swipeLeftToRight) {
 				// iOS swipe left => right
-				this.release({
-					...this._activeInput.prevEvent,
-					velocityX: 0,
-					velocityY: 0,
-					offsetX: 0,
-					offsetY: 0,
-				});
+				this.onPanend(event);
 				return;
 			} else if (this._atRightEdge) {
 				clearTimeout(this._rightEdgeTimer);
@@ -230,13 +224,7 @@ export class PanInput implements IInputType {
 				} else {
 					// iOS swipe right => left
 					this._rightEdgeTimer = window.setTimeout(() => {
-						this.release({
-							...this._activeInput.prevEvent,
-							velocityX: 0,
-							velocityY: 0,
-							offsetX: 0,
-							offsetY: 0,
-						});
+						this.onPanend(event);
 					}, 100);
 				}
 			}
@@ -267,7 +255,7 @@ export class PanInput implements IInputType {
 		}
 		this._panFlag = false;
 		clearTimeout(this._rightEdgeTimer);
-    const prevEvent = this._activeInput.prevEvent;
+		const prevEvent = this._activeInput.prevEvent;
 		const velocity = this.getOffset(
 			[
 				Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
@@ -277,7 +265,7 @@ export class PanInput implements IInputType {
 				useDirection(DIRECTION_HORIZONTAL, this._direction),
 				useDirection(DIRECTION_VERTICAL, this._direction),
 			]);
-		this.observer.release(this, prevEvent, velocity);
+		this._observer.release(this, prevEvent, velocity);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {
