@@ -1,10 +1,9 @@
-import { InputObserver } from "./../InputObserver";
 import { $ } from "../utils";
 import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
-import { Axis } from "../AxisManager";
 
 export interface WheelInputOption {
 	scale?: number;
+	releaseDelay?: number;
 	useNormalized?: boolean;
 }
 
@@ -12,6 +11,7 @@ export interface WheelInputOption {
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @property {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
 **/
 
 /**
@@ -44,6 +44,7 @@ export class WheelInput implements IInputType {
 		this.options = {
 			...{
 				scale: 1,
+				releaseDelay: 300,
 				useNormalized: true,
 			}, ...options,
 		};
@@ -90,17 +91,15 @@ export class WheelInput implements IInputType {
 			this._holding = true;
 		}
 		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
-
-		this._observer.change(this, event, toAxis(this.axes, [offset]));
+		this._observer.change(this, event, toAxis(this.axes, [offset]), true);
 		clearTimeout(this._timer);
-		const inst = this;
 
 		this._timer = setTimeout(() => {
 			if (this._holding) {
 				this._holding = false;
 				this._observer.release(this, event, [0]);
 			}
-		}, 50);
+		}, this.options.releaseDelay);
 	}
 
 	private attachEvent(observer: IInputTypeObserver) {

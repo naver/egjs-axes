@@ -4,7 +4,7 @@ import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
-import { isOutside, getInsidePosition } from "./Coordinate";
+import { isOutside, getInsidePosition, getCirculatedPos } from "./Coordinate";
 import { map, equal } from "./utils";
 import { AnimationParam } from "./types";
 
@@ -64,12 +64,12 @@ export class InputObserver implements IInputTypeObserver {
 		};
 		this.isStopped = false;
 		this.itm.setInterrupt(true);
-		this.am.grab(input.axes, changeOption);
+		this.am.stop(input.axes, changeOption);
 		!this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
 		this.isOutside = this.axm.isOutside(input.axes);
 		this.moveDistance = this.axm.get(input.axes);
 	}
-	change(input: IInputType, event, offset: Axis) {
+	change(input: IInputType, event, offset: Axis, useDuration?: boolean) {
 		if (this.isStopped || !this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
 			return;
 		}
@@ -78,7 +78,9 @@ export class InputObserver implements IInputTypeObserver {
 
 		// for outside logic
 		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
-		this.moveDistance && (this.moveDistance = destPos);
+		this.moveDistance && (this.moveDistance = this.axm.map(
+			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : Math.min(Math.max(v, range[0]), range[1]),
+		));
 		// from outside to inside
 		if (this.isOutside &&
 			this.axm.every(depaPos, (v, opt) => !isOutside(v, opt.range))) {
@@ -86,16 +88,21 @@ export class InputObserver implements IInputTypeObserver {
 		}
 		depaPos = this.atOutside(depaPos);
 		destPos = this.atOutside(destPos);
-
-		const isCanceled = !this.em.triggerChange(destPos, false, depaPos, {
+		const changeOption: ChangeEventOption = {
 			input,
 			event,
-		}, true);
-
-		if (isCanceled) {
-			this.isStopped = true;
-			this.moveDistance = null;
-			this.am.finish(false);
+		};
+		if (useDuration) {
+			const duration = this.am.getDuration(destPos, depaPos);
+			this.am.stop(input.axes, changeOption);
+			this.am.animateTo(destPos, duration, changeOption);
+		} else {
+			const isCanceled = !this.em.triggerChange(destPos, false, depaPos, changeOption, true);
+			if (isCanceled) {
+				this.isStopped = true;
+				this.moveDistance = null;
+				this.am.finish(false);
+			}
 		}
 	}
 	release(input: IInputType, event, velocity: number[], inputDuration?: number) {
