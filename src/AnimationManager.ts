@@ -13,6 +13,9 @@ function minMax(value: number, min: number, max: number): number {
 export class AnimationManager {
 	private _raf;
 	private _animateParam: AnimationParam;
+	private _initialEasingPer: number;
+	private _prevEasingPer: number;
+	private _durationOffset: number;
 	private options: AxesOption;
 	public itm: InterruptManager;
 	public em: EventManager;
@@ -135,28 +138,30 @@ export class AnimationManager {
 	}
 	private animateLoop(param: AnimationParam, complete: () => void) {
 		if (param.duration) {
-			this._animateParam = { ...param };
-			const info: AnimationParam = this._animateParam;
-			const self = this;
-			let destPos = info.destPos;
-			let prevPos = info.depaPos;
-			let prevEasingPer = 0;
+			let prevPos = param.depaPos;
+			this._initialEasingPer = 0;
+			this._prevEasingPer = 0;
+			this._durationOffset = 0;
+			this._animateParam = {
+				...param,
+				startTime: new Date().getTime(),
+			};
 			const directions = map(prevPos, (value, key) => {
-				return value <= destPos[key] ? 1 : -1;
+				return value <= param.destPos[key] ? 1 : -1;
 			});
-			const originalIntendedPos = map(destPos, v => v);
-			let prevTime = new Date().getTime();
-			info.startTime = prevTime;
+			const originalIntendedPos = map(param.destPos, v => v);
+			const self = this;
 
 			(function loop() {
-				self._raf = null;
-				const currentTime = new Date().getTime();
-				const ratio = (currentTime - info.startTime) / param.duration;
+				const animateParam = self._animateParam;
+				const diffTime = new Date().getTime() - animateParam.startTime;
+				const ratio = (diffTime + self._durationOffset) / animateParam.duration;
 				const easingPer = self.easing(ratio);
+				self._raf = null;
 				const toPos: Axis = self.axm.map(prevPos, (pos, options, key) => {
 					const nextPos = ratio >= 1
-						? destPos[key]
-						: pos + info.delta[key] * (easingPer - prevEasingPer);
+						? animateParam.destPos[key]
+						: pos + animateParam.delta[key] * (easingPer - self._prevEasingPer) / (1 - self._initialEasingPer);
 
 					// Subtract distance from distance already moved.
 					// Recalculate the remaining distance.
@@ -166,7 +171,7 @@ export class AnimationManager {
 						// circular
 						const rangeOffset = directions[key] * (options.range[1] - options.range[0]);
 
-						destPos[key] -= rangeOffset;
+						animateParam.destPos[key] -= rangeOffset;
 						prevPos[key] -= rangeOffset;
 					}
 					return circulatedPos;
@@ -174,13 +179,12 @@ export class AnimationManager {
 				const isCanceled = !self.em.triggerChange(toPos, false, prevPos);
 
 				prevPos = toPos;
-				prevTime = currentTime;
-				prevEasingPer = easingPer;
+				self._prevEasingPer = easingPer;
 				if (easingPer >= 1) {
-					destPos = self.getFinalPos(destPos, originalIntendedPos);
+					animateParam.destPos = self.getFinalPos(animateParam.destPos, originalIntendedPos);
 
-					if (!equal(destPos, self.axm.get(Object.keys(destPos)))) {
-						self.em.triggerChange(destPos, true, prevPos);
+					if (!equal(animateParam.destPos, self.axm.get(Object.keys(animateParam.destPos)))) {
+						self.em.triggerChange(animateParam.destPos, true, prevPos);
 					}
 					complete();
 					return;
@@ -328,5 +332,40 @@ export class AnimationManager {
 			map(this.axm.get(Object.keys(pos)), (v, k) => v + pos[k]),
 			duration,
 		);
+	}
+
+	updateAnimationPos(pos: Axis, restart: boolean) {
+		const animateParam = this._animateParam;
+		if (!animateParam) {
+			return;
+		}
+		if (restart) {
+			this.setTo(pos, animateParam.duration - (new Date().getTime() - animateParam.startTime));
+		} else {
+			const currentPos = this.axm.get();
+			// currently remaining percent as 100%
+			//
+			this._initialEasingPer = this._prevEasingPer;
+			animateParam.delta = this.axm.getDelta(currentPos, pos);
+			animateParam.destPos = pos;
+		}
+	}
+
+	updateAnimationDuration(duration: number,  restart: boolean) {
+		const animateParam = this._animateParam;
+		if (!animateParam) {
+			return;
+		}
+		if (restart) {
+			this.setTo(animateParam.destPos, duration - animateParam.duration);
+		} else {
+			const diffTime = new Date().getTime() - animateParam.startTime;
+			const ratio = (diffTime + this._durationOffset) / animateParam.duration;
+			// Use durationOffset for keeping animation ratio after duration is changed.
+			// newRatio = (diffTime + newDurationOffset) / newDuration = oldRatio
+			// newDurationOffset = oldRatio * newDuration - diffTime
+			this._durationOffset = ratio * duration - diffTime;
+			animateParam.duration = duration;
+		}
 	}
 }
