@@ -233,7 +233,7 @@ export class AnimationManager {
 			return;
 		}
 		if (restart) {
-			this.setTo(animateParam.destPos, duration - animateParam.duration);
+			this.setTo(animateParam.destPos, duration - (new Date().getTime() - animateParam.startTime));
 		} else {
 			const diffTime = new Date().getTime() - animateParam.startTime;
 			const ratio = (diffTime + this._durationOffset) / animateParam.duration;
