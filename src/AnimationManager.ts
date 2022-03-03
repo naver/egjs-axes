@@ -6,7 +6,7 @@ import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal,
 import { AxesOption } from "./Axes";
 import { AnimationParam, ObjectInterface } from "./types";
 
-function minMax(value: number, min: number, max: number): number {
+function clamp(value: number, min: number, max: number): number {
 	return Math.max(Math.min(value, max), min);
 }
 
@@ -42,7 +42,7 @@ export class AnimationManager {
 			);
 			duration = Object.keys(durations).reduce((max, v) => Math.max(max, durations[v]), -Infinity);
 		}
-		return minMax(
+		return clamp(
 			duration,
 			this._options.minimumDuration,
 			this._options.maximumDuration);
@@ -123,7 +123,7 @@ export class AnimationManager {
 	public getUserControl(param: AnimationParam) {
 		const userWish = param.setTo();
 		userWish.destPos = this.axm.get(userWish.destPos);
-		userWish.duration = minMax(
+		userWish.duration = clamp(
 			userWish.duration,
 			this._options.minimumDuration,
 			this._options.maximumDuration);
@@ -252,7 +252,7 @@ export class AnimationManager {
 		return {
 			depaPos,
 			destPos,
-			duration: minMax(
+			duration: clamp(
 				duration,
 				this._options.minimumDuration,
 				this._options.maximumDuration),
