@@ -70,7 +70,7 @@ export class AnimationManager {
 			this._animateParam = null;
 			this._raf && cancelAnimationFrame(this._raf);
 			this._raf = null;
-			this.em.triggerAnimationEnd(!!(option && option.event));
+			this.em.triggerAnimationEnd(!!(option?.event));
 		}
 	}
 
@@ -146,7 +146,7 @@ export class AnimationManager {
 		}
 
 		if (retTrigger && !equal(userWish.destPos, depaPos)) {
-			const inputEvent = option && option.event || null;
+			const inputEvent = option?.event || null;
 			this.animateLoop({
 				depaPos,
 				destPos: userWish.destPos,
@@ -154,7 +154,7 @@ export class AnimationManager {
 				delta: this.axm.getDelta(depaPos, userWish.destPos),
 				isTrusted: !!inputEvent,
 				inputEvent,
-				input: option && option.input || null,
+				input: option?.input || null,
 			}, () => this.animationEnd());
 		}
 	}
@@ -248,7 +248,7 @@ export class AnimationManager {
 	private createAnimationParam(pos: Axis, duration: number, option?: ChangeEventOption): AnimationParam {
 		const depaPos: Axis = this.axm.get();
 		const destPos: Axis = pos;
-		const inputEvent = option && option.event || null;
+		const inputEvent = option?.event || null;
 		return {
 			depaPos,
 			destPos,
@@ -258,7 +258,7 @@ export class AnimationManager {
 				this._options.maximumDuration),
 			delta: this.axm.getDelta(depaPos, destPos),
 			inputEvent,
-			input: option && option.input || null,
+			input: option?.input || null,
 			isTrusted: !!inputEvent,
 			done: this.animationEnd,
 		};
