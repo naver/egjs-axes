@@ -144,7 +144,7 @@ export class InputObserver implements IInputTypeObserver {
 		this.moveDistance = null;
 
 		// to contol
-		const userWish = this.am.getUserControll(param);
+		const userWish = this.am.getUserControl(param);
 		const isEqual = equal(userWish.destPos, depaPos);
 		const changeOption: ChangeEventOption = {
 			input,

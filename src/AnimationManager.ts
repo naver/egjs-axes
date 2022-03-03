@@ -120,7 +120,7 @@ export class AnimationManager {
 		this.em.triggerFinish(isTrusted);
 	}
 
-	public getUserControll(param: AnimationParam) {
+	public getUserControl(param: AnimationParam) {
 		const userWish = param.setTo();
 		userWish.destPos = this.axm.get(userWish.destPos);
 		userWish.duration = minMax(
@@ -136,7 +136,7 @@ export class AnimationManager {
 		const retTrigger = this.em.triggerAnimationStart(param);
 
 		// to control
-		const userWish = this.getUserControll(param);
+		const userWish = this.getUserControl(param);
 
 		// You can't stop the 'animationStart' event when 'circular' is true.
 		if (!retTrigger && this.axm.every(
