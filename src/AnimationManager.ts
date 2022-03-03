@@ -229,13 +229,13 @@ export class AnimationManager {
 
 	public updateAnimationDuration(duration: number,  restart: boolean): void {
 		const animateParam = this._animateParam;
+		const diffTime = new Date().getTime() - animateParam.startTime;
 		if (!animateParam) {
 			return;
 		}
-		if (restart) {
-			this.setTo(animateParam.destPos, duration - (new Date().getTime() - animateParam.startTime));
+		if (restart || duration <= diffTime) {
+			this.setTo(animateParam.destPos, duration - diffTime);
 		} else {
-			const diffTime = new Date().getTime() - animateParam.startTime;
 			const ratio = (diffTime + this._durationOffset) / animateParam.duration;
 			// Use durationOffset for keeping animation ratio after duration is changed.
 			// newRatio = (diffTime + newDurationOffset) / newDuration = oldRatio
