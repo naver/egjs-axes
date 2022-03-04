@@ -17,7 +17,13 @@ export class InputObserver implements IInputTypeObserver {
 	private isOutside = false;
 	private moveDistance: Axis = null;
 	private isStopped = false;
-	constructor({ options, itm, em, axm, am }) {
+	constructor({ options, itm, em, axm, am }: {
+		options: AxesOption;
+		itm: InterruptManager;
+		em: EventManager;
+		axm: AxisManager;
+		am: AnimationManager;
+	}) {
 		this.options = options;
 		this.itm = itm;
 		this.em = em;

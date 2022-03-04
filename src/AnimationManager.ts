@@ -14,14 +14,19 @@ export class AnimationManager {
 	public itm: InterruptManager;
 	public em: EventManager;
 	public axm: AxisManager;
-	private _raf;
+	private _raf: number;
 	private _animateParam: AnimationParam;
 	private _initialEasingPer: number;
 	private _prevEasingPer: number;
 	private _durationOffset: number;
 	private _options: AxesOption;
 
-	constructor({ options, itm, em, axm }) {
+	constructor({ options, itm, em, axm }: {
+		options: AxesOption;
+		itm: InterruptManager;
+		em: EventManager;
+		axm: AxisManager;
+	}) {
 		this._options = options;
 		this.itm = itm;
 		this.em = em;
@@ -114,13 +119,13 @@ export class AnimationManager {
 		}
 	}
 
-	public finish(isTrusted): void {
+	public finish(isTrusted: boolean): void {
 		this._animateParam = null;
 		this.itm.setInterrupt(false);
 		this.em.triggerFinish(isTrusted);
 	}
 
-	public getUserControl(param: AnimationParam) {
+	public getUserControl(param: AnimationParam): { destPos: Axis, duration: number } {
 		const userWish = param.setTo();
 		userWish.destPos = this.axm.get(userWish.destPos);
 		userWish.duration = clamp(
@@ -340,7 +345,7 @@ export class AnimationManager {
 	 * @param originalIntendedPos
 	 * @param destPos
 	 */
-	private getFinalPos(destPos: ObjectInterface<number>, originalIntendedPos: ObjectInterface<number>) {
+	private getFinalPos(destPos: ObjectInterface<number>, originalIntendedPos: ObjectInterface<number>): Axis {
 		// compare destPos and originalIntendedPos
 		const ERROR_LIMIT = 0.000001;
 		const finalPos = map(destPos, (value, key) => {
@@ -357,7 +362,7 @@ export class AnimationManager {
 		return finalPos;
 	}
 
-	private getRoundUnit(val: number, key: string) {
+	private getRoundUnit(val: number, key: string): number {
 		const roundUnit = this._options.round; // manual mode
 		let minRoundUnit = null; // auto mode
 
