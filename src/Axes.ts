@@ -10,7 +10,7 @@ import {
 	DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL
 } from "./const";
 import { IInputType } from "./inputType/InputType";
-import { AxesEvents, ObjectInterface } from "./types";
+import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
 
 export interface AxesOption {
 	easing?: (x: number) => number;
@@ -425,10 +425,9 @@ export default class Axes extends Component<AxesEvents> {
 
 	/**
 	 * Change the destination of an animation in progress.
-	 * @ko 재생 중인 애니메이션의 목적지를 변경한다.
-	 * @method eg.Axes#updateAnimationPos
-	 * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
-	 * @param {boolean} [restart=false] Whether the animation progress is reset and restarted <ko>애니메이션의 진행도 초기화 및 재시작 여부</ko>
+	 * @ko 재생 중인 애니메이션의 목적지와 진행 시간을 변경한다.
+	 * @method eg.Axes#updateAnimation
+	 * @param {UpdateAnimationOption} pos The coordinate to move to <ko>이동할 좌표</ko>
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
@@ -443,49 +442,16 @@ export default class Axes extends Component<AxesEvents> {
 	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
 	 *
 	 * // after 500 ms
-	 * axes.updateAnimationPos({"x": 100, "y": 100}); // animation will end after 500 ms, at {"x": 100, "y": 100}
+	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}}); // animation will end after 500 ms, at {"x": 100, "y": 100}
 	 *
 	 * // after 500 ms
 	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
 	 *
 	 * // after 700 ms
-	 * axes.updateAnimationPos({"x": 100, "y": 100}, true); // this works same as axes.setTo({"x": 100, "y": 100}, 300) since restart is true.
+	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}, duration: 1500, restart: true}); // this works same as axes.setTo({"x": 100, "y": 100}, 800) since restart is true.
 	 */
-	updateAnimationPos(pos: Axis, restart = false) {
-		this.am.updateAnimationPos(pos, restart);
-		return this;
-	}
-
-	/**
-	 * Change the duration of an animation in progress.
-	 * @ko 재생 중인 애니메이션의 진행 시간을 변경한다.
-	 * @method eg.Axes#updateAnimationDuration
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @param {boolean} [restart=false] Whether the animation progress is restarted keeping destination <ko>애니메이션의 진행도 초기화 및 재시작 여부</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 200]
-	 *   },
-	 *   "y": {
-	 *      range: [0, 200]
-	 *   }
-	 * });
-	 *
-	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
-	 *
-	 * // after 500 ms
-	 * axes.updateAnimationDuration(700); // animation will end after 200 ms, at {"x": 50, "y": 50}
-	 *
-	 * // after 500 ms
-	 * axes.setTo({"x": 100, "y": 100}, 1000); // trigger animation by setTo
-	 *
-	 * // after 800 ms
-	 * axes.updateAnimationDuration(1500); // this works same as axes.setTo({"x": 100, "y": 100}, 700) since restart is true.
-	 */
-	updateAnimationDuration(dutation: number, restart = false) {
-		this.am.updateAnimationDuration(dutation, restart);
+	updateAnimation(options: UpdateAnimationOption) {
+		this.am.updateAnimation(options);
 		return this;
 	}
 

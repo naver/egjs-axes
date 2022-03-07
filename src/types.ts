@@ -35,6 +35,12 @@ export interface AnimationParam {
 	input?: IInputType;
 }
 
+export interface UpdateAnimationOption {
+	destPos?: Axis;
+	duration?: number;
+	restart?: boolean;
+}
+
 export interface OnHold {
 	pos: Record<string, any>;
 	input: IInputType | null;

@@ -4,7 +4,7 @@ import { InterruptManager } from "./InterruptManager";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { requestAnimationFrame, cancelAnimationFrame, map, every, filter, equal, roundNumber, getDecimalPlace, inversePow } from "./utils";
 import { AxesOption } from "./Axes";
-import { AnimationParam, ObjectInterface } from "./types";
+import { AnimationParam, ObjectInterface, UpdateAnimationOption } from "./types";
 
 function clamp(value: number, min: number, max: number): number {
 	return Math.max(Math.min(value, max), min);
@@ -213,14 +213,20 @@ export class AnimationManager {
 		);
 	}
 
-	public updateAnimationPos(pos: Axis, restart: boolean): void {
+	public updateAnimation(options: UpdateAnimationOption): void {
 		const animateParam = this._animateParam;
 		if (!animateParam) {
 			return;
 		}
-		if (restart) {
-			this.setTo(pos, animateParam.duration - (new Date().getTime() - animateParam.startTime));
-		} else {
+
+		const diffTime = new Date().getTime() - animateParam.startTime;
+		const pos = options?.destPos || animateParam.destPos;
+		const duration = options?.duration || animateParam.duration;
+		if (options?.restart || duration <= diffTime) {
+			this.setTo(pos, duration - diffTime);
+			return;
+		}
+		if (options?.destPos) {
 			const currentPos = this.axm.get();
 			// When destination is changed, new delta should be calculated as remaining percent.
 			// For example, moving x:0, y:0 to x:200, y:200 and it has current easing percent of 92%. coordinate is x:184 and y:184
@@ -230,17 +236,7 @@ export class AnimationManager {
 			animateParam.delta = this.axm.getDelta(currentPos, pos);
 			animateParam.destPos = pos;
 		}
-	}
-
-	public updateAnimationDuration(duration: number,  restart: boolean): void {
-		const animateParam = this._animateParam;
-		const diffTime = new Date().getTime() - animateParam.startTime;
-		if (!animateParam) {
-			return;
-		}
-		if (restart || duration <= diffTime) {
-			this.setTo(animateParam.destPos, duration - diffTime);
-		} else {
+		if (options?.duration) {
 			const ratio = (diffTime + this._durationOffset) / animateParam.duration;
 			// Use durationOffset for keeping animation ratio after duration is changed.
 			// newRatio = (diffTime + newDurationOffset) / newDuration = oldRatio
