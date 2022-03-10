@@ -85,7 +85,7 @@ export class InputObserver implements IInputTypeObserver {
 		// for outside logic
 		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
 		this.moveDistance && (this.moveDistance = this.axm.map(
-			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : Math.min(Math.max(v, range[0]), range[1]),
+			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : v,
 		));
 		// from outside to inside
 		if (this.isOutside &&
