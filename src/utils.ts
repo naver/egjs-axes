@@ -190,8 +190,7 @@ export function getRoundFunc(v: number) {
 }
 
 export function getAngle(posX: number, posY: number) {
-	const angle = Math.atan2(posY, posX) * 180 / Math.PI;
-	return angle < 0 ? 360 + angle : angle;
+	return Math.atan2(posY, posX) * 180 / Math.PI;
 }
 
 export function setCssProps(element: HTMLElement, originalCssProps?: { [key: string]: string; }): { [key: string]: string; } {
