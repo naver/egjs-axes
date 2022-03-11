@@ -19,11 +19,15 @@ var axes = new eg.Axes({
 	maximumDuration: animationTime,
 }).on("animationStart", function(e) {
 	lastTime = new Date().getTime();
+	const updateButtons = [...document.getElementsByClassName("update")];
+	updateButtons.forEach(button => {
+		button.classList.add("active");
+	});
 }).on("change", function(e) {
 	const remain = (animationTime - (new Date().getTime() - lastTime));
-  rotate.style.transform="rotate(" + (e.pos.angle) + "deg)";
-  point.style.transform="translateX(" + (Math.random() * 3) + "px)";
-  point.style.transform="translateY(" + (Math.random() * 3) + "px)";
+	rotate.style.transform="rotate(" + (e.pos.angle) + "deg)";
+	point.style.transform="translateX(" + (Math.random() * 3) + "px)";
+	point.style.transform="translateY(" + (Math.random() * 3) + "px)";
 	if (remain > 0) {
 		angleText.textContent = "done in " + remain + " ms";
 	} else {
@@ -42,10 +46,6 @@ axes.setTo({angle: 210});
 function rotateTo(pos) {
 	const nextpos = axes.axm.get()["angle"] > pos ? pos : pos - 360;
 	axes.setTo({"angle": nextpos }, animationTime);
-	const updateButtons = [...document.getElementsByClassName("update")];
-	updateButtons.forEach(button => {
-		button.classList.add("active");
-	});
 }
 
 function updateTo(pos) {
