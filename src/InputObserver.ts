@@ -70,7 +70,7 @@ export class InputObserver implements IInputTypeObserver {
 		};
 		this.isStopped = false;
 		this.itm.setInterrupt(true);
-		this.am.stop(input.axes, changeOption);
+		this.am.stopAnimation(input.axes, changeOption);
 		!this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
 		this.isOutside = this.axm.isOutside(input.axes);
 		this.moveDistance = this.axm.get(input.axes);
@@ -100,7 +100,7 @@ export class InputObserver implements IInputTypeObserver {
 		};
 		if (useDuration) {
 			const duration = this.am.getDuration(destPos, depaPos);
-			this.am.stop(input.axes, changeOption);
+			this.am.stopAnimation(input.axes, changeOption);
 			this.am.animateTo(destPos, duration, changeOption);
 		} else {
 			const isCanceled = !this.em.triggerChange(destPos, false, depaPos, changeOption, true);

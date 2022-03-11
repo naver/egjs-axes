@@ -64,7 +64,7 @@ export class AnimationManager {
 		return this.easing(displacement / (threshold * initSlope)) * threshold;
 	}
 
-	public stop(axes: string[], option?: ChangeEventOption): void {
+	public stopAnimation(axes: string[], option?: ChangeEventOption): void {
 		if (this._animateParam && axes.length) {
 			const orgPos: Axis = this.axm.get(axes);
 			const pos: Axis = this.axm.map(orgPos,
@@ -170,7 +170,7 @@ export class AnimationManager {
 
 	public setTo(pos: Axis, duration: number = 0) {
 		const axes: string[] = Object.keys(pos);
-		this.stop(axes);
+		this.stopAnimation(axes);
 		const orgPos: Axis = this.axm.get(axes);
 
 		if (equal(pos, orgPos)) {

@@ -404,7 +404,7 @@ export default class Axes extends Component<AxesEvents> {
 	/**
 	 * Stop an animation in progress.
 	 * @ko 재생 중인 애니메이션을 정지한다.
-	 * @method eg.Axes#stop
+	 * @method eg.Axes#stopAnimation
 	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
 	 * @example
 	 * const axes = new eg.Axes({
@@ -416,10 +416,10 @@ export default class Axes extends Component<AxesEvents> {
 	 * axes.setTo({"x": 10}, 1000); // start animatation
 	 *
 	 * // after 500 ms
-	 * axes.stop(); // stop animation during movement.
+	 * axes.stopAnimation(); // stop animation during movement.
 	 */
-	stop() {
-		this.am.stop(Object.keys(this.axm.get()));
+	stopAnimation() {
+		this.am.stopAnimation(Object.keys(this.axm.get()));
 		return this;
 	}
 
