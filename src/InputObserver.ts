@@ -17,7 +17,13 @@ export class InputObserver implements IInputTypeObserver {
 	private isOutside = false;
 	private moveDistance: Axis = null;
 	private isStopped = false;
-	constructor({ options, itm, em, axm, am }) {
+	constructor({ options, itm, em, axm, am }: {
+		options: AxesOption;
+		itm: InterruptManager;
+		em: EventManager;
+		axm: AxisManager;
+		am: AnimationManager;
+	}) {
 		this.options = options;
 		this.itm = itm;
 		this.em = em;
@@ -64,7 +70,7 @@ export class InputObserver implements IInputTypeObserver {
 		};
 		this.isStopped = false;
 		this.itm.setInterrupt(true);
-		this.am.stop(input.axes, changeOption);
+		this.am.stopAnimation(input.axes, changeOption);
 		!this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
 		this.isOutside = this.axm.isOutside(input.axes);
 		this.moveDistance = this.axm.get(input.axes);
@@ -79,7 +85,7 @@ export class InputObserver implements IInputTypeObserver {
 		// for outside logic
 		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
 		this.moveDistance && (this.moveDistance = this.axm.map(
-			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : Math.min(Math.max(v, range[0]), range[1]),
+			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : v,
 		));
 		// from outside to inside
 		if (this.isOutside &&
@@ -94,7 +100,7 @@ export class InputObserver implements IInputTypeObserver {
 		};
 		if (useDuration) {
 			const duration = this.am.getDuration(destPos, depaPos);
-			this.am.stop(input.axes, changeOption);
+			this.am.stopAnimation(input.axes, changeOption);
 			this.am.animateTo(destPos, duration, changeOption);
 		} else {
 			const isCanceled = !this.em.triggerChange(destPos, false, depaPos, changeOption, true);
@@ -144,7 +150,7 @@ export class InputObserver implements IInputTypeObserver {
 		this.moveDistance = null;
 
 		// to contol
-		const userWish = this.am.getUserControll(param);
+		const userWish = this.am.getUserControl(param);
 		const isEqual = equal(userWish.destPos, depaPos);
 		const changeOption: ChangeEventOption = {
 			input,

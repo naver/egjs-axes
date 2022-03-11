@@ -10,7 +10,7 @@ import {
 	DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL
 } from "./const";
 import { IInputType } from "./inputType/InputType";
-import { AxesEvents, ObjectInterface } from "./types";
+import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
 
 export interface AxesOption {
 	easing?: (x: number) => number;
@@ -398,6 +398,60 @@ export default class Axes extends Component<AxesEvents> {
 	 */
 	setBy(pos: Axis, duration = 0) {
 		this.am.setBy(pos, duration);
+		return this;
+	}
+
+	/**
+	 * Stop an animation in progress.
+	 * @ko 재생 중인 애니메이션을 정지한다.
+	 * @method eg.Axes#stopAnimation
+	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * const axes = new eg.Axes({
+	 *   "x": {
+	 *      range: [0, 100]
+	 *   },
+	 * });
+	 *
+	 * axes.setTo({"x": 10}, 1000); // start animatation
+	 *
+	 * // after 500 ms
+	 * axes.stopAnimation(); // stop animation during movement.
+	 */
+	stopAnimation() {
+		this.am.stopAnimation(Object.keys(this.axm.get()));
+		return this;
+	}
+
+	/**
+	 * Change the destination of an animation in progress.
+	 * @ko 재생 중인 애니메이션의 목적지와 진행 시간을 변경한다.
+	 * @method eg.Axes#updateAnimation
+	 * @param {UpdateAnimationOption} pos The coordinate to move to <ko>이동할 좌표</ko>
+	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+	 * @example
+	 * const axes = new eg.Axes({
+	 *   "x": {
+	 *      range: [0, 200]
+	 *   },
+	 *   "y": {
+	 *      range: [0, 200]
+	 *   }
+	 * });
+	 *
+	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+	 *
+	 * // after 500 ms
+	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}}); // animation will end after 500 ms, at {"x": 100, "y": 100}
+	 *
+	 * // after 500 ms
+	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+	 *
+	 * // after 700 ms
+	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}, duration: 1500, restart: true}); // this works same as axes.setTo({"x": 100, "y": 100}, 800) since restart is true.
+	 */
+	updateAnimation(options: UpdateAnimationOption) {
+		this.am.updateAnimation(options);
 		return this;
 	}
 

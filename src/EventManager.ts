@@ -175,7 +175,7 @@ export class EventManager {
 		const eventInfo = am.getEventInfo();
 		const {roundPos, roundDepa} = this.getRoundPos(pos, depaPos);
 		const moveTo = axm.moveTo(roundPos, roundDepa);
-		const inputEvent = option && option.event || eventInfo && eventInfo.event || null;
+		const inputEvent = option?.event || eventInfo?.event || null;
 		const param = {
 			pos: moveTo.pos,
 			delta: moveTo.delta,
@@ -183,7 +183,7 @@ export class EventManager {
 			holding,
 			inputEvent,
 			isTrusted: !!inputEvent,
-			input: option && option.input || eventInfo && eventInfo.input || null,
+			input: option?.input || eventInfo?.input || null,
 			set: inputEvent ? this.createUserControll(moveTo.pos) : () => { },
 		};
 		const result = this.axes.trigger(new ComponentEvent("change", param));
