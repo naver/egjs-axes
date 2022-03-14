@@ -165,16 +165,16 @@ export const roundNumber = (num: number, roundUnit: number) => {
 export const roundNumbers = (
   num: ObjectInterface<number>,
   roundUnit: ObjectInterface<number> | number
-) => {
+): ObjectInterface<number> => {
   if (!num || !roundUnit) {
     return num;
   }
-  return map(num, (value, key) => {
+  return map(num, (value, key) =>
     roundNumber(
       value,
       typeof roundUnit === "number" ? roundUnit : roundUnit[key]
-    );
-  });
+    )
+  );
 };
 
 export const getDecimalPlace = (val: number): number => {
