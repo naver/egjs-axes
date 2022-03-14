@@ -1,24 +1,31 @@
 import Component from "@egjs/component";
+
 import { AnimationManager } from "./AnimationManager";
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
 import { InputObserver } from "./InputObserver";
 import {
-	TRANSFORM,
-	DIRECTION_NONE, DIRECTION_LEFT, DIRECTION_RIGHT,
-	DIRECTION_UP, DIRECTION_DOWN, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, DIRECTION_ALL
+  TRANSFORM,
+  DIRECTION_NONE,
+  DIRECTION_LEFT,
+  DIRECTION_RIGHT,
+  DIRECTION_UP,
+  DIRECTION_DOWN,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_VERTICAL,
+  DIRECTION_ALL,
 } from "./const";
 import { IInputType } from "./inputType/InputType";
 import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
 
 export interface AxesOption {
-	easing?: (x: number) => number;
-	maximumDuration?: number;
-	minimumDuration?: number;
-	deceleration?: number;
-	interruptable?: boolean;
-	round?: number;
+  easing?: (x: number) => number;
+  maximumDuration?: number;
+  minimumDuration?: number;
+  deceleration?: number;
+  interruptable?: boolean;
+  round?: number;
 }
 
 /**
@@ -33,7 +40,7 @@ export interface AxesOption {
  * @property {Boolean[]} [circular] Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
  * @property {Boolean} [circular.0=false] Indicates whether to circulate to the coordinate of the minimum <ko>최소 좌표 방향의 순환 여부</ko>
  * @property {Boolean} [circular.1=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
-**/
+ **/
 
 /**
  * @typedef {Object} AxesOption The option object of the eg.Axes module
@@ -44,7 +51,7 @@ export interface AxesOption {
  * @property {Number} [deceleration=0.0006] Deceleration of the animation where acceleration is manually enabled by user. A higher value indicates shorter running time. <ko>사용자의 동작으로 가속도가 적용된 애니메이션의 감속도. 값이 높을수록 애니메이션 실행 시간이 짧아진다</ko>
  * @property {Boolean} [interruptable=true] Indicates whether an animation is interruptible.<br>- true: It can be paused or stopped by user action or the API.<br>- false: It cannot be paused or stopped by user action or the API while it is running.<ko>진행 중인 애니메이션 중지 가능 여부.<br>- true: 사용자의 동작이나 API로 애니메이션을 중지할 수 있다.<br>- false: 애니메이션이 진행 중일 때는 사용자의 동작이나 API가 적용되지 않는다</ko>
  * @property {Number} [round = null] Rounding unit. For example, 0.1 rounds to 0.1 decimal point(6.1234 => 6.1), 5 rounds to 5 (93 => 95) <br>[Details](https://github.com/naver/egjs-axes/wiki/round-option)<ko>반올림 단위. 예를 들어 0.1 은 소숫점 0.1 까지 반올림(6.1234 => 6.1), 5 는 5 단위로 반올림(93 => 95).<br>[상세내용](https://github.com/naver/egjs-axes/wiki/round-option)</ko>
-**/
+ **/
 
 /**
  * @class eg.Axes
@@ -116,379 +123,390 @@ export interface AxesOption {
  * axes.connect("something2", pinchInputArea);
  */
 export default class Axes extends Component<AxesEvents> {
-	/**
-	 * Version info string
-	 * @ko 버전정보 문자열
-	 * @name VERSION
-	 * @static
-	 * @type {String}
-	 * @example
-	 * eg.Axes.VERSION;  // ex) 3.3.3
-	 * @memberof eg.Axes
-	 */
-	static VERSION = "#__VERSION__#";
-	// for tree shaking
-	static PanInput;
-	static PinchInput;
-	static WheelInput;
-	static MoveKeyInput;
-	static RotatePanInput;
+  /**
+   * Version info string
+   * @ko 버전정보 문자열
+   * @name VERSION
+   * @static
+   * @type {String}
+   * @example
+   * eg.Axes.VERSION;  // ex) 3.3.3
+   * @memberof eg.Axes
+   */
+  public static VERSION = "#__VERSION__#";
+  /* eslint-disable */
+  // for tree shaking
+  public static PanInput;
+  public static PinchInput;
+  public static WheelInput;
+  public static MoveKeyInput;
+  public static RotatePanInput;
+  /* eslint-enable */
 
-	/**
-	 * @name eg.Axes.TRANSFORM
-	 * @desc Returns the transform attribute with CSS vendor prefixes.
-	 * @ko CSS vendor prefixes를 붙인 transform 속성을 반환한다.
-	 *
-	 * @constant
-	 * @type {String}
-	 * @example
-	 * eg.Axes.TRANSFORM; // "transform" or "webkitTransform"
-	 */
-	static TRANSFORM = TRANSFORM;
-	/**
-	 * @name eg.Axes.DIRECTION_NONE
-	 * @constant
-	 * @type {Number}
-	 */
-	static DIRECTION_NONE = DIRECTION_NONE;
-	/**
-	 * @name eg.Axes.DIRECTION_LEFT
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_LEFT = DIRECTION_LEFT;
-	/**
-	 * @name eg.Axes.DIRECTION_RIGHT
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_RIGHT = DIRECTION_RIGHT;
-	/**
-	 * @name eg.Axes.DIRECTION_UP
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_UP = DIRECTION_UP;
-	/**
-	 * @name eg.Axes.DIRECTION_DOWN
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_DOWN = DIRECTION_DOWN;
-	/**
-	 * @name eg.Axes.DIRECTION_HORIZONTAL
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_HORIZONTAL = DIRECTION_HORIZONTAL;
-	/**
-	 * @name eg.Axes.DIRECTION_VERTICAL
-	 * @constant
-	 * @type {Number}
-	*/
-	static DIRECTION_VERTICAL = DIRECTION_VERTICAL;
-	/**
-	 * @name eg.Axes.DIRECTION_ALL
-	 * @constant
-	 * @type {Number}
-	*/
-	public static DIRECTION_ALL = DIRECTION_ALL;
+  /**
+   * @name eg.Axes.TRANSFORM
+   * @desc Returns the transform attribute with CSS vendor prefixes.
+   * @ko CSS vendor prefixes를 붙인 transform 속성을 반환한다.
+   *
+   * @constant
+   * @type {String}
+   * @example
+   * eg.Axes.TRANSFORM; // "transform" or "webkitTransform"
+   */
+  public static TRANSFORM = TRANSFORM;
+  /**
+   * @name eg.Axes.DIRECTION_NONE
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_NONE = DIRECTION_NONE;
+  /**
+   * @name eg.Axes.DIRECTION_LEFT
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_LEFT = DIRECTION_LEFT;
+  /**
+   * @name eg.Axes.DIRECTION_RIGHT
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_RIGHT = DIRECTION_RIGHT;
+  /**
+   * @name eg.Axes.DIRECTION_UP
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_UP = DIRECTION_UP;
+  /**
+   * @name eg.Axes.DIRECTION_DOWN
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_DOWN = DIRECTION_DOWN;
+  /**
+   * @name eg.Axes.DIRECTION_HORIZONTAL
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_HORIZONTAL = DIRECTION_HORIZONTAL;
+  /**
+   * @name eg.Axes.DIRECTION_VERTICAL
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_VERTICAL = DIRECTION_VERTICAL;
+  /**
+   * @name eg.Axes.DIRECTION_ALL
+   * @constant
+   * @type {Number}
+   */
+  public static DIRECTION_ALL = DIRECTION_ALL;
 
-	public options: AxesOption;
-	public em: EventManager;
-	public axm: AxisManager;
-	public itm: InterruptManager;
-	public am: AnimationManager;
-	public io: InputObserver;
-	private _inputs: IInputType[] = [];
+  public options: AxesOption;
+  public em: EventManager;
+  public axm: AxisManager;
+  public itm: InterruptManager;
+  public am: AnimationManager;
+  public io: InputObserver;
+  private _inputs: IInputType[] = [];
 
-	constructor(public axis: ObjectInterface<AxisOption> = {}, options: AxesOption = {}, startPos?: Axis) {
-		super();
-		this.options = {
-			...{
-				easing: function easeOutCubic(x) {
-					return 1 - Math.pow(1 - x, 3);
-				},
-				interruptable: true,
-				maximumDuration: Infinity,
-				minimumDuration: 0,
-				deceleration: 0.0006,
-				round: null,
-			}, ...options,
-		};
+  public constructor(
+    public axis: ObjectInterface<AxisOption> = {},
+    options: AxesOption = {},
+    startPos?: Axis
+  ) {
+    super();
+    this.options = {
+      ...{
+        easing: (x) => {
+          return 1 - Math.pow(1 - x, 3);
+        },
+        interruptable: true,
+        maximumDuration: Infinity,
+        minimumDuration: 0,
+        deceleration: 0.0006,
+        round: null,
+      },
+      ...options,
+    };
 
-		this.itm = new InterruptManager(this.options);
-		this.axm = new AxisManager(this.axis, this.options);
-		this.em = new EventManager(this);
-		this.am = new AnimationManager(this);
-		this.io = new InputObserver(this);
-		this.em.setAnimationManager(this.am);
-		startPos && this.em.triggerChange(startPos);
-	}
-	/**
-	 * Connect the axis of eg.Axes to the inputType.
-	 * @ko eg.Axes의 축과 inputType을 연결한다
-	 * @method eg.Axes#connect
-	 * @param {(String[]|String)} axes The name of the axis to associate with inputType <ko>inputType과 연결할 축의 이름</ko>
-	 * @param {Object} inputType The inputType instance to associate with the axis of eg.Axes <ko>eg.Axes의 축과 연결할 inputType 인스턴스<ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   }
-	 * });
-	 *
-	 * axes.connect("x", new eg.Axes.PanInput("#area1"))
-	 *    .connect("x xOther", new eg.Axes.PanInput("#area2"))
-	 *    .connect(" xOther", new eg.Axes.PanInput("#area3"))
-	 *    .connect(["x"], new eg.Axes.PanInput("#area4"))
-	 *    .connect(["xOther", "x"], new eg.Axes.PanInput("#area5"))
-	 *    .connect(["", "xOther"], new eg.Axes.PanInput("#area6"));
-	 */
-	connect(axes: string[] | string, inputType: IInputType) {
-		let mapped;
-		if (typeof axes === "string") {
-			mapped = axes.split(" ");
-		} else {
-			mapped = axes.concat();
-		}
+    this.itm = new InterruptManager(this.options);
+    this.axm = new AxisManager(this.axis);
+    this.em = new EventManager(this);
+    this.am = new AnimationManager(this);
+    this.io = new InputObserver(this);
+    this.em.setAnimationManager(this.am);
+    if (startPos) {
+      this.em.triggerChange(startPos);
+    }
+  }
 
-		// check same instance
-		if (~this._inputs.indexOf(inputType)) {
-			this.disconnect(inputType);
-		}
+  /**
+   * Connect the axis of eg.Axes to the inputType.
+   * @ko eg.Axes의 축과 inputType을 연결한다
+   * @method eg.Axes#connect
+   * @param {(String[]|String)} axes The name of the axis to associate with inputType <ko>inputType과 연결할 축의 이름</ko>
+   * @param {Object} inputType The inputType instance to associate with the axis of eg.Axes <ko>eg.Axes의 축과 연결할 inputType 인스턴스<ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   }
+   * });
+   *
+   * axes.connect("x", new eg.Axes.PanInput("#area1"))
+   *    .connect("x xOther", new eg.Axes.PanInput("#area2"))
+   *    .connect(" xOther", new eg.Axes.PanInput("#area3"))
+   *    .connect(["x"], new eg.Axes.PanInput("#area4"))
+   *    .connect(["xOther", "x"], new eg.Axes.PanInput("#area5"))
+   *    .connect(["", "xOther"], new eg.Axes.PanInput("#area6"));
+   */
+  public connect(axes: string[] | string, inputType: IInputType) {
+    let mapped: string[];
+    if (typeof axes === "string") {
+      mapped = axes.split(" ");
+    } else {
+      mapped = axes.concat();
+    }
 
-		inputType.mapAxes(mapped);
-		inputType.connect(this.io);
-		this._inputs.push(inputType);
-		return this;
-	}
-	/**
-	 * Disconnect the axis of eg.Axes from the inputType.
-	 * @ko eg.Axes의 축과 inputType의 연결을 끊는다.
-	 * @method eg.Axes#disconnect
-	 * @param {Object} [inputType] An inputType instance associated with the axis of eg.Axes <ko>eg.Axes의 축과 연결한 inputType 인스턴스<ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   }
-	 * });
-	 *
-	 * const input1 = new eg.Axes.PanInput("#area1");
-	 * const input2 = new eg.Axes.PanInput("#area2");
-	 * const input3 = new eg.Axes.PanInput("#area3");
-	 *
-	 * axes.connect("x", input1);
-	 *    .connect("x xOther", input2)
-	 *    .connect(["xOther", "x"], input3);
-	 *
-	 * axes.disconnect(input1); // disconnects input1
-	 * axes.disconnect(); // disconnects all of them
-	 */
-	disconnect(inputType?: IInputType) {
-		if (inputType) {
-			const index = this._inputs.indexOf(inputType);
+    // check same instance
+    if (~this._inputs.indexOf(inputType)) {
+      this.disconnect(inputType);
+    }
 
-			if (index >= 0) {
-				this._inputs[index].disconnect();
-				this._inputs.splice(index, 1);
-			}
-		} else {
-			this._inputs.forEach(v => v.disconnect());
-			this._inputs = [];
-		}
-		return this;
-	}
+    inputType.mapAxes(mapped);
+    inputType.connect(this.io);
+    this._inputs.push(inputType);
+    return this;
+  }
 
-	/**
-	 * Returns the current position of the coordinates.
-	 * @ko 좌표의 현재 위치를 반환한다
-	 * @method eg.Axes#get
-	 * @param {Object} [axes] The names of the axis <ko>축 이름들</ko>
-	 * @return {Object.<string, number>} Axis coordinate information <ko>축 좌표 정보</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   },
-	 * 	 "zoom": {
-	 *      range: [50, 30]
-	 *   }
-	 * });
-	 *
-	 * axes.get(); // {"x": 0, "xOther": -100, "zoom": 50}
-	 * axes.get(["x", "zoom"]); // {"x": 0, "zoom": 50}
-	 */
-	get(axes?: string[]) {
-		return this.axm.get(axes);
-	}
+  /**
+   * Disconnect the axis of eg.Axes from the inputType.
+   * @ko eg.Axes의 축과 inputType의 연결을 끊는다.
+   * @method eg.Axes#disconnect
+   * @param {Object} [inputType] An inputType instance associated with the axis of eg.Axes <ko>eg.Axes의 축과 연결한 inputType 인스턴스<ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   }
+   * });
+   *
+   * const input1 = new eg.Axes.PanInput("#area1");
+   * const input2 = new eg.Axes.PanInput("#area2");
+   * const input3 = new eg.Axes.PanInput("#area3");
+   *
+   * axes.connect("x", input1);
+   *    .connect("x xOther", input2)
+   *    .connect(["xOther", "x"], input3);
+   *
+   * axes.disconnect(input1); // disconnects input1
+   * axes.disconnect(); // disconnects all of them
+   */
+  public disconnect(inputType?: IInputType) {
+    if (inputType) {
+      const index = this._inputs.indexOf(inputType);
 
-	/**
-	 * Moves an axis to specific coordinates.
-	 * @ko 좌표를 이동한다.
-	 * @method eg.Axes#setTo
-	 * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   },
-	 * 	 "zoom": {
-	 *      range: [50, 30]
-	 *   }
-	 * });
-	 *
-	 * axes.setTo({"x": 30, "zoom": 60});
-	 * axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
-	 *
-	 * axes.setTo({"x": 100, "xOther": 60}, 1000); // animatation
-	 *
-	 * // after 1000 ms
-	 * axes.get(); // {"x": 100, "xOther": 60, "zoom": 60}
-	 */
-	setTo(pos: Axis, duration = 0) {
-		this.am.setTo(pos, duration);
-		return this;
-	}
+      if (index >= 0) {
+        this._inputs[index].disconnect();
+        this._inputs.splice(index, 1);
+      }
+    } else {
+      this._inputs.forEach((v) => v.disconnect());
+      this._inputs = [];
+    }
+    return this;
+  }
 
-	/**
-	 * Moves an axis from the current coordinates to specific coordinates.
-	 * @ko 현재 좌표를 기준으로 좌표를 이동한다.
-	 * @method eg.Axes#setBy
-	 * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
-	 * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   },
-	 * 	 "zoom": {
-	 *      range: [50, 30]
-	 *   }
-	 * });
-	 *
-	 * axes.setBy({"x": 30, "zoom": 10});
-	 * axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
-	 *
-	 * axes.setBy({"x": 70, "xOther": 60}, 1000); // animatation
-	 *
-	 * // after 1000 ms
-	 * axes.get(); // {"x": 100, "xOther": -40, "zoom": 60}
-	 */
-	setBy(pos: Axis, duration = 0) {
-		this.am.setBy(pos, duration);
-		return this;
-	}
+  /**
+   * Returns the current position of the coordinates.
+   * @ko 좌표의 현재 위치를 반환한다
+   * @method eg.Axes#get
+   * @param {Object} [axes] The names of the axis <ko>축 이름들</ko>
+   * @return {Object.<string, number>} Axis coordinate information <ko>축 좌표 정보</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   },
+   * 	 "zoom": {
+   *      range: [50, 30]
+   *   }
+   * });
+   *
+   * axes.get(); // {"x": 0, "xOther": -100, "zoom": 50}
+   * axes.get(["x", "zoom"]); // {"x": 0, "zoom": 50}
+   */
+  public get(axes?: string[]) {
+    return this.axm.get(axes);
+  }
 
-	/**
-	 * Stop an animation in progress.
-	 * @ko 재생 중인 애니메이션을 정지한다.
-	 * @method eg.Axes#stopAnimation
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 * });
-	 *
-	 * axes.setTo({"x": 10}, 1000); // start animatation
-	 *
-	 * // after 500 ms
-	 * axes.stopAnimation(); // stop animation during movement.
-	 */
-	stopAnimation() {
-		this.am.stopAnimation(Object.keys(this.axm.get()));
-		return this;
-	}
+  /**
+   * Moves an axis to specific coordinates.
+   * @ko 좌표를 이동한다.
+   * @method eg.Axes#setTo
+   * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
+   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   },
+   * 	 "zoom": {
+   *      range: [50, 30]
+   *   }
+   * });
+   *
+   * axes.setTo({"x": 30, "zoom": 60});
+   * axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
+   *
+   * axes.setTo({"x": 100, "xOther": 60}, 1000); // animatation
+   *
+   * // after 1000 ms
+   * axes.get(); // {"x": 100, "xOther": 60, "zoom": 60}
+   */
+  public setTo(pos: Axis, duration = 0) {
+    this.am.setTo(pos, duration);
+    return this;
+  }
 
-	/**
-	 * Change the destination of an animation in progress.
-	 * @ko 재생 중인 애니메이션의 목적지와 진행 시간을 변경한다.
-	 * @method eg.Axes#updateAnimation
-	 * @param {UpdateAnimationOption} pos The coordinate to move to <ko>이동할 좌표</ko>
-	 * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 200]
-	 *   },
-	 *   "y": {
-	 *      range: [0, 200]
-	 *   }
-	 * });
-	 *
-	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
-	 *
-	 * // after 500 ms
-	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}}); // animation will end after 500 ms, at {"x": 100, "y": 100}
-	 *
-	 * // after 500 ms
-	 * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
-	 *
-	 * // after 700 ms
-	 * axes.updateAnimation({destPos: {"x": 100, "y": 100}, duration: 1500, restart: true}); // this works same as axes.setTo({"x": 100, "y": 100}, 800) since restart is true.
-	 */
-	updateAnimation(options: UpdateAnimationOption) {
-		this.am.updateAnimation(options);
-		return this;
-	}
+  /**
+   * Moves an axis from the current coordinates to specific coordinates.
+   * @ko 현재 좌표를 기준으로 좌표를 이동한다.
+   * @method eg.Axes#setBy
+   * @param {Object.<string, number>} pos The coordinate to move to <ko>이동할 좌표</ko>
+   * @param {Number} [duration=0] Duration of the animation (unit: ms) <ko>애니메이션 진행 시간(단위: ms)</ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   },
+   * 	 "zoom": {
+   *      range: [50, 30]
+   *   }
+   * });
+   *
+   * axes.setBy({"x": 30, "zoom": 10});
+   * axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
+   *
+   * axes.setBy({"x": 70, "xOther": 60}, 1000); // animatation
+   *
+   * // after 1000 ms
+   * axes.get(); // {"x": 100, "xOther": -40, "zoom": 60}
+   */
+  public setBy(pos: Axis, duration = 0) {
+    this.am.setBy(pos, duration);
+    return this;
+  }
 
-	/**
-	 * Returns whether there is a coordinate in the bounce area of ​​the target axis.
-	 * @ko 대상 축 중 bounce영역에 좌표가 존재하는지를 반환한다
-	 * @method eg.Axes#isBounceArea
-	 * @param {Object} [axes] The names of the axis <ko>축 이름들</ko>
-	 * @return {Boolen} Whether the bounce area exists. <ko>bounce 영역 존재 여부</ko>
-	 * @example
-	 * const axes = new eg.Axes({
-	 *   "x": {
-	 *      range: [0, 100]
-	 *   },
-	 *   "xOther": {
-	 *      range: [-100, 100]
-	 *   },
-	 * 	 "zoom": {
-	 *      range: [50, 30]
-	 *   }
-	 * });
-	 *
-	 * axes.isBounceArea(["x"]);
-	 * axes.isBounceArea(["x", "zoom"]);
-	 * axes.isBounceArea();
-	 */
-	isBounceArea(axes?: string[]) {
-		return this.axm.isOutside(axes);
-	}
+  /**
+   * Stop an animation in progress.
+   * @ko 재생 중인 애니메이션을 정지한다.
+   * @method eg.Axes#stopAnimation
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   * });
+   *
+   * axes.setTo({"x": 10}, 1000); // start animatation
+   *
+   * // after 500 ms
+   * axes.stopAnimation(); // stop animation during movement.
+   */
+  public stopAnimation() {
+    this.am.stopAnimation(Object.keys(this.axm.get()));
+    return this;
+  }
 
-	/**
-	* Destroys properties, and events used in a module and disconnect all connections to inputTypes.
-	* @ko 모듈에 사용한 속성, 이벤트를 해제한다. 모든 inputType과의 연결을 끊는다.
-	* @method eg.Axes#destroy
-	*/
-	destroy() {
-		this.disconnect();
-		this.em.destroy();
-	}
+  /**
+   * Change the destination of an animation in progress.
+   * @ko 재생 중인 애니메이션의 목적지와 진행 시간을 변경한다.
+   * @method eg.Axes#updateAnimation
+   * @param {UpdateAnimationOption} pos The coordinate to move to <ko>이동할 좌표</ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 200]
+   *   },
+   *   "y": {
+   *      range: [0, 200]
+   *   }
+   * });
+   *
+   * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+   *
+   * // after 500 ms
+   * axes.updateAnimation({destPos: {"x": 100, "y": 100}}); // animation will end after 500 ms, at {"x": 100, "y": 100}
+   *
+   * // after 500 ms
+   * axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+   *
+   * // after 700 ms
+   * axes.updateAnimation({destPos: {"x": 100, "y": 100}, duration: 1500, restart: true}); // this works same as axes.setTo({"x": 100, "y": 100}, 800) since restart is true.
+   */
+  public updateAnimation(options: UpdateAnimationOption) {
+    this.am.updateAnimation(options);
+    return this;
+  }
+
+  /**
+   * Returns whether there is a coordinate in the bounce area of ​​the target axis.
+   * @ko 대상 축 중 bounce영역에 좌표가 존재하는지를 반환한다
+   * @method eg.Axes#isBounceArea
+   * @param {Object} [axes] The names of the axis <ko>축 이름들</ko>
+   * @return {Boolen} Whether the bounce area exists. <ko>bounce 영역 존재 여부</ko>
+   * @example
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   *   "xOther": {
+   *      range: [-100, 100]
+   *   },
+   * 	 "zoom": {
+   *      range: [50, 30]
+   *   }
+   * });
+   *
+   * axes.isBounceArea(["x"]);
+   * axes.isBounceArea(["x", "zoom"]);
+   * axes.isBounceArea();
+   */
+  public isBounceArea(axes?: string[]) {
+    return this.axm.isOutside(axes);
+  }
+
+  /**
+   * Destroys properties, and events used in a module and disconnect all connections to inputTypes.
+   * @ko 모듈에 사용한 속성, 이벤트를 해제한다. 모든 inputType과의 연결을 끊는다.
+   * @method eg.Axes#destroy
+   */
+  public destroy() {
+    this.disconnect();
+    this.em.destroy();
+  }
 }

@@ -1,39 +1,56 @@
 import { $, setCssProps } from "../utils";
-import { convertInputType, IInputType, IInputTypeObserver, toAxis } from "./InputType";
-import { IS_IOS_SAFARI, IOS_EDGE_THRESHOLD, DIRECTION_NONE, DIRECTION_VERTICAL, DIRECTION_HORIZONTAL, DIRECTION_ALL, PREVENT_SCROLL_CSSPROPS } from "../const";
-import { ActiveInput, InputEventType, ExtendedEvent } from "../types";
+import {
+  IS_IOS_SAFARI,
+  IOS_EDGE_THRESHOLD,
+  DIRECTION_NONE,
+  DIRECTION_VERTICAL,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_ALL,
+  PREVENT_SCROLL_CSSPROPS,
+} from "../const";
+import { ActiveInput, InputEventType } from "../types";
+
+import {
+  convertInputType,
+  IInputType,
+  IInputTypeObserver,
+  toAxis,
+} from "./InputType";
 
 export interface PanInputOption {
-	inputType?: string[];
-	scale?: number[];
-	thresholdAngle?: number;
-	threshold?: number;
-	iOSEdgeSwipeThreshold?: number;
-	releaseOnScroll?: boolean;
+  inputType?: string[];
+  scale?: number[];
+  thresholdAngle?: number;
+  threshold?: number;
+  iOSEdgeSwipeThreshold?: number;
+  releaseOnScroll?: boolean;
 }
 
 // get user's direction
-export function getDirectionByAngle(angle: number, thresholdAngle: number) {
-	if (thresholdAngle < 0 || thresholdAngle > 90) {
-		return DIRECTION_NONE;
-	}
-	const toAngle = Math.abs(angle);
+export const getDirectionByAngle = (
+  angle: number,
+  thresholdAngle: number
+): number => {
+  if (thresholdAngle < 0 || thresholdAngle > 90) {
+    return DIRECTION_NONE;
+  }
+  const toAngle = Math.abs(angle);
 
-	return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ?
-		DIRECTION_VERTICAL : DIRECTION_HORIZONTAL;
-}
+  return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle
+    ? DIRECTION_VERTICAL
+    : DIRECTION_HORIZONTAL;
+};
 
-export function useDirection(
-	checkType,
-	direction,
-	userDirection?): boolean {
-	if (userDirection) {
-		return !!((direction === DIRECTION_ALL) ||
-			((direction & checkType) && (userDirection & checkType)));
-	} else {
-		return !!(direction & checkType);
-	}
-}
+export const useDirection = (checkType, direction, userDirection?): boolean => {
+  if (userDirection) {
+    return !!(
+      direction === DIRECTION_ALL ||
+      (direction & checkType && userDirection & checkType)
+    );
+  } else {
+    return !!(direction & checkType);
+  }
+};
 
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
@@ -45,7 +62,7 @@ export function useDirection(
  * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
  * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
  * @property {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
-**/
+ **/
 /**
  * @class eg.Axes.PanInput
  * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
@@ -71,246 +88,262 @@ export function useDirection(
  * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
  */
 export class PanInput implements IInputType {
-	public options: PanInputOption;
-	public axes: string[] = [];
-	public element: HTMLElement = null;
-	protected _observer: IInputTypeObserver;
-	protected _direction;
-	protected _panFlag = false;
-	protected _enabled = false;
-	protected _activeInput: ActiveInput = null;
-	private _originalCssProps: { [key: string]: string; };
-	private _atRightEdge = false;
-	private _rightEdgeTimer = 0;
+  public options: PanInputOption;
+  public axes: string[] = [];
+  public element: HTMLElement = null;
+  protected _observer: IInputTypeObserver;
+  protected _direction;
+  protected _panFlag = false;
+  protected _enabled = false;
+  protected _activeInput: ActiveInput = null;
+  private _originalCssProps: { [key: string]: string };
+  private _atRightEdge = false;
+  private _rightEdgeTimer = 0;
 
-	constructor(el: string | HTMLElement, options?: PanInputOption) {
-		this.element = $(el);
-		this.options = {
-			inputType: ["touch", "mouse", "pointer"],
-			scale: [1, 1],
-			thresholdAngle: 45,
-			threshold: 0,
-			iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
-			releaseOnScroll: false,
-			...options,
-		};
-		this.onPanstart = this.onPanstart.bind(this);
-		this.onPanmove = this.onPanmove.bind(this);
-		this.onPanend = this.onPanend.bind(this);
-	}
+  public constructor(el: string | HTMLElement, options?: PanInputOption) {
+    this.element = $(el);
+    this.options = {
+      inputType: ["touch", "mouse", "pointer"],
+      scale: [1, 1],
+      thresholdAngle: 45,
+      threshold: 0,
+      iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
+      releaseOnScroll: false,
+      ...options,
+    };
+    this._onPanstart = this._onPanstart.bind(this);
+    this._onPanmove = this._onPanmove.bind(this);
+    this._onPanend = this._onPanend.bind(this);
+  }
 
-	public mapAxes(axes: string[]) {
-		const useHorizontal = !!axes[0];
-		const useVertical = !!axes[1];
-		if (useHorizontal && useVertical) {
-			this._direction = DIRECTION_ALL;
-		} else if (useHorizontal) {
-			this._direction = DIRECTION_HORIZONTAL;
-		} else if (useVertical) {
-			this._direction = DIRECTION_VERTICAL;
-		} else {
-			this._direction = DIRECTION_NONE;
-		}
-		this.axes = axes;
-	}
+  public mapAxes(axes: string[]) {
+    const useHorizontal = !!axes[0];
+    const useVertical = !!axes[1];
+    if (useHorizontal && useVertical) {
+      this._direction = DIRECTION_ALL;
+    } else if (useHorizontal) {
+      this._direction = DIRECTION_HORIZONTAL;
+    } else if (useVertical) {
+      this._direction = DIRECTION_VERTICAL;
+    } else {
+      this._direction = DIRECTION_NONE;
+    }
+    this.axes = axes;
+  }
 
-	public connect(observer: IInputTypeObserver): IInputType {
-		if (this._activeInput) {
-			this.detachEvent();
-		}
-		this.attachEvent(observer);
-		this._originalCssProps = setCssProps(this.element);
-		return this;
-	}
+  public connect(observer: IInputTypeObserver): IInputType {
+    if (this._activeInput) {
+      this._detachEvent();
+    }
+    this._attachEvent(observer);
+    this._originalCssProps = setCssProps(this.element);
+    return this;
+  }
 
-	public disconnect() {
-		this.detachEvent();
-		if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
-			setCssProps(this.element, this._originalCssProps);
-		}
-		this._direction = DIRECTION_NONE;
-		return this;
-	}
+  public disconnect() {
+    this._detachEvent();
+    if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
+      setCssProps(this.element, this._originalCssProps);
+    }
+    this._direction = DIRECTION_NONE;
+    return this;
+  }
 
-	/**
-	* Destroys elements, properties, and events used in a module.
-	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-	* @method eg.Axes.PanInput#destroy
-	*/
-	public destroy() {
-		this.disconnect();
-		this.element = null;
-	}
+  /**
+   * Destroys elements, properties, and events used in a module.
+   * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+   * @method eg.Axes.PanInput#destroy
+   */
+  public destroy() {
+    this.disconnect();
+    this.element = null;
+  }
 
-	/**
-	 * Enables input devices
-	 * @ko 입력 장치를 사용할 수 있게 한다
-	 * @method eg.Axes.PanInput#enable
-	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 */
-	public enable() {
-		this._enabled = true;
-		return this;
-	}
-	/**
-	 * Disables input devices
-	 * @ko 입력 장치를 사용할 수 없게 한다.
-	 * @method eg.Axes.PanInput#disable
-	 * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 */
-	public disable() {
-		this._enabled = false;
-		return this;
-	}
-	/**
-	 * Returns whether to use an input device
-	 * @ko 입력 장치를 사용 여부를 반환한다.
-	 * @method eg.Axes.PanInput#isEnable
-	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
-	 */
-	public isEnabled() {
-		return this._enabled;
-	}
+  /**
+   * Enables input devices
+   * @ko 입력 장치를 사용할 수 있게 한다
+   * @method eg.Axes.PanInput#enable
+   * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+  public enable() {
+    this._enabled = true;
+    return this;
+  }
 
-	protected onPanstart(event: InputEventType) {
-		this._activeInput.onEventStart(event);
-		if (!this._enabled || this._activeInput.getTouches(event) > 1) {
-			return;
-		}
+  /**
+   * Disables input devices
+   * @ko 입력 장치를 사용할 수 없게 한다.
+   * @method eg.Axes.PanInput#disable
+   * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+  public disable() {
+    this._enabled = false;
+    return this;
+  }
 
-		const panEvent = this._activeInput.extendEvent(event);
-		this._panFlag = false;
+  /**
+   * Returns whether to use an input device
+   * @ko 입력 장치를 사용 여부를 반환한다.
+   * @method eg.Axes.PanInput#isEnable
+   * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+   */
+  public isEnabled() {
+    return this._enabled;
+  }
 
-		if (panEvent.srcEvent.cancelable !== false) {
-			const edgeThreshold = this.options.iOSEdgeSwipeThreshold!;
+  protected _onPanstart(event: InputEventType) {
+    this._activeInput.onEventStart(event);
+    if (!this._enabled || this._activeInput.getTouches(event) > 1) {
+      return;
+    }
 
-			this._observer.hold(this, panEvent);
-			this._atRightEdge = IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
-			this._panFlag = true;
-			this._activeInput.prevEvent = panEvent;
-		}
-	}
+    const panEvent = this._activeInput.extendEvent(event);
+    this._panFlag = false;
 
-	protected onPanmove(event: InputEventType) {
-		this._activeInput.onEventMove(event);
-		if (!this._panFlag || !this._enabled || this._activeInput.getTouches(event) > 1) {
-			return;
-		}
+    if (panEvent.srcEvent.cancelable !== false) {
+      const edgeThreshold = this.options.iOSEdgeSwipeThreshold;
 
-		const panEvent = this._activeInput.extendEvent(event);
-		const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
-		const userDirection = getDirectionByAngle(panEvent.angle, this.options.thresholdAngle);
+      this._observer.hold(this, panEvent);
+      this._atRightEdge =
+        IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
+      this._panFlag = true;
+      this._activeInput.prevEvent = panEvent;
+    }
+  }
 
-		if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
-			this.onPanend(event);
-			return;
-		}
+  protected _onPanmove(event: InputEventType) {
+    this._activeInput.onEventMove(event);
+    if (
+      !this._panFlag ||
+      !this._enabled ||
+      this._activeInput.getTouches(event) > 1
+    ) {
+      return;
+    }
 
-		if (this._activeInput.prevEvent && IS_IOS_SAFARI) {
-			const swipeLeftToRight = panEvent.center.x < 0;
+    const panEvent = this._activeInput.extendEvent(event);
+    const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
+    const userDirection = getDirectionByAngle(
+      panEvent.angle,
+      this.options.thresholdAngle
+    );
 
-			if (swipeLeftToRight) {
-				// iOS swipe left => right
-				this.onPanend(event);
-				return;
-			} else if (this._atRightEdge) {
-				clearTimeout(this._rightEdgeTimer);
+    if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
+      this._onPanend(event);
+      return;
+    }
 
-				// - is right to left
-				const swipeRightToLeft = panEvent.deltaX < -iOSEdgeSwipeThreshold;
+    if (this._activeInput.prevEvent && IS_IOS_SAFARI) {
+      const swipeLeftToRight = panEvent.center.x < 0;
 
-				if (swipeRightToLeft) {
-					this._atRightEdge = false;
-				} else {
-					// iOS swipe right => left
-					this._rightEdgeTimer = window.setTimeout(() => {
-						this.onPanend(event);
-					}, 100);
-				}
-			}
-		}
-		const offset: number[] = this.getOffset(
-			[panEvent.offsetX, panEvent.offsetY],
-			[
-				useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
-				useDirection(DIRECTION_VERTICAL, this._direction, userDirection),
-			]);
-		const prevent = offset.some(v => v !== 0);
+      if (swipeLeftToRight) {
+        // iOS swipe left => right
+        this._onPanend(event);
+        return;
+      } else if (this._atRightEdge) {
+        clearTimeout(this._rightEdgeTimer);
 
-		if (prevent) {
-			if (panEvent.srcEvent.cancelable !== false) {
-				panEvent.srcEvent.preventDefault();
-			}
-			panEvent.srcEvent.stopPropagation();
-		}
-		panEvent.preventSystemEvent = prevent;
-		prevent && this._observer.change(this, panEvent, toAxis(this.axes, offset));
-		this._activeInput.prevEvent = panEvent;
-	}
+        // - is right to left
+        const swipeRightToLeft = panEvent.deltaX < -iOSEdgeSwipeThreshold;
 
-	protected onPanend(event: InputEventType) {
-		this._activeInput.onEventEnd(event);
-		if (!this._panFlag || !this._enabled || this._activeInput.getTouches(event) !== 0) {
-			return;
-		}
-		this._panFlag = false;
-		clearTimeout(this._rightEdgeTimer);
-		const prevEvent = this._activeInput.prevEvent;
-		const velocity = this.getOffset(
-			[
-				Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
-				Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
-			],
-			[
-				useDirection(DIRECTION_HORIZONTAL, this._direction),
-				useDirection(DIRECTION_VERTICAL, this._direction),
-			]);
-		this._observer.release(this, prevEvent, velocity);
-	}
+        if (swipeRightToLeft) {
+          this._atRightEdge = false;
+        } else {
+          // iOS swipe right => left
+          this._rightEdgeTimer = window.setTimeout(() => {
+            this._onPanend(event);
+          }, 100);
+        }
+      }
+    }
+    const offset: number[] = this._getOffset(
+      [panEvent.offsetX, panEvent.offsetY],
+      [
+        useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
+        useDirection(DIRECTION_VERTICAL, this._direction, userDirection),
+      ]
+    );
+    const prevent = offset.some((v) => v !== 0);
 
-	private attachEvent(observer: IInputTypeObserver) {
-		const activeInput = convertInputType(this.options.inputType);
-		this._observer = observer;
-		this._enabled = true;
-		this._activeInput = activeInput;
-		activeInput.start.forEach(event => {
-			this.element.addEventListener(event, this.onPanstart, false);
-		});
-		activeInput.move.forEach(event => {
-			window.addEventListener(event, this.onPanmove, false);
-		});
-		activeInput.end.forEach(event => {
-			window.addEventListener(event, this.onPanend, false);
-		});
-	}
+    if (prevent) {
+      if (panEvent.srcEvent.cancelable !== false) {
+        panEvent.srcEvent.preventDefault();
+      }
+      panEvent.srcEvent.stopPropagation();
+    }
+    panEvent.preventSystemEvent = prevent;
+    if (prevent) {
+      this._observer.change(this, panEvent, toAxis(this.axes, offset));
+    }
+    this._activeInput.prevEvent = panEvent;
+  }
 
-	private detachEvent() {
-		const activeInput = this._activeInput;
-		activeInput.start.forEach(event => {
-			this.element.removeEventListener(event, this.onPanstart, false);
-		});
-		activeInput.move.forEach(event => {
-			window.removeEventListener(event, this.onPanmove, false);
-		});
-		activeInput.end.forEach(event => {
-			window.removeEventListener(event, this.onPanend, false);
-		});
-		this._enabled = false;
-		this._observer = null;
-	}
+  protected _onPanend(event: InputEventType) {
+    this._activeInput.onEventEnd(event);
+    if (
+      !this._panFlag ||
+      !this._enabled ||
+      this._activeInput.getTouches(event) !== 0
+    ) {
+      return;
+    }
+    this._panFlag = false;
+    clearTimeout(this._rightEdgeTimer);
+    const prevEvent = this._activeInput.prevEvent;
+    const velocity = this._getOffset(
+      [
+        Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
+        Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
+      ],
+      [
+        useDirection(DIRECTION_HORIZONTAL, this._direction),
+        useDirection(DIRECTION_VERTICAL, this._direction),
+      ]
+    );
+    this._observer.release(this, prevEvent, velocity);
+  }
 
-	private getOffset(
-		properties: number[],
-		direction: boolean[]): number[] {
-		const offset: number[] = [0, 0];
-		const scale = this.options.scale;
+  private _attachEvent(observer: IInputTypeObserver) {
+    const activeInput = convertInputType(this.options.inputType);
+    this._observer = observer;
+    this._enabled = true;
+    this._activeInput = activeInput;
+    activeInput.start.forEach((event) => {
+      this.element.addEventListener(event, this._onPanstart, false);
+    });
+    activeInput.move.forEach((event) => {
+      window.addEventListener(event, this._onPanmove, false);
+    });
+    activeInput.end.forEach((event) => {
+      window.addEventListener(event, this._onPanend, false);
+    });
+  }
 
-		if (direction[0]) {
-			offset[0] = (properties[0] * scale[0]);
-		}
-		if (direction[1]) {
-			offset[1] = (properties[1] * scale[1]);
-		}
-		return offset;
-	}
+  private _detachEvent() {
+    const activeInput = this._activeInput;
+    activeInput.start.forEach((event) => {
+      this.element.removeEventListener(event, this._onPanstart, false);
+    });
+    activeInput.move.forEach((event) => {
+      window.removeEventListener(event, this._onPanmove, false);
+    });
+    activeInput.end.forEach((event) => {
+      window.removeEventListener(event, this._onPanend, false);
+    });
+    this._enabled = false;
+    this._observer = null;
+  }
+
+  private _getOffset(properties: number[], direction: boolean[]): number[] {
+    const offset: number[] = [0, 0];
+    const scale = this.options.scale;
+
+    if (direction[0]) {
+      offset[0] = properties[0] * scale[0];
+    }
+    if (direction[1]) {
+      offset[1] = properties[1] * scale[1];
+    }
+    return offset;
+  }
 }

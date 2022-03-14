@@ -1,6 +1,7 @@
 import { ExtendedEvent } from "../types";
 import Axes from "../Axes";
 import { getAngle } from "../utils";
+
 import { toAxis } from "./InputType";
 import { PanInput, PanInputOption } from "./PanInput";
 
@@ -26,139 +27,155 @@ import { PanInput, PanInputOption } from "./PanInput";
  * @extends eg.Axes.PanInput
  */
 export class RotatePanInput extends PanInput {
-	private _rotateOrigin: number[];
-	private _prevAngle: number;
-	private _prevQuadrant: number = null;
-	private _lastDiff = 0;
-	private _coefficientForDistanceToAngle: number;
+  private _rotateOrigin: number[];
+  private _prevAngle: number;
+  private _prevQuadrant: number = null;
+  private _lastDiff = 0;
+  private _coefficientForDistanceToAngle: number;
 
-	constructor(el: string | HTMLElement, options?: PanInputOption) {
-		super(el, options);
-	}
+  public constructor(el: string | HTMLElement, options?: PanInputOption) {
+    super(el, options);
+  }
 
-	public mapAxes(axes: string[]) {
-		this._direction = Axes.DIRECTION_ALL;
-		this.axes = axes;
-	}
+  public mapAxes(axes: string[]) {
+    this._direction = Axes.DIRECTION_ALL;
+    this.axes = axes;
+  }
 
-	public onPanstart(event: MouseEvent) {
-		this._activeInput.onEventStart(event);
-		if (!this.isEnabled) {
-			return;
-		}
+  public onPanstart(event: MouseEvent) {
+    this._activeInput.onEventStart(event);
+    if (!this.isEnabled) {
+      return;
+    }
 
-		const rect = this.element.getBoundingClientRect();
-		const panEvent = this._activeInput.extendEvent(event);
+    const rect = this.element.getBoundingClientRect();
+    const panEvent = this._activeInput.extendEvent(event);
 
-		this._observer.hold(this, panEvent);
-		this._panFlag = true;
-		/**
-		 * Responsive
-		 */
-		// TODO: how to do if element is ellipse not circle.
-		this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
-		// TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
-		this._rotateOrigin = [rect.left + (rect.width - 1) / 2, rect.top + (rect.height - 1) / 2];
+    this._observer.hold(this, panEvent);
+    this._panFlag = true;
+    /**
+     * Responsive
+     */
+    // TODO: how to do if element is ellipse not circle.
+    this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
+    // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
+    this._rotateOrigin = [
+      rect.left + (rect.width - 1) / 2,
+      rect.top + (rect.height - 1) / 2,
+    ];
 
-		// init angle.
-		this._prevAngle = null;
+    // init angle.
+    this._prevAngle = null;
 
-		this.triggerChange(panEvent);
-		this._activeInput.prevEvent = panEvent;
-	}
+    this._triggerChange(panEvent);
+    this._activeInput.prevEvent = panEvent;
+  }
 
-	public onPanmove(event: MouseEvent) {
-		this._activeInput.onEventMove(event);
-		if (!this._panFlag || !this.isEnabled) {
-			return;
-		}
+  public onPanmove(event: MouseEvent) {
+    this._activeInput.onEventMove(event);
+    if (!this._panFlag || !this.isEnabled) {
+      return;
+    }
 
-		const panEvent = this._activeInput.extendEvent(event);
+    const panEvent = this._activeInput.extendEvent(event);
 
-		if (panEvent.srcEvent.cancelable !== false) {
-			panEvent.srcEvent.preventDefault();
-		}
-		panEvent.srcEvent.stopPropagation();
-		this.triggerChange(panEvent);
-		this._activeInput.prevEvent = panEvent;
-	}
+    if (panEvent.srcEvent.cancelable !== false) {
+      panEvent.srcEvent.preventDefault();
+    }
+    panEvent.srcEvent.stopPropagation();
+    this._triggerChange(panEvent);
+    this._activeInput.prevEvent = panEvent;
+  }
 
-	public onPanend(event: MouseEvent) {
-		this._activeInput.onEventEnd(event);
-		if (!this._panFlag || !this.isEnabled) {
-			return;
-		}
-		const prevEvent = this._activeInput.prevEvent;
-		this.triggerChange(prevEvent);
-		const vx = prevEvent.velocityX;
-		const vy = prevEvent.velocityY;
-		const velocity = Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
-		this._observer.release(this, prevEvent, [velocity * this._coefficientForDistanceToAngle]);
-		this._panFlag = false;
-	}
+  public onPanend(event: MouseEvent) {
+    this._activeInput.onEventEnd(event);
+    if (!this._panFlag || !this.isEnabled) {
+      return;
+    }
+    const prevEvent = this._activeInput.prevEvent;
+    this._triggerChange(prevEvent);
+    const vx = prevEvent.velocityX;
+    const vy = prevEvent.velocityY;
+    const velocity =
+      Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
+    this._observer.release(this, prevEvent, [
+      velocity * this._coefficientForDistanceToAngle,
+    ]);
+    this._panFlag = false;
+  }
 
-	private triggerChange(event: ExtendedEvent) {
-		const { x, y } = this.getPosFromOrigin(event.center.x, event.center.y);
-		const angle = getAngle(x, y);
-		const quadrant = this.getQuadrant(event.center.x, event.center.y);
-		const diff = this.getDifference(this._prevAngle, angle, this._prevQuadrant, quadrant);
+  private _triggerChange(event: ExtendedEvent) {
+    const { x, y } = this._getPosFromOrigin(event.center.x, event.center.y);
+    const angle = getAngle(x, y);
+    const quadrant = this._getQuadrant(event.center.x, event.center.y);
+    const diff = this._getDifference(
+      this._prevAngle,
+      angle,
+      this._prevQuadrant,
+      quadrant
+    );
 
-		this._prevAngle = angle;
-		this._prevQuadrant = quadrant;
+    this._prevAngle = angle;
+    this._prevQuadrant = quadrant;
 
-		if (diff === 0) {
-			return;
-		}
+    if (diff === 0) {
+      return;
+    }
 
-		this._lastDiff = diff;
-		this._observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
-	}
+    this._lastDiff = diff;
+    this._observer.change(this, event, toAxis(this.axes, [-diff])); // minus for clockwise
+  }
 
-	private getDifference(prevAngle: number, angle: number, prevQuadrant: number, quadrant: number) {
-		let diff: number;
+  private _getDifference(
+    prevAngle: number,
+    angle: number,
+    prevQuadrant: number,
+    quadrant: number
+  ) {
+    let diff: number;
 
-		if (prevAngle === null) {
-			diff = 0;
-		} else if (prevQuadrant === 1 && quadrant === 4) {
-			diff = -prevAngle - (360 - angle);
-		} else if (prevQuadrant === 4 && quadrant === 1) {
-			diff = (360 - prevAngle) + angle;
-		} else {
-			diff = angle - prevAngle;
-		}
+    if (prevAngle === null) {
+      diff = 0;
+    } else if (prevQuadrant === 1 && quadrant === 4) {
+      diff = -prevAngle - (360 - angle);
+    } else if (prevQuadrant === 4 && quadrant === 1) {
+      diff = 360 - prevAngle + angle;
+    } else {
+      diff = angle - prevAngle;
+    }
 
-		return diff;
-	}
+    return diff;
+  }
 
-	private getPosFromOrigin(posX: number, posY: number) {
-		return {
-			x: posX - this._rotateOrigin[0],
-			y: this._rotateOrigin[1] - posY,
-		};
-	}
+  private _getPosFromOrigin(posX: number, posY: number) {
+    return {
+      x: posX - this._rotateOrigin[0],
+      y: this._rotateOrigin[1] - posY,
+    };
+  }
 
-	/**
-	 * Quadrant
-	 *       y(+)
-	 *       |
-	 *   2   |    1
-	 * --------------->x(+)
-	 *   3   |    4
-	 *       |
-	 */
-	private getQuadrant(posX: number, posY: number) {
-		const { x, y } = this.getPosFromOrigin(posX, posY);
-		let q = 0;
+  /**
+   * Quadrant
+   *       y(+)
+   *       |
+   *   2   |    1
+   * --------------->x(+)
+   *   3   |    4
+   *       |
+   */
+  private _getQuadrant(posX: number, posY: number) {
+    const { x, y } = this._getPosFromOrigin(posX, posY);
+    let q = 0;
 
-		if (x >= 0 && y >= 0) {
-			q = 1;
-		} else if (x < 0 && y >= 0) {
-			q = 2;
-		} else if (x < 0 && y < 0) {
-			q = 3;
-		} else if (x >= 0 && y < 0) {
-			q = 4;
-		}
-		return q;
-	}
+    if (x >= 0 && y >= 0) {
+      q = 1;
+    } else if (x < 0 && y >= 0) {
+      q = 2;
+    } else if (x < 0 && y < 0) {
+      q = 3;
+    } else if (x >= 0 && y < 0) {
+      q = 4;
+    }
+    return q;
+  }
 }

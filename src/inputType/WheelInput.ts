@@ -1,10 +1,11 @@
 import { $ } from "../utils";
+
 import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
 
 export interface WheelInputOption {
-	scale?: number;
-	releaseDelay?: number;
-	useNormalized?: boolean;
+  scale?: number;
+  releaseDelay?: number;
+  useNormalized?: boolean;
 }
 
 /**
@@ -12,7 +13,7 @@ export interface WheelInputOption {
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @property {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
-**/
+ **/
 
 /**
  * @class eg.Axes.WheelInput
@@ -31,121 +32,127 @@ export interface WheelInputOption {
  * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
  */
 export class WheelInput implements IInputType {
-	options: WheelInputOption;
-	axes: string[] = [];
-	element: HTMLElement = null;
-	private _observer: IInputTypeObserver;
-	private _enabled = false;
-	private _holding = false;
-	private _timer = null;
+  public options: WheelInputOption;
+  public axes: string[] = [];
+  public element: HTMLElement = null;
+  private _observer: IInputTypeObserver;
+  private _enabled = false;
+  private _holding = false;
+  private _timer: NodeJS.Timeout = null;
 
-	constructor(el, options?: WheelInputOption) {
-		this.element = $(el);
-		this.options = {
-			...{
-				scale: 1,
-				releaseDelay: 300,
-				useNormalized: true,
-			}, ...options,
-		};
-		this.onWheel = this.onWheel.bind(this);
-	}
+  public constructor(el, options?: WheelInputOption) {
+    this.element = $(el);
+    this.options = {
+      ...{
+        scale: 1,
+        releaseDelay: 300,
+        useNormalized: true,
+      },
+      ...options,
+    };
+    this._onWheel = this._onWheel.bind(this);
+  }
 
-	public mapAxes(axes: string[]) {
-		this.axes = axes;
-	}
+  public mapAxes(axes: string[]) {
+    this.axes = axes;
+  }
 
-	public connect(observer: IInputTypeObserver): IInputType {
-		this.detachEvent();
-		this.attachEvent(observer);
-		return this;
-	}
+  public connect(observer: IInputTypeObserver): IInputType {
+    this._detachEvent();
+    this._attachEvent(observer);
+    return this;
+  }
 
-	public disconnect() {
-		this.detachEvent();
-		return this;
-	}
+  public disconnect() {
+    this._detachEvent();
+    return this;
+  }
 
-	/**
-	* Destroys elements, properties, and events used in a module.
-	* @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-	* @method eg.Axes.WheelInput#destroy
-	*/
-	public destroy() {
-		this.disconnect();
-		this.element = null;
-	}
+  /**
+   * Destroys elements, properties, and events used in a module.
+   * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
+   * @method eg.Axes.WheelInput#destroy
+   */
+  public destroy() {
+    this.disconnect();
+    this.element = null;
+  }
 
-	private onWheel(event) {
-		if (!this._enabled) {
-			return;
-		}
-		event.preventDefault();
+  /**
+   * Enables input devices
+   * @ko 입력 장치를 사용할 수 있게 한다
+   * @method eg.Axes.WheelInput#enable
+   * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+  public enable() {
+    this._enabled = true;
+    return this;
+  }
 
-		if (event.deltaY === 0) {
-			return;
-		}
+  /**
+   * Disables input devices
+   * @ko 입력 장치를 사용할 수 없게 한다.
+   * @method eg.Axes.WheelInput#disable
+   * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+  public disable() {
+    this._enabled = false;
+    return this;
+  }
 
-		if (!this._holding) {
-			this._observer.hold(this, event);
-			this._holding = true;
-		}
-		const offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
-		this._observer.change(this, event, toAxis(this.axes, [offset]), true);
-		clearTimeout(this._timer);
+  /**
+   * Returns whether to use an input device
+   * @ko 입력 장치를 사용 여부를 반환한다.
+   * @method eg.Axes.WheelInput#isEnable
+   * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
+   */
+  public isEnabled() {
+    return this._enabled;
+  }
 
-		this._timer = setTimeout(() => {
-			if (this._holding) {
-				this._holding = false;
-				this._observer.release(this, event, [0]);
-			}
-		}, this.options.releaseDelay);
-	}
+  private _onWheel(event: WheelEvent) {
+    if (!this._enabled) {
+      return;
+    }
+    event.preventDefault();
 
-	private attachEvent(observer: IInputTypeObserver) {
-		this._observer = observer;
-		this.element.addEventListener("wheel", this.onWheel);
-		this._enabled = true;
-	}
+    if (event.deltaY === 0) {
+      return;
+    }
 
-	private detachEvent() {
-		this.element.removeEventListener("wheel", this.onWheel);
-		this._enabled = false;
-		this._observer = null;
+    if (!this._holding) {
+      this._observer.hold(this, event);
+      this._holding = true;
+    }
+    const offset =
+      (event.deltaY > 0 ? -1 : 1) *
+      this.options.scale *
+      (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
+    this._observer.change(this, event, toAxis(this.axes, [offset]), true);
+    clearTimeout(this._timer);
 
-		if (this._timer) {
-			clearTimeout(this._timer);
-			this._timer = null;
-		}
-	}
+    this._timer = setTimeout(() => {
+      if (this._holding) {
+        this._holding = false;
+        this._observer.release(this, event, [0]);
+      }
+    }, this.options.releaseDelay);
+  }
 
-	/**
-	 * Enables input devices
-	 * @ko 입력 장치를 사용할 수 있게 한다
-	 * @method eg.Axes.WheelInput#enable
-	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 */
-	public enable() {
-		this._enabled = true;
-		return this;
-	}
-	/**
-	 * Disables input devices
-	 * @ko 입력 장치를 사용할 수 없게 한다.
-	 * @method eg.Axes.WheelInput#disable
-	 * @return {eg.Axes.WheelInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
-	 */
-	public disable() {
-		this._enabled = false;
-		return this;
-	}
-	/**
-	 * Returns whether to use an input device
-	 * @ko 입력 장치를 사용 여부를 반환한다.
-	 * @method eg.Axes.WheelInput#isEnable
-	 * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
-	 */
-	public isEnabled() {
-		return this._enabled;
-	}
+  private _attachEvent(observer: IInputTypeObserver) {
+    this._observer = observer;
+    this.element.addEventListener("wheel", this._onWheel);
+    this._enabled = true;
+  }
+
+  private _detachEvent() {
+    this.element.removeEventListener("wheel", this._onWheel);
+    this._enabled = false;
+    this._observer = null;
+
+    if (this._timer) {
+      clearTimeout(this._timer);
+      this._timer = null;
+    }
+  }
 }
