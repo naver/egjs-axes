@@ -156,15 +156,6 @@ fabric.properties
 # .idea/misc.xml
 # *.ipr
 
-
-### Jekyll ###
-_site/
-demo/dist
-demo/doc
-.sass-cache/
-.jekyll-metadata
-.jekyll-cache/
-
 ### SublimeText ###
 # cache files for sublime text
 *.tmlanguage.cache
@@ -206,8 +197,9 @@ GitHub.sublime-settings
 report/
 temp/
 doc/
-demo/_data/version.yml
 demo/release/
+demo_old/_data/version.yml
+demo_old/release/
 CHANGELOG.md
 build/
 outjs/

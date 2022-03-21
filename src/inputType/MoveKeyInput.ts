@@ -26,24 +26,24 @@ export interface MoveKeyInputOption {
 /**
  * @typedef {Object} MoveKeyInputOption The option object of the eg.Axes.MoveKeyInput module
  * @ko eg.Axes.MoveKeyInput 모듈의 옵션 객체
- * @property {Array<Number>} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [scale[0]=1] Coordinate scale for the first axis<ko>첫번째 축의 배율</ko>
- * @property {Number} [scale[1]=1] Coordinate scale for the decond axis<ko>두번째 축의 배율</ko>
+ * @param {Array<Number>} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @param {Number} [scale[0]=1] Coordinate scale for the first axis<ko>첫번째 축의 배율</ko>
+ * @param {Number} [scale[1]=1] Coordinate scale for the decond axis<ko>두번째 축의 배율</ko>
  **/
 
 /**
- * @class eg.Axes.MoveKeyInput
- * @classdesc A module that passes the amount of change to eg.Axes when the move key stroke is occured. use two axis.
+ * A module that passes the amount of change to eg.Axes when the move key stroke is occured. use two axis.
  * @ko 이동키 입력이 발생했을 때의 변화량을 eg.Axes에 전달하는 모듈. 두 개 의 축을 사용한다.
  *
  * @example
+ * ```js
  * const moveKey = new eg.Axes.MoveKeyInput("#area", {
  * 		scale: [1, 1]
  * });
  *
  * // Connect 'x', 'y' axes when the moveKey is pressed.
  * axes.connect(["x", "y"], moveKey);
- *
+ * ```
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.MoveKeyInput module <ko>eg.Axes.MoveKeyInput 모듈을 사용할 엘리먼트</ko>
  * @param {MoveKeyInputOption} [options] The option object of the eg.Axes.MoveKeyInput module<ko>eg.Axes.MoveKeyInput 모듈의 옵션 객체</ko>
  */
@@ -56,6 +56,9 @@ export class MoveKeyInput implements IInputType {
   private _holding = false;
   private _timer: NodeJS.Timeout = null;
 
+  /**
+   *
+   */
   public constructor(el, options?: MoveKeyInputOption) {
     this.element = $(el);
     this.options = {
@@ -92,7 +95,6 @@ export class MoveKeyInput implements IInputType {
   /**
    * Destroys elements, properties, and events used in a module.
    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-   * @method eg.Axes.MoveKeyInput#destroy
    */
   public destroy() {
     this.disconnect();
@@ -102,8 +104,7 @@ export class MoveKeyInput implements IInputType {
   /**
    * Enables input devices
    * @ko 입력 장치를 사용할 수 있게 한다
-   * @method eg.Axes.MoveKeyInput#enable
-   * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public enable() {
     this._enabled = true;
@@ -113,8 +114,7 @@ export class MoveKeyInput implements IInputType {
   /**
    * Disables input devices
    * @ko 입력 장치를 사용할 수 없게 한다.
-   * @method eg.Axes.MoveKeyInput#disable
-   * @return {eg.Axes.MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {MoveKeyInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public disable() {
     this._enabled = false;
@@ -124,7 +124,6 @@ export class MoveKeyInput implements IInputType {
   /**
    * Returns whether to use an input device
    * @ko 입력 장치를 사용 여부를 반환한다.
-   * @method eg.Axes.MoveKeyInput#isEnable
    * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
    */
   public isEnabled() {

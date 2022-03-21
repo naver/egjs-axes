@@ -55,20 +55,24 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @property {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices.<br>- touch: Touch screen<br>- mouse: Mouse <ko>입력 장치 종류.<br>- touch: 터치 입력 장치<br>- mouse: 마우스</ko>
- * @property {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [scale.0=1] horizontal axis scale <ko>수평축 배율</ko>
- * @property {Number} [scale.1=1] vertical axis scale <ko>수직축 배율</ko>
- * @property {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
- * @property {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
- * @property {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
+ * @param {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices.
+ * - touch: Touch screen
+ * - mouse: Mouse <ko>입력 장치 종류.
+ * - touch: 터치 입력 장치
+ * - mouse: 마우스</ko>
+ * @param {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @param {Number} [scale[0]=1] horizontal axis scale <ko>수평축 배율</ko>
+ * @param {Number} [scale[1]=1] vertical axis scale <ko>수직축 배율</ko>
+ * @param {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
+ * @param {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+ * @param {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
  **/
 /**
- * @class eg.Axes.PanInput
- * @classdesc A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
+ * A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
  * @ko 마우스나 터치 스크린을 누르고 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
  *
  * @example
+ * ```js
  * const pan = new eg.Axes.PanInput("#area", {
  * 		inputType: ["touch"],
  * 		scale: [1, 1.3],
@@ -83,9 +87,9 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
  *
  * // Connect only one 'something2' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
  * axes.connect(["", "something2"], pan); // or axes.connect(" something2", pan);
- *
+ * ```
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
- * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
+ * @param {PanInputOption} [options={}] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
  */
 export class PanInput implements IInputType {
   public options: PanInputOption;
@@ -100,6 +104,9 @@ export class PanInput implements IInputType {
   private _atRightEdge = false;
   private _rightEdgeTimer = 0;
 
+  /**
+   *
+   */
   public constructor(el: string | HTMLElement, options?: PanInputOption) {
     this.element = $(el);
     this.options = {
@@ -152,7 +159,6 @@ export class PanInput implements IInputType {
   /**
    * Destroys elements, properties, and events used in a module.
    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-   * @method eg.Axes.PanInput#destroy
    */
   public destroy() {
     this.disconnect();
@@ -162,8 +168,7 @@ export class PanInput implements IInputType {
   /**
    * Enables input devices
    * @ko 입력 장치를 사용할 수 있게 한다
-   * @method eg.Axes.PanInput#enable
-   * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public enable() {
     this._enabled = true;
@@ -173,8 +178,7 @@ export class PanInput implements IInputType {
   /**
    * Disables input devices
    * @ko 입력 장치를 사용할 수 없게 한다.
-   * @method eg.Axes.PanInput#disable
-   * @return {eg.Axes.PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public disable() {
     this._enabled = false;
@@ -184,7 +188,6 @@ export class PanInput implements IInputType {
   /**
    * Returns whether to use an input device
    * @ko 입력 장치를 사용 여부를 반환한다.
-   * @method eg.Axes.PanInput#isEnable
    * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
    */
   public isEnabled() {

@@ -18,22 +18,22 @@ export interface PinchInputOption {
 /**
  * @typedef {Object} PinchInputOption The option object of the eg.Axes.PinchInput module
  * @ko eg.Axes.PinchInput 모듈의 옵션 객체
- * @property {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
- * @property {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+ * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
+ * @param {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
  **/
 
 /**
- * @class eg.Axes.PinchInput
- * @classdesc A module that passes the amount of change to eg.Axes when two pointers are moving toward (zoom-in) or away from each other (zoom-out). use one axis.
+ * A module that passes the amount of change to eg.Axes when two pointers are moving toward (zoom-in) or away from each other (zoom-out). use one axis.
  * @ko 2개의 pointer를 이용하여 zoom-in하거나 zoom-out 하는 동작의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
  * @example
+ * ```js
  * const pinch = new eg.Axes.PinchInput("#area", {
  * 		scale: 1
  * });
  *
  * // Connect 'something' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
  * axes.connect("something", pinch);
- *
+ * ```
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</ko>
  * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
@@ -48,6 +48,9 @@ export class PinchInput implements IInputType {
   private _activeInput: ActiveInput = null;
   private _baseValue: number;
 
+  /**
+   *
+   */
   public constructor(el: string | HTMLElement, options?: PinchInputOption) {
     this.element = $(el);
     this.options = {
@@ -85,7 +88,6 @@ export class PinchInput implements IInputType {
   /**
    * Destroys elements, properties, and events used in a module.
    * @ko 모듈에 사용한 엘리먼트와 속성, 이벤트를 해제한다.
-   * @method eg.Axes.PinchInput#destroy
    */
   public destroy() {
     this.disconnect();
@@ -95,8 +97,7 @@ export class PinchInput implements IInputType {
   /**
    * Enables input devices
    * @ko 입력 장치를 사용할 수 있게 한다
-   * @method eg.Axes.PinchInput#enable
-   * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public enable() {
     this._enabled = true;
@@ -106,8 +107,7 @@ export class PinchInput implements IInputType {
   /**
    * Disables input devices
    * @ko 입력 장치를 사용할 수 없게 한다.
-   * @method eg.Axes.PinchInput#disable
-   * @return {eg.Axes.PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @return {PinchInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public disable() {
     this._enabled = false;
@@ -117,7 +117,6 @@ export class PinchInput implements IInputType {
   /**
    * Returns whether to use an input device
    * @ko 입력 장치를 사용 여부를 반환한다.
-   * @method eg.Axes.PinchInput#isEnable
    * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
    */
   public isEnabled() {

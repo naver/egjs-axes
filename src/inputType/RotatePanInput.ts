@@ -6,11 +6,13 @@ import { toAxis } from "./InputType";
 import { PanInput, PanInputOption } from "./PanInput";
 
 /**
- * @class eg.Axes.RotatePanInput
- * @classdesc A module that passes the angle moved by touch to Axes and uses one axis of rotation.<br>[Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
- * @ko 터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.<br>[상세내용](https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4)
+ * A module that passes the angle moved by touch to Axes and uses one axis of rotation.
+ * [Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
+ * @ko 터치에 의해 움직인 각도를 Axes 에 전달하며 1개의 회전축만 사용한다.
+ * [상세내용](https://github.com/naver/egjs-axes/wiki/RotatePanInput-%7C-%ED%95%9C%EA%B5%AD%EC%96%B4)
  *
  * @example
+ * ```js
  * const input = new eg.Axes.RotatePanInput("#area");
  *
  * var axes = new eg.Axes({
@@ -21,10 +23,10 @@ import { PanInput, PanInputOption } from "./PanInput";
  * });
  *
  * axes.connect("angle", input)
- *
+ * ```
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.RotatePanInput module <ko>eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트</ko>
  * @param {PanInputOption} [options] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
- * @extends eg.Axes.PanInput
+ * @extends PanInput
  */
 export class RotatePanInput extends PanInput {
   private _rotateOrigin: number[];
@@ -33,6 +35,9 @@ export class RotatePanInput extends PanInput {
   private _lastDiff = 0;
   private _coefficientForDistanceToAngle: number;
 
+  /**
+   *
+   */
   public constructor(el: string | HTMLElement, options?: PanInputOption) {
     super(el, options);
   }
@@ -53,9 +58,6 @@ export class RotatePanInput extends PanInput {
 
     this._observer.hold(this, panEvent);
     this._panFlag = true;
-    /**
-     * Responsive
-     */
     // TODO: how to do if element is ellipse not circle.
     this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
     // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
@@ -154,16 +156,16 @@ export class RotatePanInput extends PanInput {
     };
   }
 
-  /**
-   * Quadrant
-   *       y(+)
-   *       |
-   *   2   |    1
-   * --------------->x(+)
-   *   3   |    4
-   *       |
-   */
   private _getQuadrant(posX: number, posY: number) {
+    /**
+     * Quadrant
+     *       y(+)
+     *       |
+     *   2   |    1
+     * --------------->x(+)
+     *   3   |    4
+     *       |
+     */
     const { x, y } = this._getPosFromOrigin(posX, posY);
     let q = 0;
 
