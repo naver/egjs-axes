@@ -198,8 +198,6 @@ report/
 temp/
 doc/
 demo/release/
-demo_old/_data/version.yml
-demo_old/release/
 CHANGELOG.md
 build/
 outjs/
