@@ -236,12 +236,12 @@ function AxesDemo() {
       <div id="delegateTarget">
         <div id="uiWrapper">
           <div className="ui">
-            <Icon style={{ height: `75px` }}/>
+            <Icon style={{ height: "75px" }}/>
           </div>
         </div>
         <div id="grid"></div>
       </div>
-      <div style={{ clear:`both` }}></div>
+      <div style={{ clear: "both" }}></div>
     </div>
   );
 }

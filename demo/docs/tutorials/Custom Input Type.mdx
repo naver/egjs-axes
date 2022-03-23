@@ -1,7 +1,7 @@
 ---
 title: Creating a custom InputType
-id: custom-inputtype
-slug: /custom-inputtype
+id: custom-input-type
+slug: /custom-input-type
 sidebar_position: 3
 ---
 ## How does InputType pass your input to eg.Axes?
@@ -95,7 +95,7 @@ The InputType class of eg.Axes must implement the following properties and metho
 >```
 
 ### Method
-#### 1. Constrouctor
+#### 1. Constructor
 The following types of InputType constructors are recommended.
 ```js
 new BlaInput(elemenet, options);
@@ -118,7 +118,7 @@ constructor(el, options) {
 
 #### 2. connect(observer: IInputTypeObserver): IInputType `required`
 Register an event that can receive user input.
-It is called by eg.Axes when [axes.connect] (https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#connect) is called.
+It is called by eg.Axes when [axes.connect](https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#connect) is called.
 
 ```js
 connect(observer) {
@@ -131,7 +131,7 @@ connect(observer) {
 #### 3. mapAxes(axes: string[]); `required`
 
 The axis information of eg.Axes is stored in the axes property.
-It is called by eg.Axes when [axes.connect] (https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#connect) is called.
+It is called by eg.Axes when [axes.connect](https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#connect) is called.
 
 ```js
 mapAxes(axes) {
@@ -141,7 +141,7 @@ mapAxes(axes) {
 
 #### 4. disconnect() `required`
 Releases events that can receive user input.
-It is called by eg.Axes when [axes.disconnect] (https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#disconnect) is called.
+It is called by eg.Axes when [axes.disconnect](https://naver.github.io/egjs-axes/release/latest/doc/eg.Axes.html#disconnect) is called.
 
 ```js
 disconnect() {

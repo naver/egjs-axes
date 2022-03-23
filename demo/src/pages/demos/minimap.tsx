@@ -59,7 +59,7 @@ function Minimap() {
   return (
     <div className="demobox" codepen="minimap">
       <p>You can create a scrollable minimap using two axes.</p>
-      <div style={{ position:`relative` }}>
+      <div style={{ position: "relative" }}>
         <div id="imageView">
           <div id="rawImage"></div>
         </div>

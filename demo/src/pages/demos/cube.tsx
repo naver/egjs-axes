@@ -55,37 +55,37 @@ function Cube() {
         <div id="box">
           <div
             className="face metal-linear"
-            style={{ transform: `rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px)` }}
+            style={{ transform: "rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px)" }}
           >
             1
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: `rotateY(-90deg) translate3d(0px,-50px,100px)` }}
+            style={{ transform: "rotateY(-90deg) translate3d(0px,-50px,100px)" }}
           >
             2
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: `rotateY(90deg) translate3d(0px,-50px,0px)` }}
+            style={{ transform: "rotateY(90deg) translate3d(0px,-50px,0px)" }}
           >
             3
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: `rotateX(90deg) translate3d(-50px,0px,100px)` }}
+            style={{ transform: "rotateX(90deg) translate3d(-50px,0px,100px)" }}
           >
             4
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: `rotateY(180deg) translate3d(50px,-50px,50px)` }}
+            style={{ transform: "rotateY(180deg) translate3d(50px,-50px,50px)" }}
           >
             5
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: `rotateX(-90deg) translate3d(-50px,0px,0px)` }}
+            style={{ transform: "rotateX(-90deg) translate3d(-50px,0px,0px)" }}
           >
             6
           </div>

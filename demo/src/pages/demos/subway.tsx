@@ -34,7 +34,7 @@ function Cube() {
       deceleration: 0.003,
       interrutable: false
     }, {
-      zoom: baseScale
+      zoom: 1
     });
 
     // 2. attach event handler
