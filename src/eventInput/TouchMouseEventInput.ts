@@ -10,7 +10,9 @@ export class TouchMouseEventInput extends EventInput {
   private _firstTouch: TouchEvent;
 
   public onEventStart(event: InputEventType): ExtendedEvent {
-    this._firstTouch = event instanceof TouchEvent ? event : null;
+    this._firstTouch = event.hasOwnProperty("touches")
+      ? (event as TouchEvent)
+      : null;
     return this.extendEvent(event);
   }
 
@@ -23,32 +25,48 @@ export class TouchMouseEventInput extends EventInput {
   }
 
   public getTouches(event: InputEventType): number {
-    return event instanceof TouchEvent ? event.touches.length : 0;
+    return event.hasOwnProperty("touches")
+      ? (event as TouchEvent).touches.length
+      : 0;
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {
     if (
       !this._firstTouch ||
-      (event instanceof TouchEvent && event.touches.length !== 2)
+      (event.hasOwnProperty("touches") &&
+        (event as TouchEvent).touches.length !== 2)
     ) {
       return 1; // TODO: consider calculating non-pinch gesture scale
     }
-    return event instanceof TouchEvent
-      ? this._getDistance(event.touches[0], event.touches[1]) /
-          this._getDistance(
-            this._firstTouch.touches[0],
-            this._firstTouch.touches[1]
-          )
-      : this.prevEvent.scale;
+    if (event.hasOwnProperty("touches")) {
+      return (
+        this._getDistance(
+          (event as TouchEvent).touches[0],
+          (event as TouchEvent).touches[1]
+        ) /
+        this._getDistance(
+          this._firstTouch.touches[0],
+          this._firstTouch.touches[1]
+        )
+      );
+    }
+    return this.prevEvent.scale;
   }
 
   protected _getCenter(event: MouseEvent | TouchEvent): {
     x: number;
     y: number;
   } {
-    return event instanceof TouchEvent
-      ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
-      : { x: event.clientX, y: event.clientY };
+    if (event.hasOwnProperty("touches")) {
+      return {
+        x: (event as TouchEvent).touches[0].clientX,
+        y: (event as TouchEvent).touches[0].clientY,
+      };
+    }
+    return {
+      x: (event as MouseEvent).clientX,
+      y: (event as MouseEvent).clientY,
+    };
   }
 
   protected _getMovement(event: MouseEvent | TouchEvent): {
@@ -58,9 +76,15 @@ export class TouchMouseEventInput extends EventInput {
     const prev = this.prevEvent.srcEvent;
     const [nextSpot, prevSpot] = [event, prev].map((e) => {
       return {
-        id: e instanceof TouchEvent ? e.touches[0].identifier : null,
-        x: e instanceof TouchEvent ? e.touches[0].pageX : e.pageX,
-        y: e instanceof TouchEvent ? e.touches[0].pageY : e.pageY,
+        id: e.hasOwnProperty("touches")
+          ? (e as TouchEvent).touches[0].identifier
+          : null,
+        x: e.hasOwnProperty("touches")
+          ? (e as TouchEvent).touches[0].pageX
+          : (e as MouseEvent).pageX,
+        y: e.hasOwnProperty("touches")
+          ? (e as TouchEvent).touches[0].pageY
+          : (e as MouseEvent).pageY,
       };
     });
     return nextSpot.id === prevSpot.id

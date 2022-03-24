@@ -42,12 +42,14 @@ export abstract class EventInput {
     const deltaY = prevEvent ? prevEvent.deltaY + movement.y : movement.y;
     const offsetX = prevEvent ? deltaX - prevEvent.deltaX : 0;
     const offsetY = prevEvent ? deltaY - prevEvent.deltaY : 0;
-    const velocityX = prevEvent
-      ? offsetX / (event.timeStamp - prevEvent.srcEvent.timeStamp)
-      : 0;
-    const velocityY = prevEvent
-      ? offsetY / (event.timeStamp - prevEvent.srcEvent.timeStamp)
-      : 0;
+    const velocityX =
+      prevEvent && event.timeStamp - prevEvent.srcEvent.timeStamp !== 0
+        ? offsetX / (event.timeStamp - prevEvent.srcEvent.timeStamp)
+        : 0;
+    const velocityY =
+      prevEvent && event.timeStamp - prevEvent.srcEvent.timeStamp !== 0
+        ? offsetY / (event.timeStamp - prevEvent.srcEvent.timeStamp)
+        : 0;
     return {
       srcEvent: event,
       scale,
