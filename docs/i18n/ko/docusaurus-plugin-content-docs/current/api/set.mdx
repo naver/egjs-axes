@@ -1,0 +1,31 @@
+---
+custom_edit_url: null
+---
+
+```ts
+function set(pos: Object&lt;string, number&gt;)
+```
+
+<div className="bulma-tags">
+
+</div>
+
+Specifies the coordinates to move after the 'change' event. It works when the holding value of the change event is true.
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|||이동할 좌표|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("change", function(event) {
+  event.holding && event.set({x: 10});
+});
+```
+

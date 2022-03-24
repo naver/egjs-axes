@@ -62,8 +62,6 @@ bower_components
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
 # Thumbnails
 ._*
 # Files that might appear in the root of a volume
@@ -156,15 +154,6 @@ fabric.properties
 # .idea/misc.xml
 # *.ipr
 
-
-### Jekyll ###
-_site/
-demo/dist
-demo/doc
-.sass-cache/
-.jekyll-metadata
-.jekyll-cache/
-
 ### SublimeText ###
 # cache files for sublime text
 *.tmlanguage.cache
@@ -206,7 +195,6 @@ GitHub.sublime-settings
 report/
 temp/
 doc/
-demo/_data/version.yml
 demo/release/
 CHANGELOG.md
 build/

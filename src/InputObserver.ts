@@ -1,5 +1,5 @@
 import { InterruptManager } from "./InterruptManager";
-import { IInputType, IInputTypeObserver, toAxis } from "./inputType/InputType";
+import { InputType, InputTypeObserver, toAxis } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
@@ -8,164 +8,227 @@ import { isOutside, getInsidePosition, getCirculatedPos } from "./Coordinate";
 import { map, equal } from "./utils";
 import { AnimationParam } from "./types";
 
-export class InputObserver implements IInputTypeObserver {
-	public options: AxesOption;
-	private itm: InterruptManager;
-	private em: EventManager;
-	private axm: AxisManager;
-	private am: AnimationManager;
-	private isOutside = false;
-	private moveDistance: Axis = null;
-	private isStopped = false;
-	constructor({ options, itm, em, axm, am }: {
-		options: AxesOption;
-		itm: InterruptManager;
-		em: EventManager;
-		axm: AxisManager;
-		am: AnimationManager;
-	}) {
-		this.options = options;
-		this.itm = itm;
-		this.em = em;
-		this.axm = axm;
-		this.am = am;
-	}
+export class InputObserver implements InputTypeObserver {
+  public options: AxesOption;
+  private _interruptManager: InterruptManager;
+  private _eventManager: EventManager;
+  private _axisManager: AxisManager;
+  private _animationManager: AnimationManager;
+  private _isOutside = false;
+  private _moveDistance: Axis = null;
+  private _isStopped = false;
+  public constructor({
+    options,
+    interruptManager,
+    eventManager,
+    axisManager,
+    animationManager,
+  }: {
+    options: AxesOption;
+    interruptManager: InterruptManager;
+    eventManager: EventManager;
+    axisManager: AxisManager;
+    animationManager: AnimationManager;
+  }) {
+    this.options = options;
+    this._interruptManager = interruptManager;
+    this._eventManager = eventManager;
+    this._axisManager = axisManager;
+    this._animationManager = animationManager;
+  }
 
-	// when move pointer is held in outside
-	private atOutside(pos: Axis) {
-		if (this.isOutside) {
-			return this.axm.map(pos, (v, opt) => {
-				const tn = opt.range[0] - opt.bounce[0];
-				const tx = opt.range[1] + opt.bounce[1];
-				return v > tx ? tx : (v < tn ? tn : v);
-			});
-		} else {
-			return this.axm.map(pos, (v, opt) => {
-				const min = opt.range[0];
-				const max = opt.range[1];
-				const out = opt.bounce;
-				const circular = opt.circular;
+  public get(input: InputType): Axis {
+    return this._axisManager.get(input.axes);
+  }
 
-				if (circular && (circular[0] || circular[1])) {
-					return v;
-				} else if (v < min) { // left
-					return min - this.am.interpolate(min - v, out[0]);
-				} else if (v > max) { // right
-					return max + this.am.interpolate(v - max, out[1]);
-				}
-				return v;
-			});
-		}
-	}
-	get(input: IInputType): Axis {
-		return this.axm.get(input.axes);
-	}
-	hold(input: IInputType, event) {
-		if (this.itm.isInterrupted() || !input.axes.length) {
-			return;
-		}
-		const changeOption: ChangeEventOption = {
-			input,
-			event,
-		};
-		this.isStopped = false;
-		this.itm.setInterrupt(true);
-		this.am.stopAnimation(input.axes, changeOption);
-		!this.moveDistance && this.em.triggerHold(this.axm.get(), changeOption);
-		this.isOutside = this.axm.isOutside(input.axes);
-		this.moveDistance = this.axm.get(input.axes);
-	}
-	change(input: IInputType, event, offset: Axis, useDuration?: boolean) {
-		if (this.isStopped || !this.itm.isInterrupting() || this.axm.every(offset, v => v === 0)) {
-			return;
-		}
-		let depaPos: Axis = this.moveDistance || this.axm.get(input.axes);
-		let destPos: Axis;
+  public hold(input: InputType, event) {
+    if (this._interruptManager.isInterrupted() || !input.axes.length) {
+      return;
+    }
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
+    this._isStopped = false;
+    this._interruptManager.setInterrupt(true);
+    this._animationManager.stopAnimation(input.axes, changeOption);
+    if (!this._moveDistance) {
+      this._eventManager.triggerHold(this._axisManager.get(), changeOption);
+    }
+    this._isOutside = this._axisManager.isOutside(input.axes);
+    this._moveDistance = this._axisManager.get(input.axes);
+  }
 
-		// for outside logic
-		destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
-		this.moveDistance && (this.moveDistance = this.axm.map(
-			destPos, (v, {circular, range}) => circular && (circular[0] || circular[1]) ? getCirculatedPos(v, range, circular as boolean[]) : v,
-		));
-		// from outside to inside
-		if (this.isOutside &&
-			this.axm.every(depaPos, (v, opt) => !isOutside(v, opt.range))) {
-			this.isOutside = false;
-		}
-		depaPos = this.atOutside(depaPos);
-		destPos = this.atOutside(destPos);
-		const changeOption: ChangeEventOption = {
-			input,
-			event,
-		};
-		if (useDuration) {
-			const duration = this.am.getDuration(destPos, depaPos);
-			this.am.stopAnimation(input.axes, changeOption);
-			this.am.animateTo(destPos, duration, changeOption);
-		} else {
-			const isCanceled = !this.em.triggerChange(destPos, false, depaPos, changeOption, true);
-			if (isCanceled) {
-				this.isStopped = true;
-				this.moveDistance = null;
-				this.am.finish(false);
-			}
-		}
-	}
-	release(input: IInputType, event, velocity: number[], inputDuration?: number) {
-		if (this.isStopped || !this.itm.isInterrupting() || !this.moveDistance) {
-			return;
-		}
-		const pos: Axis = this.axm.get(input.axes);
-		const depaPos: Axis = this.axm.get();
-		const displacement = this.am.getDisplacement(velocity);
-		const offset = toAxis(input.axes, displacement);
-		let destPos: Axis = this.axm.get(this.axm.map(offset, (v, opt, k) => {
-			if (opt.circular && (opt.circular[0] || opt.circular[1])) {
-				return pos[k] + v;
-			} else {
-				return getInsidePosition(
-					pos[k] + v,
-					opt.range,
-					opt.circular as boolean[],
-					opt.bounce as number[],
-				);
-			}
-		}));
-		const duration = this.am.getDuration(destPos, pos, inputDuration);
+  public change(input: InputType, event, offset: Axis, useDuration?: boolean) {
+    if (
+      this._isStopped ||
+      !this._interruptManager.isInterrupting() ||
+      this._axisManager.every(offset, (v) => v === 0)
+    ) {
+      return;
+    }
+    let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
+    let destPos: Axis;
 
-		if (duration === 0) {
-			destPos = { ...depaPos };
-		}
-		// prepare params
-		const param: AnimationParam = {
-			depaPos,
-			destPos,
-			duration,
-			delta: this.axm.getDelta(depaPos, destPos),
-			inputEvent: event,
-			input,
-			isTrusted: true,
-		};
-		this.em.triggerRelease(param);
-		this.moveDistance = null;
+    // for outside logic
+    destPos = map(depaPos, (v, k) => v + (offset[k] || 0));
+    if (this._moveDistance) {
+      this._moveDistance = this._axisManager.map(
+        destPos,
+        (v, { circular, range }) =>
+          circular && (circular[0] || circular[1])
+            ? getCirculatedPos(v, range, circular as boolean[])
+            : v
+      );
+    }
+    // from outside to inside
+    if (
+      this._isOutside &&
+      this._axisManager.every(depaPos, (v, opt) => !isOutside(v, opt.range))
+    ) {
+      this._isOutside = false;
+    }
+    depaPos = this._atOutside(depaPos);
+    destPos = this._atOutside(destPos);
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
+    if (useDuration) {
+      const duration = this._animationManager.getDuration(destPos, depaPos);
+      this._animationManager.stopAnimation(input.axes, changeOption);
+      this._animationManager.animateTo(destPos, duration, changeOption);
+    } else {
+      const isCanceled = !this._eventManager.triggerChange(
+        destPos,
+        false,
+        depaPos,
+        changeOption,
+        true
+      );
+      if (isCanceled) {
+        this._isStopped = true;
+        this._moveDistance = null;
+        this._animationManager.finish(false);
+      }
+    }
+  }
 
-		// to contol
-		const userWish = this.am.getUserControl(param);
-		const isEqual = equal(userWish.destPos, depaPos);
-		const changeOption: ChangeEventOption = {
-			input,
-			event,
-		};
-		if (isEqual || userWish.duration === 0) {
-			!isEqual && this.em.triggerChange(userWish.destPos, false, depaPos, changeOption, true);
-			this.itm.setInterrupt(false);
-			if (this.axm.isOutside()) {
-				this.am.restore(changeOption);
-			} else {
-				this.em.triggerFinish(true);
-			}
-		} else {
-			this.am.animateTo(userWish.destPos, userWish.duration, changeOption);
-		}
-	}
+  public release(
+    input: InputType,
+    event,
+    velocity: number[],
+    inputDuration?: number
+  ) {
+    if (
+      this._isStopped ||
+      !this._interruptManager.isInterrupting() ||
+      !this._moveDistance
+    ) {
+      return;
+    }
+    const pos: Axis = this._axisManager.get(input.axes);
+    const depaPos: Axis = this._axisManager.get();
+    const displacement = this._animationManager.getDisplacement(velocity);
+    const offset = toAxis(input.axes, displacement);
+    let destPos: Axis = this._axisManager.get(
+      this._axisManager.map(offset, (v, opt, k) => {
+        if (opt.circular && (opt.circular[0] || opt.circular[1])) {
+          return pos[k] + v;
+        } else {
+          return getInsidePosition(
+            pos[k] + v,
+            opt.range,
+            opt.circular as boolean[],
+            opt.bounce as number[]
+          );
+        }
+      })
+    );
+    const duration = this._animationManager.getDuration(
+      destPos,
+      pos,
+      inputDuration
+    );
+
+    if (duration === 0) {
+      destPos = { ...depaPos };
+    }
+    // prepare params
+    const param: AnimationParam = {
+      depaPos,
+      destPos,
+      duration,
+      delta: this._axisManager.getDelta(depaPos, destPos),
+      inputEvent: event,
+      input,
+      isTrusted: true,
+    };
+    this._eventManager.triggerRelease(param);
+    this._moveDistance = null;
+
+    // to contol
+    const userWish = this._animationManager.getUserControl(param);
+    const isEqual = equal(userWish.destPos, depaPos);
+    const changeOption: ChangeEventOption = {
+      input,
+      event,
+    };
+    if (isEqual || userWish.duration === 0) {
+      if (!isEqual) {
+        this._eventManager.triggerChange(
+          userWish.destPos,
+          false,
+          depaPos,
+          changeOption,
+          true
+        );
+      }
+      this._interruptManager.setInterrupt(false);
+      if (this._axisManager.isOutside()) {
+        this._animationManager.restore(changeOption);
+      } else {
+        this._eventManager.triggerFinish(true);
+      }
+    } else {
+      this._animationManager.animateTo(
+        userWish.destPos,
+        userWish.duration,
+        changeOption
+      );
+    }
+  }
+
+  // when move pointer is held in outside
+  private _atOutside(pos: Axis) {
+    if (this._isOutside) {
+      return this._axisManager.map(pos, (v, opt) => {
+        const tn = opt.range[0] - (opt.bounce[0] as number);
+        const tx = opt.range[1] + (opt.bounce[1] as number);
+        return v > tx ? tx : v < tn ? tn : v;
+      });
+    } else {
+      return this._axisManager.map(pos, (v, opt) => {
+        const min = opt.range[0];
+        const max = opt.range[1];
+        const out = opt.bounce;
+        const circular = opt.circular;
+
+        if (circular && (circular[0] || circular[1])) {
+          return v;
+        } else if (v < min) {
+          // left
+          return (
+            min - this._animationManager.interpolate(min - v, out[0] as number)
+          );
+        } else if (v > max) {
+          // right
+          return (
+            max + this._animationManager.interpolate(v - max, out[1] as number)
+          );
+        }
+        return v;
+      });
+    }
+  }
 }

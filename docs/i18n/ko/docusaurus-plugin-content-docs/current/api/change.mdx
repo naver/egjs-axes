@@ -1,0 +1,49 @@
+---
+custom_edit_url: null
+---
+
+```ts
+event change
+```
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when coordinate changes.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|좌표|
+|delta|Object&lt;string, number&gt;|좌표의 변화량|
+|holding|Boolean|사용자가 기기의 화면을 누르고 있는지 여부|
+|input|Object|이벤트가 발생한 inputType 인스턴스. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.|
+|inputEvent|Object|inputType으로 부터 받은 이벤트 객체. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.|
+|set|[set](set)|이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("change", function(event) {
+  // event.pos
+  // event.delta
+  // event.input
+  // event.inputEvent
+  // event.holding
+  // event.set
+  // event.isTrusted
+
+  // if you want to change the coordinates to move after the 'change' event.
+  // it works when the holding value of the change event is true.
+  event.holding && event.set({x: 10});
+});
+```
+
