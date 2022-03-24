@@ -63,10 +63,6 @@ class Home extends React.Component {
             </div>
           </section>
           <section className="py-6">
-            <div className="title mb-6 has-text-centered">Showcase</div>
-            <Character />
-          </section>
-          <section className="py-6">
             <div className="title mb-6 has-text-centered">Demos</div>
             <ul className="demo-list">
               <li className="demo-item">
