@@ -12,8 +12,8 @@ import { ActiveInput, InputEventType } from "../types";
 
 import {
   convertInputType,
-  IInputType,
-  IInputTypeObserver,
+  InputType,
+  InputTypeObserver,
   toAxis,
 } from "./InputType";
 
@@ -91,11 +91,11 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
  * @param {PanInputOption} [options={}] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
  */
-export class PanInput implements IInputType {
+export class PanInput implements InputType {
   public options: PanInputOption;
   public axes: string[] = [];
   public element: HTMLElement = null;
-  protected _observer: IInputTypeObserver;
+  protected _observer: InputTypeObserver;
   protected _direction;
   protected _panFlag = false;
   protected _enabled = false;
@@ -138,7 +138,7 @@ export class PanInput implements IInputType {
     this.axes = axes;
   }
 
-  public connect(observer: IInputTypeObserver): IInputType {
+  public connect(observer: InputTypeObserver): InputType {
     if (this._activeInput) {
       this._detachEvent();
     }
@@ -306,31 +306,31 @@ export class PanInput implements IInputType {
     this._observer.release(this, prevEvent, velocity);
   }
 
-  private _attachEvent(observer: IInputTypeObserver) {
+  private _attachEvent(observer: InputTypeObserver) {
     const activeInput = convertInputType(this.options.inputType);
     this._observer = observer;
     this._enabled = true;
     this._activeInput = activeInput;
-    activeInput.start.forEach((event) => {
+    activeInput?.start.forEach((event) => {
       this.element.addEventListener(event, this._onPanstart, false);
     });
-    activeInput.move.forEach((event) => {
+    activeInput?.move.forEach((event) => {
       window.addEventListener(event, this._onPanmove, false);
     });
-    activeInput.end.forEach((event) => {
+    activeInput?.end.forEach((event) => {
       window.addEventListener(event, this._onPanend, false);
     });
   }
 
   private _detachEvent() {
     const activeInput = this._activeInput;
-    activeInput.start.forEach((event) => {
+    activeInput?.start.forEach((event) => {
       this.element.removeEventListener(event, this._onPanstart, false);
     });
-    activeInput.move.forEach((event) => {
+    activeInput?.move.forEach((event) => {
       window.removeEventListener(event, this._onPanmove, false);
     });
-    activeInput.end.forEach((event) => {
+    activeInput?.end.forEach((event) => {
       window.removeEventListener(event, this._onPanend, false);
     });
     this._enabled = false;

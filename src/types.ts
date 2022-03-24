@@ -3,7 +3,7 @@ import { MouseEventInput } from "./eventInput/MouseEventInput";
 import { TouchEventInput } from "./eventInput/TouchEventInput";
 import { PointerEventInput } from "./eventInput/PointerEventInput";
 import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
-import { IInputType } from "./inputType/InputType";
+import { InputType } from "./inputType/InputType";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
 
@@ -38,7 +38,7 @@ export interface AnimationParam {
   done?: () => void;
   startTime?: number;
   inputEvent?;
-  input?: IInputType;
+  input?: InputType;
 }
 
 export interface UpdateAnimationOption {
@@ -49,7 +49,7 @@ export interface UpdateAnimationOption {
 
 export interface OnHold {
   pos: Record<string, any>;
-  input: IInputType | null;
+  input: InputType | null;
   inputEvent: any;
   isTrusted: boolean;
 }
@@ -62,7 +62,7 @@ export interface OnAnimationStart {
   isTrusted: boolean;
   startTime?: number;
   inputEvent?: any;
-  input?: IInputType | null;
+  input?: InputType | null;
   setTo(destPos?: Axis, duration?: number): void;
   done(): void;
   stop(): void;
@@ -75,7 +75,7 @@ export interface OnChange {
   holding: boolean;
   inputEvent: any;
   isTrusted: boolean;
-  input: IInputType | null;
+  input: InputType | null;
   set(toPos?: Axis, userDuration?: number): void;
   stop(): void;
 }
@@ -89,7 +89,7 @@ export interface OnRelease {
   isTrusted?: boolean;
   startTime?: number;
   inputEvent?: any;
-  input?: IInputType | null;
+  input?: InputType | null;
   setTo(destPos?: Axis, duration?: number): void;
   done(): void;
 }

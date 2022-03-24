@@ -10,11 +10,11 @@ import {
   SUPPORT_TOUCH,
 } from "../eventInput/EventInput";
 
-export interface IInputType {
+export interface InputType {
   axes: string[];
   element: HTMLElement;
   mapAxes(axes: string[]);
-  connect(observer: IInputTypeObserver): IInputType;
+  connect(observer: InputTypeObserver): InputType;
   disconnect();
   destroy();
   enable?();
@@ -22,13 +22,13 @@ export interface IInputType {
   isEnable?(): boolean;
 }
 
-export interface IInputTypeObserver {
+export interface InputTypeObserver {
   options: AxesOption;
-  get(inputType: IInputType): Axis;
-  change(inputType: IInputType, event, offset: Axis, useDuration?: boolean);
-  hold(inputType: IInputType, event);
+  get(inputType: InputType): Axis;
+  change(inputType: InputType, event, offset: Axis, useDuration?: boolean);
+  hold(inputType: InputType, event);
   release(
-    inputType: IInputType,
+    inputType: InputType,
     event,
     velocity: number[],
     inputDuration?: number

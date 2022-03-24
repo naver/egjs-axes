@@ -16,7 +16,7 @@ import {
   DIRECTION_VERTICAL,
   DIRECTION_ALL,
 } from "./const";
-import { IInputType } from "./inputType/InputType";
+import { InputType } from "./inputType/InputType";
 import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
 
 export interface AxesOption {
@@ -215,12 +215,12 @@ class Axes extends Component<AxesEvents> {
   public static DIRECTION_ALL = DIRECTION_ALL;
 
   public options: AxesOption;
-  public em: EventManager;
-  public axm: AxisManager;
-  public itm: InterruptManager;
-  public am: AnimationManager;
-  public io: InputObserver;
-  private _inputs: IInputType[] = [];
+  public eventManager: EventManager;
+  public axisManager: AxisManager;
+  public interruptManager: InterruptManager;
+  public animationManager: AnimationManager;
+  public inputObserver: InputObserver;
+  private _inputs: InputType[] = [];
 
   /**
    *
@@ -245,14 +245,14 @@ class Axes extends Component<AxesEvents> {
       ...options,
     };
 
-    this.itm = new InterruptManager(this.options);
-    this.axm = new AxisManager(this.axis);
-    this.em = new EventManager(this);
-    this.am = new AnimationManager(this);
-    this.io = new InputObserver(this);
-    this.em.setAnimationManager(this.am);
+    this.interruptManager = new InterruptManager(this.options);
+    this.axisManager = new AxisManager(this.axis);
+    this.eventManager = new EventManager(this);
+    this.animationManager = new AnimationManager(this);
+    this.inputObserver = new InputObserver(this);
+    this.eventManager.setAnimationManager(this.animationManager);
     if (startPos) {
-      this.em.triggerChange(startPos);
+      this.eventManager.triggerChange(startPos);
     }
   }
 
@@ -281,7 +281,7 @@ class Axes extends Component<AxesEvents> {
    *    .connect(["", "xOther"], new eg.Axes.PanInput("#area6"));
    * ```
    */
-  public connect(axes: string[] | string, inputType: IInputType) {
+  public connect(axes: string[] | string, inputType: InputType) {
     let mapped: string[];
     if (typeof axes === "string") {
       mapped = axes.split(" ");
@@ -295,7 +295,7 @@ class Axes extends Component<AxesEvents> {
     }
 
     inputType.mapAxes(mapped);
-    inputType.connect(this.io);
+    inputType.connect(this.inputObserver);
     this._inputs.push(inputType);
     return this;
   }
@@ -328,7 +328,7 @@ class Axes extends Component<AxesEvents> {
    * axes.disconnect(); // disconnects all of them
    * ```
    */
-  public disconnect(inputType?: IInputType) {
+  public disconnect(inputType?: InputType) {
     if (inputType) {
       const index = this._inputs.indexOf(inputType);
 
@@ -367,7 +367,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public get(axes?: string[]) {
-    return this.axm.get(axes);
+    return this.axisManager.get(axes);
   }
 
   /**
@@ -400,7 +400,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public setTo(pos: Axis, duration = 0) {
-    this.am.setTo(pos, duration);
+    this.animationManager.setTo(pos, duration);
     return this;
   }
 
@@ -434,7 +434,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public setBy(pos: Axis, duration = 0) {
-    this.am.setBy(pos, duration);
+    this.animationManager.setBy(pos, duration);
     return this;
   }
 
@@ -457,7 +457,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public stopAnimation() {
-    this.am.stopAnimation(Object.keys(this.axm.get()));
+    this.animationManager.stopAnimation(Object.keys(this.axisManager.get()));
     return this;
   }
 
@@ -490,7 +490,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public updateAnimation(options: UpdateAnimationOption) {
-    this.am.updateAnimation(options);
+    this.animationManager.updateAnimation(options);
     return this;
   }
 
@@ -519,7 +519,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public isBounceArea(axes?: string[]) {
-    return this.axm.isOutside(axes);
+    return this.axisManager.isOutside(axes);
   }
 
   /**
@@ -528,7 +528,7 @@ class Axes extends Component<AxesEvents> {
    */
   public destroy() {
     this.disconnect();
-    this.em.destroy();
+    this.eventManager.destroy();
   }
 }
 

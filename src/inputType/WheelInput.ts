@@ -1,6 +1,6 @@
 import { $ } from "../utils";
 
-import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
+import { toAxis, InputType, InputTypeObserver } from "./InputType";
 
 export interface WheelInputOption {
   scale?: number;
@@ -31,11 +31,11 @@ export interface WheelInputOption {
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
  * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
  */
-export class WheelInput implements IInputType {
+export class WheelInput implements InputType {
   public options: WheelInputOption;
   public axes: string[] = [];
   public element: HTMLElement = null;
-  private _observer: IInputTypeObserver;
+  private _observer: InputTypeObserver;
   private _enabled = false;
   private _holding = false;
   private _timer: NodeJS.Timeout = null;
@@ -60,7 +60,7 @@ export class WheelInput implements IInputType {
     this.axes = axes;
   }
 
-  public connect(observer: IInputTypeObserver): IInputType {
+  public connect(observer: InputTypeObserver): InputType {
     this._detachEvent();
     this._attachEvent(observer);
     return this;
@@ -138,7 +138,7 @@ export class WheelInput implements IInputType {
     }, this.options.releaseDelay);
   }
 
-  private _attachEvent(observer: IInputTypeObserver) {
+  private _attachEvent(observer: InputTypeObserver) {
     this._observer = observer;
     this.element.addEventListener("wheel", this._onWheel);
     this._enabled = true;

@@ -5,8 +5,8 @@ import { PREVENT_SCROLL_CSSPROPS } from "../const";
 import {
   toAxis,
   convertInputType,
-  IInputType,
-  IInputTypeObserver,
+  InputType,
+  InputTypeObserver,
 } from "./InputType";
 
 export interface PinchInputOption {
@@ -37,11 +37,11 @@ export interface PinchInputOption {
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PinchInput module <ko>eg.Axes.PinchInput 모듈을 사용할 엘리먼트</ko>
  * @param {PinchInputOption} [options] The option object of the eg.Axes.PinchInput module<ko>eg.Axes.PinchInput 모듈의 옵션 객체</ko>
  */
-export class PinchInput implements IInputType {
+export class PinchInput implements InputType {
   public options: PinchInputOption;
   public axes: string[] = [];
   public element: HTMLElement = null;
-  private _observer: IInputTypeObserver;
+  private _observer: InputTypeObserver;
   private _pinchFlag = false;
   private _enabled = false;
   private _originalCssProps: { [key: string]: string };
@@ -68,7 +68,7 @@ export class PinchInput implements IInputType {
     this.axes = axes;
   }
 
-  public connect(observer: IInputTypeObserver): IInputType {
+  public connect(observer: InputTypeObserver): InputType {
     if (this._activeInput) {
       this._detachEvent();
     }
@@ -171,31 +171,31 @@ export class PinchInput implements IInputType {
     this._activeInput.prevEvent = null;
   }
 
-  private _attachEvent(observer: IInputTypeObserver) {
+  private _attachEvent(observer: InputTypeObserver) {
     const activeInput = convertInputType(this.options.inputType);
     this._observer = observer;
     this._enabled = true;
     this._activeInput = activeInput;
-    activeInput.start.forEach((event) => {
+    activeInput?.start.forEach((event) => {
       this.element.addEventListener(event, this._onPinchStart, false);
     });
-    activeInput.move.forEach((event) => {
+    activeInput?.move.forEach((event) => {
       this.element.addEventListener(event, this._onPinchMove, false);
     });
-    activeInput.end.forEach((event) => {
+    activeInput?.end.forEach((event) => {
       this.element.addEventListener(event, this._onPinchEnd, false);
     });
   }
 
   private _detachEvent() {
     const activeInput = this._activeInput;
-    activeInput.start.forEach((event) => {
+    activeInput?.start.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchStart, false);
     });
-    activeInput.move.forEach((event) => {
+    activeInput?.move.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchMove, false);
     });
-    activeInput.end.forEach((event) => {
+    activeInput?.end.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchEnd, false);
     });
     this._enabled = false;

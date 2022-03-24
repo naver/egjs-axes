@@ -1,6 +1,6 @@
 import { ComponentEvent } from "@egjs/component";
 
-import { IInputType } from "./inputType/InputType";
+import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
 import Axes from "./Axes";
@@ -8,12 +8,12 @@ import { roundNumbers } from "./utils";
 import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
 
 export interface ChangeEventOption {
-  input: IInputType;
+  input: InputType;
   event;
 }
 
 export class EventManager {
-  public am: AnimationManager;
+  public animationManager: AnimationManager;
   public constructor(private _axes: Axes) {}
   /**
    * This event is fired when a user holds an element on the screen of the device.
@@ -187,11 +187,11 @@ export class EventManager {
     option?: ChangeEventOption,
     holding: boolean = false
   ) {
-    const am = this.am;
-    const axm = am.axm;
-    const eventInfo = am.getEventInfo();
+    const animationManager = this.animationManager;
+    const axisManager = animationManager.axisManager;
+    const eventInfo = animationManager.getEventInfo();
     const { roundPos, roundDepa } = this._getRoundPos(pos, depaPos);
-    const moveTo = axm.moveTo(roundPos, roundDepa);
+    const moveTo = axisManager.moveTo(roundPos, roundDepa);
     const inputEvent = option?.event || eventInfo?.event || null;
     const param = {
       pos: moveTo.pos,
@@ -206,7 +206,9 @@ export class EventManager {
     const result = this._axes.trigger(new ComponentEvent("change", param));
 
     if (inputEvent) {
-      axm.set((param.set() as { destPos: Axis; duration: number }).destPos);
+      axisManager.set(
+        (param.set() as { destPos: Axis; duration: number }).destPos
+      );
     }
 
     return result;
@@ -320,8 +322,8 @@ export class EventManager {
     );
   }
 
-  public setAnimationManager(am: AnimationManager) {
-    this.am = am;
+  public setAnimationManager(animationManager: AnimationManager) {
+    this.animationManager = animationManager;
   }
 
   public destroy() {
@@ -362,7 +364,7 @@ export class EventManager {
   }
 
   private _getBounceRatio(pos: Axis): Axis {
-    return this._axes.axm.map(pos, (v, opt) => {
+    return this._axes.axisManager.map(pos, (v, opt) => {
       if (v < opt.range[0] && opt.bounce[0] !== 0) {
         return (opt.range[0] - v) / opt.bounce[0];
       } else if (v > opt.range[1] && opt.bounce[1] !== 0) {

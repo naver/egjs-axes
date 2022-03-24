@@ -1,6 +1,6 @@
 import { $ } from "../utils";
 
-import { toAxis, IInputType, IInputTypeObserver } from "./InputType";
+import { toAxis, InputType, InputTypeObserver } from "./InputType";
 
 export const KEY_LEFT_ARROW = 37;
 export const KEY_A = 65;
@@ -47,11 +47,11 @@ export interface MoveKeyInputOption {
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.MoveKeyInput module <ko>eg.Axes.MoveKeyInput 모듈을 사용할 엘리먼트</ko>
  * @param {MoveKeyInputOption} [options] The option object of the eg.Axes.MoveKeyInput module<ko>eg.Axes.MoveKeyInput 모듈의 옵션 객체</ko>
  */
-export class MoveKeyInput implements IInputType {
+export class MoveKeyInput implements InputType {
   public options: MoveKeyInputOption;
   public axes: string[] = [];
   public element: HTMLElement = null;
-  private _observer: IInputTypeObserver;
+  private _observer: InputTypeObserver;
   private _enabled = false;
   private _holding = false;
   private _timer: NodeJS.Timeout = null;
@@ -75,7 +75,7 @@ export class MoveKeyInput implements IInputType {
     this.axes = axes;
   }
 
-  public connect(observer: IInputTypeObserver): IInputType {
+  public connect(observer: InputTypeObserver): InputType {
     this._detachEvent();
 
     // add tabindex="0" to the container for making it focusable
@@ -193,7 +193,7 @@ export class MoveKeyInput implements IInputType {
     }, DELAY);
   }
 
-  private _attachEvent(observer: IInputTypeObserver) {
+  private _attachEvent(observer: InputTypeObserver) {
     this._observer = observer;
     this.element.addEventListener("keydown", this._onKeydown, false);
     this.element.addEventListener("keypress", this._onKeydown, false);
