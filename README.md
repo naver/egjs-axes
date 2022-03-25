@@ -1,12 +1,8 @@
 # egjs-axes [![npm version](https://badge.fury.io/js/%40egjs%2Faxes.svg)](https://badge.fury.io/js/%40egjs%2Faxes) [![Build Status](https://travis-ci.org/naver/egjs-axes.svg?branch=master)](https://travis-ci.org/naver/egjs-axes) [![Coverage Status](https://coveralls.io/repos/github/naver/egjs-axes/badge.svg?branch=master)](https://coveralls.io/github/naver/egjs-axes?branch=master)
 
-A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.  
-
-<img src="https://github.com/naver/egjs-axes/raw/master/demo/assets/image/structure.png" style="width:100%">
+A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates.
 
 You can easily create a UI that responds to user actions.
-
-![showcase using egjs-axes](https://github.com/naver/egjs-axes/raw/master/demo/assets/image/showcase.gif)
 
 ## Documents
 - [Get Started and Demos](https://naver.github.io/egjs-axes/)
@@ -21,31 +17,35 @@ You can easily create a UI that responds to user actions.
 
 ## Download and Installation
 
-Download dist files from repo directly or install it via npm. 
+Download dist files from repo directly or install it via npm.
 
 ### For development (Uncompressed)
 
 You can download the uncompressed files for development
 
-- Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.js
-- Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.js
+- Latest : https://naver.github.io/egjs-axes/release/latest/axes.js
+- Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/axes.js
 
 ### For production (Compressed)
 
 You can download the compressed files for production
 
-- Latest : https://naver.github.io/egjs-axes/release/latest/dist/axes.min.js
-- Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.min.js
+- Latest : https://naver.github.io/egjs-axes/release/latest/axes.min.js
+- Specific version : https://naver.github.io/egjs-axes/release/[VERSION]/axes.min.js
 
 ### Packaged version (with Dependencies)
 > Packaged version is not an official distribution.
 > Is just to provide for ease use of 'egjs-axes' with dependency.
 
  - **Latest**
-    - https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.js
-    - https://naver.github.io/egjs-axes/release/latest/dist/axes.pkgd.min.js
+    - https://naver.github.io/egjs-axes/release/latest/axes.pkgd.js
+    - https://naver.github.io/egjs-axes/release/latest/axes.pkgd.min.js
 
- - **Specific version**
+ - **Specific version(3.x)**
+    - https://naver.github.io/egjs-axes/release/[VERSION]/axes.pkgd.js
+    - https://naver.github.io/egjs-axes/release/[VERSION]/axes.pkgd.min.js
+
+ - **Specific version(under 2.x)**
     - https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.js
     - https://naver.github.io/egjs-axes/release/[VERSION]/dist/axes.pkgd.min.js
 
@@ -69,9 +69,9 @@ The following are the supported browsers.
 
 egjs-axes has the dependencies for the following libraries:
 
-|[egjs-component](http://github.com/naver/egjs-component)|[Hammer.JS](http://hammerjs.github.io/)|
-|----|----|
-|2.0.0+|2.0.4+|
+|[egjs-component](http://github.com/naver/egjs-component)|
+|----|
+|3.0.1+|
 
 
 
