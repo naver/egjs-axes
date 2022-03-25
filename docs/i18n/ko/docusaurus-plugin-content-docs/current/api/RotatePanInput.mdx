@@ -1,0 +1,89 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class RotatePanInput extends PanInput
+```
+
+<div className="bulma-tags">
+
+</div>
+
+A module that passes the angle moved by touch to Axes and uses one axis of rotation.<br />[Details](https://github.com/naver/egjs-axes/wiki/RotatePanInput)
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--12"><strong>Methods</strong></div></div>
+  <div className="row"><div className="col col--12"><a href="#destroy">destroy</a><br/><a href="#enable">enable</a><br/><a href="#disable">disable</a><br/><a href="#isEnabled">isEnabled</a></div></div>
+</div>
+
+## constructor
+```ts
+new RotatePanInput(element, options)
+```
+
+<div className="bulma-tags">
+
+</div>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|element|HTMLElement \| String \| jQuery|||eg.Axes.RotatePanInput 모듈을 사용할 엘리먼트|
+|options|[PanInputOption](PanInputOption)|✔️||eg.Axes.PanInput 모듈의 옵션 객체|
+
+```js
+const input = new eg.Axes.RotatePanInput("#area");
+
+var axes = new eg.Axes({
+	// property name('angle') could be anything you want (eg. x, y, z...)
+	angle: {
+		range: [-180, 180] // from -180deg to 180deg
+	}
+});
+
+axes.connect("angle", input)
+```
+
+## Methods
+
+### destroy {#destroy}
+
+<div className="bulma-tags">
+  <span className="bulma-tag is-danger">inherited</span>
+</div>
+
+Destroys elements, properties, and events used in a module.
+
+### enable {#enable}
+
+<div className="bulma-tags">
+  <span className="bulma-tag is-danger">inherited</span>
+</div>
+
+Enables input devices
+
+**Returns**: [PanInput](PanInput)
+- 모듈 자신의 인스턴스
+
+### disable {#disable}
+
+<div className="bulma-tags">
+  <span className="bulma-tag is-danger">inherited</span>
+</div>
+
+Disables input devices
+
+**Returns**: [PanInput](PanInput)
+- 모듈 자신의 인스턴스
+
+### isEnabled {#isEnabled}
+
+<div className="bulma-tags">
+  <span className="bulma-tag is-danger">inherited</span>
+</div>
+
+Returns whether to use an input device
+
+**Returns**: Boolean
+- 입력장치 사용여부
+

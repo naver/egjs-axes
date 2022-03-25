@@ -1,0 +1,22 @@
+---
+custom_edit_url: null
+---
+
+<div className="bulma-tags">
+
+</div>
+
+The option object of the eg.Axes.PanInput module.
+
+**Type**: Object
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|inputType|Array&lt;String&gt;|✔️|["touch","mouse", "pointer"]|입력 장치 종류.<br />- touch: 터치 입력 장치<br />- mouse: 마우스|
+|scale|Array&lt;Number&gt;|✔️||사용자의 동작으로 이동하는 좌표의 배율|
+|scale[0]|Number|✔️|1|수평축 배율|
+|scale[1]|Number|✔️|1|수직축 배율|
+|thresholdAngle|Number|✔️|45|사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)|
+|threshold|Number|✔️|0|사용자의 Pan 동작을 인식하기 위해산 최소한의 거리|
+|iOSEdgeSwipeThreshold|Number|✔️|30|iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)|
+

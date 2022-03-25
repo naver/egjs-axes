@@ -1,78 +1,119 @@
 import { Axis } from "./AxisManager";
-import { IInputType } from "./inputType/InputType";
+import { MouseEventInput } from "./eventInput/MouseEventInput";
+import { TouchEventInput } from "./eventInput/TouchEventInput";
+import { PointerEventInput } from "./eventInput/PointerEventInput";
+import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
+import { InputType } from "./inputType/InputType";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
 
-export type AxesEvents = {
-	hold: OnHold;
-	change: OnChange;
-	release: OnRelease;
-	animationStart: OnAnimationStart;
-	animationEnd: OnAnimationEnd;
-	finish: OnFinish;
-};
-export type AnimationParam = {
-	depaPos: Axis;
-	destPos: Axis;
-	duration: number;
-	delta: Axis;
-	isTrusted?: boolean;
-	stop?: () => void;
-	setTo?: (destPos?: Axis, duration?: number) => { destPos: Axis, duration: number };
-	done?: () => void;
-	startTime?: number;
-	inputEvent?;
-	input?: IInputType;
-};
+export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
 
-export type OnHold = {
-	pos: Record<string, any>;
-	input: IInputType | null;
-	inputEvent: any;
-	isTrusted: boolean;
-};
+export type ActiveInput =
+  | MouseEventInput
+  | TouchEventInput
+  | TouchMouseEventInput
+  | PointerEventInput;
 
-export type OnAnimationStart = {
-	depaPos: Axis;
-	destPos: Axis;
-	duration: number;
-	delta: Axis;
-	isTrusted: boolean;
-	startTime?: number;
-	inputEvent?: any;
-	input?: IInputType | null;
-	setTo(destPos?: Axis, duration?: number): void;
-	done(): void;
-	stop(): void;
-};
+export interface AxesEvents {
+  hold: OnHold;
+  change: OnChange;
+  release: OnRelease;
+  animationStart: OnAnimationStart;
+  animationEnd: OnAnimationEnd;
+  finish: OnFinish;
+}
 
-export type OnChange = {
-	pos: Axis;
-	delta: Axis;
-	holding: boolean;
-	inputEvent: any;
-	isTrusted: boolean;
-	input: IInputType | null;
-	set(toPos?: Axis, userDuration?: number): void;
-	stop(): void;
-};
+export interface AnimationParam {
+  depaPos: Axis;
+  destPos: Axis;
+  duration: number;
+  delta: Axis;
+  isTrusted?: boolean;
+  stop?: () => void;
+  setTo?: (
+    destPos?: Axis,
+    duration?: number
+  ) => { destPos: Axis; duration: number };
+  done?: () => void;
+  startTime?: number;
+  inputEvent?;
+  input?: InputType;
+}
 
-export type OnRelease = {
-	depaPos: Axis;
-	destPos: Axis;
-	duration: number;
-	delta: Axis;
-	isTrusted?: boolean;
-	startTime?: number;
-	inputEvent?: any;
-	input?: IInputType | null;
-	setTo(destPos?: Axis, duration?: number): void;
-	done(): void;
-};
-export type OnAnimationEnd = {
-	isTrusted: boolean;
-};
+export interface UpdateAnimationOption {
+  destPos?: Axis;
+  duration?: number;
+  restart?: boolean;
+}
 
-export type OnFinish = {
-	isTrusted: boolean;
-};
+export interface OnHold {
+  pos: Record<string, any>;
+  input: InputType | null;
+  inputEvent: any;
+  isTrusted: boolean;
+}
+
+export interface OnAnimationStart {
+  depaPos: Axis;
+  destPos: Axis;
+  duration: number;
+  delta: Axis;
+  isTrusted: boolean;
+  startTime?: number;
+  inputEvent?: any;
+  input?: InputType | null;
+  setTo(destPos?: Axis, duration?: number): void;
+  done(): void;
+  stop(): void;
+}
+
+export interface OnChange {
+  pos: Axis;
+  delta: Axis;
+  bounceRatio: Axis;
+  holding: boolean;
+  inputEvent: any;
+  isTrusted: boolean;
+  input: InputType | null;
+  set(toPos?: Axis, userDuration?: number): void;
+  stop(): void;
+}
+
+export interface OnRelease {
+  depaPos: Axis;
+  destPos: Axis;
+  duration: number;
+  delta: Axis;
+  bounceRatio: Axis;
+  isTrusted?: boolean;
+  startTime?: number;
+  inputEvent?: any;
+  input?: InputType | null;
+  setTo(destPos?: Axis, duration?: number): void;
+  done(): void;
+}
+export interface OnAnimationEnd {
+  isTrusted: boolean;
+}
+
+export interface OnFinish {
+  isTrusted: boolean;
+}
+
+export interface ExtendedEvent {
+  srcEvent: InputEventType;
+  angle: number;
+  scale: number;
+  center: {
+    x: number;
+    y: number;
+  };
+  deltaX: number;
+  deltaY: number;
+  offsetX: number;
+  offsetY: number;
+  velocityX: number;
+  velocityY: number;
+  preventSystemEvent: boolean;
+}

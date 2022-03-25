@@ -1,34 +1,38 @@
-import {TouchMouseInput, PointerEventInput,TouchInput , MouseInput} from "@egjs/hammerjs";
-import {createHammer, convertInputType} from "../../../src/inputType/InputType";
-import {DIRECTION} from "../../../src/const";
 import InputInjector from "inject-loader!../../../src/inputType/InputType";
+import EventInjector from "inject-loader!../../../src/eventInput/EventInput";
+
+import { MouseEventInput } from "../../../src/eventInput/MouseEventInput";
+import { PointerEventInput } from "../../../src/eventInput/PointerEventInput";
+import { TouchEventInput } from "../../../src/eventInput/TouchEventInput";
+import { TouchMouseEventInput } from "../../../src/eventInput/TouchMouseEventInput";
 
 describe("InputType", () => {
   describe("SUPPORT_TOUCH mocking", function() {
     it("should check convertInputType when supporting touch", () => {
       // Given
-      const MockInputInjector = InputInjector();
+      const MockEventInjector = EventInjector();
+      const MockInputInjector = InputInjector({
+		  "../eventInput/EventInput": MockEventInjector,
+	  });
 
-      MockInputInjector.SUPPORT_TOUCH = true;
-      MockInputInjector.SUPPORT_POINTER_EVENTS = true;
+      MockEventInjector.SUPPORT_TOUCH = true;
+      MockEventInjector.SUPPORT_POINTER_EVENTS = true;
       // When
       let inputType = ["pointer", "touch", "mouse" ];
       // Then
-      expect(TouchMouseInput).to.be.ok;
-      expect(PointerEventInput).to.be.ok;
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(PointerEventInput);
-      MockInputInjector.SUPPORT_POINTER_EVENTS = false;
-      
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(TouchMouseInput);
+      expect(MockInputInjector.convertInputType(inputType) instanceof PointerEventInput).to.be.equal(true);
+      MockEventInjector.SUPPORT_POINTER_EVENTS = false;
+
+      expect(MockInputInjector.convertInputType(inputType) instanceof TouchMouseEventInput).to.be.equal(true);
       // When
       inputType = [ "touch" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(TouchInput);
+      expect(MockInputInjector.convertInputType(inputType) instanceof TouchEventInput).to.be.equal(true);
 
-    // When
+	  // When
       inputType = [ "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
+      expect(MockInputInjector.convertInputType(inputType) instanceof MouseEventInput).to.be.equal(true);
 
       // When
       inputType = [ ];
@@ -39,13 +43,16 @@ describe("InputType", () => {
 
     it("should check convertInputType when not supporting touch", () => {
       // Given
-      const MockInputInjector = InputInjector();
-      MockInputInjector.SUPPORT_TOUCH = false;
+      const MockEventInjector = EventInjector();
+      const MockInputInjector = InputInjector({
+		  "../eventInput/EventInput": MockEventInjector,
+	  });
+      MockEventInjector.SUPPORT_TOUCH = false;
 
       // When
       let inputType = [ "touch", "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
+      expect(MockInputInjector.convertInputType(inputType) instanceof MouseEventInput).to.be.equal(true);
 
       // When
       inputType = [ "touch" ];
@@ -55,12 +62,12 @@ describe("InputType", () => {
       // When
       inputType = [ "mouse" ];
       // Then
-      expect(MockInputInjector.convertInputType(inputType)).to.be.equal(MouseInput);
+      expect(MockInputInjector.convertInputType(inputType) instanceof MouseEventInput).to.be.equal(true);
 
       // When
       inputType = [ ];
       // Then
       expect(MockInputInjector.convertInputType(inputType)).to.be.null;
-    });    
+    });
   });
 });

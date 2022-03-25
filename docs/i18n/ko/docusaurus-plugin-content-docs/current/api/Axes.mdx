@@ -1,0 +1,591 @@
+---
+custom_edit_url: null
+---
+
+```ts
+class Axes extends eg.Component
+```
+
+<div className="bulma-tags">
+
+</div>
+
+A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.
+
+<div className="container">
+  <div className="row mb-2"><div className="col col--6"><strong>Methods</strong></div><div className="col col--6"><strong>Events</strong></div></div>
+  <div className="row"><div className="col col--6"><a href="#connect">connect</a><br/><a href="#disconnect">disconnect</a><br/><a href="#get">get</a><br/><a href="#setTo">setTo</a><br/><a href="#setBy">setBy</a><br/><a href="#stopAnimation">stopAnimation</a><br/><a href="#updateAnimation">updateAnimation</a><br/><a href="#isBounceArea">isBounceArea</a><br/><a href="#destroy">destroy</a></div><div className="col col--6"><a href="#event-triggerHold">triggerHold</a><br/><a href="#event-release">release</a><br/><a href="#event-change">change</a><br/><a href="#event-animationStart">animationStart</a><br/><a href="#event-animationEnd">animationEnd</a><br/><a href="#event-finish">finish</a></div></div>
+</div>
+
+## constructor
+```ts
+new Axes(axis, options, startPos)
+```
+
+<div className="bulma-tags">
+
+</div>
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|axis|Object&lt;string, AxisOption&gt;|||eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.|
+|options|[AxesOption](AxesOption)|✔️|{}|eg.Axes 모듈의 옵션 객체|
+|startPos|Object&lt;string, number&gt;|✔️||인스턴스 생성시 이동할 좌표, change 이벤트는 발생하지 않음.|
+
+```js
+// 1. Initialize eg.Axes
+const axes = new eg.Axes({
+	something1: {
+		range: [0, 150],
+		bounce: 50
+	},
+	something2: {
+		range: [0, 200],
+		bounce: 100
+	},
+	somethingN: {
+		range: [1, 10],
+	}
+}, {
+ deceleration : 0.0024
+});
+
+// 2. attach event handler
+axes.on({
+	"hold" : function(evt) {
+	},
+	"release" : function(evt) {
+	},
+	"animationStart" : function(evt) {
+	},
+	"animationEnd" : function(evt) {
+	},
+	"change" : function(evt) {
+	}
+});
+
+// 3. Initialize inputTypes
+const panInputArea = new eg.Axes.PanInput("#area", {
+	scale: [0.5, 1]
+});
+const panInputHmove = new eg.Axes.PanInput("#hmove");
+const panInputVmove = new eg.Axes.PanInput("#vmove");
+const pinchInputArea = new eg.Axes.PinchInput("#area", {
+	scale: 1.5
+});
+
+// 4. Connect eg.Axes and InputTypes
+// [PanInput] When the mouse or touchscreen is down and moved.
+// Connect the 'something2' axis to the mouse or touchscreen x position and
+// connect the 'somethingN' axis to the mouse or touchscreen y position.
+axes.connect(["something2", "somethingN"], panInputArea); // or axes.connect("something2 somethingN", panInputArea);
+
+// Connect only one 'something1' axis to the mouse or touchscreen x position.
+axes.connect(["something1"], panInputHmove); // or axes.connect("something1", panInputHmove);
+
+// Connect only one 'something2' axis to the mouse or touchscreen y position.
+axes.connect(["", "something2"], panInputVmove); // or axes.connect(" something2", panInputVmove);
+
+// [PinchInput] Connect 'something2' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
+axes.connect("something2", pinchInputArea);
+```
+
+## Methods
+
+### connect {#connect}
+
+<div className="bulma-tags">
+
+</div>
+
+Connect the axis of eg.Axes to the inputType.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|axes|Array&lt;String&gt; \| String|||inputType과 연결할 축의 이름|
+|inputType|Object|||eg.Axes의 축과 연결할 inputType 인스턴스|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  }
+});
+
+axes.connect("x", new eg.Axes.PanInput("#area1"))
+   .connect("x xOther", new eg.Axes.PanInput("#area2"))
+   .connect(" xOther", new eg.Axes.PanInput("#area3"))
+   .connect(["x"], new eg.Axes.PanInput("#area4"))
+   .connect(["xOther", "x"], new eg.Axes.PanInput("#area5"))
+   .connect(["", "xOther"], new eg.Axes.PanInput("#area6"));
+```
+
+### disconnect {#disconnect}
+
+<div className="bulma-tags">
+
+</div>
+
+Disconnect the axis of eg.Axes from the inputType.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|inputType|Object|✔️||eg.Axes의 축과 연결한 inputType 인스턴스|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  }
+});
+
+const input1 = new eg.Axes.PanInput("#area1");
+const input2 = new eg.Axes.PanInput("#area2");
+const input3 = new eg.Axes.PanInput("#area3");
+
+axes.connect("x", input1);
+   .connect("x xOther", input2)
+   .connect(["xOther", "x"], input3);
+
+axes.disconnect(input1); // disconnects input1
+axes.disconnect(); // disconnects all of them
+```
+
+### get {#get}
+
+<div className="bulma-tags">
+
+</div>
+
+Returns the current position of the coordinates.
+
+**Returns**: Object&lt;string, number&gt;
+- 축 좌표 정보
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|axes|Object|✔️||축 이름들|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  },
+	 "zoom": {
+     range: [50, 30]
+  }
+});
+
+axes.get(); // {"x": 0, "xOther": -100, "zoom": 50}
+axes.get(["x", "zoom"]); // {"x": 0, "zoom": 50}
+```
+
+### setTo {#setTo}
+
+<div className="bulma-tags">
+
+</div>
+
+Moves an axis to specific coordinates.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|||이동할 좌표|
+|duration|Number|✔️|0|애니메이션 진행 시간(단위: ms)|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  },
+	 "zoom": {
+     range: [50, 30]
+  }
+});
+
+axes.setTo({"x": 30, "zoom": 60});
+axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
+
+axes.setTo({"x": 100, "xOther": 60}, 1000); // animatation
+
+// after 1000 ms
+axes.get(); // {"x": 100, "xOther": 60, "zoom": 60}
+```
+
+### setBy {#setBy}
+
+<div className="bulma-tags">
+
+</div>
+
+Moves an axis from the current coordinates to specific coordinates.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|||이동할 좌표|
+|duration|Number|✔️|0|애니메이션 진행 시간(단위: ms)|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  },
+	 "zoom": {
+     range: [50, 30]
+  }
+});
+
+axes.setBy({"x": 30, "zoom": 10});
+axes.get(); // {"x": 30, "xOther": -100, "zoom": 60}
+
+axes.setBy({"x": 70, "xOther": 60}, 1000); // animatation
+
+// after 1000 ms
+axes.get(); // {"x": 100, "xOther": -40, "zoom": 60}
+```
+
+### stopAnimation {#stopAnimation}
+
+<div className="bulma-tags">
+
+</div>
+
+Stop an animation in progress.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+});
+
+axes.setTo({"x": 10}, 1000); // start animatation
+
+// after 500 ms
+axes.stopAnimation(); // stop animation during movement.
+```
+
+### updateAnimation {#updateAnimation}
+
+<div className="bulma-tags">
+
+</div>
+
+Change the destination of an animation in progress.
+
+**Returns**: eg.Axes
+- 모듈 자신의 인스턴스
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|pos|UpdateAnimationOption|||이동할 좌표|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 200]
+  },
+  "y": {
+     range: [0, 200]
+  }
+});
+
+axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+
+// after 500 ms
+axes.updateAnimation({destPos: {"x": 100, "y": 100}}); // animation will end after 500 ms, at {"x": 100, "y": 100}
+
+// after 500 ms
+axes.setTo({"x": 50, "y": 50}, 1000); // trigger animation by setTo
+
+// after 700 ms
+axes.updateAnimation({destPos: {"x": 100, "y": 100}, duration: 1500, restart: true}); // this works same as axes.setTo({"x": 100, "y": 100}, 800) since restart is true.
+```
+
+### isBounceArea {#isBounceArea}
+
+<div className="bulma-tags">
+
+</div>
+
+Returns whether there is a coordinate in the bounce area of ​​the target axis.
+
+**Returns**: Boolen
+- bounce 영역 존재 여부
+
+|PARAMETER|TYPE|OPTIONAL|DEFAULT|DESCRIPTION|
+|:---:|:---:|:---:|:---:|:---:|
+|axes|Object|✔️||축 이름들|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "xOther": {
+     range: [-100, 100]
+  },
+	 "zoom": {
+     range: [50, 30]
+  }
+});
+
+axes.isBounceArea(["x"]);
+axes.isBounceArea(["x", "zoom"]);
+axes.isBounceArea();
+```
+
+### destroy {#destroy}
+
+<div className="bulma-tags">
+
+</div>
+
+Destroys properties, and events used in a module and disconnect all connections to inputTypes.
+
+## Events
+### triggerHold {#event-triggerHold}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when a user holds an element on the screen of the device.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|좌표 정보|
+|input|Object|이벤트가 발생한 inputType 인스턴스|
+|inputEvent|Object|inputType으로 부터 받은 이벤트 객체|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("hold", function(event) {
+  // event.pos
+  // event.input
+  // event.inputEvent
+  // isTrusted
+});
+```
+
+### release {#event-release}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when a user release an element on the screen of the device.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|depaPos|Object&lt;string, number&gt;|손을 뗐을 때의 좌표 |
+|destPos|Object&lt;string, number&gt;|손을 뗀 뒤에 이동할 좌표|
+|delta|Object&lt;string, number&gt;|좌표의 변화량|
+|inputEvent|Object|inputType으로 부터 받은 이벤트 객체|
+|input|Object|이벤트가 발생한 inputType 인스턴스|
+|setTo|setTo|이벤트 이후 이동할 애니메이션 좌표를 지정한다|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("release", function(event) {
+  // event.depaPos
+  // event.destPos
+  // event.delta
+  // event.input
+  // event.inputEvent
+  // event.setTo
+  // event.isTrusted
+
+  // if you want to change the animation coordinates to move after the 'release' event.
+  event.setTo({x: 10}, 2000);
+});
+```
+
+### change {#event-change}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when coordinate changes.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|pos|Object&lt;string, number&gt;|좌표|
+|delta|Object&lt;string, number&gt;|좌표의 변화량|
+|holding|Boolean|사용자가 기기의 화면을 누르고 있는지 여부|
+|input|Object|이벤트가 발생한 inputType 인스턴스. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.|
+|inputEvent|Object|inputType으로 부터 받은 이벤트 객체. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.|
+|set|set|이벤트 이후 이동할 좌표를 지정한다. holding 값이 true일 경우에 동작한다.|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("change", function(event) {
+  // event.pos
+  // event.delta
+  // event.input
+  // event.inputEvent
+  // event.holding
+  // event.set
+  // event.isTrusted
+
+  // if you want to change the coordinates to move after the 'change' event.
+  // it works when the holding value of the change event is true.
+  event.holding && event.set({x: 10});
+});
+```
+
+### animationStart {#event-animationStart}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when animation starts.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|depaPos|Object&lt;string, number&gt;|애니메이션이 시작 되었을 때의 좌표 |
+|destPos|Object&lt;string, number&gt;|이동할 좌표. 이값을 변경하여 애니메이션을 동작시킬수 있다|
+|delta|Object&lt;string, number&gt;|좌표의 변화량|
+|duration|Number|애니메이션 진행 시간(단위: ms). 이값을 변경하여 애니메이션의 이동시간을 조절할 수 있다.|
+|input|Object|이벤트가 발생한 inputType 인스턴스. 애니메이션에 의해 값이 변경될 경우에는 'null'을 반환한다.|
+|inputEvent|Object|inputType으로 부터 받은 이벤트 객체|
+|setTo|setTo|이벤트 이후 이동할 애니메이션 좌표를 지정한다|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("release", function(event) {
+  // event.depaPos
+  // event.destPos
+  // event.delta
+  // event.input
+  // event.inputEvent
+  // event.setTo
+  // event.isTrusted
+
+  // if you want to change the animation coordinates to move after the 'animationStart' event.
+  event.setTo({x: 10}, 2000);
+});
+```
+
+### animationEnd {#event-animationEnd}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when animation ends.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("animationEnd", function(event) {
+  // event.isTrusted
+});
+```
+
+### finish {#event-finish}
+
+<div className="bulma-tags">
+
+</div>
+
+This event is fired when all actions have been completed.
+
+**Type**: object
+
+|PROPERTY|TYPE|DESCRIPTION|
+|:---:|:---:|:---:|
+|isTrusted|Boolean|사용자의 액션에 의해 이벤트가 발생하였으면 true, 스크립트나 API호출에 의해 발생하였을 경우에는 false를 반환한다.|
+
+```js
+const axes = new eg.Axes({
+  "x": {
+     range: [0, 100]
+  },
+  "zoom": {
+     range: [50, 30]
+  }
+}).on("finish", function(event) {
+  // event.isTrusted
+});
+```
+

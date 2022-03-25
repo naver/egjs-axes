@@ -20,7 +20,7 @@ describe("MoveKeyInput", () => {
     it("should check status after disconnect", () => {
       // Given
       this.inst.connect({});
-      
+
       // When
       this.inst.disconnect();
 
@@ -32,7 +32,7 @@ describe("MoveKeyInput", () => {
     it("should check status after destroy", () => {
       // Given
       this.inst.connect({});
-      
+
       // When
       this.inst.destroy();
 
@@ -69,27 +69,27 @@ describe("MoveKeyInput", () => {
       // Given
       // When
       // Then
-      expect(this.inst.isEnable()).to.be.false;
+      expect(this.inst.isEnabled()).to.be.false;
 
       // When
       this.inst.disable();
 
       // Then
-      expect(this.inst.isEnable()).to.be.false;
+      expect(this.inst.isEnabled()).to.be.false;
 
       // When
       this.inst.enable();
 
       // Then
-      expect(this.inst.isEnable()).to.be.true;
+      expect(this.inst.isEnabled()).to.be.true;
 
       // When (after connection)
       this.inst.connect(this.observer);
       this.inst.enable();
 
       // Then
-      expect(this.inst.isEnable()).to.be.true;
-    }); 
+      expect(this.inst.isEnabled()).to.be.true;
+    });
   });
 
   describe("No axes keydown event test", function() {
@@ -98,7 +98,7 @@ describe("MoveKeyInput", () => {
       this.el = document.createElement("div");
       this.elBody.appendChild(this.el);
 
-      this.input = new MoveKeyInput(this.el); 
+      this.input = new MoveKeyInput(this.el);
       this.inst = new Axes({
         x: {
             range: [10, 120]
@@ -146,7 +146,7 @@ describe("MoveKeyInput", () => {
       this.el = document.createElement("div");
       this.elBody.appendChild(this.el);
 
-      this.input = new MoveKeyInput(this.el); 
+      this.input = new MoveKeyInput(this.el);
       this.inst = new Axes({
         x: {
             range: [10, 120]
@@ -206,7 +206,7 @@ describe("MoveKeyInput", () => {
         expect(changeTriggered).to.be.false;
         done();
       });
-      
+
     });
 
     // left
@@ -256,17 +256,17 @@ describe("MoveKeyInput", () => {
             this.inst.on("change", change);
 
             // When / Then
-            expect(this.input._isHolded).to.be.false;
+            expect(this.input._holding).to.be.false;
             TestHelper.key(this.el, "keydown", rightKeyCode, e => {
-              expect(this.input._isHolded).to.be.true;
+              expect(this.input._holding).to.be.true;
               expect(hold.callCount).to.be.equal(1);
 
                 // Then
               expect(change.calledOnce).to.be.true;
-              
+
 
               TestHelper.key(this.el, "keydown", rightKeyCode, e => {
-                expect(this.input._isHolded).to.be.true;
+                expect(this.input._holding).to.be.true;
                 expect(hold.callCount).to.be.equal(1);
                 done();
               });
@@ -294,18 +294,18 @@ describe("MoveKeyInput", () => {
             this.inst.on("hold", hold);
             this.inst.on("change", change);
 
-            expect(this.input._isHolded).to.be.false;
+            expect(this.input._holding).to.be.false;
             // When
             TestHelper.key(this.el, "keydown", upKeyCode, e => {
-              expect(this.input._isHolded).to.be.true;
+              expect(this.input._holding).to.be.true;
               expect(hold.callCount).to.be.equal(1);
 
                 // Then
               expect(change.calledOnce).to.be.true;
-              
+
 
               TestHelper.key(this.el, "keydown", upKeyCode, e => {
-                expect(this.input._isHolded).to.be.true;
+                expect(this.input._holding).to.be.true;
                 expect(hold.callCount).to.be.equal(1);
                 done();
               });
@@ -329,7 +329,7 @@ describe("MoveKeyInput", () => {
                 keyCode: keyCode
             };
             this.input.options.scale[1] = -1;
-            
+
             // When
             TestHelper.key(this.el, "keydown", downKeyCode);
 
@@ -350,12 +350,12 @@ describe("MoveKeyInput", () => {
           const downKeyCode = {
               keyCode: keyCode
           };
-          
+
 
           this.inst.on("hold", holdHandler);
           this.inst.on("change", changeHandler);
           this.inst.on("release", releaseHandler);
-          
+
           // When
           TestHelper.key(this.el, "keydown", downKeyCode);
 
@@ -393,7 +393,7 @@ describe("MoveKeyInput", () => {
                 done();
               }, 100);
             });
-          }, 20);		
+          }, 20);
         });
       });
     });
