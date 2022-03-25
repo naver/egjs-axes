@@ -25,20 +25,17 @@ export class TouchMouseEventInput extends EventInput {
   }
 
   public getTouches(event: InputEventType): number {
-    return event.hasOwnProperty("touches")
-      ? (event as TouchEvent).touches.length
-      : 0;
+    return this._isTouchEvent(event) ? (event as TouchEvent).touches.length : 0;
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {
     if (
       !this._firstTouch ||
-      (event.hasOwnProperty("touches") &&
-        (event as TouchEvent).touches.length !== 2)
+      (this._isTouchEvent(event) && (event as TouchEvent).touches.length !== 2)
     ) {
       return 1; // TODO: consider calculating non-pinch gesture scale
     }
-    if (event.hasOwnProperty("touches")) {
+    if (this._isTouchEvent(event)) {
       return (
         this._getDistance(
           (event as TouchEvent).touches[0],
@@ -57,7 +54,7 @@ export class TouchMouseEventInput extends EventInput {
     x: number;
     y: number;
   } {
-    if (event.hasOwnProperty("touches")) {
+    if (this._isTouchEvent(event)) {
       return {
         x: (event as TouchEvent).touches[0].clientX,
         y: (event as TouchEvent).touches[0].clientY,
@@ -75,20 +72,25 @@ export class TouchMouseEventInput extends EventInput {
   } {
     const prev = this.prevEvent.srcEvent;
     const [nextSpot, prevSpot] = [event, prev].map((e) => {
+      if (this._isTouchEvent(event)) {
+        return {
+          id: (e as TouchEvent).touches[0].identifier,
+          x: (e as TouchEvent).touches[0].pageX,
+          y: (e as TouchEvent).touches[0].pageY,
+        };
+      }
       return {
-        id: e.hasOwnProperty("touches")
-          ? (e as TouchEvent).touches[0].identifier
-          : null,
-        x: e.hasOwnProperty("touches")
-          ? (e as TouchEvent).touches[0].pageX
-          : (e as MouseEvent).pageX,
-        y: e.hasOwnProperty("touches")
-          ? (e as TouchEvent).touches[0].pageY
-          : (e as MouseEvent).pageY,
+        id: null,
+        x: (e as MouseEvent).pageX,
+        y: (e as MouseEvent).pageY,
       };
     });
     return nextSpot.id === prevSpot.id
       ? { x: nextSpot.x - prevSpot.x, y: nextSpot.y - prevSpot.y }
       : { x: 0, y: 0 };
+  }
+
+  private _isTouchEvent(event: InputEventType): boolean {
+    return event.hasOwnProperty("touches");
   }
 }
