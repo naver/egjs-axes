@@ -241,7 +241,7 @@ export class PanInput implements InputType {
 
       if (swipeLeftToRight) {
         // iOS swipe left => right
-        this._onPanend(event);
+        this._observer.release(this, this._activeInput.prevEvent, [0, 0]);
         return;
       } else if (this._atRightEdge) {
         clearTimeout(this._rightEdgeTimer);
@@ -254,7 +254,7 @@ export class PanInput implements InputType {
         } else {
           // iOS swipe right => left
           this._rightEdgeTimer = window.setTimeout(() => {
-            this._onPanend(event);
+            this._observer.release(this, this._activeInput.prevEvent, [0, 0]);
           }, 100);
         }
       }
