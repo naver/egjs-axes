@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, MoveKeyInput, WheelInput } from "../../../../src/index";
+import Axes, { PanInput, PinchInput, MoveKeyInput, WheelInput } from "../../../../src/index";
 import Icon from '../../../static/img/demos/axes/logo.svg';
 import "../../css/demos/axes.css";
 

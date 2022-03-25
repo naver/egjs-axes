@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, WheelInput } from "../../../../src/index";
+import Axes, { PanInput, PinchInput, WheelInput } from "../../../../src/index";
 import "../../css/demos/subway.css";
 
 function Cube() {
