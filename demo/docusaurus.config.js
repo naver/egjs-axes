@@ -61,16 +61,10 @@ const config = {
           },
           {
             type: "doc",
-            docId: "api/AxesOption",
+            docId: "api/Axes",
             label: "API",
             position: "left"
           },
-          // {
-          //   type: "doc",
-          //   docId: "options",
-          //   label: "Options",
-          //   position: "left"
-          // },
 					{
             type: "doc",
             docId: "demos/axes",
