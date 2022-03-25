@@ -126,7 +126,7 @@ Two folders will be created after complete build is completed.
 
 ### Linting
 
-To keep the same code style, we adopted [TSLint](https://palantir.github.io/tslint/) to maintain our code quality.
+To keep the same code style, we adopted [ESLint](https://eslint.org/) to maintain our code quality.
 
 ```bash
 $ npm run lint
