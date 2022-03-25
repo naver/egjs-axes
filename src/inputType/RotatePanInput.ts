@@ -47,7 +47,7 @@ export class RotatePanInput extends PanInput {
     this.axes = axes;
   }
 
-  public onPanstart(event: MouseEvent) {
+  protected _onPanstart(event: MouseEvent) {
     this._activeInput.onEventStart(event);
     if (!this.isEnabled) {
       return;
@@ -73,7 +73,7 @@ export class RotatePanInput extends PanInput {
     this._activeInput.prevEvent = panEvent;
   }
 
-  public onPanmove(event: MouseEvent) {
+  protected _onPanmove(event: MouseEvent) {
     this._activeInput.onEventMove(event);
     if (!this._panFlag || !this.isEnabled) {
       return;
@@ -89,7 +89,7 @@ export class RotatePanInput extends PanInput {
     this._activeInput.prevEvent = panEvent;
   }
 
-  public onPanend(event: MouseEvent) {
+  protected _onPanend(event: MouseEvent) {
     this._activeInput.onEventEnd(event);
     if (!this._panFlag || !this.isEnabled) {
       return;
@@ -109,15 +109,16 @@ export class RotatePanInput extends PanInput {
   private _triggerChange(event: ExtendedEvent) {
     const { x, y } = this._getPosFromOrigin(event.center.x, event.center.y);
     const angle = getAngle(x, y);
+    const positiveAngle = angle < 0 ? 360 + angle : angle;
     const quadrant = this._getQuadrant(event.center.x, event.center.y);
     const diff = this._getDifference(
       this._prevAngle,
-      angle,
+      positiveAngle,
       this._prevQuadrant,
       quadrant
     );
 
-    this._prevAngle = angle;
+    this._prevAngle = positiveAngle;
     this._prevQuadrant = quadrant;
 
     if (diff === 0) {

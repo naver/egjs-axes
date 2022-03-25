@@ -131,7 +131,7 @@ export class InputObserver implements InputTypeObserver {
     const depaPos: Axis = this._axisManager.get();
     const displacement = this._animationManager.getDisplacement(velocity);
     const offset = toAxis(input.axes, displacement);
-    let destPos: Axis = this._axisManager.get(
+    const destPos: Axis = this._axisManager.get(
       this._axisManager.map(offset, (v, opt, k) => {
         if (opt.circular && (opt.circular[0] || opt.circular[1])) {
           return pos[k] + v;
@@ -151,9 +151,6 @@ export class InputObserver implements InputTypeObserver {
       inputDuration
     );
 
-    if (duration === 0) {
-      destPos = { ...depaPos };
-    }
     // prepare params
     const param: AnimationParam = {
       depaPos,
