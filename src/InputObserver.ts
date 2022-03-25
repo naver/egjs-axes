@@ -53,7 +53,7 @@ export class InputObserver implements InputTypeObserver {
     this._interruptManager.setInterrupt(true);
     this._animationManager.stopAnimation(input.axes, changeOption);
     if (!this._moveDistance) {
-      this._eventManager.triggerHold(this._axisManager.get(), changeOption);
+      this._eventManager.hold(this._axisManager.get(), changeOption);
     }
     this._isOutside = this._axisManager.isOutside(input.axes);
     this._moveDistance = this._axisManager.get(input.axes);

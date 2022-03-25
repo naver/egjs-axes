@@ -18,7 +18,7 @@ export class EventManager {
   /**
    * This event is fired when a user holds an element on the screen of the device.
    * @ko 사용자가 기기의 화면에 손을 대고 있을 때 발생하는 이벤트
-   * @event Axes#triggerHold
+   * @event Axes#hold
    * @type {object}
    * @property {Object.<string, number>} pos coordinate <ko>좌표 정보</ko>
    * @property {Object} input The instance of inputType where the event occurred<ko>이벤트가 발생한 inputType 인스턴스</ko>
@@ -42,7 +42,7 @@ export class EventManager {
    * });
    * ```
    */
-  public triggerHold(pos: Axis, option: ChangeEventOption) {
+  public hold(pos: Axis, option: ChangeEventOption) {
     const { roundPos } = this._getRoundPos(pos);
 
     this._axes.trigger(
