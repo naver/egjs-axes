@@ -1,0 +1,132 @@
+.clock-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  max-width: 560px;
+  min-width: 560px;
+}
+
+#point {
+  position: absolute;
+  top: -10px;
+  left: 250px;
+}
+
+.axes-target {
+  position: relative;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 560px;
+  height: 560px;
+  padding: 20px;
+  border: solid 3px #757575;
+  background-color: #c2ecff;
+  overflow: hidden;
+}
+
+.options {
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 10px;
+  border: solid 3px #757575;
+  border-bottom: none;
+  background-color: #fcf7d6;
+}
+
+.options h3 {
+  margin: 5px;
+}
+
+#rotate {
+  width: 100%;
+  height: 100%;
+  background: url("../../../static/img/demos/schedule/plan.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.btn-group button {
+  color: white;
+  padding: 10px 12px;
+  cursor: pointer;
+  width: 120px;
+  float: left;
+}
+
+.btn-group .slow {
+  background-color: #ff4428;
+  border: 1px solid #710001;
+}
+
+.btn-group .slow.active {
+  background-color: #ad0100;
+}
+
+.btn-group .slow:hover {
+  background-color: #ad0100;
+}
+
+.btn-group .average {
+  background-color: #f7a240;
+  border: 1px solid #954b14;
+}
+
+.btn-group .average.active {
+  background-color: #b9661d;
+}
+
+.btn-group .average:hover {
+  background-color: #b9661d;
+}
+
+.btn-group .fast {
+  background-color: #00d1c8;
+  border: 1px solid #006d5e;
+}
+
+.btn-group .fast.active {
+  background-color: #008275;
+}
+
+.btn-group .fast:hover {
+  background-color: #008275;
+}
+
+.btn-group.set button {
+  background-color: #4caf50;
+  border: 1px solid green;
+}
+
+.btn-group.set button:hover {
+  background-color: #3e8e41;
+}
+
+.btn-group.update button {
+  background-color: #bcbcbc;
+  border: 1px solid #777777;
+  cursor: not-allowed;
+}
+
+.btn-group.update button:hover {
+  background-color: #bcbcbc;
+}
+
+.btn-group.update.active button {
+  background-color: #4c9ad8;
+  border: 1px solid #45718e;
+  cursor: pointer;
+}
+
+.btn-group.update.active button:hover {
+  background-color: #3f82b7;
+}
+
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none;
+}
