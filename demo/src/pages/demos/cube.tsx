@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import Axes, { PanInput, MoveKeyInput } from "../../../../src/index";
 import "../../css/demos/cube.css";
 
-function Cube() {
+const Cube = () => {
   useEffect(() => {
     const box = document.getElementById("box");
 
@@ -40,28 +40,31 @@ function Cube() {
       );
 
     // 4. move to position
-    axes.setTo(
-      {
-        rotateX: 40,
-        rotateY: 315,
-      }
-    );
-  });
+    axes.setTo({
+      rotateX: 40,
+      rotateY: 315,
+    });
+  }, []);
 
   return (
-    <div codepen="cube">
+    <div>
       <p>You can rotate the cube using two axes.</p>
       <div id="area">
         <div id="box">
           <div
             className="face metal-linear"
-            style={{ transform: "rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px)" }}
+            style={{
+              transform:
+                "rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px)",
+            }}
           >
             1
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: "rotateY(-90deg) translate3d(0px,-50px,100px)" }}
+            style={{
+              transform: "rotateY(-90deg) translate3d(0px,-50px,100px)",
+            }}
           >
             2
           </div>
@@ -79,7 +82,9 @@ function Cube() {
           </div>
           <div
             className="face metal-linear"
-            style={{ transform: "rotateY(180deg) translate3d(50px,-50px,50px)" }}
+            style={{
+              transform: "rotateY(180deg) translate3d(50px,-50px,50px)",
+            }}
           >
             5
           </div>
@@ -93,6 +98,6 @@ function Cube() {
       </div>
     </div>
   );
-}
+};
 
 export default Cube;

@@ -6,8 +6,6 @@ import CodeBlock from "@theme/CodeBlock";
 
 import AxesIcon from "../../static/img/axes.svg";
 
-import Character from "./demos/character";
-
 import styles from "./home.module.css";
 
 class Home extends React.Component {
@@ -153,6 +151,16 @@ class Home extends React.Component {
                     />
                   </p>
                   <p>Subway</p>
+                </a>
+              </li>
+              <li className="demo-item">
+                <a href="docs/schedule">
+                  <p>
+                    <img
+                      src={require("@site/static/img/demos/schedule.gif").default}
+                    />
+                  </p>
+                  <p>Schedule</p>
                 </a>
               </li>
             </ul>
