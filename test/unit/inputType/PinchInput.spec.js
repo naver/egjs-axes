@@ -2,60 +2,65 @@ import Axes from "../../../src/Axes.ts";
 import { PinchInput } from "../../../src/inputType/PinchInput";
 
 describe("PinchInput", () => {
-  describe("instance method", function () {
+	let el;
+	let input;
+	let inst;
+	let observer;
+
+  describe("instance method", () => {
     beforeEach(() => {
-      this.inst = new PinchInput(sandbox());
+      inst = new PinchInput(sandbox());
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
       cleanup();
     });
     it("should check status after disconnect", () => {
       // Given
-      this.inst.connect({});
+      inst.connect({});
 
       // When
-      this.inst.disconnect();
+      inst.disconnect();
 
       // Then
-      expect(this.observer).to.be.not.exist;
-      expect(this.inst.element).to.be.exist;
+      expect(observer).to.be.not.exist;
+      expect(inst.element).to.be.exist;
     });
     it("should check status after destroy", () => {
       // Given
-      this.inst.connect({});
+      inst.connect({});
 
       // When
-      this.inst.destroy();
+      inst.destroy();
 
       // Then
-      expect(this.inst.element).to.be.not.exist;
-      expect(this.observer).to.be.not.exist;
+      expect(inst.element).to.be.not.exist;
+      expect(observer).to.be.not.exist;
 
-      this.inst = null;
+      inst = null;
     });
   });
-  describe("enable/disable", function () {
+  describe("enable/disable", () => {
     beforeEach(() => {
-      this.el = sandbox();
-      this.input = new PinchInput(this.el, { inputType: ["touch"] });
-      this.inst = new Axes({
+      el = sandbox();
+      input = new PinchInput(el, { inputType: ["touch"] });
+      inst = new Axes({
         zoom: {
-            range: [1, 10]
+          range: [1, 10]
         }
       });
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
-      if (this.input) {
-        this.input.destroy();
-        this.input = null;
+      if (input) {
+        input.destroy();
+        input = null;
       }
       cleanup();
     });
@@ -64,45 +69,45 @@ describe("PinchInput", () => {
       // Given
       // When
       // Then
-      expect(this.input.isEnabled()).to.be.false;
+      expect(input.isEnabled()).to.be.false;
 
       // When
-      this.input.disable();
+      input.disable();
 
       // Then
-      expect(this.input.isEnabled()).to.be.false;
+      expect(input.isEnabled()).to.be.false;
 
       // When
-      this.input.enable();
+      input.enable();
 
       // Then
-      expect(this.input.isEnabled()).to.be.true;
+      expect(input.isEnabled()).to.be.true;
 
       // When
-      this.input.disable();
+      input.disable();
 
       // Then
-      expect(this.input.isEnabled()).to.be.false;
+      expect(input.isEnabled()).to.be.false;
     });
     it("should check event when enable method is called", (done) => {
       // Given
       const hold = sinon.spy();
       const change = sinon.spy();
       const release = sinon.spy();
-      this.inst.connect(["zoom"], this.input);
-      this.inst.on("hold", hold);
-      this.inst.on("change", change);
-      this.inst.on("release", release);
+      inst.connect(["zoom"], input);
+      inst.on("hold", hold);
+      inst.on("change", change);
+      inst.on("release", release);
 
       // When
-      expect(this.input.isEnabled()).to.be.true;
+      expect(input.isEnabled()).to.be.true;
 
       // When
       Simulator.gestures.pinch(
-        this.el,
+        el,
         {
           duration: 500,
-          scale: 0.5,
+          scale: 0.5
         },
         () => {
           // Then
@@ -118,21 +123,21 @@ describe("PinchInput", () => {
       const hold = sinon.spy();
       const change = sinon.spy();
       const release = sinon.spy();
-      this.inst.connect(["zoom"], this.input);
-      this.inst.on("hold", hold);
-      this.inst.on("change", change);
-      this.inst.on("release", release);
+      inst.connect(["zoom"], input);
+      inst.on("hold", hold);
+      inst.on("change", change);
+      inst.on("release", release);
 
       // When
-      expect(this.input.isEnabled()).to.be.true;
-      this.input.disable();
+      expect(input.isEnabled()).to.be.true;
+      input.disable();
 
       // When
       Simulator.gestures.pinch(
-        this.el,
+        el,
         {
           duration: 500,
-          scale: 0.5,
+          scale: 0.5
         },
         () => {
           // Then
@@ -145,48 +150,48 @@ describe("PinchInput", () => {
     });
   });
 
-  describe("offset value", function () {
+  describe("offset value", () => {
     beforeEach(() => {
-      this.el = sandbox();
-      this.input = new PinchInput(this.el, { inputType: ["touch"] });
-      this.inst = new Axes(
+      el = sandbox();
+      input = new PinchInput(el, { inputType: ["touch"] });
+      inst = new Axes(
         {
           x: {
-            range: [10, 120],
-          },
+            range: [10, 120]
+          }
         },
         { round: 1 },
         {
-          x: 50,
+          x: 50
         }
       );
-      this.inst.connect(["x"], this.input);
+      inst.connect(["x"], input);
     });
     afterEach(() => {
-      if (this.ins) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
-      if (this.input) {
-        this.input.destroy();
-        this.input = null;
+      if (input) {
+        input.destroy();
+        input = null;
       }
       cleanup();
     });
 
     it("The offset value should be returned using the position value when the hold event is triggered.", (done) => {
       // Given
-      this.input.options.scale = 1;
+      input.options.scale = 1;
       // When
       Simulator.gestures.pinch(
-        this.el,
+        el,
         {
           duration: 500,
-          scale: 1.1,
+          scale: 1.1
         },
         () => {
           // Then
-          expect(this.inst.get(["x"]).x).to.be.equal(55);
+          expect(inst.get(["x"]).x).to.be.equal(55);
           done();
         }
       );
@@ -194,33 +199,20 @@ describe("PinchInput", () => {
 
     it("The offset value should apply scale option", (done) => {
       // Given
-      this.input.options.scale = 1;
+      input.options.scale = 1;
       // When
       Simulator.gestures.pinch(
-        this.el,
+        el,
         {
           duration: 500,
-          scale: 0.9,
+          scale: 0.9
         },
         () => {
           // Then
-          expect(this.inst.get(["x"]).x).to.be.equal(45);
+          expect(inst.get(["x"]).x).to.be.equal(45);
           done();
         }
       );
-    });
-  });
-
-  describe("options test", function () {
-    beforeEach(() => {
-      this.inst = new PinchInput(sandbox());
-    });
-    afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
-      }
-      cleanup();
     });
   });
 });

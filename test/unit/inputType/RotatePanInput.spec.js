@@ -1,5 +1,6 @@
-import Axes from "../../../src/Axes";
 import { RotatePanInput } from "../../../src/inputType/RotatePanInput";
+import Axes from "../../../src/Axes";
+
 import TestHelper from "./TestHelper";
 
 describe("RotatePanInput", () => {
@@ -8,7 +9,7 @@ describe("RotatePanInput", () => {
   let axes;
   let clock;
 
-  async function testPanMove(MOVES) {
+   const testPanMove = async (MOVES) => {
     const resultAngles = [];
 
     for (let i = 0; i < MOVES.length; i++) {
@@ -39,13 +40,13 @@ describe("RotatePanInput", () => {
     el.style.backgroundColor = "yellow";
 
     input = new RotatePanInput(el, {
-      inputType: ["touch", "mouse"],
+      inputType: ["touch", "mouse"]
     });
 
     axes = new Axes({
       angle: {
-        range: [-360, 360],
-      },
+        range: [-360, 360]
+      }
     });
 
     axes.connect("angle", input);
@@ -73,7 +74,7 @@ describe("RotatePanInput", () => {
       deltaX: 100, // Until 200
       deltaY: 0,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     const MOVE_HORIZONTALLY_FULL_AT_TOP = {
@@ -81,7 +82,7 @@ describe("RotatePanInput", () => {
       deltaX: 200,
       deltaY: 0,
       duration: 3000,
-      expectedAngle: 90,
+      expectedAngle: 90
     };
 
     const MOVE_VERTICALLY_HALF_AT_LEFT = {
@@ -89,7 +90,7 @@ describe("RotatePanInput", () => {
       deltaX: 0,
       deltaY: 100,
       duration: 2000,
-      expectedAngle: -45,
+      expectedAngle: -45
     };
 
     const MOVE_VERTICALLY_HALF_AT_RIGHT = {
@@ -97,14 +98,14 @@ describe("RotatePanInput", () => {
       deltaX: 0,
       deltaY: 100,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     const MOVES = [
       MOVE_HORIZONTALLY_HALF_AT_TOP,
       MOVE_HORIZONTALLY_FULL_AT_TOP,
       MOVE_VERTICALLY_HALF_AT_LEFT,
-      MOVE_VERTICALLY_HALF_AT_RIGHT,
+      MOVE_VERTICALLY_HALF_AT_RIGHT
     ];
 
     await testPanMove(MOVES);
@@ -117,35 +118,35 @@ describe("RotatePanInput", () => {
       deltaX: 100, // Until 200
       deltaY: 0,
       duration: 2000,
-      expectedAngle: (Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI,
+      expectedAngle: (Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI
     };
     const MOVE_HORIZONTALLY_HALF_AT_BOTTOM = {
       pos: [50, 200], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 100, // Until 200
       deltaY: 0,
       duration: 2000,
-      expectedAngle: (-Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI,
+      expectedAngle: (-Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI
     };
     const MOVE_VERTICALLY_HALF_AT_LEFT = {
       pos: [0, 50], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 0, // Until 200
       deltaY: 100,
       duration: 2000,
-      expectedAngle: (-Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI,
+      expectedAngle: (-Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI
     };
     const MOVE_VERTICALLY_HALF_AT_RIGHT = {
       pos: [200, 50], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 0, // Until 200
       deltaY: 100,
       duration: 2000,
-      expectedAngle: (Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI,
+      expectedAngle: (Math.atan2(100 / 2, RADIUS) * 2 * 180) / Math.PI
     };
 
     const MOVES = [
       MOVE_HORIZONTALLY_HALF_AT_TOP,
       MOVE_HORIZONTALLY_HALF_AT_BOTTOM,
       MOVE_VERTICALLY_HALF_AT_LEFT,
-      MOVE_VERTICALLY_HALF_AT_RIGHT,
+      MOVE_VERTICALLY_HALF_AT_RIGHT
     ];
 
     // Then
@@ -161,13 +162,13 @@ describe("RotatePanInput", () => {
       pos: [50, 0], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 100, // Until 200
       deltaY: 0,
-      duration: 2000,
+      duration: 2000
     };
     const MOVE_HORIZONTALLY_FAST = {
       pos: [50, 0], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 100, // Until 200
       deltaY: 0,
-      duration: 200,
+      duration: 200
     };
     const MOVES = [MOVE_HORIZONTALLY_SLOW, MOVE_HORIZONTALLY_FAST];
 
@@ -194,13 +195,13 @@ describe("RotatePanInput", () => {
     smElement.style.backgroundColor = "yellow";
 
     const smInput = new RotatePanInput(smElement, {
-      inputType: ["touch", "mouse"],
+      inputType: ["touch", "mouse"]
     });
 
     const smAxes = new Axes({
       angle: {
-        range: [-360, 360],
-      },
+        range: [-360, 360]
+      }
     });
 
     smAxes.connect("angle", smInput);
@@ -216,7 +217,7 @@ describe("RotatePanInput", () => {
       deltaX: 100, // Until 200
       deltaY: 0,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     const MOVE_HORIZONTALLY_ON_SMALL = {
@@ -226,7 +227,7 @@ describe("RotatePanInput", () => {
       deltaX: 50, // Until 100
       deltaY: 0,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     const MOVES = [MOVE_HORIZONTALLY_ON_BIG, MOVE_HORIZONTALLY_ON_SMALL];
@@ -244,7 +245,7 @@ describe("RotatePanInput", () => {
       deltaX: 100, // Until 200
       deltaY: 0,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     axes.setTo({ angle: 0 });
@@ -267,7 +268,7 @@ describe("RotatePanInput", () => {
       deltaX: 50, // Until 100
       deltaY: 0,
       duration: 2000,
-      expectedAngle: 45,
+      expectedAngle: 45
     };
 
     axes.setTo({ angle: 0 });

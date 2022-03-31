@@ -1,24 +1,26 @@
 import { AxisManager } from "../../src/AxisManager";
 
-describe("AxisManager", function () {
-  describe("instance method", function () {
+describe("AxisManager", () => {
+	let inst;
+
+  describe("instance method", () => {
     beforeEach(() => {
-      this.inst = new AxisManager({
+      inst = new AxisManager({
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false,
+          circular: false
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false,
+          circular: false
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true,
-        },
+          circular: true
+        }
       });
     });
     afterEach(() => {});
@@ -26,9 +28,9 @@ describe("AxisManager", function () {
     it("should check 'moveTo' method", () => {
       // Given
       // When (all)
-      let orgPos = this.inst.get();
+      let orgPos = inst.get();
       let moveTo = { x: 10, y: 20, z: 30 };
-      let moved = this.inst.moveTo(moveTo);
+      let moved = inst.moveTo(moveTo);
 
       // Then
       expect(moved.pos).to.be.eql(moveTo);
@@ -36,36 +38,36 @@ describe("AxisManager", function () {
       expect(moved.delta).to.be.eql({
         x: 10,
         y: 20,
-        z: 130,
+        z: 130
       });
 
       // When (single)
       moveTo = { x: 30 };
-      moved = this.inst.moveTo(moveTo);
+      moved = inst.moveTo(moveTo);
 
       // Then
-      orgPos = this.inst.get();
+      orgPos = inst.get();
       expect(moved.pos).to.be.eql(orgPos);
       expect(moved.pos).to.be.not.equal(orgPos);
       expect(moved.delta).to.be.eql({
         x: 20,
         y: 0,
-        z: 0,
+        z: 0
       });
 
       // When (not included)
       moveTo = { notX: 30 };
-      moved = this.inst.moveTo(moveTo);
+      moved = inst.moveTo(moveTo);
 
       // Then
-      orgPos = this.inst.get();
+      orgPos = inst.get();
       expect(orgPos.notX).to.be.undefined;
       expect(moved.pos).to.be.eql(orgPos);
       expect(moved.pos).to.be.not.equal(orgPos);
       expect(moved.delta).to.be.eql({
         x: 0,
         y: 0,
-        z: 0,
+        z: 0
       });
     });
 
@@ -74,20 +76,20 @@ describe("AxisManager", function () {
       // When
 
       // Then
-      expect(this.inst.get()).to.be.eql({ x: 0, y: 0, z: -100 });
+      expect(inst.get()).to.be.eql({ x: 0, y: 0, z: -100 });
 
       // When
-      this.inst.moveTo({ x: 20, y: 40 });
+      inst.moveTo({ x: 20, y: 40 });
 
       // Then
-      expect(this.inst.get(["x"])).to.be.eql({ x: 20 });
-      expect(this.inst.get(["y"])).to.be.eql({ y: 40 });
-      expect(this.inst.get(["z"])).to.be.eql({ z: -100 });
-      expect(this.inst.get(["notX"])).to.be.eql({});
+      expect(inst.get(["x"])).to.be.eql({ x: 20 });
+      expect(inst.get(["y"])).to.be.eql({ y: 40 });
+      expect(inst.get(["z"])).to.be.eql({ z: -100 });
+      expect(inst.get(["notX"])).to.be.eql({});
 
       // When (check reference)
-      const firstGet = this.inst.get();
-      const secondGet = this.inst.get();
+      const firstGet = inst.get();
+      const secondGet = inst.get();
 
       // Then
       expect(firstGet).to.be.eql(secondGet);
@@ -96,84 +98,84 @@ describe("AxisManager", function () {
 
     it("should check 'every' high-order method", () => {
       // Given
-      let orgPos = this.inst.get();
+      const orgPos = inst.get();
       expect(orgPos).to.be.eql({ x: 0, y: 0, z: -100 });
 
       // When
-      this.inst.moveTo({ x: 20, y: 0 });
+      inst.moveTo({ x: 20, y: 0 });
 
       // Then
-      expect(this.inst.every(this.inst.get(), (v, opt, k) => v !== orgPos[k]))
+      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k]))
         .to.be.false;
 
       // When
-      this.inst.moveTo({ x: 20, y: 30, z: 0 });
+      inst.moveTo({ x: 20, y: 30, z: 0 });
 
       // Then
-      expect(this.inst.every(this.inst.get(), (v, opt, k) => v !== orgPos[k]))
+      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k]))
         .to.be.true;
     });
 
     it("should check 'filter' high-order method", () => {
       // Given
-      let orgPos = this.inst.get();
+      const orgPos = inst.get();
       expect(orgPos).to.be.eql({ x: 0, y: 0, z: -100 });
 
       // When
-      this.inst.moveTo({ x: 20, y: 0 });
+      inst.moveTo({ x: 20, y: 0 });
 
       // Then
       expect(
-        this.inst.filter(this.inst.get(), (v, opt, k) => v !== orgPos[k])
+        inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])
       ).to.be.eql({ x: 20 });
 
       // When
-      this.inst.moveTo({ x: 20, y: 30, z: 0 });
+      inst.moveTo({ x: 20, y: 30, z: 0 });
 
       // Then
       expect(
-        this.inst.filter(this.inst.get(), (v, opt, k) => v !== orgPos[k])
+        inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])
       ).to.be.eql({ x: 20, y: 30, z: 0 });
     });
 
     it("should check 'map' high-order method", () => {
       // Given
-      let orgPos = this.inst.get();
+      const orgPos = inst.get();
       expect(orgPos).to.be.eql({ x: 0, y: 0, z: -100 });
 
       // When
-      this.inst.moveTo({ x: 20, y: 0 });
+      inst.moveTo({ x: 20, y: 0 });
 
       // Then
-      expect(this.inst.map(this.inst.get(), (v) => v + 20)).to.be.eql({
+      expect(inst.map(inst.get(), (v) => v + 20)).to.be.eql({
         x: 40,
         y: 20,
-        z: -80,
+        z: -80
       });
     });
 
     it("should check 'isOutside' method", () => {
       // Given
       // When
-      let orgPos = this.inst.get();
+      const orgPos = inst.get();
       expect(orgPos).to.be.eql({ x: 0, y: 0, z: -100 });
 
       // Then
-      expect(this.inst.isOutside()).to.be.false;
+      expect(inst.isOutside()).to.be.false;
 
       // When
-      this.inst.moveTo({ x: -50 });
+      inst.moveTo({ x: -50 });
 
       // Then
-      expect(this.inst.isOutside()).to.be.true;
-      expect(this.inst.isOutside(["y", "z"])).to.be.false;
+      expect(inst.isOutside()).to.be.true;
+      expect(inst.isOutside(["y", "z"])).to.be.false;
 
       // When
-      this.inst.moveTo({ x: 50 });
+      inst.moveTo({ x: 50 });
 
       // Then
-      expect(this.inst.isOutside()).to.be.false;
-      expect(this.inst.isOutside(["y", "z"])).to.be.false;
+      expect(inst.isOutside()).to.be.false;
+      expect(inst.isOutside(["y", "z"])).to.be.false;
     });
   });
 });

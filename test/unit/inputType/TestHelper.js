@@ -1,98 +1,109 @@
 export default class TestHelper {
-	static wheelVertical(target, value, callback) {
-		if (target instanceof Element === false) {
-			return;
-		}
+  static wheelVertical(target, value, callback) {
+    if (target instanceof Element === false) {
+      return;
+    }
 
-		const params = {deltaY: value};
-		let wheelEvent;
+    const params = { deltaY: value };
+    let wheelEvent;
 
-		try {
-			wheelEvent = new WheelEvent("wheel", params);
-		} catch (e) {
-			wheelEvent = document.createEvent("WheelEvent");
-			wheelEvent.initEvent("wheel", params);
-		}
-		let isCall = false;
+    try {
+      wheelEvent = new WheelEvent("wheel", params);
+    } catch (e) {
+      wheelEvent = document.createEvent("WheelEvent");
+      wheelEvent.initEvent("wheel", params);
+    }
+    let isCall = false;
 
-		function callbackOnce() {
-			if (isCall) {
-				return;
-			}
-			isCall = true;
-			callback && callback();
-			target.removeEventListener("wheel", callbackOnce);// Is this posible??
-		}
-		target.addEventListener("wheel", callbackOnce);
-		target.dispatchEvent(wheelEvent);
-	}
-	static key(target, behavior, value, callback) {
-		if (target instanceof Element === false) {
-			return;
-		}
-		let keyboardEvent;
+    const callbackOnce = () => {
+      if (isCall) {
+        return;
+      }
+      isCall = true;
+      callback && callback();
+      target.removeEventListener("wheel", callbackOnce); // Is this posible??
+    };
+    target.addEventListener("wheel", callbackOnce);
+    target.dispatchEvent(wheelEvent);
+  }
 
-		try {
-			keyboardEvent = new KeyboardEvent(behavior, value);
-			delete keyboardEvent.keyCode;
-			Object.defineProperty(keyboardEvent, "keyCode", {
-				"value": value.keyCode,
-				"writable": true,
-			});
-		} catch (e) {
-			keyboardEvent = document.createEvent("KeyboardEvent");
-			keyboardEvent.initKeyboardEvent(behavior, true, false, null, 0, false, 0, false, value.keyCode, 0);
-		}
+  static key(target, behavior, value, callback) {
+    if (target instanceof Element === false) {
+      return;
+    }
+    let keyboardEvent;
 
-		function callbackOnce() {
-			callback && callback();
-			target.removeEventListener(behavior, callbackOnce);// Is this posible??
-		}
+    try {
+      keyboardEvent = new KeyboardEvent(behavior, value);
+      delete keyboardEvent.keyCode;
+      Object.defineProperty(keyboardEvent, "keyCode", {
+        value: value.keyCode,
+        writable: true
+      });
+    } catch (e) {
+      keyboardEvent = document.createEvent("KeyboardEvent");
+      keyboardEvent.initKeyboardEvent(
+        behavior,
+        true,
+        false,
+        null,
+        0,
+        false,
+        0,
+        false,
+        value.keyCode,
+        0
+      );
+    }
 
-		target.addEventListener(behavior, callbackOnce);
-		target.dispatchEvent(keyboardEvent);
-	}
-	/**
-	 * looping async function
-	 *
-	 * @param {*} count loop count
-	 * @param {*} loopFunc user loop function
-	 * @param {*} complete callback function which called if done.
-	 */
-	static asyncLoop(count, loopFunc, complete) {
-		let i = 0;
+    const callbackOnce = () => {
+      callback && callback();
+      target.removeEventListener(behavior, callbackOnce); // Is this posible??
+    }
 
-		function loop() {
-			if (i >= count) {
-				complete();
-				return;
-			}
+    target.addEventListener(behavior, callbackOnce);
+    target.dispatchEvent(keyboardEvent);
+  }
 
-			loopFunc(i, () => {
-				// done
-				i++;
-				loop();
-			});
-		}
+  /**
+   * looping async function
+   * @param {*} count loop count
+   * @param {*} loopFunc user loop function
+   * @param {*} complete callback function which called if done.
+   */
+  static asyncLoop(count, loopFunc, complete) {
+    let i = 0;
 
-		loop();
-	}
+    const loop = () => {
+      if (i >= count) {
+        complete();
+        return;
+      }
 
-	static panOnElement(el, param, debugOption) {
-		const rect = el.getBoundingClientRect();
+      loopFunc(i, () => {
+        // done
+        i++;
+        loop();
+      });
+    }
 
-		const paramByEl = Object.assign({}, param, {
-			pos: [rect.left + param.pos[0], rect.top + param.pos[1]]
-		});
+    loop();
+  }
 
-		// console.log(paramByEl);
-		return new Promise(res => {
-			Simulator.gestures.pan(el, paramByEl, res);
+  static panOnElement(el, param, debugOption) {
+    const rect = el.getBoundingClientRect();
 
-			if (debugOption) {
-				debugOption.clock && debugOption.clock.tick(param.duration + 100); // margin (100) is needed.
-			}
-		});
-	}
+    const paramByEl = Object.assign({}, param, {
+      pos: [rect.left + param.pos[0], rect.top + param.pos[1]]
+    });
+
+    // console.log(paramByEl);
+    return new Promise((res) => {
+      Simulator.gestures.pan(el, paramByEl, res);
+
+      if (debugOption) {
+        debugOption.clock && debugOption.clock.tick(param.duration + 100); // margin (100) is needed.
+      }
+    });
+  }
 }
-

@@ -2,107 +2,112 @@ import Axes from "../../../src/Axes.ts";
 import {
   PanInput,
   getDirectionByAngle,
-  useDirection,
+  useDirection
 } from "../../../src/inputType/PanInput";
 import {
   DIRECTION_ALL,
   DIRECTION_HORIZONTAL,
   DIRECTION_NONE,
-  DIRECTION_VERTICAL,
+  DIRECTION_VERTICAL
 } from "../../../src/const";
 
 describe("PanInput", () => {
-  describe("instance method", function () {
+	let el;
+	let input;
+	let inst;
+	let observer;
+
+  describe("instance method", () => {
     beforeEach(() => {
-      this.inst = new PanInput(sandbox());
+      inst = new PanInput(sandbox());
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
       cleanup();
     });
     it("should check 'mapAxes' method", () => {
       // when
-      this.inst.mapAxes(["x"]);
+      inst.mapAxes(["x"]);
 
       // then
-      expect(this.inst.axes).to.be.eql(["x"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION_HORIZONTAL);
+      expect(inst.axes).to.be.eql(["x"]);
+      expect(inst._direction).to.be.equal(DIRECTION_HORIZONTAL);
 
       // when
-      this.inst.mapAxes(["", "y"]);
+      inst.mapAxes(["", "y"]);
 
       // then
-      expect(this.inst.axes).to.be.eql(["", "y"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION_VERTICAL);
+      expect(inst.axes).to.be.eql(["", "y"]);
+      expect(inst._direction).to.be.equal(DIRECTION_VERTICAL);
 
       // when
-      this.inst.mapAxes(["x", "y"]);
+      inst.mapAxes(["x", "y"]);
 
       // then
-      expect(this.inst.axes).to.be.eql(["x", "y"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION_ALL);
+      expect(inst.axes).to.be.eql(["x", "y"]);
+      expect(inst._direction).to.be.equal(DIRECTION_ALL);
 
       // when
-      this.inst.mapAxes(["x", "y", "z"]);
+      inst.mapAxes(["x", "y", "z"]);
 
       // then
-      expect(this.inst.axes).to.be.eql(["x", "y", "z"]);
-      expect(this.inst._direction).to.be.equal(DIRECTION_ALL);
+      expect(inst.axes).to.be.eql(["x", "y", "z"]);
+      expect(inst._direction).to.be.equal(DIRECTION_ALL);
     });
     it("should check status after disconnect", () => {
       // Given
-      this.inst.connect({});
+      inst.connect({});
 
       // When
-      this.inst.disconnect();
+      inst.disconnect();
 
       // Then
-      expect(this.observer).to.be.not.exist;
-      expect(this.inst.element).to.be.exist;
-      expect(this.inst._direction).to.be.equal(DIRECTION_NONE);
+      expect(observer).to.be.not.exist;
+      expect(inst.element).to.be.exist;
+      expect(inst._direction).to.be.equal(DIRECTION_NONE);
     });
     it("should check status after destroy", () => {
       // Given
-      this.inst.connect({});
-      const beforeEl = this.inst.element;
+      inst.connect({});
+      const beforeEl = inst.element;
 
       // When
-      this.inst.destroy();
+      inst.destroy();
 
       // Then
-      expect(this.inst.element).to.be.not.exist;
-      expect(this.observer).to.be.not.exist;
-      expect(this.inst._direction).to.be.equal(DIRECTION_NONE);
+      expect(inst.element).to.be.not.exist;
+      expect(observer).to.be.not.exist;
+      expect(inst._direction).to.be.equal(DIRECTION_NONE);
 
-      this.inst = null;
+      inst = null;
     });
   });
-  describe("enable/disable", function () {
+  describe("enable/disable", () => {
     beforeEach(() => {
-      this.el = sandbox();
-      this.input = new PanInput(this.el, {
-        inputType: ["touch", "mouse"],
+      el = sandbox();
+      input = new PanInput(el, {
+        inputType: ["touch", "mouse"]
       });
-      this.inst = new Axes({
+      inst = new Axes({
         x: {
-            range: [0, 200]
+          range: [0, 200]
         },
         y: {
-            range: [0, 200]
+          range: [0, 200]
         }
       });
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
-      if (this.input) {
-        this.input.destroy();
-        this.input = null;
+      if (input) {
+        input.destroy();
+        input = null;
       }
       cleanup();
     });
@@ -111,42 +116,42 @@ describe("PanInput", () => {
       // Given
       // When
       // Then
-      expect(this.input.isEnabled()).to.be.false;
+      expect(input.isEnabled()).to.be.false;
 
       // When
-      this.input.enable();
+      input.enable();
 
       // Then
-      expect(this.input.isEnabled()).to.be.true;
+      expect(input.isEnabled()).to.be.true;
 
       // When
-      this.input.disable();
+      input.disable();
 
       // Then
-      expect(this.input.isEnabled()).to.be.false;
+      expect(input.isEnabled()).to.be.false;
     });
     it("should check event when enable method is called", (done) => {
       // Given
       const hold = sinon.spy();
       const change = sinon.spy();
       const release = sinon.spy();
-      this.inst.connect(["x", "y"], this.input);
-      this.inst.on("hold", hold);
-      this.inst.on("change", change);
-      this.inst.on("release", release);
+      inst.connect(["x", "y"], input);
+      inst.on("hold", hold);
+      inst.on("change", change);
+      inst.on("release", release);
 
       // When
-      expect(this.input.isEnabled()).to.be.true;
+      expect(input.isEnabled()).to.be.true;
 
       // When
       Simulator.gestures.pan(
-        this.el,
+        el,
         {
           pos: [0, 0],
           deltaX: 50,
           deltaY: 50,
           duration: 200,
-          easing: "linear",
+          easing: "linear"
         },
         () => {
           // Then
@@ -162,24 +167,24 @@ describe("PanInput", () => {
       const hold = sinon.spy();
       const change = sinon.spy();
       const release = sinon.spy();
-      this.inst.connect(["x", "y"], this.input);
-      this.inst.on("hold", hold);
-      this.inst.on("change", change);
-      this.inst.on("release", release);
+      inst.connect(["x", "y"], input);
+      inst.on("hold", hold);
+      inst.on("change", change);
+      inst.on("release", release);
 
       // When
-      expect(this.input.isEnabled()).to.be.true;
-      this.input.disable();
+      expect(input.isEnabled()).to.be.true;
+      input.disable();
 
       // When
       Simulator.gestures.pan(
-        this.el,
+        el,
         {
           pos: [0, 0],
           deltaX: 50,
           deltaY: 50,
           duration: 200,
-          easing: "linear",
+          easing: "linear"
         },
         () => {
           // Then
@@ -192,9 +197,9 @@ describe("PanInput", () => {
     });
   });
 
-  describe("static method", function () {
+  describe("static method", () => {
     it("should check user's direction", () => {
-      //Given
+      // Given
       // When thresholdAngle = 45
       // Then
       expect(getDirectionByAngle(0, 45)).to.be.equal(DIRECTION_HORIZONTAL);
@@ -305,18 +310,6 @@ describe("PanInput", () => {
       expect(
         useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL, DIRECTION_VERTICAL)
       ).to.be.true;
-    });
-  });
-  describe("options test", function () {
-    beforeEach(() => {
-      this.inst = new PanInput(sandbox());
-    });
-    afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
-      }
-      cleanup();
     });
   });
 });

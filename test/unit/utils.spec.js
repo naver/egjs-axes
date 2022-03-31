@@ -3,26 +3,28 @@ import {
   toArray,
   equal,
   getDecimalPlace,
-  roundNumber,
+  roundNumber
 } from "../../src/utils";
 
-describe("Util Test", function () {
+describe("Util Test", () => {
+	let el;
+
   beforeEach(() => {
-    this.el = sandbox();
+    el = sandbox();
   });
   afterEach(() => {
     cleanup();
   });
   it("should check 'equal' method", () => {
     // Given
-    let target1 = {
+    const target1 = {
       x: 10,
       y: 20,
-      z: 30,
+      z: 30
     };
-    let target2 = {
+    const target2 = {
       x: 10,
-      y: 20,
+      y: 20
     };
 
     // Then
@@ -43,19 +45,19 @@ describe("Util Test", function () {
     expect($(div) instanceof HTMLElement).to.be.true;
     expect($($(div)) instanceof HTMLElement).to.be.true;
     expect($(divs, true).length).to.be.equal(2);
-    expect($("#sandbox")).to.be.equal(this.el);
-    expect(this.el).to.be.equal(this.el);
+    expect($("#sandbox")).to.be.equal(el);
+    expect(el).to.be.equal(el);
   });
   it("should check `toArray` method", () => {
     // Given
-    this.el.innerHTML = `<div>content1</div>
+    el.innerHTML = `<div>content1</div>
     <div>content2</div>
     <div>content3</div>`;
     // When
-    const useSlice = Array.prototype.slice.call(this.el.childNodes);
+    const useSlice = Array.prototype.slice.call(el.childNodes);
 
     // Then
-    expect(toArray(this.el.childNodes)).to.be.eql(useSlice);
+    expect(toArray(el.childNodes)).to.be.eql(useSlice);
   });
 
   it("should roundNumber by round unit", () => {
@@ -63,7 +65,7 @@ describe("Util Test", function () {
     const targetVal = 99.123456789;
     const inputValues = [100, 10, 1, 0, 0.1, 0.01, 0.001, 0.0001];
     const expectValues = [
-      100, 100, 99, 0, 99.1, 99.12, 99.123, 99.1235 /* round */,
+      100, 100, 99, 0, 99.1, 99.12, 99.123, 99.1235 /* round */
     ];
     // Ref. Same result : https://codepen.io/GreenSock/pen/mLMYwM
 
