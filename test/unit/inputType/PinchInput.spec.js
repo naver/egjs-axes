@@ -41,26 +41,21 @@ describe("PinchInput", () => {
   describe("enable/disable", function () {
     beforeEach(() => {
       this.el = sandbox();
-      this.inst = new PinchInput(this.el, { inputType: ["touch"] });
-      this.inst.mapAxes(["x"]);
-      this.observer = {
-        get() {
-          return {
-            x: 10,
-          };
-        },
-        release() {},
-        hold() {},
-        change() {},
-        options: {
-          deceleration: 0.0001,
-        },
-      };
+      this.input = new PinchInput(this.el, { inputType: ["touch"] });
+      this.inst = new Axes({
+        zoom: {
+            range: [1, 10]
+        }
+      });
     });
     afterEach(() => {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
       }
       cleanup();
     });
@@ -69,34 +64,38 @@ describe("PinchInput", () => {
       // Given
       // When
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(this.input.isEnabled()).to.be.false;
 
       // When
-      this.inst.disable();
+      this.input.disable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(this.input.isEnabled()).to.be.false;
 
       // When
-      this.inst.enable();
+      this.input.enable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.true;
+      expect(this.input.isEnabled()).to.be.true;
 
       // When
-      this.inst.disable();
+      this.input.disable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(this.input.isEnabled()).to.be.false;
     });
     it("should check event when enable method is called", (done) => {
       // Given
-      this.inst.connect(this.observer);
-      const beforeHandler = this.inst._onPinchStart;
+      const hold = sinon.spy();
+      const change = sinon.spy();
+      const release = sinon.spy();
+      this.inst.connect(["zoom"], this.input);
+      this.inst.on("hold", hold);
+      this.inst.on("change", change);
+      this.inst.on("release", release);
 
       // When
-      expect(this.inst.isEnabled()).to.be.true;
-      const onPinchEndHandler = sinon.spy(beforeHandler);
+      expect(this.input.isEnabled()).to.be.true;
 
       // When
       Simulator.gestures.pinch(
@@ -107,20 +106,26 @@ describe("PinchInput", () => {
         },
         () => {
           // Then
-          expect(onPinchEndHandler.called).to.be.true;
+          expect(hold.calledOnce).to.be.true;
+          expect(change.called).to.be.true;
+          expect(release.calledOnce).to.be.true;
           done();
         }
       );
     });
     it("should check event when disable method is called", (done) => {
       // Given
-      this.inst.connect(this.observer);
-      const beforeHandler = this.inst._onPinchStart;
-      // When
+      const hold = sinon.spy();
+      const change = sinon.spy();
+      const release = sinon.spy();
+      this.inst.connect(["zoom"], this.input);
+      this.inst.on("hold", hold);
+      this.inst.on("change", change);
+      this.inst.on("release", release);
 
-      const onPinchEndHandler = sinon.spy(beforeHandler);
-      expect(this.inst.isEnabled()).to.be.true;
-      this.inst.disable();
+      // When
+      expect(this.input.isEnabled()).to.be.true;
+      this.input.disable();
 
       // When
       Simulator.gestures.pinch(
@@ -131,7 +136,9 @@ describe("PinchInput", () => {
         },
         () => {
           // Then
-          expect(onPinchEndHandler.called).to.be.false;
+          expect(hold.called).to.be.false;
+          expect(change.called).to.be.false;
+          expect(release.called).to.be.false;
           done();
         }
       );

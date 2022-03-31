@@ -1,9 +1,9 @@
+import Axes from "../../../src/Axes.ts";
 import {
   PanInput,
   getDirectionByAngle,
   useDirection,
 } from "../../../src/inputType/PanInput";
-import { PinchInput } from "../../../src/inputType/PinchInput";
 import {
   DIRECTION_ALL,
   DIRECTION_HORIZONTAL,
@@ -12,123 +12,6 @@ import {
 } from "../../../src/const";
 
 describe("PanInput", () => {
-  describe("when hammer instance is shared", function () {
-    beforeEach(() => {
-      this.el = sandbox();
-      this.inst1 = new PanInput(this.el, {
-        inputType: ["touch", "mouse"],
-      });
-      this.inst2 = new PinchInput(this.el);
-      this.inst1.mapAxes(["x1", "y1"]);
-      this.inst2.mapAxes(["x2"]);
-      const observer = {
-        get() {
-          return {
-            x: 10,
-          };
-        },
-        release() {},
-        hold() {},
-        change() {},
-        options: {
-          deceleration: 0.0001,
-        },
-      };
-      this.inst1.connect(observer);
-      this.inst2.connect(observer);
-
-      this.beforePanstart = this.inst1._onPanstart;
-      this.beforePinchstart = this.inst2._onPinchStart;
-      this.onPanstart = sinon.spy(this.beforePanstart);
-      this.onPinchstart = sinon.spy(this.beforePinchstart);
-    });
-    afterEach(() => {
-      if (this.inst1) {
-        this.inst1.destroy();
-        this.inst1 = null;
-      }
-      if (this.inst2) {
-        this.inst2.destroy();
-        this.inst2 = null;
-      }
-      cleanup();
-    });
-    it("should check multi event (pan/pinch)", (done) => {
-      // Given
-
-      // When
-      expect(this.inst1.element).to.be.equal(this.inst2.element);
-
-      // When
-      Simulator.gestures.pan(
-        this.el,
-        {
-          pos: [0, 0],
-          deltaX: 50,
-          deltaY: 50,
-          duration: 200,
-          easing: "linear",
-        },
-        () => {
-          // Then
-          expect(this.onPanstart.called).to.be.true;
-          expect(this.onPinchstart.called).to.be.false;
-
-          Simulator.gestures.pinch(
-            this.el,
-            {
-              duration: 500,
-              scale: 0.5,
-            },
-            () => {
-              // Then
-              expect(this.onPanstart.callCount).to.be.equal(1);
-              expect(this.onPinchstart.callCount).to.be.equal(1);
-              done();
-            }
-          );
-        }
-      );
-    });
-    it("should check multi dettached event (pan/pinch)", (done) => {
-      // Given
-
-      // When
-      this.inst1.disconnect();
-      expect(this.inst1.element).to.be.equal(this.inst2.element);
-
-      // When
-      Simulator.gestures.pan(
-        this.el,
-        {
-          pos: [0, 0],
-          deltaX: 50,
-          deltaY: 50,
-          duration: 200,
-          easing: "linear",
-        },
-        () => {
-          // Then
-          expect(this.onPanstart.called).to.be.false;
-          expect(this.onPanstart.called).to.be.false;
-
-          Simulator.gestures.pinch(
-            this.el,
-            {
-              duration: 500,
-              scale: 0.5,
-            },
-            () => {
-              // Then
-              expect(this.onPanstart.called).to.be.false;
-              expect(this.onPanstart.called).to.be.false;
-              done();
-            }
-          );
-        }
-      );
-    });
-  });
   describe("instance method", function () {
     beforeEach(() => {
       this.inst = new PanInput(sandbox());
@@ -200,28 +83,26 @@ describe("PanInput", () => {
   describe("enable/disable", function () {
     beforeEach(() => {
       this.el = sandbox();
-      this.inst = new PanInput(this.el, {
+      this.input = new PanInput(this.el, {
         inputType: ["touch", "mouse"],
       });
-      this.inst.mapAxes(["x1", "y1"]);
-      this.observer = {
-        get() {
-          return {
-            x: 10,
-          };
+      this.inst = new Axes({
+        x: {
+            range: [0, 200]
         },
-        release() {},
-        hold() {},
-        change() {},
-        options: {
-          deceleration: 0.0001,
-        },
-      };
+        y: {
+            range: [0, 200]
+        }
+      });
     });
     afterEach(() => {
       if (this.inst) {
         this.inst.destroy();
         this.inst = null;
+      }
+      if (this.input) {
+        this.input.destroy();
+        this.input = null;
       }
       cleanup();
     });
@@ -230,28 +111,32 @@ describe("PanInput", () => {
       // Given
       // When
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(this.input.isEnabled()).to.be.false;
 
       // When
-      this.inst.enable();
+      this.input.enable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.true;
+      expect(this.input.isEnabled()).to.be.true;
 
       // When
-      this.inst.disable();
+      this.input.disable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(this.input.isEnabled()).to.be.false;
     });
     it("should check event when enable method is called", (done) => {
       // Given
-      this.inst.connect(this.observer);
-      const beforeHandler = this.inst._onPanstart;
+      const hold = sinon.spy();
+      const change = sinon.spy();
+      const release = sinon.spy();
+      this.inst.connect(["x", "y"], this.input);
+      this.inst.on("hold", hold);
+      this.inst.on("change", change);
+      this.inst.on("release", release);
 
       // When
-      expect(this.inst.isEnabled()).to.be.true;
-      const onPanEndHandler = sinon.spy(beforeHandler);
+      expect(this.input.isEnabled()).to.be.true;
 
       // When
       Simulator.gestures.pan(
@@ -265,20 +150,26 @@ describe("PanInput", () => {
         },
         () => {
           // Then
-          expect(onPanEndHandler.called).to.be.true;
+          expect(hold.calledOnce).to.be.true;
+          expect(change.called).to.be.true;
+          expect(release.calledOnce).to.be.true;
           done();
         }
       );
     });
     it("should check event when disable method is called", (done) => {
       // Given
-      this.inst.connect(this.observer);
-      const beforeHandler = this.inst._onPanstart;
-      // When
+      const hold = sinon.spy();
+      const change = sinon.spy();
+      const release = sinon.spy();
+      this.inst.connect(["x", "y"], this.input);
+      this.inst.on("hold", hold);
+      this.inst.on("change", change);
+      this.inst.on("release", release);
 
-      const onPanEndHandler = sinon.spy(beforeHandler);
-      expect(this.inst.isEnabled()).to.be.true;
-      this.inst.disable();
+      // When
+      expect(this.input.isEnabled()).to.be.true;
+      this.input.disable();
 
       // When
       Simulator.gestures.pan(
@@ -292,7 +183,9 @@ describe("PanInput", () => {
         },
         () => {
           // Then
-          expect(onPanEndHandler.called).to.be.false;
+          expect(hold.called).to.be.false;
+          expect(change.called).to.be.false;
+          expect(release.called).to.be.false;
           done();
         }
       );

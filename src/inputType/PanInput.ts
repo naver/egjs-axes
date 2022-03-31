@@ -312,7 +312,7 @@ export class PanInput implements InputType {
     this._enabled = true;
     this._activeInput = activeInput;
     activeInput?.start.forEach((event) => {
-      this.element.addEventListener(event, this._onPanstart, false);
+      this.element?.addEventListener(event, this._onPanstart, false);
     });
     activeInput?.move.forEach((event) => {
       window.addEventListener(event, this._onPanmove, false);
@@ -325,7 +325,7 @@ export class PanInput implements InputType {
   private _detachEvent() {
     const activeInput = this._activeInput;
     activeInput?.start.forEach((event) => {
-      this.element.removeEventListener(event, this._onPanstart, false);
+      this.element?.removeEventListener(event, this._onPanstart, false);
     });
     activeInput?.move.forEach((event) => {
       window.removeEventListener(event, this._onPanmove, false);

@@ -167,7 +167,7 @@ describe("RotatePanInput", () => {
       pos: [50, 0], // Mid index of width 201 is 100 (201 - 1 / 2 )
       deltaX: 100, // Until 200
       deltaY: 0,
-      duration: 1000,
+      duration: 200,
     };
     const MOVES = [MOVE_HORIZONTALLY_SLOW, MOVE_HORIZONTALLY_FAST];
 
