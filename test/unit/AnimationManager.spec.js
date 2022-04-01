@@ -630,5 +630,169 @@ describe("AnimationManager", () => {
         );
       });
     });
+    it("should check 'updateAnimation' method (update destPos)", (done) => {
+      // Given
+      const startHandler = sinon.spy();
+      const endHandler = sinon.spy();
+      axes.on({
+        animationStart: startHandler,
+        animationEnd: endHandler
+      });
+
+      // When
+      inst.setTo({ x: 60, y: 70 }, 200);
+
+      // Then
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.updateAnimation({ destPos: { x: 100, y: 100 }});
+      }, 100);
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.calledOnce).to.be.true;
+        const result = inst.axisManager.get();
+
+        expect(result.x).to.be.equal(100);
+        expect(result.y).to.be.equal(100);
+        done();
+      }, 500);
+    });
+    it("should check 'updateAnimation' method (update duration)", (done) => {
+      // Given
+      const startHandler = sinon.spy();
+      const endHandler = sinon.spy();
+      axes.on({
+        animationStart: startHandler,
+        animationEnd: endHandler
+      });
+
+      // When
+      inst.setTo({ x: 60, y: 70 }, 200);
+
+      // Then
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.updateAnimation({ duration: 600 });
+      }, 100);
+      setTimeout(() => {
+        expect(endHandler.called).to.be.false;
+      }, 400);
+      setTimeout(() => {
+        expect(endHandler.calledOnce).to.be.true;
+        const result = inst.axisManager.get();
+
+        expect(result.x).to.be.equal(60);
+        expect(result.y).to.be.equal(70);
+        done();
+      }, 700);
+    });
+    it("should check 'updateAnimation' method (multiple time, update both)", (done) => {
+      // Given
+      const startHandler = sinon.spy();
+      const endHandler = sinon.spy();
+      axes.on({
+        animationStart: startHandler,
+        animationEnd: endHandler
+      });
+
+      // When
+      inst.setTo({ x: 100, y: 100 }, 200);
+
+      // Then
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.updateAnimation({ destPos: { x: 30, y: 30 }, duration: 400 });
+      }, 100);
+      setTimeout(() => {
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.updateAnimation({ destPos: { x: 12.3456, y: 1.2345 }, duration: 300 });
+      }, 200);
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.calledOnce).to.be.true;
+        const result = inst.axisManager.get();
+
+        expect(result.x).to.be.equal(12.3456);
+        expect(result.y).to.be.equal(1.2345);
+        done();
+      }, 500);
+    });
+    it("should check 'updateAnimation' method (restart: true)", (done) => {
+      // Given
+      const startHandler = sinon.spy();
+      const endHandler = sinon.spy();
+      axes.on({
+        animationStart: startHandler,
+        animationEnd: endHandler
+      });
+
+      // When
+      inst.setTo({ x: 10, y: 10 }, 200);
+
+      // Then
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.updateAnimation({ duration: 600, restart: true });
+      }, 100);
+      setTimeout(() => {
+        expect(endHandler.calledOnce).to.be.true;
+        expect(startHandler.calledTwice).to.be.true;
+      }, 400);
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.false;
+        expect(endHandler.calledOnce).to.be.false;
+        expect(endHandler.calledTwice).to.be.true;
+        const result = inst.axisManager.get();
+
+        expect(result.x).to.be.equal(10);
+        expect(result.y).to.be.equal(10);
+        done();
+      }, 700);
+    });
+    it("should check 'stopAnimation' method", (done) => {
+      // Given
+      const startHandler = sinon.spy();
+      const endHandler = sinon.spy();
+      axes.on({
+        animationStart: startHandler,
+        animationEnd: endHandler
+      });
+
+      // When
+      inst.setTo({ x: 100, y: 100 }, 400);
+
+      // Then
+      setTimeout(() => {
+        expect(startHandler.calledOnce).to.be.true;
+        expect(endHandler.called).to.be.false;
+
+        // When
+        inst.stopAnimation(["x", "y"]);
+      }, 100);
+      setTimeout(() => {
+        expect(endHandler.calledOnce).to.be.true;
+      }, 200);
+      setTimeout(() => {
+        const result = inst.axisManager.get();
+
+        expect(result.x).to.not.equal(100);
+        expect(result.y).to.not.equal(100);
+        done();
+      }, 500);
+    });
   });
 });
