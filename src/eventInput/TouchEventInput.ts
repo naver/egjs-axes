@@ -7,10 +7,10 @@ export class TouchEventInput extends EventInput {
   public readonly move = ["touchmove"];
   public readonly end = ["touchend", "touchcancel"];
 
-  private _firstTouch: TouchEvent;
+  private _baseTouches: TouchList;
 
   public onEventStart(event: InputEventType): ExtendedEvent {
-    this._firstTouch = event as TouchEvent;
+    this._baseTouches = (event as TouchEvent).touches;
     return this.extendEvent(event);
   }
 
@@ -18,7 +18,8 @@ export class TouchEventInput extends EventInput {
     return this.extendEvent(event);
   }
 
-  public onEventEnd(): void {
+  public onEventEnd(event: InputEventType): void {
+    this._baseTouches = (event as TouchEvent).touches;
     return;
   }
 
@@ -27,15 +28,12 @@ export class TouchEventInput extends EventInput {
   }
 
   protected _getScale(event: TouchEvent): number {
-    if (event.touches.length !== 2) {
+    if (event.touches.length !== 2 || this._baseTouches.length < 2) {
       return null; // TODO: consider calculating non-pinch gesture scale
     }
     return (
       this._getDistance(event.touches[0], event.touches[1]) /
-      this._getDistance(
-        this._firstTouch.touches[0],
-        this._firstTouch.touches[1]
-      )
+      this._getDistance(this._baseTouches[0], this._baseTouches[1])
     );
   }
 
