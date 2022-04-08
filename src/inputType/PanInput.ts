@@ -308,6 +308,11 @@ export class PanInput implements InputType {
 
   private _attachEvent(observer: InputTypeObserver) {
     const activeInput = convertInputType(this.options.inputType);
+    if (!activeInput) {
+      throw new Error(
+        "There is currently no inputType available for current device. There must be at least one available inputType."
+      );
+    }
     this._observer = observer;
     this._enabled = true;
     this._activeInput = activeInput;
