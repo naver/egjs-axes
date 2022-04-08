@@ -230,7 +230,7 @@ export const setCssProps = (
   originalCssProps?: { [key: string]: string }
 ): { [key: string]: string } => {
   const oldCssProps = {};
-  if (element.style) {
+  if (element && element.style) {
     const newCssProps = originalCssProps
       ? originalCssProps
       : PREVENT_SCROLL_CSSPROPS;

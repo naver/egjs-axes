@@ -308,11 +308,16 @@ export class PanInput implements InputType {
 
   private _attachEvent(observer: InputTypeObserver) {
     const activeInput = convertInputType(this.options.inputType);
+    if (!activeInput) {
+      throw new Error(
+        "There is currently no inputType available for current device. There must be at least one available inputType."
+      );
+    }
     this._observer = observer;
     this._enabled = true;
     this._activeInput = activeInput;
     activeInput?.start.forEach((event) => {
-      this.element.addEventListener(event, this._onPanstart, false);
+      this.element?.addEventListener(event, this._onPanstart, false);
     });
     activeInput?.move.forEach((event) => {
       window.addEventListener(event, this._onPanmove, false);
@@ -325,7 +330,7 @@ export class PanInput implements InputType {
   private _detachEvent() {
     const activeInput = this._activeInput;
     activeInput?.start.forEach((event) => {
-      this.element.removeEventListener(event, this._onPanstart, false);
+      this.element?.removeEventListener(event, this._onPanstart, false);
     });
     activeInput?.move.forEach((event) => {
       window.removeEventListener(event, this._onPanmove, false);

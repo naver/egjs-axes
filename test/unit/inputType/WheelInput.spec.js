@@ -1,64 +1,71 @@
-import TestHelper from "./TestHelper";
 import Axes from "../../../src/Axes.ts";
 import { WheelInput } from "../../../src/inputType/WheelInput";
 
+import TestHelper from "./TestHelper";
+
 describe("WheelInput", () => {
-  describe("instance method", function () {
+	let el;
+	let input;
+	let inst;
+	let observer;
+	let timer;
+
+  describe("instance method", () => {
     beforeEach(() => {
-      this.inst = new WheelInput(sandbox(), { releaseDelay: 50 });
+      inst = new WheelInput(sandbox(), { releaseDelay: 50 });
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
       cleanup();
     });
     it("should check status after disconnect", () => {
       // Given
-      this.inst.connect({});
+      inst.connect({});
 
       // When
-      this.inst.disconnect();
+      inst.disconnect();
 
       // Then
-      expect(this.observer).to.be.not.exist;
-      expect(this.inst.element).to.be.exist;
-      expect(this._timer).to.be.not.exist;
+      expect(observer).to.be.not.exist;
+      expect(inst.element).to.be.exist;
+      expect(timer).to.be.not.exist;
     });
     it("should check status after destroy", () => {
       // Given
-      this.inst.connect({});
+      inst.connect({});
 
       // When
-      this.inst.destroy();
+      inst.destroy();
 
       // Then
-      expect(this.inst.element).to.be.not.exist;
-      expect(this.observer).to.be.not.exist;
-      expect(this._timer).to.be.not.exist;
+      expect(inst.element).to.be.not.exist;
+      expect(observer).to.be.not.exist;
+      expect(timer).to.be.not.exist;
 
-      this.inst = null;
+      inst = null;
     });
   });
-  describe("enable/disable", function () {
+  describe("enable/disable", () => {
     beforeEach(() => {
-      this.el = sandbox();
-      this.inst = new WheelInput(this.el, { releaseDelay: 50 });
-      this.inst.mapAxes(["x"]);
-      this.observer = {
-        release() {},
-        hold() {},
-        change() {},
+      el = sandbox();
+      inst = new WheelInput(el, { releaseDelay: 50 });
+      inst.mapAxes(["x"]);
+      observer = {
+        release: () => {},
+        hold: () => {},
+        change: () => {},
         options: {
-          deceleration: 0.0001,
-        },
+          deceleration: 0.0001
+        }
       };
     });
     afterEach(() => {
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
       cleanup();
     });
@@ -67,55 +74,55 @@ describe("WheelInput", () => {
       // Given
       // When
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(inst.isEnabled()).to.be.false;
 
       // When
-      this.inst.disable();
+      inst.disable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.false;
+      expect(inst.isEnabled()).to.be.false;
 
       // When
-      this.inst.enable();
+      inst.enable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.true;
+      expect(inst.isEnabled()).to.be.true;
 
       // When (after connection)
-      this.inst.connect(this.observer);
-      this.inst.enable();
+      inst.connect(observer);
+      inst.enable();
 
       // Then
-      expect(this.inst.isEnabled()).to.be.true;
+      expect(inst.isEnabled()).to.be.true;
     });
   });
 
-  describe("simple wheel event test", function () {
+  describe("simple wheel event test", () => {
     beforeEach(() => {
-      this.el = sandbox();
-      this.input = new WheelInput(this.el, { releaseDelay: 50 });
-      this.inst = new Axes(
+      el = sandbox();
+      input = new WheelInput(el, { releaseDelay: 50 });
+      inst = new Axes(
         {
           x: {
-            range: [10, 120],
-          },
+            range: [10, 120]
+          }
         },
         {
-          maximumDuration: 30,
+          maximumDuration: 30
         }
       );
-      this.inst.connect(["x"], this.input);
+      inst.connect(["x"], input);
     });
 
     afterEach(() => {
-      this.el = null;
-      if (this.inst) {
-        this.inst.destroy();
-        this.inst = null;
+      el = null;
+      if (inst) {
+        inst.destroy();
+        inst = null;
       }
-      if (this.input) {
-        this.input.destroy();
-        this.input = null;
+      if (input) {
+        input.destroy();
+        input = null;
       }
       cleanup();
     });
@@ -125,14 +132,14 @@ describe("WheelInput", () => {
       const deltaY = 300;
       // When
       // 1. Scroll
-      TestHelper.wheelVertical(this.el, deltaY, () => {
+      TestHelper.wheelVertical(el, deltaY, () => {
         // 2. detach & destroy wheel input
-        this.inst.disconnect(this.input);
-        this.input.destroy();
-        this.input = null;
+        inst.disconnect(input);
+        input.destroy();
+        input = null;
         // 3. create new wheel input
-        this.input = new WheelInput(this.el, { releaseDelay: 50 });
-        this.inst.connect(["x"], this.input);
+        input = new WheelInput(el, { releaseDelay: 50 });
+        inst.connect(["x"], input);
 
         // Then -> script error should not be occur.
         setTimeout(done, 50);
@@ -140,44 +147,44 @@ describe("WheelInput", () => {
     });
   });
 
-  [1, 2, 4].forEach(function (scale) {
-    [true, false].forEach(function (useNormalized) {
-      describe(`wheel event test(useNormalized: ${useNormalized})`, function () {
+  [1, 2, 4].forEach((scale) => {
+    [true, false].forEach((useNormalized) => {
+      describe(`wheel event test(useNormalized: ${useNormalized})`, () => {
         beforeEach(() => {
-          this.el = sandbox();
-          this.input = new WheelInput(this.el, {
+          el = sandbox();
+          input = new WheelInput(el, {
             useNormalized: useNormalized,
             scale: scale,
-            releaseDelay: 50,
+            releaseDelay: 50
           });
-          this.inst = new Axes(
+          inst = new Axes(
             {
               x: {
-                range: [10, 120],
-              },
+                range: [10, 120]
+              }
             },
             {
-              maximumDuration: 0,
+              maximumDuration: 0
             }
           );
-          this.inst.connect(["x"], this.input);
+          inst.connect(["x"], input);
         });
 
         afterEach(() => {
-          this.el = null;
-          if (this.inst) {
-            this.inst.destroy();
-            this.inst = null;
+          el = null;
+          if (inst) {
+            inst.destroy();
+            inst = null;
           }
-          if (this.input) {
-            this.input.destroy();
-            this.input = null;
+          if (input) {
+            input.destroy();
+            input = null;
           }
           cleanup();
         });
         [-1, -3, -5, -9].forEach((d) => {
           it(`should check delta test (delta: ${d}, useNormalized: ${useNormalized})`, (done) => {
-            this.inst.on("change", ({ pos, delta }) => {
+            inst.on("change", ({ pos, delta }) => {
               if (delta.x === 0) {
                 return;
               }
@@ -186,10 +193,10 @@ describe("WheelInput", () => {
                 scale * (useNormalized ? sign : sign * Math.abs(d))
               );
             });
-            this.inst.on("release", (e) => {
+            inst.on("release", (e) => {
               done();
             });
-            TestHelper.wheelVertical(this.el, d, () => {});
+            TestHelper.wheelVertical(el, d, () => {});
           });
         });
         it("no event triggering when disconnected", (done) => {
@@ -197,13 +204,13 @@ describe("WheelInput", () => {
           const deltaY = 1;
           let changeTriggered = false;
 
-          this.inst.on("change", () => {
+          inst.on("change", () => {
             changeTriggered = true;
           });
-          this.inst.disconnect();
+          inst.disconnect();
 
           // When
-          TestHelper.wheelVertical(this.el, deltaY, () => {
+          TestHelper.wheelVertical(el, deltaY, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -215,12 +222,12 @@ describe("WheelInput", () => {
           const deltaY = 0;
           let changeTriggered = false;
 
-          this.inst.on("change", () => {
+          inst.on("change", () => {
             changeTriggered = true;
           });
 
           // When
-          TestHelper.wheelVertical(this.el, deltaY, () => {
+          TestHelper.wheelVertical(el, deltaY, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -232,7 +239,7 @@ describe("WheelInput", () => {
           const deltaY = -1;
           const eventLog = [];
 
-          this.inst
+          inst
             .on("hold", () => {
               eventLog.push("hold");
             })
@@ -244,9 +251,9 @@ describe("WheelInput", () => {
             });
 
           // When
-          TestHelper.wheelVertical(this.el, deltaY, () => {
+          TestHelper.wheelVertical(el, deltaY, () => {
             setTimeout(() => {
-              TestHelper.wheelVertical(this.el, deltaY, () => {
+              TestHelper.wheelVertical(el, deltaY, () => {
                 setTimeout(() => {
                   // Then
                   eventLog.forEach((log, index) => {

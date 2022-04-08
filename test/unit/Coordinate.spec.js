@@ -1,11 +1,11 @@
 import * as Coordinate from "../../src/Coordinate";
 
-describe("Coordinate", function () {
-  describe("getInsidePosition", function () {
+describe("Coordinate", () => {
+  describe("getInsidePosition", () => {
     it("should return inner position", () => {
       // Given
       // When
-      let range = [0, 100];
+      const range = [0, 100];
       let circular = [false, false];
 
       // Then
@@ -31,9 +31,9 @@ describe("Coordinate", function () {
     it("should return inner position with bounce", () => {
       // Given
       // When
-      let range = [0, 100];
+      const range = [0, 100];
       let circular = [false, false];
-      let bounce = [50, 100];
+      const bounce = [50, 100];
 
       // Then
       expect(
@@ -92,11 +92,11 @@ describe("Coordinate", function () {
     });
   });
 
-  describe("isOutside", function () {
+  describe("isOutside", () => {
     it("should check if pos is outside", () => {
       // Given
       // When
-      let range = [0, 100];
+      const range = [0, 100];
 
       // Then
       expect(Coordinate.isOutside(0, range)).to.false;
@@ -107,11 +107,11 @@ describe("Coordinate", function () {
     });
   });
 
-  describe("isCircularable", function () {
+  describe("isCircularable", () => {
     it("should check if pos is circularable", () => {
       // Given
       // When
-      let range = [0, 100];
+      const range = [0, 100];
       let circular = [false, false];
 
       // Then
@@ -133,7 +133,7 @@ describe("Coordinate", function () {
     });
   });
 
-  describe("getCirculatedPos", function () {
+  describe("getCirculatedPos", () => {
     it("should calculate position circular", () => {
       // Given
       // When

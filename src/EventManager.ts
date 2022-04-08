@@ -205,7 +205,8 @@ export class EventManager {
       input: option?.input || eventInfo?.input || null,
       set: inputEvent ? this._createUserControll(moveTo.pos) : () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
     };
-    const result = this._axes.trigger(new ComponentEvent("change", param));
+    const event = new ComponentEvent("change", param);
+    this._axes.trigger(event);
 
     if (inputEvent) {
       axisManager.set(
@@ -213,7 +214,7 @@ export class EventManager {
       );
     }
 
-    return result;
+    return !event.isCanceled();
   }
 
   /**
@@ -253,7 +254,7 @@ export class EventManager {
    * });
    * ```
    */
-  public triggerAnimationStart(param: AnimationParam): Axes {
+  public triggerAnimationStart(param: AnimationParam): boolean {
     const { roundPos, roundDepa } = this._getRoundPos(
       param.destPos,
       param.depaPos
@@ -261,9 +262,12 @@ export class EventManager {
     param.destPos = roundPos;
     param.depaPos = roundDepa;
     param.setTo = this._createUserControll(param.destPos, param.duration);
-    return this._axes.trigger(
-      new ComponentEvent("animationStart", param as OnAnimationStart)
+    const event = new ComponentEvent(
+      "animationStart",
+      param as OnAnimationStart
     );
+    this._axes.trigger(event);
+    return !event.isCanceled();
   }
 
   /**
