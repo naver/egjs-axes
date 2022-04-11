@@ -97,7 +97,6 @@ export class PanInput implements InputType {
   public element: HTMLElement = null;
   protected _observer: InputTypeObserver;
   protected _direction;
-  protected _panFlag = false;
   protected _enabled = false;
   protected _activeInput: ActiveInput = null;
   private _originalCssProps: { [key: string]: string };
@@ -140,15 +139,17 @@ export class PanInput implements InputType {
 
   public connect(observer: InputTypeObserver): InputType {
     if (this._activeInput) {
-      this._detachEvent();
+      this._detachElementEvent();
+      this._detachWindowEvent(this._activeInput);
     }
-    this._attachEvent(observer);
+    this._attachElementEvent(observer);
     this._originalCssProps = setCssProps(this.element);
     return this;
   }
 
   public disconnect() {
-    this._detachEvent();
+    this._detachElementEvent();
+    this._detachWindowEvent(this._activeInput);
     if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
       setCssProps(this.element, this._originalCssProps);
     }
@@ -195,13 +196,13 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
-    this._activeInput.onEventStart(event);
-    if (!this._enabled || this._activeInput.getTouches(event) > 1) {
+    const activeInput = this._activeInput;
+    activeInput.onEventStart(event);
+    if (!this._enabled || activeInput.getTouches(event) > 1) {
       return;
     }
 
-    const panEvent = this._activeInput.extendEvent(event);
-    this._panFlag = false;
+    const panEvent = activeInput.extendEvent(event);
 
     if (panEvent.srcEvent.cancelable !== false) {
       const edgeThreshold = this.options.iOSEdgeSwipeThreshold;
@@ -209,22 +210,19 @@ export class PanInput implements InputType {
       this._observer.hold(this, panEvent);
       this._atRightEdge =
         IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
-      this._panFlag = true;
-      this._activeInput.prevEvent = panEvent;
+      this._attachWindowEvent(activeInput);
+      activeInput.prevEvent = panEvent;
     }
   }
 
   protected _onPanmove(event: InputEventType) {
-    this._activeInput.onEventMove(event);
-    if (
-      !this._panFlag ||
-      !this._enabled ||
-      this._activeInput.getTouches(event) > 1
-    ) {
+    const activeInput = this._activeInput;
+    activeInput.onEventMove(event);
+    if (!this._enabled || activeInput.getTouches(event) > 1) {
       return;
     }
 
-    const panEvent = this._activeInput.extendEvent(event);
+    const panEvent = activeInput.extendEvent(event);
     const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
     const userDirection = getDirectionByAngle(
       panEvent.angle,
@@ -236,12 +234,13 @@ export class PanInput implements InputType {
       return;
     }
 
-    if (this._activeInput.prevEvent && IS_IOS_SAFARI) {
+    if (activeInput.prevEvent && IS_IOS_SAFARI) {
       const swipeLeftToRight = panEvent.center.x < 0;
 
       if (swipeLeftToRight) {
         // iOS swipe left => right
-        this._observer.release(this, this._activeInput.prevEvent, [0, 0]);
+        this._detachWindowEvent(activeInput);
+        this._observer.release(this, activeInput.prevEvent, [0, 0]);
         return;
       } else if (this._atRightEdge) {
         clearTimeout(this._rightEdgeTimer);
@@ -254,7 +253,8 @@ export class PanInput implements InputType {
         } else {
           // iOS swipe right => left
           this._rightEdgeTimer = window.setTimeout(() => {
-            this._observer.release(this, this._activeInput.prevEvent, [0, 0]);
+            this._detachWindowEvent(activeInput);
+            this._observer.release(this, activeInput.prevEvent, [0, 0]);
           }, 100);
         }
       }
@@ -278,21 +278,18 @@ export class PanInput implements InputType {
     if (prevent) {
       this._observer.change(this, panEvent, toAxis(this.axes, offset));
     }
-    this._activeInput.prevEvent = panEvent;
+    activeInput.prevEvent = panEvent;
   }
 
   protected _onPanend(event: InputEventType) {
-    this._activeInput.onEventEnd(event);
-    if (
-      !this._panFlag ||
-      !this._enabled ||
-      this._activeInput.getTouches(event) !== 0
-    ) {
+    const activeInput = this._activeInput;
+    activeInput.onEventEnd(event);
+    if (!this._enabled || activeInput.getTouches(event) !== 0) {
       return;
     }
-    this._panFlag = false;
+    this._detachWindowEvent(activeInput);
     clearTimeout(this._rightEdgeTimer);
-    const prevEvent = this._activeInput.prevEvent;
+    const prevEvent = activeInput.prevEvent;
     const velocity = this._getOffset(
       [
         Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
@@ -306,7 +303,25 @@ export class PanInput implements InputType {
     this._observer.release(this, prevEvent, velocity);
   }
 
-  private _attachEvent(observer: InputTypeObserver) {
+  protected _attachWindowEvent(activeInput: ActiveInput) {
+    activeInput?.move.forEach((event) => {
+      window.addEventListener(event, this._onPanmove, false);
+    });
+    activeInput?.end.forEach((event) => {
+      window.addEventListener(event, this._onPanend, false);
+    });
+  }
+
+  protected _detachWindowEvent(activeInput: ActiveInput) {
+    activeInput?.move.forEach((event) => {
+      window.removeEventListener(event, this._onPanmove, false);
+    });
+    activeInput?.end.forEach((event) => {
+      window.removeEventListener(event, this._onPanend, false);
+    });
+  }
+
+  private _attachElementEvent(observer: InputTypeObserver) {
     const activeInput = convertInputType(this.options.inputType);
     if (!activeInput) {
       throw new Error(
@@ -319,24 +334,12 @@ export class PanInput implements InputType {
     activeInput?.start.forEach((event) => {
       this.element?.addEventListener(event, this._onPanstart, false);
     });
-    activeInput?.move.forEach((event) => {
-      window.addEventListener(event, this._onPanmove, false);
-    });
-    activeInput?.end.forEach((event) => {
-      window.addEventListener(event, this._onPanend, false);
-    });
   }
 
-  private _detachEvent() {
+  private _detachElementEvent() {
     const activeInput = this._activeInput;
     activeInput?.start.forEach((event) => {
       this.element?.removeEventListener(event, this._onPanstart, false);
-    });
-    activeInput?.move.forEach((event) => {
-      window.removeEventListener(event, this._onPanmove, false);
-    });
-    activeInput?.end.forEach((event) => {
-      window.removeEventListener(event, this._onPanend, false);
     });
     this._enabled = false;
     this._observer = null;

@@ -21,6 +21,15 @@ export const isOutside = (pos: number, range: number[]): boolean => {
   return pos < range[0] || pos > range[1];
 };
 
+// determine whether position has reached the maximum moveable area
+export const isEndofBounce = (
+  pos: number,
+  range: number[],
+  bounce: number[]
+): boolean => {
+  return pos === range[0] - bounce[0] || pos === range[1] + bounce[1];
+};
+
 export const getDuration = (distance: number, deceleration): number => {
   const duration = Math.sqrt((distance / deceleration) * 2);
 

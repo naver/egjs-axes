@@ -4,7 +4,12 @@ import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
-import { isOutside, getInsidePosition, getCirculatedPos } from "./Coordinate";
+import {
+  isOutside,
+  getInsidePosition,
+  getCirculatedPos,
+  isEndofBounce,
+} from "./Coordinate";
 import { map, equal } from "./utils";
 import { AnimationParam } from "./types";
 
@@ -67,6 +72,10 @@ export class InputObserver implements InputTypeObserver {
     ) {
       return;
     }
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;
+    if (nativeEvent.childrenAxesAlreadyChanged) {
+      return;
+    }
     let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
     let destPos: Axis;
 
@@ -90,6 +99,11 @@ export class InputObserver implements InputTypeObserver {
     }
     depaPos = this._atOutside(depaPos);
     destPos = this._atOutside(destPos);
+
+    if (!this.options.nested || !this._isEndofAxis(offset, depaPos, destPos)) {
+      nativeEvent.childrenAxesAlreadyChanged = true;
+    }
+
     const changeOption: ChangeEventOption = {
       input,
       event,
@@ -127,6 +141,10 @@ export class InputObserver implements InputTypeObserver {
     ) {
       return;
     }
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;
+    if (nativeEvent.childrenAxesAlreadyReleased) {
+      velocity = velocity.map(() => 0);
+    }
     const pos: Axis = this._axisManager.get(input.axes);
     const depaPos: Axis = this._axisManager.get();
     const displacement = this._animationManager.getDisplacement(velocity);
@@ -145,6 +163,7 @@ export class InputObserver implements InputTypeObserver {
         }
       })
     );
+    nativeEvent.childrenAxesAlreadyReleased = true;
     const duration = this._animationManager.getDuration(
       destPos,
       pos,
@@ -230,5 +249,15 @@ export class InputObserver implements InputTypeObserver {
         return v;
       });
     }
+  }
+
+  private _isEndofAxis(offset: Axis, depaPos: Axis, destPos: Axis) {
+    return this._axisManager.every(
+      depaPos,
+      (value, option, key) =>
+        offset[key] === 0 ||
+        (depaPos[key] === destPos[key] &&
+          isEndofBounce(value, option.range, option.bounce as number[]))
+    );
   }
 }
