@@ -257,7 +257,12 @@ export class InputObserver implements InputTypeObserver {
       (value, option, key) =>
         offset[key] === 0 ||
         (depaPos[key] === destPos[key] &&
-          isEndofBounce(value, option.range, option.bounce as number[]))
+          isEndofBounce(
+            value,
+            option.range,
+            option.bounce as number[],
+            option.circular as boolean[]
+          ))
     );
   }
 }

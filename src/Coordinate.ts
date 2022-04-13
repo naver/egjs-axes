@@ -25,9 +25,13 @@ export const isOutside = (pos: number, range: number[]): boolean => {
 export const isEndofBounce = (
   pos: number,
   range: number[],
-  bounce: number[]
+  bounce: number[],
+  circular: boolean[]
 ): boolean => {
-  return pos === range[0] - bounce[0] || pos === range[1] + bounce[1];
+  return (
+    (!circular[0] && pos === range[0] - bounce[0]) ||
+    (!circular[1] && pos === range[1] + bounce[1])
+  );
 };
 
 export const getDuration = (distance: number, deceleration): number => {
