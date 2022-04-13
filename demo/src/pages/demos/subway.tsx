@@ -37,7 +37,7 @@ const Cube = () => {
         interrutable: false,
       },
       {
-        zoom: 1,
+        zoom: baseScale,
       }
     );
 
