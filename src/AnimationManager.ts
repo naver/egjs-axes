@@ -96,9 +96,9 @@ export class AnimationManager {
     return this.easing(displacement / (threshold * initSlope)) * threshold;
   }
 
-  public stopAnimation(axes: string[], option?: ChangeEventOption): void {
-    if (this._animateParam && axes.length) {
-      const orgPos: Axis = this.axisManager.get(axes);
+  public stopAnimation(option?: ChangeEventOption): void {
+    if (this._animateParam) {
+      const orgPos: Axis = this.axisManager.get();
       const pos: Axis = this.axisManager.map(orgPos, (v, opt) =>
         getCirculatedPos(v, opt.range, opt.circular as boolean[])
       );
@@ -134,7 +134,7 @@ export class AnimationManager {
     const destPos: Axis = this.axisManager.map(pos, (v, opt) =>
       Math.min(opt.range[1], Math.max(opt.range[0], v))
     );
-    this.stopAnimation(Object.keys(this.axisManager.get()));
+    this.stopAnimation();
     this.animateTo(destPos, this.getDuration(pos, destPos), option);
   }
 
@@ -188,6 +188,7 @@ export class AnimationManager {
     duration: number,
     option?: ChangeEventOption
   ): void {
+    this.stopAnimation();
     const param: AnimationParam = this._createAnimationParam(
       destPos,
       duration,
@@ -234,7 +235,6 @@ export class AnimationManager {
 
   public setTo(pos: Axis, duration: number = 0) {
     const axes: string[] = Object.keys(pos);
-    this.stopAnimation(axes);
     const orgPos: Axis = this.axisManager.get(axes);
 
     if (equal(pos, orgPos)) {
@@ -263,6 +263,7 @@ export class AnimationManager {
     if (duration > 0) {
       this.animateTo(movedPos, duration);
     } else {
+      this.stopAnimation();
       this.eventManager.triggerChange(movedPos);
       this.finish(false);
     }

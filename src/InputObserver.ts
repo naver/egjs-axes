@@ -56,7 +56,7 @@ export class InputObserver implements InputTypeObserver {
     };
     this._isStopped = false;
     this._interruptManager.setInterrupt(true);
-    this._animationManager.stopAnimation(input.axes, changeOption);
+    this._animationManager.stopAnimation(changeOption);
     if (!this._moveDistance) {
       this._eventManager.hold(this._axisManager.get(), changeOption);
     }
@@ -110,7 +110,6 @@ export class InputObserver implements InputTypeObserver {
     };
     if (useDuration) {
       const duration = this._animationManager.getDuration(destPos, depaPos);
-      this._animationManager.stopAnimation(input.axes, changeOption);
       this._animationManager.animateTo(destPos, duration, changeOption);
     } else {
       const isCanceled = !this._eventManager.triggerChange(
