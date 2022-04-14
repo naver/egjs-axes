@@ -173,6 +173,16 @@ class Home extends React.Component {
                   <p>Nested Axes</p>
                 </a>
               </li>
+              <li className="demo-item">
+                <a href="docs/nestedaxes">
+                  <p>
+                    <img
+                      src={require("@site/static/img/demos/nestedaxes.gif").default}
+                    />
+                  </p>
+                  <p>Nested Slides</p>
+                </a>
+              </li>
             </ul>
           </section>
         </div>
