@@ -79,7 +79,6 @@ const PullToRefresh = () => {
     axes.off("release");
     axes.on({
       release: ({ depaPos }) => {
-        console.log("hi");
         if (axes.isBounceArea()) {
           const info = getInfo(depaPos.scroll);
           if (info.isAdd) {

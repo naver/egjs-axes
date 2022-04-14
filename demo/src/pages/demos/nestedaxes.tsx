@@ -4,14 +4,15 @@ import Axes, { PanInput, WheelInput } from "../../../../src/index";
 import "../../css/demos/nestedaxes.css";
 
 const NestedAxes = () => {
+  const range = (v: number) => [...Array(v).keys()];
   const HEAD_COUNT = 3;
-  const HEAD_SLIDES = Array.from(Array(HEAD_COUNT).keys());
+  const HEAD_SLIDES = range(HEAD_COUNT);
   const BODY_COUNT = 7;
   const BODY_LENGTH = 4;
-  const BODY_LIST = Array.from(Array(BODY_LENGTH).keys());
-  const BODY_SLIDES = Array.from(Array(BODY_COUNT).keys());
+  const BODY_LIST = range(BODY_LENGTH);
+  const BODY_SLIDES = range(BODY_COUNT);
   const LEGS_COUNT = 3;
-  const LEGS_SLIDES = Array.from(Array(LEGS_COUNT).keys());
+  const LEGS_SLIDES = range(LEGS_COUNT);
   let cloudLength = 0;
 
   useEffect(() => {
@@ -230,8 +231,9 @@ const NestedAxes = () => {
                   id={`cloud${cloudLength++}`}
                   className="cloud"
                   src={
-                    require(`@site/static/img/demos/nestedaxes/cloud${Math.floor(Math.random() * 3 + 1)}.png`)
-                      .default
+                    require(`@site/static/img/demos/nestedaxes/cloud${Math.floor(
+                      Math.random() * 3 + 1
+                    )}.png`).default
                   }
                 />
                 <img
@@ -247,10 +249,7 @@ const NestedAxes = () => {
           {BODY_LIST.map((index, i) => (
             <div id={`body${index}`} className="cat-body" key={"body" + i}>
               {BODY_SLIDES.map((slideIndex, j) => (
-                <div
-                  className="cat-option"
-                  key={"body" + i + "slide" + j}
-                >
+                <div className="cat-option" key={"body" + i + "slide" + j}>
                   <img
                     id={`cloud${cloudLength++}`}
                     className="cloud"
