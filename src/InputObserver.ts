@@ -73,7 +73,7 @@ export class InputObserver implements InputTypeObserver {
       return;
     }
     const nativeEvent = event.srcEvent ? event.srcEvent : event;
-    if (nativeEvent.childrenAxesAlreadyChanged) {
+    if (nativeEvent.__childrenAxesAlreadyChanged) {
       return;
     }
     let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
@@ -101,7 +101,7 @@ export class InputObserver implements InputTypeObserver {
     destPos = this._atOutside(destPos);
 
     if (!this.options.nested || !this._isEndofAxis(offset, depaPos, destPos)) {
-      nativeEvent.childrenAxesAlreadyChanged = true;
+      nativeEvent.__childrenAxesAlreadyChanged = true;
     }
 
     const changeOption: ChangeEventOption = {
@@ -140,7 +140,7 @@ export class InputObserver implements InputTypeObserver {
       return;
     }
     const nativeEvent = event.srcEvent ? event.srcEvent : event;
-    if (nativeEvent.childrenAxesAlreadyReleased) {
+    if (nativeEvent.__childrenAxesAlreadyReleased) {
       velocity = velocity.map(() => 0);
     }
     const pos: Axis = this._axisManager.get(input.axes);
@@ -161,7 +161,7 @@ export class InputObserver implements InputTypeObserver {
         }
       })
     );
-    nativeEvent.childrenAxesAlreadyReleased = true;
+    nativeEvent.__childrenAxesAlreadyReleased = true;
     const duration = this._animationManager.getDuration(
       destPos,
       pos,
