@@ -114,7 +114,6 @@ export class InputObserver implements InputTypeObserver {
     } else {
       const isCanceled = !this._eventManager.triggerChange(
         destPos,
-        false,
         depaPos,
         changeOption,
         true
@@ -196,7 +195,6 @@ export class InputObserver implements InputTypeObserver {
       if (!isEqual) {
         this._eventManager.triggerChange(
           userWish.destPos,
-          false,
           depaPos,
           changeOption,
           true

@@ -184,7 +184,6 @@ export class EventManager {
    */
   public triggerChange(
     pos: Axis,
-    isAccurate?: boolean,
     depaPos?: Axis,
     option?: ChangeEventOption,
     holding: boolean = false

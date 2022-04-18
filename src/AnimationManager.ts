@@ -103,7 +103,7 @@ export class AnimationManager {
         getCirculatedPos(v, opt.range, opt.circular as boolean[])
       );
       if (!every(pos, (v, k) => orgPos[k] === v)) {
-        this.eventManager.triggerChange(pos, false, orgPos, option, !!option);
+        this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
       this._animateParam = null;
       if (this._raf) {
@@ -385,11 +385,7 @@ export class AnimationManager {
             return circulatedPos;
           }
         );
-        const isCanceled = !this.eventManager.triggerChange(
-          toPos,
-          false,
-          prevPos
-        );
+        const isCanceled = !this.eventManager.triggerChange(toPos, prevPos);
 
         prevPos = toPos;
         this._prevEasingPer = easingPer;
@@ -405,11 +401,7 @@ export class AnimationManager {
               this.axisManager.get(Object.keys(animateParam.destPos))
             )
           ) {
-            this.eventManager.triggerChange(
-              animateParam.destPos,
-              true,
-              prevPos
-            );
+            this.eventManager.triggerChange(animateParam.destPos, prevPos);
           }
           complete();
           return;
@@ -422,7 +414,7 @@ export class AnimationManager {
       };
       loop();
     } else {
-      this.eventManager.triggerChange(param.destPos, true);
+      this.eventManager.triggerChange(param.destPos);
       complete();
     }
   }
