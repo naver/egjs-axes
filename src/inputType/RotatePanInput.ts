@@ -49,13 +49,12 @@ export class RotatePanInput extends PanInput {
 
   protected _onPanstart(event: MouseEvent) {
     const activeInput = this._activeInput;
-    activeInput.onEventStart(event);
-    if (!this.isEnabled) {
+    const panEvent = activeInput.onEventStart(event, this.options.inputButton);
+    if (!panEvent || !this.isEnabled()) {
       return;
     }
 
     const rect = this.element.getBoundingClientRect();
-    const panEvent = activeInput.extendEvent(event);
 
     this._observer.hold(this, panEvent);
     this._attachWindowEvent(activeInput);
@@ -76,12 +75,10 @@ export class RotatePanInput extends PanInput {
 
   protected _onPanmove(event: MouseEvent) {
     const activeInput = this._activeInput;
-    activeInput.onEventMove(event);
-    if (!this.isEnabled) {
+    const panEvent = activeInput.onEventMove(event, this.options.inputButton);
+    if (!panEvent || !this.isEnabled()) {
       return;
     }
-
-    const panEvent = activeInput.extendEvent(event);
 
     if (panEvent.srcEvent.cancelable !== false) {
       panEvent.srcEvent.preventDefault();
@@ -94,7 +91,7 @@ export class RotatePanInput extends PanInput {
   protected _onPanend(event: MouseEvent) {
     const activeInput = this._activeInput;
     activeInput.onEventEnd(event);
-    if (!this.isEnabled) {
+    if (!this.isEnabled()) {
       return;
     }
     const prevEvent = activeInput.prevEvent;
@@ -106,6 +103,7 @@ export class RotatePanInput extends PanInput {
     this._observer.release(this, prevEvent, [
       velocity * this._coefficientForDistanceToAngle,
     ]);
+    activeInput.prevEvent = null;
     this._detachWindowEvent(activeInput);
   }
 

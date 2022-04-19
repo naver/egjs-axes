@@ -27,6 +27,10 @@ export class TouchEventInput extends EventInput {
     return (event as TouchEvent).touches.length;
   }
 
+  protected _getButton(): string {
+    return "left";
+  }
+
   protected _getScale(event: TouchEvent): number {
     if (event.touches.length !== 2 || this._baseTouches.length < 2) {
       return null; // TODO: consider calculating non-pinch gesture scale

@@ -19,6 +19,7 @@ import {
 
 export interface PanInputOption {
   inputType?: string[];
+  inputButton?: string[];
   scale?: number[];
   thresholdAngle?: number;
   threshold?: number;
@@ -55,11 +56,18 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @param {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices.
+ * @param {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices
  * - touch: Touch screen
- * - mouse: Mouse <ko>입력 장치 종류.
+ * - mouse: Mouse <ko>입력 장치 종류
  * - touch: 터치 입력 장치
  * - mouse: 마우스</ko>
+ * @param {String[]} [inputButton=["left"]] List of buttons to allow input
+ * - left: Left mouse button and normal touch
+ * - middle: Mouse wheel press
+ * - right: Right mouse button <ko>입력을 허용할 버튼 목록
+ * - left: 마우스 왼쪽 버튼
+ * - middle: 마우스 휠 눌림
+ * - right: 마우스 오른쪽 버튼 </ko>
  * @param {Number[]} [scale] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [scale[0]=1] horizontal axis scale <ko>수평축 배율</ko>
  * @param {Number} [scale[1]=1] vertical axis scale <ko>수직축 배율</ko>
@@ -110,6 +118,7 @@ export class PanInput implements InputType {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],
+      inputButton: ["left"],
       scale: [1, 1],
       thresholdAngle: 45,
       threshold: 0,
@@ -197,12 +206,10 @@ export class PanInput implements InputType {
 
   protected _onPanstart(event: InputEventType) {
     const activeInput = this._activeInput;
-    activeInput.onEventStart(event);
-    if (!this._enabled || activeInput.getTouches(event) > 1) {
+    const panEvent = activeInput.onEventStart(event, this.options.inputButton);
+    if (!panEvent || !this._enabled || activeInput.getTouches(event) > 1) {
       return;
     }
-
-    const panEvent = activeInput.extendEvent(event);
 
     if (panEvent.srcEvent.cancelable !== false) {
       const edgeThreshold = this.options.iOSEdgeSwipeThreshold;
@@ -217,12 +224,11 @@ export class PanInput implements InputType {
 
   protected _onPanmove(event: InputEventType) {
     const activeInput = this._activeInput;
-    activeInput.onEventMove(event);
-    if (!this._enabled || activeInput.getTouches(event) > 1) {
+    const panEvent = activeInput.onEventMove(event, this.options.inputButton);
+    if (!panEvent || !this._enabled || activeInput.getTouches(event) > 1) {
       return;
     }
 
-    const panEvent = activeInput.extendEvent(event);
     const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
     const userDirection = getDirectionByAngle(
       panEvent.angle,
@@ -301,23 +307,24 @@ export class PanInput implements InputType {
       ]
     );
     this._observer.release(this, prevEvent, velocity);
+    activeInput.prevEvent = null;
   }
 
   protected _attachWindowEvent(activeInput: ActiveInput) {
     activeInput?.move.forEach((event) => {
-      window.addEventListener(event, this._onPanmove, false);
+      window.addEventListener(event, this._onPanmove);
     });
     activeInput?.end.forEach((event) => {
-      window.addEventListener(event, this._onPanend, false);
+      window.addEventListener(event, this._onPanend);
     });
   }
 
   protected _detachWindowEvent(activeInput: ActiveInput) {
     activeInput?.move.forEach((event) => {
-      window.removeEventListener(event, this._onPanmove, false);
+      window.removeEventListener(event, this._onPanmove);
     });
     activeInput?.end.forEach((event) => {
-      window.removeEventListener(event, this._onPanend, false);
+      window.removeEventListener(event, this._onPanend);
     });
   }
 
@@ -332,14 +339,14 @@ export class PanInput implements InputType {
     this._enabled = true;
     this._activeInput = activeInput;
     activeInput?.start.forEach((event) => {
-      this.element?.addEventListener(event, this._onPanstart, false);
+      this.element?.addEventListener(event, this._onPanstart);
     });
   }
 
   private _detachElementEvent() {
     const activeInput = this._activeInput;
     activeInput?.start.forEach((event) => {
-      this.element?.removeEventListener(event, this._onPanstart, false);
+      this.element?.removeEventListener(event, this._onPanstart);
     });
     this._enabled = false;
     this._observer = null;

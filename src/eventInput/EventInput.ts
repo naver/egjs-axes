@@ -10,13 +10,21 @@ export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
 export abstract class EventInput {
   public prevEvent: ExtendedEvent;
 
-  public abstract onEventStart(event: InputEventType): ExtendedEvent;
+  public abstract onEventStart(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent;
 
-  public abstract onEventMove(event: InputEventType): ExtendedEvent;
+  public abstract onEventMove(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent;
 
   public abstract onEventEnd(event: InputEventType): void;
 
   public abstract getTouches(event: InputEventType): number;
+
+  protected abstract _getButton(event: InputEventType): string;
 
   protected abstract _getScale(event: InputEventType): number;
 
@@ -70,4 +78,21 @@ export abstract class EventInput {
     const y = end.clientY - start.clientY;
     return Math.sqrt(x * x + y * y);
   }
+
+  protected _isValidButton(button: string, inputButton: string[]): boolean {
+    return inputButton.includes(button);
+  }
+
+  protected _preventMouseButton(event: InputEventType, button: string): void {
+    if (button === "right") {
+      window.addEventListener("contextmenu", this._stopContextMenu);
+    } else if (button === "middle") {
+      event.preventDefault();
+    }
+  }
+
+  private _stopContextMenu = (event: InputEventType) => {
+    event.preventDefault();
+    window.removeEventListener("contextmenu", this._stopContextMenu);
+  };
 }

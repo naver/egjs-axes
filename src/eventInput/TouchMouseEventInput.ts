@@ -9,14 +9,31 @@ export class TouchMouseEventInput extends EventInput {
 
   private _baseTouches: TouchList;
 
-  public onEventStart(event: InputEventType): ExtendedEvent {
+  public onEventStart(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    const button = this._getButton(event as PointerEvent);
+    if (inputButton && !this._isValidButton(button, inputButton)) {
+      return null;
+    }
     if (this._isTouchEvent(event)) {
       this._baseTouches = (event as TouchEvent).touches;
     }
+    this._preventMouseButton(event, button);
     return this.extendEvent(event);
   }
 
-  public onEventMove(event: InputEventType): ExtendedEvent {
+  public onEventMove(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    if (
+      inputButton &&
+      !this._isValidButton(this._getButton(event), inputButton)
+    ) {
+      return null;
+    }
     return this.extendEvent(event);
   }
 
@@ -29,6 +46,22 @@ export class TouchMouseEventInput extends EventInput {
 
   public getTouches(event: InputEventType): number {
     return this._isTouchEvent(event) ? (event as TouchEvent).touches.length : 0;
+  }
+
+  protected _getButton(event: InputEventType): string {
+    if (this._isTouchEvent(event)) {
+      return "left";
+    }
+    switch ((event as MouseEvent).buttons) {
+      case 1:
+        return "left";
+      case 2:
+        return "right";
+      case 4:
+        return "middle";
+      default:
+        return "left";
+    }
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {
@@ -90,6 +123,6 @@ export class TouchMouseEventInput extends EventInput {
   }
 
   private _isTouchEvent(event: InputEventType): boolean {
-    return event.hasOwnProperty("touches");
+    return event.type.includes("touch");
   }
 }

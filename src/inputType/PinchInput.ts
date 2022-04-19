@@ -124,43 +124,45 @@ export class PinchInput implements InputType {
   }
 
   private _onPinchStart(event: InputEventType) {
-    this._activeInput.onEventStart(event);
-    if (!this._enabled || this._activeInput.getTouches(event) !== 2) {
+    const activeInput = this._activeInput;
+    const pinchEvent = activeInput.onEventStart(event);
+    if (!pinchEvent || !this._enabled || activeInput.getTouches(event) !== 2) {
       return;
     }
 
     this._baseValue = this._observer.get(this)[this.axes[0]];
     this._observer.hold(this, event);
     this._pinchFlag = true;
-    const pinchEvent = this._activeInput.extendEvent(event);
-    this._activeInput.prevEvent = pinchEvent;
+    activeInput.prevEvent = pinchEvent;
   }
 
   private _onPinchMove(event: InputEventType) {
-    this._activeInput.onEventMove(event);
+    const activeInput = this._activeInput;
+    const pinchEvent = activeInput.onEventMove(event);
     if (
+      !pinchEvent ||
       !this._pinchFlag ||
       !this._enabled ||
-      this._activeInput.getTouches(event) !== 2
+      activeInput.getTouches(event) !== 2
     ) {
       return;
     }
 
-    const pinchEvent = this._activeInput.extendEvent(event);
     const offset = this._getOffset(
       pinchEvent.scale,
-      this._activeInput.prevEvent.scale
+      activeInput.prevEvent.scale
     );
     this._observer.change(this, event, toAxis(this.axes, [offset]));
-    this._activeInput.prevEvent = pinchEvent;
+    activeInput.prevEvent = pinchEvent;
   }
 
   private _onPinchEnd(event: InputEventType) {
-    this._activeInput.onEventEnd(event);
+    const activeInput = this._activeInput;
+    activeInput.onEventEnd(event);
     if (
       !this._pinchFlag ||
       !this._enabled ||
-      this._activeInput.getTouches(event) >= 2
+      activeInput.getTouches(event) >= 2
     ) {
       return;
     }
@@ -168,7 +170,7 @@ export class PinchInput implements InputType {
     this._observer.release(this, event, [0], 0);
     this._baseValue = null;
     this._pinchFlag = false;
-    this._activeInput.prevEvent = null;
+    activeInput.prevEvent = null;
   }
 
   private _attachEvent(observer: InputTypeObserver) {

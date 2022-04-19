@@ -312,4 +312,65 @@ describe("PanInput", () => {
       ).to.be.true;
     });
   });
+
+  describe("options test", () => {
+    beforeEach(() => {
+      el = sandbox();
+      inst = new Axes({
+        x: {
+          range: [0, 200]
+        },
+        y: {
+          range: [0, 200]
+        }
+      });
+    });
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      if (input) {
+        input.destroy();
+        input = null;
+      }
+      cleanup();
+    });
+
+		["left", "middle", "right"].forEach((button) => {
+			it("should check 'inputButton' option", (done) => {
+				// Given
+				const hold = sinon.spy();
+				const change = sinon.spy();
+				const release = sinon.spy();
+				input = new PanInput(el, {
+					inputType: ["touch", "mouse"],
+					inputButton: [button]
+				});
+				inst.connect(["x", "y"], input);
+				inst.on("hold", hold);
+				inst.on("change", change);
+				inst.on("release", release);
+
+				// When
+				Simulator.gestures.pan(
+					el,
+					{
+						pos: [0, 0],
+						deltaX: 50,
+						deltaY: 50,
+						duration: 200,
+						easing: "linear"
+					},
+					() => {
+						// Then
+						expect(hold.called).to.be.equals(button === "left");
+						expect(change.called).to.be.equals(button === "left");
+						expect(release.called).to.be.equals(button === "left");
+						done();
+					}
+				);
+			});
+		});
+  });
 });
