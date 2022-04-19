@@ -2,20 +2,20 @@ import Axes from "../../../src/Axes.ts";
 import {
   PanInput,
   getDirectionByAngle,
-  useDirection
+  useDirection,
 } from "../../../src/inputType/PanInput";
 import {
   DIRECTION_ALL,
   DIRECTION_HORIZONTAL,
   DIRECTION_NONE,
-  DIRECTION_VERTICAL
+  DIRECTION_VERTICAL,
 } from "../../../src/const";
 
 describe("PanInput", () => {
-	let el;
-	let input;
-	let inst;
-	let observer;
+  let el;
+  let input;
+  let inst;
+  let observer;
 
   describe("instance method", () => {
     beforeEach(() => {
@@ -89,15 +89,15 @@ describe("PanInput", () => {
     beforeEach(() => {
       el = sandbox();
       input = new PanInput(el, {
-        inputType: ["touch", "mouse"]
+        inputType: ["touch", "mouse"],
       });
       inst = new Axes({
         x: {
-          range: [0, 200]
+          range: [0, 200],
         },
         y: {
-          range: [0, 200]
-        }
+          range: [0, 200],
+        },
       });
     });
     afterEach(() => {
@@ -151,7 +151,7 @@ describe("PanInput", () => {
           deltaX: 50,
           deltaY: 50,
           duration: 200,
-          easing: "linear"
+          easing: "linear",
         },
         () => {
           // Then
@@ -184,7 +184,7 @@ describe("PanInput", () => {
           deltaX: 50,
           deltaY: 50,
           duration: 200,
-          easing: "linear"
+          easing: "linear",
         },
         () => {
           // Then
@@ -318,11 +318,11 @@ describe("PanInput", () => {
       el = sandbox();
       inst = new Axes({
         x: {
-          range: [0, 200]
+          range: [0, 200],
         },
         y: {
-          range: [0, 200]
-        }
+          range: [0, 200],
+        },
       });
     });
     afterEach(() => {
@@ -337,40 +337,40 @@ describe("PanInput", () => {
       cleanup();
     });
 
-		["left", "middle", "right"].forEach((button) => {
-			it("should check 'inputButton' option", (done) => {
-				// Given
-				const hold = sinon.spy();
-				const change = sinon.spy();
-				const release = sinon.spy();
-				input = new PanInput(el, {
-					inputType: ["touch", "mouse"],
-					inputButton: [button]
-				});
-				inst.connect(["x", "y"], input);
-				inst.on("hold", hold);
-				inst.on("change", change);
-				inst.on("release", release);
+    ["left", "middle", "right"].forEach((button) => {
+      it("should check 'inputButton' option", (done) => {
+        // Given
+        const hold = sinon.spy();
+        const change = sinon.spy();
+        const release = sinon.spy();
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          inputButton: [button],
+        });
+        inst.connect(["x", "y"], input);
+        inst.on("hold", hold);
+        inst.on("change", change);
+        inst.on("release", release);
 
-				// When
-				Simulator.gestures.pan(
-					el,
-					{
-						pos: [0, 0],
-						deltaX: 50,
-						deltaY: 50,
-						duration: 200,
-						easing: "linear"
-					},
-					() => {
-						// Then
-						expect(hold.called).to.be.equals(button === "left");
-						expect(change.called).to.be.equals(button === "left");
-						expect(release.called).to.be.equals(button === "left");
-						done();
-					}
-				);
-			});
-		});
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 50,
+            deltaY: 50,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            // Then
+            expect(hold.called).to.be.equals(button === "left");
+            expect(change.called).to.be.equals(button === "left");
+            expect(release.called).to.be.equals(button === "left");
+            done();
+          }
+        );
+      });
+    });
   });
 });

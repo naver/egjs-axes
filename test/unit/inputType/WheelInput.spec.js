@@ -4,11 +4,11 @@ import { WheelInput } from "../../../src/inputType/WheelInput";
 import TestHelper from "./TestHelper";
 
 describe("WheelInput", () => {
-	let el;
-	let input;
-	let inst;
-	let observer;
-	let timer;
+  let el;
+  let input;
+  let inst;
+  let observer;
+  let timer;
 
   describe("instance method", () => {
     beforeEach(() => {
@@ -58,8 +58,8 @@ describe("WheelInput", () => {
         hold: () => {},
         change: () => {},
         options: {
-          deceleration: 0.0001
-        }
+          deceleration: 0.0001,
+        },
       };
     });
     afterEach(() => {
@@ -104,11 +104,11 @@ describe("WheelInput", () => {
       inst = new Axes(
         {
           x: {
-            range: [10, 120]
-          }
+            range: [10, 120],
+          },
         },
         {
-          maximumDuration: 30
+          maximumDuration: 30,
         }
       );
       inst.connect(["x"], input);
@@ -155,16 +155,16 @@ describe("WheelInput", () => {
           input = new WheelInput(el, {
             useNormalized: useNormalized,
             scale: scale,
-            releaseDelay: 50
+            releaseDelay: 50,
           });
           inst = new Axes(
             {
               x: {
-                range: [10, 120]
-              }
+                range: [10, 120],
+              },
             },
             {
-              maximumDuration: 0
+              maximumDuration: 0,
             }
           );
           inst.connect(["x"], input);

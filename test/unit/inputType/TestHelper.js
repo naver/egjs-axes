@@ -38,7 +38,7 @@ export default class TestHelper {
       delete keyboardEvent.keyCode;
       Object.defineProperty(keyboardEvent, "keyCode", {
         value: value.keyCode,
-        writable: true
+        writable: true,
       });
     } catch (e) {
       keyboardEvent = document.createEvent("KeyboardEvent");
@@ -59,7 +59,7 @@ export default class TestHelper {
     const callbackOnce = () => {
       callback && callback();
       target.removeEventListener(behavior, callbackOnce); // Is this posible??
-    }
+    };
 
     target.addEventListener(behavior, callbackOnce);
     target.dispatchEvent(keyboardEvent);
@@ -85,7 +85,7 @@ export default class TestHelper {
         i++;
         loop();
       });
-    }
+    };
 
     loop();
   }
@@ -94,7 +94,7 @@ export default class TestHelper {
     const rect = el.getBoundingClientRect();
 
     const paramByEl = Object.assign({}, param, {
-      pos: [rect.left + param.pos[0], rect.top + param.pos[1]]
+      pos: [rect.left + param.pos[0], rect.top + param.pos[1]],
     });
 
     // console.log(paramByEl);

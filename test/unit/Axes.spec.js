@@ -1,4 +1,3 @@
-
 import PanInputInjector from "inject-loader!../../src/inputType/PanInput.ts";
 
 import Axes from "../../src/Axes.ts";
@@ -8,17 +7,17 @@ import { getDecimalPlace, roundNumber } from "../../src/utils";
 
 describe("Axes", () => {
   let el;
-	let input;
-	let inst;
-	let nestedInst;
-	let holdHandler;
-	let changeHandler;
-	let releaseHandler;
-	let finishHandler;
-	let animationStartHandler;
-	let animationEndHandler;
-	let preventedFn;
-	let notPreventedFn;
+  let input;
+  let inst;
+  let nestedInst;
+  let holdHandler;
+  let changeHandler;
+  let releaseHandler;
+  let finishHandler;
+  let animationStartHandler;
+  let animationEndHandler;
+  let preventedFn;
+  let notPreventedFn;
 
   describe("Axes Test", () => {
     beforeEach(() => {
@@ -44,25 +43,15 @@ describe("Axes", () => {
         interruptable: true,
         minimumDuration: 0,
         maximumDuration: Infinity,
-        deceleration: 0.0006
+        deceleration: 0.0006,
       };
 
       expect(inst).to.be.exist;
-      expect(defaultOptions.easing(0.5)).to.be.equal(
-        inst.options.easing(0.5)
-      );
-      expect(defaultOptions.easing(0.3)).to.be.equal(
-        inst.options.easing(0.3)
-      );
-      expect(defaultOptions.easing(0.1)).to.be.equal(
-        inst.options.easing(0.1)
-      );
-      expect(defaultOptions.easing(0.7)).to.be.equal(
-        inst.options.easing(0.7)
-      );
-      expect(defaultOptions.easing(0.9)).to.be.equal(
-        inst.options.easing(0.9)
-      );
+      expect(defaultOptions.easing(0.5)).to.be.equal(inst.options.easing(0.5));
+      expect(defaultOptions.easing(0.3)).to.be.equal(inst.options.easing(0.3));
+      expect(defaultOptions.easing(0.1)).to.be.equal(inst.options.easing(0.1));
+      expect(defaultOptions.easing(0.7)).to.be.equal(inst.options.easing(0.7));
+      expect(defaultOptions.easing(0.9)).to.be.equal(inst.options.easing(0.9));
       expect(defaultOptions.interruptable).to.be.equal(
         inst.options.interruptable
       );
@@ -85,20 +74,20 @@ describe("Axes", () => {
           x: {
             range: [0, 100],
             bounce: [30, 50],
-            circular: true
+            circular: true,
           },
           otherX: {
             range: [-100, 100],
             bounce: 40,
-            circular: [false, true]
-          }
+            circular: [false, true],
+          },
         },
         {
-          deceleration: 0.001
+          deceleration: 0.001,
         },
         {
           x: 50,
-          otherX: 0
+          otherX: 0,
         }
       );
 
@@ -117,16 +106,16 @@ describe("Axes", () => {
           x: {
             range: [0, 100],
             bounce: [30, 50],
-            circular: true
+            circular: true,
           },
           otherX: {
             range: [-100, 100],
             bounce: 40,
-            circular: [false, true]
-          }
+            circular: [false, true],
+          },
         },
         {
-          deceleration: 0.001
+          deceleration: 0.001,
         }
       );
       // When
@@ -159,21 +148,21 @@ describe("Axes", () => {
           x: {
             range: [0, 100],
             bounce: [30, 50],
-            circular: true
+            circular: true,
           },
           otherX: {
             range: [-100, 100],
             bounce: 40,
-            circular: [false, true]
-          }
+            circular: [false, true],
+          },
         },
         {
-          deceleration: 0.001
+          deceleration: 0.001,
         }
       ).on({
         animationStart: startHandler,
         change: changeHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -187,16 +176,16 @@ describe("Axes", () => {
           x: {
             range: [0, 100],
             bounce: [30, 50],
-            circular: true
+            circular: true,
           },
           otherX: {
             range: [-100, 100],
             bounce: 40,
-            circular: [false, true]
-          }
+            circular: [false, true],
+          },
         },
         {
-          deceleration: 0.001
+          deceleration: 0.001,
         }
       );
       inst.setTo({ x: 50 });
@@ -205,7 +194,7 @@ describe("Axes", () => {
       inst.on({
         animationStart: startHandler,
         change: changeHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       const startHandler = sinon.spy();
@@ -230,16 +219,16 @@ describe("Axes", () => {
           x: {
             range: [0, 100],
             bounce: [30, 50],
-            circular: true
+            circular: true,
           },
           otherX: {
             range: [-100, 100],
             bounce: 40,
-            circular: [false, true]
-          }
+            circular: [false, true],
+          },
         },
         {
-          deceleration: 0.001
+          deceleration: 0.001,
         }
       );
       sandbox();
@@ -335,14 +324,14 @@ describe("Axes", () => {
         deltaX: 100,
         deltaY: 10,
         duration: 200,
-        easing: "linear"
+        easing: "linear",
       };
       const MOVE_VERTICALLY = {
         pos: [0, 0],
         deltaX: 0,
         deltaY: 100,
         duration: 200,
-        easing: "linear"
+        easing: "linear",
       };
       const target = document.querySelector("#sandbox");
       const pinchInput = new PinchInput(target, { inputType: ["touch"] });
@@ -375,26 +364,25 @@ describe("Axes", () => {
 
   describe("Nested Axes Test", () => {
     beforeEach(() => {
-      inst = new Axes(
-        {
-          x: {
-            range: [0, 300],
-            bounce: [10, 10]
-          }
-        }
-      );
+      inst = new Axes({
+        x: {
+          range: [0, 300],
+          bounce: [10, 10],
+        },
+      });
       nestedInst = new Axes(
         {
           x: {
             range: [0, 200],
-            bounce: [10, 10]
-          }
-        }, {
-					nested: true
-				}
+            bounce: [10, 10],
+          },
+        },
+        {
+          nested: true,
+        }
       );
-			el = sandbox();
-			el.innerHTML = `<div id="parent"
+      el = sandbox();
+      el.innerHTML = `<div id="parent"
 			style="width:300px; height:200px;"><div id="child" style="width:200px; height:200px;"></div></div>`;
     });
     afterEach(() => {
@@ -423,25 +411,29 @@ describe("Axes", () => {
       const childPrevX = nestedInst.get()["x"];
 
       // When
-			Simulator.gestures.pan(child, {
-        pos: [0, 0],
-        deltaX: 100,
-        deltaY: 0,
-        duration: 200,
-        easing: "linear"
-      }, () => {
-				// Then
-				const parentCurrX = inst.get()["x"];
-				const childCurrX = nestedInst.get()["x"];
+      Simulator.gestures.pan(
+        child,
+        {
+          pos: [0, 0],
+          deltaX: 100,
+          deltaY: 0,
+          duration: 200,
+          easing: "linear",
+        },
+        () => {
+          // Then
+          const parentCurrX = inst.get()["x"];
+          const childCurrX = nestedInst.get()["x"];
 
-				expect(parentPrevX).to.be.equal(parentCurrX);
-				expect(childPrevX).to.be.not.equal(childCurrX);
+          expect(parentPrevX).to.be.equal(parentCurrX);
+          expect(childPrevX).to.be.not.equal(childCurrX);
 
-				parentInput.destroy();
-				childInput.destroy();
-				done();
-			});
-		});
+          parentInput.destroy();
+          childInput.destroy();
+          done();
+        }
+      );
+    });
 
     it("should check both state of the axes attached to the elements when child axes reaches the max range.", (done) => {
       // Given
@@ -457,25 +449,29 @@ describe("Axes", () => {
       const childPrevX = nestedInst.get()["x"];
 
       // When
-			Simulator.gestures.pan(child, {
-        pos: [0, 0],
-        deltaX: 300,
-        deltaY: 0,
-        duration: 200,
-        easing: "linear"
-      }, () => {
-				// Then
-				const parentCurrX = inst.get()["x"];
-				const childCurrX = nestedInst.get()["x"];
+      Simulator.gestures.pan(
+        child,
+        {
+          pos: [0, 0],
+          deltaX: 300,
+          deltaY: 0,
+          duration: 200,
+          easing: "linear",
+        },
+        () => {
+          // Then
+          const parentCurrX = inst.get()["x"];
+          const childCurrX = nestedInst.get()["x"];
 
-				expect(parentPrevX).to.be.not.equal(parentCurrX);
-				expect(childPrevX).to.be.not.equal(childCurrX);
+          expect(parentPrevX).to.be.not.equal(parentCurrX);
+          expect(childPrevX).to.be.not.equal(childCurrX);
 
-				parentInput.destroy();
-				childInput.destroy();
-				done();
-			});
-		});
+          parentInput.destroy();
+          childInput.destroy();
+          done();
+        }
+      );
+    });
   });
 
   [20, 30, 40, 50].forEach((iOSEdgeSwipeThreshold) => {
@@ -485,15 +481,15 @@ describe("Axes", () => {
           {
             x: {
               range: [0, 300],
-              bounce: 100
+              bounce: 100,
             },
             y: {
               range: [0, 400],
-              bounce: 100
-            }
+              bounce: 100,
+            },
           },
           {
-            deceleration: 0.001
+            deceleration: 0.001,
           }
         );
         el = sandbox();
@@ -505,17 +501,17 @@ describe("Axes", () => {
         const MockPanInputInjector = PanInputInjector({
           "../const": {
             IOS_EDGE_THRESHOLD: 30,
-            IS_IOS_SAFARI: true
-          }
+            IS_IOS_SAFARI: true,
+          },
         });
         input = new MockPanInputInjector.PanInput(el, {
           iOSEdgeSwipeThreshold,
-          inputType: ["touch"]
+          inputType: ["touch"],
         });
         inst
           .on({
             release: releaseHandler,
-            finish: finishHandler
+            finish: finishHandler,
           })
           .connect(["x", "y"], input);
 
@@ -553,7 +549,7 @@ describe("Axes", () => {
             deltaX: -50,
             deltaY: 10,
             duration: 200,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -582,7 +578,7 @@ describe("Axes", () => {
             deltaX: -15,
             deltaY: 0,
             duration: 200,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -611,7 +607,7 @@ describe("Axes", () => {
             deltaX: -60,
             deltaY: 0,
             duration: 200,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -637,16 +633,16 @@ describe("Axes", () => {
           {
             x: {
               range: [0, 300],
-              bounce: 100
+              bounce: 100,
             },
             y: {
               range: [0, 400],
-              bounce: 100
-            }
+              bounce: 100,
+            },
           },
           {
             deceleration: 0.001,
-            interruptable: false
+            interruptable: false,
           }
         );
         el = sandbox();
@@ -660,7 +656,7 @@ describe("Axes", () => {
           expect(self.interruptManager._prevented).to.be.false;
         };
         input = new PanInput(el, {
-          inputType: type
+          inputType: type,
         });
         inst.connect(["x", "y"], input);
       });
@@ -694,7 +690,7 @@ describe("Axes", () => {
           release: releaseHandler,
           finish: finishHandler,
           animationStart: animationStartHandler,
-          animationEnd: animationEndHandler
+          animationEnd: animationEndHandler,
         });
 
         // When
@@ -705,7 +701,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 1000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -747,7 +743,7 @@ describe("Axes", () => {
           release: releaseHandler,
           finish: finishHandler,
           animationStart: animationStartHandler,
-          animationEnd: animationEndHandler
+          animationEnd: animationEndHandler,
         });
 
         // When
@@ -758,7 +754,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 1000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -806,7 +802,7 @@ describe("Axes", () => {
           release: releaseHandler,
           finish: finishHandler,
           animationStart: animationStartHandler,
-          animationEnd: animationEndHandler
+          animationEnd: animationEndHandler,
         });
 
         // When
@@ -817,7 +813,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 1000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -849,7 +845,7 @@ describe("Axes", () => {
           release: releaseHandler,
           finish: finishHandler,
           animationStart: animationStartHandler,
-          animationEnd: animationEndHandler
+          animationEnd: animationEndHandler,
         });
 
         // when
@@ -860,7 +856,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 1000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -889,15 +885,15 @@ describe("Axes", () => {
           {
             x: {
               range: [0, 300],
-              bounce: 100
+              bounce: 100,
             },
             y: {
               range: [0, 400],
-              bounce: 100
-            }
+              bounce: 100,
+            },
           },
           {
-            deceleration: 0.001
+            deceleration: 0.001,
           }
         );
         el = sandbox();
@@ -911,7 +907,7 @@ describe("Axes", () => {
         animationEndHandler = sinon.spy();
 
         input = new PanInput(el, {
-          inputType: type
+          inputType: type,
         });
         inst
           .on({
@@ -919,7 +915,7 @@ describe("Axes", () => {
             release: releaseHandler,
             finish: finishHandler,
             animationStart: animationStartHandler,
-            animationEnd: animationEndHandler
+            animationEnd: animationEndHandler,
           })
           .connect(["x", "y"], input);
       });
@@ -957,7 +953,7 @@ describe("Axes", () => {
             deltaX: 10,
             deltaY: 10,
             duration: 3000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -1017,7 +1013,7 @@ describe("Axes", () => {
             deltaX: -50,
             deltaY: 10,
             duration: 3000,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -1045,8 +1041,7 @@ describe("Axes", () => {
                 animationStartHandler.getCall(0).args[0];
               expect(animationStartHandler.called).to.be.true;
               expect(animationStartEvent.isTrusted).to.be.true;
-              const animationEndEvent =
-                animationEndHandler.getCall(0).args[0];
+              const animationEndEvent = animationEndHandler.getCall(0).args[0];
               expect(animationEndEvent.isTrusted).to.be.true;
 
               const finishEvent = finishHandler.getCall(0).args[0];
@@ -1082,7 +1077,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 500,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -1126,7 +1121,7 @@ describe("Axes", () => {
           release: releaseHandler,
           finish: finishHandler,
           animationStart: animationStartHandler,
-          animationEnd: animationEndHandler
+          animationEnd: animationEndHandler,
         });
 
         // When
@@ -1137,7 +1132,7 @@ describe("Axes", () => {
             deltaX: 100,
             deltaY: 100,
             duration: 500,
-            easing: "linear"
+            easing: "linear",
           },
           () => {
             // Then
@@ -1164,7 +1159,7 @@ describe("Axes", () => {
           deltaX: 300,
           deltaY: 50,
           duration: 100,
-          easing: "linear"
+          easing: "linear",
         });
 
         // grab while animating
@@ -1194,13 +1189,13 @@ describe("Axes", () => {
       { range: [0, 100], destPos: 50.1234 }, // max decimal place at dest pos,
       { range: [0, 100], destPos: 50 }, // no decimal
       { range: [0, 1000], destPos: 445.17079889807155 }, // number to resolve flicking test failure.
-      { range: [0, 1000], destPos: 240.79930795847713 } // comparison value that works correctly.
+      { range: [0, 1000], destPos: 240.79930795847713 }, // comparison value that works correctly.
     ].forEach((val) => {
       it(`should round final value of animation by max decimal place(${val.range[0]}, ${val.range[1]}, ${val.destPos})`, async () => {
         inst = new Axes({
           x: {
-            range: val.range
-          }
+            range: val.range,
+          },
         });
 
         inst.setTo({ x: val.destPos }, 100);
@@ -1256,8 +1251,8 @@ describe("Axes", () => {
       inst = new Axes(
         {
           x: {
-            range: [0, 200]
-          }
+            range: [0, 200],
+          },
         },
         { round: 1 }
       );
@@ -1285,7 +1280,7 @@ describe("Axes", () => {
       const result = roundNumber(dividend / divisor, 0.000001);
       // Decimal place should be 0
       return getDecimalPlace(result) === 0;
-    }
+    };
 
     const checkAnimatedValueIsRound = async (round) => {
       // Given
@@ -1293,8 +1288,8 @@ describe("Axes", () => {
       inst = new Axes(
         {
           x: {
-            range: [0, 200]
-          }
+            range: [0, 200],
+          },
         },
         { round }
       ).on({
@@ -1306,7 +1301,7 @@ describe("Axes", () => {
         },
         finish: () => {
           dividables.push(isDividable(inst.get().x, round));
-        }
+        },
       });
 
       // When
@@ -1316,6 +1311,6 @@ describe("Axes", () => {
       inst.destroy();
 
       return dividables;
-    }
+    };
   });
 });

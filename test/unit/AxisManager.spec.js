@@ -1,7 +1,7 @@
 import { AxisManager } from "../../src/AxisManager";
 
 describe("AxisManager", () => {
-	let inst;
+  let inst;
 
   describe("instance method", () => {
     beforeEach(() => {
@@ -9,18 +9,18 @@ describe("AxisManager", () => {
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false
+          circular: false,
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false
+          circular: false,
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true
-        }
+          circular: true,
+        },
       });
     });
     afterEach(() => {});
@@ -38,7 +38,7 @@ describe("AxisManager", () => {
       expect(moved.delta).to.be.eql({
         x: 10,
         y: 20,
-        z: 130
+        z: 130,
       });
 
       // When (single)
@@ -52,7 +52,7 @@ describe("AxisManager", () => {
       expect(moved.delta).to.be.eql({
         x: 20,
         y: 0,
-        z: 0
+        z: 0,
       });
 
       // When (not included)
@@ -67,7 +67,7 @@ describe("AxisManager", () => {
       expect(moved.delta).to.be.eql({
         x: 0,
         y: 0,
-        z: 0
+        z: 0,
       });
     });
 
@@ -105,15 +105,14 @@ describe("AxisManager", () => {
       inst.moveTo({ x: 20, y: 0 });
 
       // Then
-      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k]))
-        .to.be.false;
+      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k])).to.be
+        .false;
 
       // When
       inst.moveTo({ x: 20, y: 30, z: 0 });
 
       // Then
-      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k]))
-        .to.be.true;
+      expect(inst.every(inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.true;
     });
 
     it("should check 'filter' high-order method", () => {
@@ -125,17 +124,17 @@ describe("AxisManager", () => {
       inst.moveTo({ x: 20, y: 0 });
 
       // Then
-      expect(
-        inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])
-      ).to.be.eql({ x: 20 });
+      expect(inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.eql(
+        { x: 20 }
+      );
 
       // When
       inst.moveTo({ x: 20, y: 30, z: 0 });
 
       // Then
-      expect(
-        inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])
-      ).to.be.eql({ x: 20, y: 30, z: 0 });
+      expect(inst.filter(inst.get(), (v, opt, k) => v !== orgPos[k])).to.be.eql(
+        { x: 20, y: 30, z: 0 }
+      );
     });
 
     it("should check 'map' high-order method", () => {
@@ -150,7 +149,7 @@ describe("AxisManager", () => {
       expect(inst.map(inst.get(), (v) => v + 20)).to.be.eql({
         x: 40,
         y: 20,
-        z: -80
+        z: -80,
       });
     });
 
