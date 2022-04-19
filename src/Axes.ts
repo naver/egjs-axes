@@ -26,6 +26,7 @@ export interface AxesOption {
   deceleration?: number;
   interruptable?: boolean;
   round?: number;
+  nested?: boolean;
 }
 
 /**
@@ -58,6 +59,7 @@ export interface AxesOption {
  * @param {Number} [round=null] Rounding unit. For example, 0.1 rounds to 0.1 decimal point(6.1234 => 6.1), 5 rounds to 5 (93 => 95)
  * [Details](https://github.com/naver/egjs-axes/wiki/round-option)<ko>반올림 단위. 예를 들어 0.1 은 소숫점 0.1 까지 반올림(6.1234 => 6.1), 5 는 5 단위로 반올림(93 => 95).
  * [상세내용](https://github.com/naver/egjs-axes/wiki/round-option)</ko>
+ * @param {Boolean} [nested=false] Whether the event propagates to other instances when the coordinates reach the end of the movable area <ko>좌표가 이동 가능한 영역의 끝까지 도달했을 때 다른 인스턴스들로의 이벤트 전파 여부</ko>
  **/
 
 /**
@@ -241,6 +243,7 @@ class Axes extends Component<AxesEvents> {
         minimumDuration: 0,
         deceleration: 0.0006,
         round: null,
+        nested: false,
       },
       ...options,
     };
@@ -457,7 +460,7 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public stopAnimation() {
-    this.animationManager.stopAnimation(Object.keys(this.axisManager.get()));
+    this.animationManager.stopAnimation();
     return this;
   }
 

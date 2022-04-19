@@ -10,6 +10,7 @@ describe("Axes", () => {
   let el;
 	let input;
 	let inst;
+	let nestedInst;
 	let holdHandler;
 	let changeHandler;
 	let releaseHandler;
@@ -371,6 +372,112 @@ describe("Axes", () => {
       });
     });
   });
+
+  describe("Nested Axes Test", () => {
+    beforeEach(() => {
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 300],
+            bounce: [10, 10]
+          }
+        }
+      );
+      nestedInst = new Axes(
+        {
+          x: {
+            range: [0, 200],
+            bounce: [10, 10]
+          }
+        }, {
+					nested: true
+				}
+      );
+			el = sandbox();
+			el.innerHTML = `<div id="parent"
+			style="width:300px; height:200px;"><div id="child" style="width:200px; height:200px;"></div></div>`;
+    });
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      if (nestedInst) {
+        nestedInst.destroy();
+        nestedInst = null;
+      }
+      cleanup();
+    });
+
+    it("should check only the state of the axes attached to the child element changes.", (done) => {
+      // Given
+      const parent = document.querySelector("#parent");
+      const child = document.querySelector("#child");
+      const parentInput = new PanInput(parent, { inputType: ["touch"] });
+      const childInput = new PanInput(child, { inputType: ["touch"] });
+
+      inst.connect(["x"], parentInput);
+      nestedInst.connect(["x"], childInput);
+
+      const parentPrevX = inst.get()["x"];
+      const childPrevX = nestedInst.get()["x"];
+
+      // When
+			Simulator.gestures.pan(child, {
+        pos: [0, 0],
+        deltaX: 100,
+        deltaY: 0,
+        duration: 200,
+        easing: "linear"
+      }, () => {
+				// Then
+				const parentCurrX = inst.get()["x"];
+				const childCurrX = nestedInst.get()["x"];
+
+				expect(parentPrevX).to.be.equal(parentCurrX);
+				expect(childPrevX).to.be.not.equal(childCurrX);
+
+				parentInput.destroy();
+				childInput.destroy();
+				done();
+			});
+		});
+
+    it("should check both state of the axes attached to the elements when child axes reaches the max range.", (done) => {
+      // Given
+      const parent = document.querySelector("#parent");
+      const child = document.querySelector("#child");
+      const parentInput = new PanInput(parent, { inputType: ["touch"] });
+      const childInput = new PanInput(child, { inputType: ["touch"] });
+
+      inst.connect(["x"], parentInput);
+      nestedInst.connect(["x"], childInput);
+
+      const parentPrevX = inst.get()["x"];
+      const childPrevX = nestedInst.get()["x"];
+
+      // When
+			Simulator.gestures.pan(child, {
+        pos: [0, 0],
+        deltaX: 300,
+        deltaY: 0,
+        duration: 200,
+        easing: "linear"
+      }, () => {
+				// Then
+				const parentCurrX = inst.get()["x"];
+				const childCurrX = nestedInst.get()["x"];
+
+				expect(parentPrevX).to.be.not.equal(parentCurrX);
+				expect(childPrevX).to.be.not.equal(childCurrX);
+
+				parentInput.destroy();
+				childInput.destroy();
+				done();
+			});
+		});
+  });
+
   [20, 30, 40, 50].forEach((iOSEdgeSwipeThreshold) => {
     describe(`Axes iOS Edge Test (iOSEdgeSwipeThreshold: ${iOSEdgeSwipeThreshold})`, () => {
       beforeEach(() => {

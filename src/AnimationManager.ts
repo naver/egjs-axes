@@ -96,14 +96,14 @@ export class AnimationManager {
     return this.easing(displacement / (threshold * initSlope)) * threshold;
   }
 
-  public stopAnimation(axes: string[], option?: ChangeEventOption): void {
-    if (this._animateParam && axes.length) {
-      const orgPos: Axis = this.axisManager.get(axes);
+  public stopAnimation(option?: ChangeEventOption): void {
+    if (this._animateParam) {
+      const orgPos: Axis = this.axisManager.get();
       const pos: Axis = this.axisManager.map(orgPos, (v, opt) =>
         getCirculatedPos(v, opt.range, opt.circular as boolean[])
       );
       if (!every(pos, (v, k) => orgPos[k] === v)) {
-        this.eventManager.triggerChange(pos, false, orgPos, option, !!option);
+        this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
       this._animateParam = null;
       if (this._raf) {
@@ -134,7 +134,7 @@ export class AnimationManager {
     const destPos: Axis = this.axisManager.map(pos, (v, opt) =>
       Math.min(opt.range[1], Math.max(opt.range[0], v))
     );
-    this.stopAnimation(Object.keys(this.axisManager.get()));
+    this.stopAnimation();
     this.animateTo(destPos, this.getDuration(pos, destPos), option);
   }
 
@@ -188,6 +188,7 @@ export class AnimationManager {
     duration: number,
     option?: ChangeEventOption
   ): void {
+    this.stopAnimation();
     const param: AnimationParam = this._createAnimationParam(
       destPos,
       duration,
@@ -234,7 +235,6 @@ export class AnimationManager {
 
   public setTo(pos: Axis, duration: number = 0) {
     const axes: string[] = Object.keys(pos);
-    this.stopAnimation(axes);
     const orgPos: Axis = this.axisManager.get(axes);
 
     if (equal(pos, orgPos)) {
@@ -263,6 +263,7 @@ export class AnimationManager {
     if (duration > 0) {
       this.animateTo(movedPos, duration);
     } else {
+      this.stopAnimation();
       this.eventManager.triggerChange(movedPos);
       this.finish(false);
     }
@@ -384,11 +385,7 @@ export class AnimationManager {
             return circulatedPos;
           }
         );
-        const isCanceled = !this.eventManager.triggerChange(
-          toPos,
-          false,
-          prevPos
-        );
+        const isCanceled = !this.eventManager.triggerChange(toPos, prevPos);
 
         prevPos = toPos;
         this._prevEasingPer = easingPer;
@@ -404,11 +401,7 @@ export class AnimationManager {
               this.axisManager.get(Object.keys(animateParam.destPos))
             )
           ) {
-            this.eventManager.triggerChange(
-              animateParam.destPos,
-              true,
-              prevPos
-            );
+            this.eventManager.triggerChange(animateParam.destPos, prevPos);
           }
           complete();
           return;
@@ -421,7 +414,7 @@ export class AnimationManager {
       };
       loop();
     } else {
-      this.eventManager.triggerChange(param.destPos, true);
+      this.eventManager.triggerChange(param.destPos);
       complete();
     }
   }

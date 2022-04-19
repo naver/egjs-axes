@@ -4,7 +4,12 @@ import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
-import { isOutside, getInsidePosition, getCirculatedPos } from "./Coordinate";
+import {
+  isOutside,
+  getInsidePosition,
+  getCirculatedPos,
+  isEndofBounce,
+} from "./Coordinate";
 import { map, equal } from "./utils";
 import { AnimationParam } from "./types";
 
@@ -51,7 +56,7 @@ export class InputObserver implements InputTypeObserver {
     };
     this._isStopped = false;
     this._interruptManager.setInterrupt(true);
-    this._animationManager.stopAnimation(input.axes, changeOption);
+    this._animationManager.stopAnimation(changeOption);
     if (!this._moveDistance) {
       this._eventManager.hold(this._axisManager.get(), changeOption);
     }
@@ -65,6 +70,10 @@ export class InputObserver implements InputTypeObserver {
       !this._interruptManager.isInterrupting() ||
       this._axisManager.every(offset, (v) => v === 0)
     ) {
+      return;
+    }
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;
+    if (nativeEvent.__childrenAxesAlreadyChanged) {
       return;
     }
     let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
@@ -90,18 +99,21 @@ export class InputObserver implements InputTypeObserver {
     }
     depaPos = this._atOutside(depaPos);
     destPos = this._atOutside(destPos);
+
+    if (!this.options.nested || !this._isEndofAxis(offset, depaPos, destPos)) {
+      nativeEvent.__childrenAxesAlreadyChanged = true;
+    }
+
     const changeOption: ChangeEventOption = {
       input,
       event,
     };
     if (useDuration) {
       const duration = this._animationManager.getDuration(destPos, depaPos);
-      this._animationManager.stopAnimation(input.axes, changeOption);
       this._animationManager.animateTo(destPos, duration, changeOption);
     } else {
       const isCanceled = !this._eventManager.triggerChange(
         destPos,
-        false,
         depaPos,
         changeOption,
         true
@@ -127,6 +139,10 @@ export class InputObserver implements InputTypeObserver {
     ) {
       return;
     }
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;
+    if (nativeEvent.__childrenAxesAlreadyReleased) {
+      velocity = velocity.map(() => 0);
+    }
     const pos: Axis = this._axisManager.get(input.axes);
     const depaPos: Axis = this._axisManager.get();
     const displacement = this._animationManager.getDisplacement(velocity);
@@ -145,6 +161,7 @@ export class InputObserver implements InputTypeObserver {
         }
       })
     );
+    nativeEvent.__childrenAxesAlreadyReleased = true;
     const duration = this._animationManager.getDuration(
       destPos,
       pos,
@@ -178,7 +195,6 @@ export class InputObserver implements InputTypeObserver {
       if (!isEqual) {
         this._eventManager.triggerChange(
           userWish.destPos,
-          false,
           depaPos,
           changeOption,
           true
@@ -230,5 +246,20 @@ export class InputObserver implements InputTypeObserver {
         return v;
       });
     }
+  }
+
+  private _isEndofAxis(offset: Axis, depaPos: Axis, destPos: Axis) {
+    return this._axisManager.every(
+      depaPos,
+      (value, option, key) =>
+        offset[key] === 0 ||
+        (depaPos[key] === destPos[key] &&
+          isEndofBounce(
+            value,
+            option.range,
+            option.bounce as number[],
+            option.circular as boolean[]
+          ))
+    );
   }
 }

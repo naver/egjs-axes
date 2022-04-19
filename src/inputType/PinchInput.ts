@@ -160,7 +160,7 @@ export class PinchInput implements InputType {
     if (
       !this._pinchFlag ||
       !this._enabled ||
-      this._activeInput.getTouches(event) > 2
+      this._activeInput.getTouches(event) >= 2
     ) {
       return;
     }
