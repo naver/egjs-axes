@@ -231,9 +231,9 @@ const NestedAxes = () => {
                   id={`cloud${cloudLength++}`}
                   className="cloud"
                   src={
-                    require(`@site/static/img/demos/nestedaxes/cloud${Math.floor(
-                      Math.random() * 3 + 1
-                    )}.png`).default
+                    require(`@site/static/img/demos/nestedaxes/cloud${
+                      Math.floor(cloudLength % 3) + 1
+                    }.png`).default
                   }
                 />
                 <img
@@ -254,16 +254,18 @@ const NestedAxes = () => {
                     id={`cloud${cloudLength++}`}
                     className="cloud"
                     src={
-                      require("@site/static/img/demos/nestedaxes/cloud1.png")
-                        .default
+                      require(`@site/static/img/demos/nestedaxes/cloud${
+                        Math.floor(cloudLength % 3) + 1
+                      }.png`).default
                     }
                   />
                   <img
                     id={`cloud${cloudLength++}`}
                     className="cloud"
                     src={
-                      require("@site/static/img/demos/nestedaxes/cloud1.png")
-                        .default
+                      require(`@site/static/img/demos/nestedaxes/cloud${
+                        Math.floor(cloudLength % 3) + 1
+                      }.png`).default
                     }
                   />
                   <img
@@ -284,8 +286,9 @@ const NestedAxes = () => {
                   id={`cloud${cloudLength++}`}
                   className="cloud"
                   src={
-                    require("@site/static/img/demos/nestedaxes/cloud1.png")
-                      .default
+                    require(`@site/static/img/demos/nestedaxes/cloud${
+                      Math.floor(cloudLength % 3) + 1
+                    }.png`).default
                   }
                 />
                 <img
