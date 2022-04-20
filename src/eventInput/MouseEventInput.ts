@@ -11,7 +11,7 @@ export class MouseEventInput extends EventInput {
     event: InputEventType,
     inputButton?: string[]
   ): ExtendedEvent {
-    const button = this._getButton(event as MouseEvent);
+    const button = this._getButton(event);
     if (inputButton && !this._isValidButton(button, inputButton)) {
       return null;
     }
@@ -25,7 +25,7 @@ export class MouseEventInput extends EventInput {
   ): ExtendedEvent {
     if (
       inputButton &&
-      !this._isValidButton(this._getButton(event as MouseEvent), inputButton)
+      !this._isValidButton(this._getButton(event), inputButton)
     ) {
       return null;
     }
@@ -38,19 +38,6 @@ export class MouseEventInput extends EventInput {
 
   public getTouches(): number {
     return 0;
-  }
-
-  protected _getButton(event: MouseEvent): string {
-    switch (event.buttons) {
-      case 1:
-        return "left";
-      case 2:
-        return "right";
-      case 4:
-        return "middle";
-      default:
-        return "left";
-    }
   }
 
   protected _getScale(): number {

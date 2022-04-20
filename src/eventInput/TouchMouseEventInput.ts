@@ -13,12 +13,12 @@ export class TouchMouseEventInput extends EventInput {
     event: InputEventType,
     inputButton?: string[]
   ): ExtendedEvent {
-    const button = this._getButton(event as PointerEvent);
+    const button = this._getButton(event);
+    if (this._isTouchEvent(event)) {
+      this._baseTouches = event.touches;
+    }
     if (inputButton && !this._isValidButton(button, inputButton)) {
       return null;
-    }
-    if (this._isTouchEvent(event)) {
-      this._baseTouches = (event as TouchEvent).touches;
     }
     this._preventMouseButton(event, button);
     return this.extendEvent(event);
@@ -39,44 +39,23 @@ export class TouchMouseEventInput extends EventInput {
 
   public onEventEnd(event: InputEventType): void {
     if (this._isTouchEvent(event)) {
-      this._baseTouches = (event as TouchEvent).touches;
+      this._baseTouches = event.touches;
     }
     return;
   }
 
   public getTouches(event: InputEventType): number {
-    return this._isTouchEvent(event) ? (event as TouchEvent).touches.length : 0;
-  }
-
-  protected _getButton(event: InputEventType): string {
-    if (this._isTouchEvent(event)) {
-      return "left";
-    }
-    switch ((event as MouseEvent).buttons) {
-      case 1:
-        return "left";
-      case 2:
-        return "right";
-      case 4:
-        return "middle";
-      default:
-        return "left";
-    }
+    return this._isTouchEvent(event) ? event.touches.length : 0;
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {
     if (this._isTouchEvent(event)) {
-      if (
-        (event as TouchEvent).touches.length !== 2 ||
-        this._baseTouches.length < 2
-      ) {
+      if (event.touches.length !== 2 || this._baseTouches.length < 2) {
         return 1; // TODO: consider calculating non-pinch gesture scale
       }
       return (
-        this._getDistance(
-          (event as TouchEvent).touches[0],
-          (event as TouchEvent).touches[1]
-        ) / this._getDistance(this._baseTouches[0], this._baseTouches[1])
+        this._getDistance(event.touches[0], event.touches[1]) /
+        this._getDistance(this._baseTouches[0], this._baseTouches[1])
       );
     }
     return this.prevEvent.scale;
@@ -88,13 +67,13 @@ export class TouchMouseEventInput extends EventInput {
   } {
     if (this._isTouchEvent(event)) {
       return {
-        x: (event as TouchEvent).touches[0].clientX,
-        y: (event as TouchEvent).touches[0].clientY,
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
       };
     }
     return {
-      x: (event as MouseEvent).clientX,
-      y: (event as MouseEvent).clientY,
+      x: event.clientX,
+      y: event.clientY,
     };
   }
 
@@ -120,9 +99,5 @@ export class TouchMouseEventInput extends EventInput {
     return nextSpot.id === prevSpot.id
       ? { x: nextSpot.x - prevSpot.x, y: nextSpot.y - prevSpot.y }
       : { x: 0, y: 0 };
-  }
-
-  private _isTouchEvent(event: InputEventType): boolean {
-    return event.type.includes("touch");
   }
 }

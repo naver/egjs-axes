@@ -17,7 +17,7 @@ export class PointerEventInput extends EventInput {
     event: InputEventType,
     inputButton?: string[]
   ): ExtendedEvent {
-    const button = this._getButton(event as PointerEvent);
+    const button = this._getButton(event);
     if (inputButton && !this._isValidButton(button, inputButton)) {
       return null;
     }
@@ -32,7 +32,7 @@ export class PointerEventInput extends EventInput {
   ): ExtendedEvent {
     if (
       inputButton &&
-      !this._isValidButton(this._getButton(event as PointerEvent), inputButton)
+      !this._isValidButton(this._getButton(event), inputButton)
     ) {
       return null;
     }
@@ -46,19 +46,6 @@ export class PointerEventInput extends EventInput {
 
   public getTouches(): number {
     return this._recentInputs.length;
-  }
-
-  protected _getButton(event: PointerEvent): string {
-    switch (event.buttons) {
-      case 1:
-        return "left";
-      case 2:
-        return "right";
-      case 4:
-        return "middle";
-      default:
-        return "left";
-    }
   }
 
   protected _getScale(): number {

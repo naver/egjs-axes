@@ -1,6 +1,7 @@
 import { ExtendedEvent, InputEventType } from "../types";
 import { getAngle } from "../utils";
 import { window } from "../browser";
+import { MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT } from "../const";
 
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const SUPPORT_POINTER = "PointerEvent" in window;
@@ -23,8 +24,6 @@ export abstract class EventInput {
   public abstract onEventEnd(event: InputEventType): void;
 
   public abstract getTouches(event: InputEventType): number;
-
-  protected abstract _getButton(event: InputEventType): string;
 
   protected abstract _getScale(event: InputEventType): number;
 
@@ -79,14 +78,26 @@ export abstract class EventInput {
     return Math.sqrt(x * x + y * y);
   }
 
+  protected _getButton(event: InputEventType): string {
+    const buttonCodeMap = { 1: MOUSE_LEFT, 2: MOUSE_RIGHT, 4: MOUSE_MIDDLE };
+    const button = this._isTouchEvent(event)
+      ? MOUSE_LEFT
+      : buttonCodeMap[event.buttons];
+    return button ? button : null;
+  }
+
+  protected _isTouchEvent(event: InputEventType): event is TouchEvent {
+    return event.type.indexOf("touch") > -1;
+  }
+
   protected _isValidButton(button: string, inputButton: string[]): boolean {
-    return inputButton.includes(button);
+    return inputButton.indexOf(button) > -1;
   }
 
   protected _preventMouseButton(event: InputEventType, button: string): void {
-    if (button === "right") {
+    if (button === MOUSE_RIGHT) {
       window.addEventListener("contextmenu", this._stopContextMenu);
-    } else if (button === "middle") {
+    } else if (button === MOUSE_MIDDLE) {
       event.preventDefault();
     }
   }

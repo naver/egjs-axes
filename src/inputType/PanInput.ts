@@ -7,6 +7,7 @@ import {
   DIRECTION_HORIZONTAL,
   DIRECTION_ALL,
   PREVENT_SCROLL_CSSPROPS,
+  MOUSE_LEFT,
 } from "../const";
 import { ActiveInput, InputEventType } from "../types";
 
@@ -118,7 +119,7 @@ export class PanInput implements InputType {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],
-      inputButton: ["left"],
+      inputButton: [MOUSE_LEFT],
       scale: [1, 1],
       thresholdAngle: 45,
       threshold: 0,
