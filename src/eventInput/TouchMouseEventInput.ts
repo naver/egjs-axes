@@ -44,13 +44,14 @@ export class TouchMouseEventInput extends EventInput {
     return;
   }
 
-  public getTouches(event: InputEventType): number {
-    return this._isTouchEvent(event) ? event.touches.length : 0;
-  }
-
-  public forceRelease(): void {
+  public onRelease(): void {
+    this.prevEvent = null;
     this._baseTouches = null;
     return;
+  }
+
+  public getTouches(event: InputEventType): number {
+    return this._isTouchEvent(event) ? event.touches.length : 0;
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {

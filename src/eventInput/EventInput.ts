@@ -23,9 +23,9 @@ export abstract class EventInput {
 
   public abstract onEventEnd(event: InputEventType): void;
 
-  public abstract getTouches(event: InputEventType): number;
+  public abstract onRelease(event: InputEventType): void;
 
-  public abstract forceRelease(event: InputEventType): void;
+  public abstract getTouches(event: InputEventType): number;
 
   protected abstract _getScale(event: InputEventType): number;
 

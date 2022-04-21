@@ -44,14 +44,15 @@ export class PointerEventInput extends EventInput {
     this._removePointerEvent(event as PointerEvent);
   }
 
-  public getTouches(): number {
-    return this._recentInputs.length;
-  }
-
-  public forceRelease(): void {
+  public onRelease(): void {
+    this.prevEvent = null;
     this._firstInputs = [];
     this._recentInputs = [];
     return;
+  }
+
+  public getTouches(): number {
+    return this._recentInputs.length;
   }
 
   protected _getScale(): number {

@@ -23,13 +23,14 @@ export class TouchEventInput extends EventInput {
     return;
   }
 
-  public getTouches(event: InputEventType): number {
-    return (event as TouchEvent).touches.length;
-  }
-
-  public forceRelease(): void {
+  public onRelease(): void {
+    this.prevEvent = null;
     this._baseTouches = null;
     return;
+  }
+
+  public getTouches(event: InputEventType): number {
+    return (event as TouchEvent).touches.length;
   }
 
   protected _getScale(event: TouchEvent): number {

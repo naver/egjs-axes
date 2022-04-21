@@ -103,7 +103,7 @@ export class RotatePanInput extends PanInput {
     this._observer.release(this, prevEvent, [
       velocity * this._coefficientForDistanceToAngle,
     ]);
-    activeInput.prevEvent = null;
+    activeInput.onRelease();
     this._detachWindowEvent(activeInput);
   }
 

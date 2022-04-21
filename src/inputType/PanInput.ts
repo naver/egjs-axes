@@ -307,7 +307,7 @@ export class PanInput implements InputType {
       ]
     );
     this._observer.release(this, prevEvent, velocity);
-    activeInput.prevEvent = null;
+    activeInput.onRelease();
   }
 
   protected _attachWindowEvent(activeInput: ActiveInput) {
@@ -368,7 +368,7 @@ export class PanInput implements InputType {
   private _forceRelease = () => {
     const activeInput = this._activeInput;
     this._detachWindowEvent(activeInput);
-    activeInput.forceRelease();
     this._observer.release(this, activeInput.prevEvent, [0, 0]);
+    activeInput.onRelease();
   };
 }

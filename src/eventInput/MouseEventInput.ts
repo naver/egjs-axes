@@ -36,12 +36,13 @@ export class MouseEventInput extends EventInput {
     return;
   }
 
-  public getTouches(): number {
-    return 0;
+  public onRelease(): void {
+    this.prevEvent = null;
+    return;
   }
 
-  public forceRelease(): void {
-    return;
+  public getTouches(): number {
+    return 0;
   }
 
   protected _getScale(): number {
