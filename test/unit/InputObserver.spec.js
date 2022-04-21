@@ -1,12 +1,12 @@
 import Axes from "../../src/Axes";
 
 describe("InputObserver", () => {
-	let inst;
-	let options;
-	let axes;
-	let axis;
-	let axisManager;
-	let animationManager;
+  let inst;
+  let options;
+  let axes;
+  let axis;
+  let axisManager;
+  let animationManager;
 
   describe("observer test", () => {
     beforeEach(() => {
@@ -14,23 +14,23 @@ describe("InputObserver", () => {
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false
+          circular: false,
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false
+          circular: false,
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true
-        }
+          circular: true,
+        },
       };
       options = {
         deceleration: 0.0001,
         maximumDuration: 2000,
-        minimumDuration: 0
+        minimumDuration: 0,
       };
       axes = new Axes(axis, options);
       axisManager = axes.axisManager;
@@ -42,7 +42,7 @@ describe("InputObserver", () => {
     it("should check 'get' method", () => {
       // Given
       const inputType = {
-        axes: ["y"]
+        axes: ["y"],
       };
 
       // When/Then
@@ -57,7 +57,7 @@ describe("InputObserver", () => {
     it("should check 'change' method", () => {
       // Given
       const inputType = {
-        axes: ["y"]
+        axes: ["y"],
       };
 
       // When/Then
@@ -90,7 +90,7 @@ describe("InputObserver", () => {
 
         // When
         const inputType = {
-          axes: ["y"]
+          axes: ["y"],
         };
         const sign = direction > 0 ? 1 : -1;
         inst.hold(inputType);
@@ -127,7 +127,7 @@ describe("InputObserver", () => {
 
         // When
         const inputType = {
-          axes: ["x"]
+          axes: ["x"],
         };
         const sign = direction > 0 ? 1 : -1;
         inst.hold(inputType);
@@ -183,7 +183,7 @@ describe("InputObserver", () => {
     it("should check delta that there is no bounce and the position goes to zero.", (done) => {
       // Given
       const inputType = {
-        axes: ["y"]
+        axes: ["y"],
       };
       // start pos
       let y = 50;
@@ -220,7 +220,7 @@ describe("InputObserver", () => {
 
       // When
       const inputType = {
-        axes: ["z"]
+        axes: ["z"],
       };
       inst.hold(inputType);
       // 40 * 25
@@ -232,7 +232,7 @@ describe("InputObserver", () => {
     it("should check delta that there is no bounce and the position is out", (done) => {
       // Given
       const inputType = {
-        axes: ["y"]
+        axes: ["y"],
       };
       // start pos
       const y = 50;
@@ -257,7 +257,7 @@ describe("InputObserver", () => {
     it("should check delta that there is bounce and the position is out", (done) => {
       // Given
       const inputType = {
-        axes: ["x"]
+        axes: ["x"],
       };
 
       // start pos

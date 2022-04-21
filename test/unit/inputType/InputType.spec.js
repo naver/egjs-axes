@@ -1,10 +1,10 @@
-import InputInjector from "inject-loader!../../../src/inputType/InputType";
-import EventInjector from "inject-loader!../../../src/eventInput/EventInput";
-
 import { MouseEventInput } from "../../../src/eventInput/MouseEventInput";
 import { PointerEventInput } from "../../../src/eventInput/PointerEventInput";
 import { TouchEventInput } from "../../../src/eventInput/TouchEventInput";
 import { TouchMouseEventInput } from "../../../src/eventInput/TouchMouseEventInput";
+
+import InputInjector from "inject-loader!../../../src/inputType/InputType";
+import EventInjector from "inject-loader!../../../src/eventInput/EventInput";
 
 describe("InputType", () => {
   describe("SUPPORT_TOUCH mocking", () => {
@@ -12,7 +12,7 @@ describe("InputType", () => {
       // Given
       const MockEventInjector = EventInjector();
       const MockInputInjector = InputInjector({
-        "../eventInput/EventInput": MockEventInjector
+        "../eventInput/EventInput": MockEventInjector,
       });
 
       MockEventInjector.SUPPORT_TOUCH = true;
@@ -54,7 +54,7 @@ describe("InputType", () => {
       // Given
       const MockEventInjector = EventInjector();
       const MockInputInjector = InputInjector({
-        "../eventInput/EventInput": MockEventInjector
+        "../eventInput/EventInput": MockEventInjector,
       });
       MockEventInjector.SUPPORT_TOUCH = false;
 

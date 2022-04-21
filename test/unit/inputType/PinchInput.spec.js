@@ -2,10 +2,10 @@ import Axes from "../../../src/Axes.ts";
 import { PinchInput } from "../../../src/inputType/PinchInput";
 
 describe("PinchInput", () => {
-	let el;
-	let input;
-	let inst;
-	let observer;
+  let el;
+  let input;
+  let inst;
+  let observer;
 
   describe("instance method", () => {
     beforeEach(() => {
@@ -49,8 +49,8 @@ describe("PinchInput", () => {
       input = new PinchInput(el, { inputType: ["touch"] });
       inst = new Axes({
         zoom: {
-          range: [1, 10]
-        }
+          range: [1, 10],
+        },
       });
     });
     afterEach(() => {
@@ -107,7 +107,7 @@ describe("PinchInput", () => {
         el,
         {
           duration: 500,
-          scale: 0.5
+          scale: 0.5,
         },
         () => {
           // Then
@@ -137,7 +137,7 @@ describe("PinchInput", () => {
         el,
         {
           duration: 500,
-          scale: 0.5
+          scale: 0.5,
         },
         () => {
           // Then
@@ -157,12 +157,12 @@ describe("PinchInput", () => {
       inst = new Axes(
         {
           x: {
-            range: [10, 120]
-          }
+            range: [10, 120],
+          },
         },
         { round: 1 },
         {
-          x: 50
+          x: 50,
         }
       );
       inst.connect(["x"], input);
@@ -187,7 +187,7 @@ describe("PinchInput", () => {
         el,
         {
           duration: 500,
-          scale: 1.1
+          scale: 1.1,
         },
         () => {
           // Then
@@ -205,7 +205,7 @@ describe("PinchInput", () => {
         el,
         {
           duration: 500,
-          scale: 0.9
+          scale: 0.9,
         },
         () => {
           // Then

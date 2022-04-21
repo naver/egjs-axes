@@ -1,5 +1,5 @@
 import { $, setCssProps } from "../utils";
-import { ActiveInput, InputEventType } from "../types";
+import { ActiveEvent, InputEventType } from "../types";
 import { PREVENT_SCROLL_CSSPROPS } from "../const";
 
 import {
@@ -45,7 +45,7 @@ export class PinchInput implements InputType {
   private _pinchFlag = false;
   private _enabled = false;
   private _originalCssProps: { [key: string]: string };
-  private _activeInput: ActiveInput = null;
+  private _activeEvent: ActiveEvent = null;
   private _baseValue: number;
 
   /**
@@ -69,7 +69,7 @@ export class PinchInput implements InputType {
   }
 
   public connect(observer: InputTypeObserver): InputType {
-    if (this._activeInput) {
+    if (this._activeEvent) {
       this._detachEvent();
     }
     this._attachEvent(observer);
@@ -124,83 +124,85 @@ export class PinchInput implements InputType {
   }
 
   private _onPinchStart(event: InputEventType) {
-    this._activeInput.onEventStart(event);
-    if (!this._enabled || this._activeInput.getTouches(event) !== 2) {
+    const activeEvent = this._activeEvent;
+    const pinchEvent = activeEvent.onEventStart(event);
+    if (!pinchEvent || !this._enabled || activeEvent.getTouches(event) !== 2) {
       return;
     }
 
     this._baseValue = this._observer.get(this)[this.axes[0]];
     this._observer.hold(this, event);
     this._pinchFlag = true;
-    const pinchEvent = this._activeInput.extendEvent(event);
-    this._activeInput.prevEvent = pinchEvent;
+    activeEvent.prevEvent = pinchEvent;
   }
 
   private _onPinchMove(event: InputEventType) {
-    this._activeInput.onEventMove(event);
+    const activeEvent = this._activeEvent;
+    const pinchEvent = activeEvent.onEventMove(event);
     if (
+      !pinchEvent ||
       !this._pinchFlag ||
       !this._enabled ||
-      this._activeInput.getTouches(event) !== 2
+      activeEvent.getTouches(event) !== 2
     ) {
       return;
     }
 
-    const pinchEvent = this._activeInput.extendEvent(event);
     const offset = this._getOffset(
       pinchEvent.scale,
-      this._activeInput.prevEvent.scale
+      activeEvent.prevEvent.scale
     );
     this._observer.change(this, event, toAxis(this.axes, [offset]));
-    this._activeInput.prevEvent = pinchEvent;
+    activeEvent.prevEvent = pinchEvent;
   }
 
   private _onPinchEnd(event: InputEventType) {
-    this._activeInput.onEventEnd(event);
+    const activeEvent = this._activeEvent;
+    activeEvent.onEventEnd(event);
     if (
       !this._pinchFlag ||
       !this._enabled ||
-      this._activeInput.getTouches(event) >= 2
+      activeEvent.getTouches(event) >= 2
     ) {
       return;
     }
 
     this._observer.release(this, event, [0], 0);
+    activeEvent.onRelease();
     this._baseValue = null;
     this._pinchFlag = false;
-    this._activeInput.prevEvent = null;
   }
 
   private _attachEvent(observer: InputTypeObserver) {
-    const activeInput = convertInputType(this.options.inputType);
-    if (!activeInput) {
+    const activeEvent = convertInputType(this.options.inputType);
+    if (!activeEvent) {
       throw new Error(
         "There is currently no inputType available for current device. There must be at least one available inputType."
       );
     }
     this._observer = observer;
     this._enabled = true;
-    this._activeInput = activeInput;
-    activeInput?.start.forEach((event) => {
+    this._activeEvent = activeEvent;
+    activeEvent?.start.forEach((event) => {
       this.element.addEventListener(event, this._onPinchStart, false);
     });
-    activeInput?.move.forEach((event) => {
+    activeEvent?.move.forEach((event) => {
       this.element.addEventListener(event, this._onPinchMove, false);
     });
-    activeInput?.end.forEach((event) => {
+    activeEvent?.end.forEach((event) => {
       this.element.addEventListener(event, this._onPinchEnd, false);
     });
   }
 
   private _detachEvent() {
-    const activeInput = this._activeInput;
-    activeInput?.start.forEach((event) => {
+    const activeEvent = this._activeEvent;
+    activeEvent?.start.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchStart, false);
     });
-    activeInput?.move.forEach((event) => {
+    activeEvent?.move.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchMove, false);
     });
-    activeInput?.end.forEach((event) => {
+    activeEvent?.end.forEach((event) => {
       this.element.removeEventListener(event, this._onPinchEnd, false);
     });
     this._enabled = false;

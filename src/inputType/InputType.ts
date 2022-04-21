@@ -1,6 +1,6 @@
 import { Axis } from "../AxisManager";
 import { AxesOption } from "../Axes";
-import { ActiveInput } from "../types";
+import { ActiveEvent } from "../types";
 import { MouseEventInput } from "../eventInput/MouseEventInput";
 import { TouchEventInput } from "../eventInput/TouchEventInput";
 import { PointerEventInput } from "../eventInput/PointerEventInput";
@@ -44,7 +44,7 @@ export const toAxis = (source: string[], offset: number[]): Axis => {
   }, {});
 };
 
-export const convertInputType = (inputType: string[] = []): ActiveInput => {
+export const convertInputType = (inputType: string[] = []): ActiveEvent => {
   let hasTouch = false;
   let hasMouse = false;
   let hasPointer = false;

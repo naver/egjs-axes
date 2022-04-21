@@ -13,18 +13,42 @@ export class PointerEventInput extends EventInput {
   private _firstInputs: PointerEvent[] = [];
   private _recentInputs: PointerEvent[] = [];
 
-  public onEventStart(event: InputEventType): ExtendedEvent {
+  public onEventStart(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    const button = this._getButton(event);
+    if (inputButton && !this._isValidButton(button, inputButton)) {
+      return null;
+    }
+    this._preventMouseButton(event, button);
     this._updatePointerEvent(event as PointerEvent);
     return this.extendEvent(event);
   }
 
-  public onEventMove(event: InputEventType): ExtendedEvent {
+  public onEventMove(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    if (
+      inputButton &&
+      !this._isValidButton(this._getButton(event), inputButton)
+    ) {
+      return null;
+    }
     this._updatePointerEvent(event as PointerEvent);
     return this.extendEvent(event);
   }
 
   public onEventEnd(event: InputEventType): void {
     this._removePointerEvent(event as PointerEvent);
+  }
+
+  public onRelease(): void {
+    this.prevEvent = null;
+    this._firstInputs = [];
+    this._recentInputs = [];
+    return;
   }
 
   public getTouches(): number {
@@ -76,7 +100,7 @@ export class PointerEventInput extends EventInput {
     }
   }
 
-  private _removePointerEvent(event: PointerEvent) {
+  private _removePointerEvent(event?: PointerEvent) {
     this._firstInputs = this._firstInputs.filter(
       (x) => x.pointerId !== event.pointerId
     );
