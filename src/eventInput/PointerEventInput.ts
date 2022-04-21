@@ -48,6 +48,12 @@ export class PointerEventInput extends EventInput {
     return this._recentInputs.length;
   }
 
+  public forceRelease(): void {
+    this._firstInputs = [];
+    this._recentInputs = [];
+    return;
+  }
+
   protected _getScale(): number {
     if (this._recentInputs.length !== 2) {
       return null; // TODO: consider calculating non-pinch gesture scale

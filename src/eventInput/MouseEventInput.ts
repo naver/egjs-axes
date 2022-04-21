@@ -40,6 +40,10 @@ export class MouseEventInput extends EventInput {
     return 0;
   }
 
+  public forceRelease(): void {
+    return;
+  }
+
   protected _getScale(): number {
     return 1;
   }

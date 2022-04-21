@@ -48,6 +48,11 @@ export class TouchMouseEventInput extends EventInput {
     return this._isTouchEvent(event) ? event.touches.length : 0;
   }
 
+  public forceRelease(): void {
+    this._baseTouches = null;
+    return;
+  }
+
   protected _getScale(event: MouseEvent | TouchEvent): number {
     if (this._isTouchEvent(event)) {
       if (event.touches.length !== 2 || this._baseTouches.length < 2) {

@@ -246,8 +246,7 @@ export class PanInput implements InputType {
 
       if (swipeLeftToRight) {
         // iOS swipe left => right
-        this._detachWindowEvent(activeInput);
-        this._observer.release(this, activeInput.prevEvent, [0, 0]);
+        this._forceRelease();
         return;
       } else if (this._atRightEdge) {
         clearTimeout(this._rightEdgeTimer);
@@ -259,10 +258,10 @@ export class PanInput implements InputType {
           this._atRightEdge = false;
         } else {
           // iOS swipe right => left
-          this._rightEdgeTimer = window.setTimeout(() => {
-            this._detachWindowEvent(activeInput);
-            this._observer.release(this, activeInput.prevEvent, [0, 0]);
-          }, 100);
+          this._rightEdgeTimer = window.setTimeout(
+            () => this._forceRelease(),
+            100
+          );
         }
       }
     }
@@ -365,4 +364,11 @@ export class PanInput implements InputType {
     }
     return offset;
   }
+
+  private _forceRelease = () => {
+    const activeInput = this._activeInput;
+    this._detachWindowEvent(activeInput);
+    activeInput.forceRelease();
+    this._observer.release(this, activeInput.prevEvent, [0, 0]);
+  };
 }
