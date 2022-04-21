@@ -9,7 +9,7 @@ export type ObjectInterface<T = any> = Record<string | number, T>;
 
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
 
-export type ActiveInput =
+export type ActiveEvent =
   | MouseEventInput
   | TouchEventInput
   | TouchMouseEventInput

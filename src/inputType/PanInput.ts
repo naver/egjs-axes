@@ -9,7 +9,7 @@ import {
   PREVENT_SCROLL_CSSPROPS,
   MOUSE_LEFT,
 } from "../const";
-import { ActiveInput, InputEventType } from "../types";
+import { ActiveEvent, InputEventType } from "../types";
 
 import {
   convertInputType,
@@ -107,7 +107,7 @@ export class PanInput implements InputType {
   protected _observer: InputTypeObserver;
   protected _direction;
   protected _enabled = false;
-  protected _activeInput: ActiveInput = null;
+  protected _activeEvent: ActiveEvent = null;
   private _originalCssProps: { [key: string]: string };
   private _atRightEdge = false;
   private _rightEdgeTimer = 0;
@@ -148,9 +148,9 @@ export class PanInput implements InputType {
   }
 
   public connect(observer: InputTypeObserver): InputType {
-    if (this._activeInput) {
+    if (this._activeEvent) {
       this._detachElementEvent();
-      this._detachWindowEvent(this._activeInput);
+      this._detachWindowEvent(this._activeEvent);
     }
     this._attachElementEvent(observer);
     this._originalCssProps = setCssProps(this.element);
@@ -159,7 +159,7 @@ export class PanInput implements InputType {
 
   public disconnect() {
     this._detachElementEvent();
-    this._detachWindowEvent(this._activeInput);
+    this._detachWindowEvent(this._activeEvent);
     if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
       setCssProps(this.element, this._originalCssProps);
     }
@@ -206,9 +206,9 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
-    const activeInput = this._activeInput;
-    const panEvent = activeInput.onEventStart(event, this.options.inputButton);
-    if (!panEvent || !this._enabled || activeInput.getTouches(event) > 1) {
+    const activeEvent = this._activeEvent;
+    const panEvent = activeEvent.onEventStart(event, this.options.inputButton);
+    if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
       return;
     }
 
@@ -218,15 +218,15 @@ export class PanInput implements InputType {
       this._observer.hold(this, panEvent);
       this._atRightEdge =
         IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
-      this._attachWindowEvent(activeInput);
-      activeInput.prevEvent = panEvent;
+      this._attachWindowEvent(activeEvent);
+      activeEvent.prevEvent = panEvent;
     }
   }
 
   protected _onPanmove(event: InputEventType) {
-    const activeInput = this._activeInput;
-    const panEvent = activeInput.onEventMove(event, this.options.inputButton);
-    if (!panEvent || !this._enabled || activeInput.getTouches(event) > 1) {
+    const activeEvent = this._activeEvent;
+    const panEvent = activeEvent.onEventMove(event, this.options.inputButton);
+    if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
       return;
     }
 
@@ -241,7 +241,7 @@ export class PanInput implements InputType {
       return;
     }
 
-    if (activeInput.prevEvent && IS_IOS_SAFARI) {
+    if (activeEvent.prevEvent && IS_IOS_SAFARI) {
       const swipeLeftToRight = panEvent.center.x < 0;
 
       if (swipeLeftToRight) {
@@ -284,18 +284,18 @@ export class PanInput implements InputType {
     if (prevent) {
       this._observer.change(this, panEvent, toAxis(this.axes, offset));
     }
-    activeInput.prevEvent = panEvent;
+    activeEvent.prevEvent = panEvent;
   }
 
   protected _onPanend(event: InputEventType) {
-    const activeInput = this._activeInput;
-    activeInput.onEventEnd(event);
-    if (!this._enabled || activeInput.getTouches(event) !== 0) {
+    const activeEvent = this._activeEvent;
+    activeEvent.onEventEnd(event);
+    if (!this._enabled || activeEvent.getTouches(event) !== 0) {
       return;
     }
-    this._detachWindowEvent(activeInput);
+    this._detachWindowEvent(activeEvent);
     clearTimeout(this._rightEdgeTimer);
-    const prevEvent = activeInput.prevEvent;
+    const prevEvent = activeEvent.prevEvent;
     const velocity = this._getOffset(
       [
         Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
@@ -307,45 +307,45 @@ export class PanInput implements InputType {
       ]
     );
     this._observer.release(this, prevEvent, velocity);
-    activeInput.onRelease();
+    activeEvent.onRelease();
   }
 
-  protected _attachWindowEvent(activeInput: ActiveInput) {
-    activeInput?.move.forEach((event) => {
+  protected _attachWindowEvent(activeEvent: ActiveEvent) {
+    activeEvent?.move.forEach((event) => {
       window.addEventListener(event, this._onPanmove);
     });
-    activeInput?.end.forEach((event) => {
+    activeEvent?.end.forEach((event) => {
       window.addEventListener(event, this._onPanend);
     });
   }
 
-  protected _detachWindowEvent(activeInput: ActiveInput) {
-    activeInput?.move.forEach((event) => {
+  protected _detachWindowEvent(activeEvent: ActiveEvent) {
+    activeEvent?.move.forEach((event) => {
       window.removeEventListener(event, this._onPanmove);
     });
-    activeInput?.end.forEach((event) => {
+    activeEvent?.end.forEach((event) => {
       window.removeEventListener(event, this._onPanend);
     });
   }
 
   private _attachElementEvent(observer: InputTypeObserver) {
-    const activeInput = convertInputType(this.options.inputType);
-    if (!activeInput) {
+    const activeEvent = convertInputType(this.options.inputType);
+    if (!activeEvent) {
       throw new Error(
         "There is currently no inputType available for current device. There must be at least one available inputType."
       );
     }
     this._observer = observer;
     this._enabled = true;
-    this._activeInput = activeInput;
-    activeInput?.start.forEach((event) => {
+    this._activeEvent = activeEvent;
+    activeEvent?.start.forEach((event) => {
       this.element?.addEventListener(event, this._onPanstart);
     });
   }
 
   private _detachElementEvent() {
-    const activeInput = this._activeInput;
-    activeInput?.start.forEach((event) => {
+    const activeEvent = this._activeEvent;
+    activeEvent?.start.forEach((event) => {
       this.element?.removeEventListener(event, this._onPanstart);
     });
     this._enabled = false;
@@ -366,9 +366,9 @@ export class PanInput implements InputType {
   }
 
   private _forceRelease = () => {
-    const activeInput = this._activeInput;
-    this._detachWindowEvent(activeInput);
-    this._observer.release(this, activeInput.prevEvent, [0, 0]);
-    activeInput.onRelease();
+    const activeEvent = this._activeEvent;
+    this._detachWindowEvent(activeEvent);
+    this._observer.release(this, activeEvent.prevEvent, [0, 0]);
+    activeEvent.onRelease();
   };
 }

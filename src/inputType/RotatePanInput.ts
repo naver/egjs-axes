@@ -48,8 +48,8 @@ export class RotatePanInput extends PanInput {
   }
 
   protected _onPanstart(event: MouseEvent) {
-    const activeInput = this._activeInput;
-    const panEvent = activeInput.onEventStart(event, this.options.inputButton);
+    const activeEvent = this._activeEvent;
+    const panEvent = activeEvent.onEventStart(event, this.options.inputButton);
     if (!panEvent || !this.isEnabled()) {
       return;
     }
@@ -57,7 +57,7 @@ export class RotatePanInput extends PanInput {
     const rect = this.element.getBoundingClientRect();
 
     this._observer.hold(this, panEvent);
-    this._attachWindowEvent(activeInput);
+    this._attachWindowEvent(activeEvent);
     // TODO: how to do if element is ellipse not circle.
     this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
     // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin
@@ -70,12 +70,12 @@ export class RotatePanInput extends PanInput {
     this._prevAngle = null;
 
     this._triggerChange(panEvent);
-    activeInput.prevEvent = panEvent;
+    activeEvent.prevEvent = panEvent;
   }
 
   protected _onPanmove(event: MouseEvent) {
-    const activeInput = this._activeInput;
-    const panEvent = activeInput.onEventMove(event, this.options.inputButton);
+    const activeEvent = this._activeEvent;
+    const panEvent = activeEvent.onEventMove(event, this.options.inputButton);
     if (!panEvent || !this.isEnabled()) {
       return;
     }
@@ -85,16 +85,16 @@ export class RotatePanInput extends PanInput {
     }
     panEvent.srcEvent.stopPropagation();
     this._triggerChange(panEvent);
-    activeInput.prevEvent = panEvent;
+    activeEvent.prevEvent = panEvent;
   }
 
   protected _onPanend(event: MouseEvent) {
-    const activeInput = this._activeInput;
-    activeInput.onEventEnd(event);
+    const activeEvent = this._activeEvent;
+    activeEvent.onEventEnd(event);
     if (!this.isEnabled()) {
       return;
     }
-    const prevEvent = activeInput.prevEvent;
+    const prevEvent = activeEvent.prevEvent;
     this._triggerChange(prevEvent);
     const vx = prevEvent.velocityX;
     const vy = prevEvent.velocityY;
@@ -103,8 +103,8 @@ export class RotatePanInput extends PanInput {
     this._observer.release(this, prevEvent, [
       velocity * this._coefficientForDistanceToAngle,
     ]);
-    activeInput.onRelease();
-    this._detachWindowEvent(activeInput);
+    activeEvent.onRelease();
+    this._detachWindowEvent(activeEvent);
   }
 
   private _triggerChange(event: ExtendedEvent) {
