@@ -9,18 +9,18 @@ import {
   KEY_RIGHT_ARROW,
   KEY_S,
   KEY_UP_ARROW,
-  KEY_W
+  KEY_W,
 } from "../../../src/inputType/MoveKeyInput";
 
 import TestHelper from "./TestHelper";
 
 describe("MoveKeyInput", () => {
-	let el;
-	let elBody;
-	let input;
-	let inst;
-	let observer;
-	let timer;
+  let el;
+  let elBody;
+  let input;
+  let inst;
+  let observer;
+  let timer;
 
   describe("instance method", () => {
     beforeEach(() => {
@@ -69,8 +69,8 @@ describe("MoveKeyInput", () => {
         hold: () => {},
         change: () => {},
         options: {
-          deceleration: 0.0001
-        }
+          deceleration: 0.0001,
+        },
       };
     });
     afterEach(() => {
@@ -117,11 +117,11 @@ describe("MoveKeyInput", () => {
       input = new MoveKeyInput(el);
       inst = new Axes({
         x: {
-          range: [10, 120]
+          range: [10, 120],
         },
         y: {
-          range: [10, 120]
-        }
+          range: [10, 120],
+        },
       });
     });
 
@@ -165,11 +165,11 @@ describe("MoveKeyInput", () => {
       input = new MoveKeyInput(el);
       inst = new Axes({
         x: {
-          range: [10, 120]
+          range: [10, 120],
         },
         y: {
-          range: [10, 120]
-        }
+          range: [10, 120],
+        },
       });
 
       inst.connect(["x", "y"], input);
@@ -231,7 +231,7 @@ describe("MoveKeyInput", () => {
           let changeTriggered = false;
           let deltaX = 0;
           const leftKeyCode = {
-            keyCode: keyCode
+            keyCode: keyCode,
           };
           input.options.scale[0] = -1;
           inst.on("change", (e) => {
@@ -259,7 +259,7 @@ describe("MoveKeyInput", () => {
           let changeTriggered = false;
           let deltaX = 0;
           const rightKeyCode = {
-            keyCode: keyCode
+            keyCode: keyCode,
           };
           const change = sinon.spy((e) => {
             deltaX = e.delta.x;
@@ -298,7 +298,7 @@ describe("MoveKeyInput", () => {
         let changeTriggered = false;
         let deltaY = 0;
         const upKeyCode = {
-          keyCode: keyCode
+          keyCode: keyCode,
         };
         const change = sinon.spy((e) => {
           deltaY = e.delta.y;
@@ -340,7 +340,7 @@ describe("MoveKeyInput", () => {
           changeTriggered = true;
         });
         const downKeyCode = {
-          keyCode: keyCode
+          keyCode: keyCode,
         };
         input.options.scale[1] = -1;
 
@@ -364,7 +364,7 @@ describe("MoveKeyInput", () => {
           const holdHandler = sinon.spy();
           const releaseHandler = sinon.spy();
           const downKeyCode = {
-            keyCode: keyCode
+            keyCode: keyCode,
           };
 
           inst.on("hold", holdHandler);
@@ -403,22 +403,17 @@ describe("MoveKeyInput", () => {
             });
 
           // When
-          TestHelper.key(
-            el,
-            "keydown",
-            { keyCode: KEY_DOWN_ARROW },
-            () => {
-              setTimeout(() => {
-                TestHelper.key(el, "keyup", { keyCode: keyCode }, () => {
-                  setTimeout(() => {
-                    // Then
-                    expect(eventLog).to.be.deep.equal(eventLogAnswer);
-                    done();
-                  }, 100);
-                });
-              }, 20);
-            }
-          );
+          TestHelper.key(el, "keydown", { keyCode: KEY_DOWN_ARROW }, () => {
+            setTimeout(() => {
+              TestHelper.key(el, "keyup", { keyCode: keyCode }, () => {
+                setTimeout(() => {
+                  // Then
+                  expect(eventLog).to.be.deep.equal(eventLogAnswer);
+                  done();
+                }, 100);
+              });
+            }, 20);
+          });
         }
       );
     });

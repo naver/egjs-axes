@@ -3,11 +3,11 @@ import {
   toArray,
   equal,
   getDecimalPlace,
-  roundNumber
+  roundNumber,
 } from "../../src/utils";
 
 describe("Util Test", () => {
-	let el;
+  let el;
 
   beforeEach(() => {
     el = sandbox();
@@ -20,11 +20,11 @@ describe("Util Test", () => {
     const target1 = {
       x: 10,
       y: 20,
-      z: 30
+      z: 30,
     };
     const target2 = {
       x: 10,
-      y: 20
+      y: 20,
     };
 
     // Then
@@ -65,7 +65,7 @@ describe("Util Test", () => {
     const targetVal = 99.123456789;
     const inputValues = [100, 10, 1, 0, 0.1, 0.01, 0.001, 0.0001];
     const expectValues = [
-      100, 100, 99, 0, 99.1, 99.12, 99.123, 99.1235 /* round */
+      100, 100, 99, 0, 99.1, 99.12, 99.123, 99.1235 /* round */,
     ];
     // Ref. Same result : https://codepen.io/GreenSock/pen/mLMYwM
 

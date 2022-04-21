@@ -7,6 +7,10 @@ export const DIRECTION_DOWN = 16;
 export const DIRECTION_VERTICAL = 8 | 16;
 export const DIRECTION_ALL = 2 | 4 | 8 | 16;
 
+export const MOUSE_LEFT = "left";
+export const MOUSE_RIGHT = "right";
+export const MOUSE_MIDDLE = "middle";
+
 import getAgent from "@egjs/agent";
 
 import { window } from "./browser";

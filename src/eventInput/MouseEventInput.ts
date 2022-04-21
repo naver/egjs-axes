@@ -7,15 +7,37 @@ export class MouseEventInput extends EventInput {
   public readonly move = ["mousemove"];
   public readonly end = ["mouseup"];
 
-  public onEventStart(event: InputEventType): ExtendedEvent {
+  public onEventStart(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    const button = this._getButton(event);
+    if (inputButton && !this._isValidButton(button, inputButton)) {
+      return null;
+    }
+    this._preventMouseButton(event, button);
     return this.extendEvent(event);
   }
 
-  public onEventMove(event: InputEventType): ExtendedEvent {
+  public onEventMove(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent {
+    if (
+      inputButton &&
+      !this._isValidButton(this._getButton(event), inputButton)
+    ) {
+      return null;
+    }
     return this.extendEvent(event);
   }
 
   public onEventEnd(): void {
+    return;
+  }
+
+  public onRelease(): void {
+    this.prevEvent = null;
     return;
   }
 

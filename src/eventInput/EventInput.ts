@@ -1,6 +1,7 @@
 import { ExtendedEvent, InputEventType } from "../types";
 import { getAngle } from "../utils";
 import { window } from "../browser";
+import { MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT } from "../const";
 
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const SUPPORT_POINTER = "PointerEvent" in window;
@@ -10,11 +11,19 @@ export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
 export abstract class EventInput {
   public prevEvent: ExtendedEvent;
 
-  public abstract onEventStart(event: InputEventType): ExtendedEvent;
+  public abstract onEventStart(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent;
 
-  public abstract onEventMove(event: InputEventType): ExtendedEvent;
+  public abstract onEventMove(
+    event: InputEventType,
+    inputButton?: string[]
+  ): ExtendedEvent;
 
   public abstract onEventEnd(event: InputEventType): void;
+
+  public abstract onRelease(event: InputEventType): void;
 
   public abstract getTouches(event: InputEventType): number;
 
@@ -70,4 +79,33 @@ export abstract class EventInput {
     const y = end.clientY - start.clientY;
     return Math.sqrt(x * x + y * y);
   }
+
+  protected _getButton(event: InputEventType): string {
+    const buttonCodeMap = { 1: MOUSE_LEFT, 2: MOUSE_RIGHT, 4: MOUSE_MIDDLE };
+    const button = this._isTouchEvent(event)
+      ? MOUSE_LEFT
+      : buttonCodeMap[event.buttons];
+    return button ? button : null;
+  }
+
+  protected _isTouchEvent(event: InputEventType): event is TouchEvent {
+    return event.type.indexOf("touch") > -1;
+  }
+
+  protected _isValidButton(button: string, inputButton: string[]): boolean {
+    return inputButton.indexOf(button) > -1;
+  }
+
+  protected _preventMouseButton(event: InputEventType, button: string): void {
+    if (button === MOUSE_RIGHT) {
+      window.addEventListener("contextmenu", this._stopContextMenu);
+    } else if (button === MOUSE_MIDDLE) {
+      event.preventDefault();
+    }
+  }
+
+  private _stopContextMenu = (event: InputEventType) => {
+    event.preventDefault();
+    window.removeEventListener("contextmenu", this._stopContextMenu);
+  };
 }

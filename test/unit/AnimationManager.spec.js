@@ -5,10 +5,10 @@ import { EventManager } from "../../src/EventManager";
 import Axes from "../../src";
 
 describe("AnimationManager", () => {
-	let inst;
-	let axes;
-	let axis;
-	let options;
+  let inst;
+  let axes;
+  let axis;
+  let options;
 
   describe("method test", () => {
     beforeEach(() => {
@@ -16,29 +16,29 @@ describe("AnimationManager", () => {
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false
+          circular: false,
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false
+          circular: false,
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true
-        }
+          circular: true,
+        },
       };
       options = {
         deceleration: 0.0001,
         maximumDuration: 2000,
-        minimumDuration: 0
+        minimumDuration: 0,
       };
       inst = new AnimationManager({
         options: options,
         interruptManager: new InterruptManager(options),
         eventManager: new EventManager(null),
-        axisManager: new AxisManager(axis, options)
+        axisManager: new AxisManager(axis, options),
       });
     });
     afterEach(() => {});
@@ -48,17 +48,15 @@ describe("AnimationManager", () => {
       // When
       const depaPos = {
         x: 0,
-        y: 0
+        y: 0,
       };
       const destPos = {
         x: 100,
-        y: 50
+        y: 50,
       };
 
       // When/Then
-      expect(inst.getDuration(depaPos, destPos)).to.be.equal(
-        1414.213562373095
-      );
+      expect(inst.getDuration(depaPos, destPos)).to.be.equal(1414.213562373095);
 
       // When (change option)
       options.maximumDuration = 1200;
@@ -77,19 +75,19 @@ describe("AnimationManager", () => {
       // 0.001
       options.deceleration = 0.001;
       expect(inst.getDisplacement([1.5, 1])).to.be.eql([
-        1352.0817282989958, 901.3878188659972
+        1352.0817282989958, 901.3878188659972,
       ]);
       expect(inst.getDisplacement([1, 1.5])).to.be.eql([
-        901.3878188659972, 1352.0817282989958
+        901.3878188659972, 1352.0817282989958,
       ]);
 
       // 0.01
       options.deceleration = 0.01;
       expect(inst.getDisplacement([1.5, 1])).to.be.eql([
-        135.20817282989958, 90.13878188659973
+        135.20817282989958, 90.13878188659973,
       ]);
       expect(inst.getDisplacement([1, 1.5])).to.be.eql([
-        90.13878188659973, 135.20817282989958
+        90.13878188659973, 135.20817282989958,
       ]);
     });
 
@@ -99,7 +97,7 @@ describe("AnimationManager", () => {
       const pos = {
         x: 200,
         y: 210,
-        z: -155
+        z: -155,
       };
 
       // When
@@ -118,7 +116,7 @@ describe("AnimationManager", () => {
       options.maximumDuration = 500;
       const eventValue = { event: "i'm inputEvent" };
       param = inst._createAnimationParam(pos, 1000, {
-        event: eventValue
+        event: eventValue,
       });
 
       // Then
@@ -136,18 +134,18 @@ describe("AnimationManager", () => {
         x: {
           range: [0, 100],
           bounce: [50, 50],
-          circular: false /* [false, false] */
+          circular: false /* [false, false] */,
         },
         y: {
           range: [0, 200],
           bounce: [0, 0],
-          circular: false /* [false, false] */
+          circular: false /* [false, false] */,
         },
         z: {
           range: [-100, 200],
           bounce: [50, 0],
-          circular: true /* [true, true] */
-        }
+          circular: true /* [true, true] */,
+        },
       };
       options = {
         easing: (x) => {
@@ -156,7 +154,7 @@ describe("AnimationManager", () => {
         interruptable: true,
         deceleration: 0.0001,
         minimumDuration: 0,
-        maximumDuration: 2000
+        maximumDuration: 2000,
       };
       axes = new Axes(axis, options);
       const axisManager = new AxisManager(axis, options);
@@ -165,7 +163,7 @@ describe("AnimationManager", () => {
         options: options,
         interruptManager: new InterruptManager(options),
         eventManager,
-        axisManager
+        axisManager,
       });
       eventManager.setAnimationManager(inst);
     });
@@ -178,14 +176,14 @@ describe("AnimationManager", () => {
       const finishHandler = sinon.spy();
       axes.on({
         change: changeHandler,
-        finish: finishHandler
+        finish: finishHandler,
       });
 
       // When
       inst.setTo(
         {
           x: 100,
-          y: 200
+          y: 200,
         },
         0
       );
@@ -196,7 +194,7 @@ describe("AnimationManager", () => {
       expect(inst.axisManager.get()).to.be.eql({
         x: 100,
         y: 200,
-        z: -100
+        z: -100,
       });
     });
     it("should check 'setTo' method (outside)", () => {
@@ -204,7 +202,7 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 200,
-        z: -155
+        z: -155,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -213,7 +211,7 @@ describe("AnimationManager", () => {
       axes.on({
         animationStart: startHandler,
         change: changeHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -231,7 +229,7 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 200,
-        z: -155
+        z: -155,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -250,7 +248,7 @@ describe("AnimationManager", () => {
           expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
-        }
+        },
       });
 
       // When
@@ -262,12 +260,12 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 0,
-        z: -100
+        z: -100,
       };
       const self = inst;
       const changeHandler = sinon.spy();
       axes.on({
-        change: changeHandler
+        change: changeHandler,
       });
 
       // When
@@ -286,12 +284,12 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 0,
-        z: -100
+        z: -100,
       };
       const self = inst;
       const changeHandler = sinon.spy();
       axes.on({
-        change: changeHandler
+        change: changeHandler,
       });
 
       // When
@@ -316,7 +314,7 @@ describe("AnimationManager", () => {
         done();
       });
       axes.on({
-        change: changeHandler
+        change: changeHandler,
       });
 
       // When
@@ -330,7 +328,7 @@ describe("AnimationManager", () => {
       const self = inst;
       const changeHandler = sinon.spy();
       axes.on({
-        change: changeHandler
+        change: changeHandler,
       });
 
       // When
@@ -343,7 +341,7 @@ describe("AnimationManager", () => {
         expect(changeHandler.args[0][0].delta).to.be.eql({
           x: 0,
           y: 0,
-          z: 600
+          z: 600,
         });
         expect(ret).to.be.eq(self);
         done();
@@ -361,7 +359,7 @@ describe("AnimationManager", () => {
         done();
       });
       axes.on({
-        change: changeHandler
+        change: changeHandler,
       });
 
       // When
@@ -373,7 +371,7 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const byPos = {
         x: 20,
-        z: 40
+        z: 40,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -389,14 +387,14 @@ describe("AnimationManager", () => {
           expect(self.axisManager.get()).to.be.eql({
             x: depaPos.x + byPos.x,
             y: 0,
-            z: depaPos.z + byPos.z
+            z: depaPos.z + byPos.z,
           });
           expect(startHandler.callCount).to.be.equal(1);
           expect(startHandler.getCall(0).args[0].isTrusted).to.be.false;
           expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
-        }
+        },
       });
 
       // When
@@ -409,7 +407,7 @@ describe("AnimationManager", () => {
       const rangeLength = axis.z.range[1] - axis.z.range[0];
       const byPos = {
         x: 200,
-        z: 500
+        z: 500,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -429,7 +427,7 @@ describe("AnimationManager", () => {
           expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
-        }
+        },
       });
 
       // When
@@ -440,7 +438,7 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 90,
-        z: -80
+        z: -80,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -459,7 +457,7 @@ describe("AnimationManager", () => {
           expect(changeHandler.called).to.be.true;
           expect(event.isTrusted).to.be.false;
           done();
-        }
+        },
       });
 
       // When
@@ -470,7 +468,7 @@ describe("AnimationManager", () => {
       const depaPos = inst.axisManager.get();
       const destPos = {
         x: 200,
-        z: -155
+        z: -155,
       };
       const self = inst;
       const startHandler = sinon.spy();
@@ -492,7 +490,7 @@ describe("AnimationManager", () => {
       });
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -526,7 +524,7 @@ describe("AnimationManager", () => {
       axes.on({
         change: changeHandler,
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -543,7 +541,7 @@ describe("AnimationManager", () => {
         expect(inst.axisManager.get()).to.not.eql({
           x: 80,
           y: 150,
-          z: -100
+          z: -100,
         });
       }, 100);
       setTimeout(() => {
@@ -578,13 +576,11 @@ describe("AnimationManager", () => {
             duration: 1000,
             depaPos,
             destPos,
-            delta: { z: destPos.z - depaPos.z }
+            delta: { z: destPos.z - depaPos.z },
           },
           () => {
             // Then
-            expect(inst.axisManager.get(["z"]).z).to.be.equals(
-              resultPos.z
-            );
+            expect(inst.axisManager.get(["z"]).z).to.be.equals(resultPos.z);
             done();
           }
         );
@@ -618,13 +614,11 @@ describe("AnimationManager", () => {
             duration: 1000,
             depaPos,
             destPos,
-            delta: { z: destPos.z - depaPos.z }
+            delta: { z: destPos.z - depaPos.z },
           },
           () => {
             // Then
-            expect(inst.axisManager.get(["z"]).z).to.be.equals(
-              resultPos.z
-            );
+            expect(inst.axisManager.get(["z"]).z).to.be.equals(resultPos.z);
             done();
           }
         );
@@ -636,7 +630,7 @@ describe("AnimationManager", () => {
       const endHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -648,7 +642,7 @@ describe("AnimationManager", () => {
         expect(endHandler.called).to.be.false;
 
         // When
-        inst.updateAnimation({ destPos: { x: 100, y: 100 }});
+        inst.updateAnimation({ destPos: { x: 100, y: 100 } });
       }, 100);
       setTimeout(() => {
         expect(startHandler.calledOnce).to.be.true;
@@ -666,7 +660,7 @@ describe("AnimationManager", () => {
       const endHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -698,7 +692,7 @@ describe("AnimationManager", () => {
       const endHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -716,7 +710,10 @@ describe("AnimationManager", () => {
         expect(endHandler.called).to.be.false;
 
         // When
-        inst.updateAnimation({ destPos: { x: 12.3456, y: 1.2345 }, duration: 300 });
+        inst.updateAnimation({
+          destPos: { x: 12.3456, y: 1.2345 },
+          duration: 300,
+        });
       }, 200);
       setTimeout(() => {
         expect(startHandler.calledOnce).to.be.true;
@@ -734,7 +731,7 @@ describe("AnimationManager", () => {
       const endHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
@@ -769,7 +766,7 @@ describe("AnimationManager", () => {
       const endHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
-        animationEnd: endHandler
+        animationEnd: endHandler,
       });
 
       // When
