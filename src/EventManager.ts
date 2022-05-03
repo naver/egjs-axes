@@ -2,10 +2,14 @@ import { ComponentEvent } from "@egjs/component";
 
 import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
 import Axes from "./Axes";
 import { roundNumbers } from "./utils";
-import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
+import {
+  AnimationManagerTypes,
+  AnimationParam,
+  OnAnimationStart,
+  OnRelease,
+} from "./types";
 
 export interface ChangeEventOption {
   input: InputType;
@@ -13,7 +17,7 @@ export interface ChangeEventOption {
 }
 
 export class EventManager {
-  public animationManager: AnimationManager;
+  public animationManager: AnimationManagerTypes;
   public constructor(private _axes: Axes) {}
   /**
    * This event is fired when a user holds an element on the screen of the device.
@@ -327,7 +331,7 @@ export class EventManager {
     );
   }
 
-  public setAnimationManager(animationManager: AnimationManager) {
+  public setAnimationManager(animationManager: AnimationManagerTypes) {
     this.animationManager = animationManager;
   }
 

@@ -2,7 +2,6 @@ import { InterruptManager } from "./InterruptManager";
 import { InputType, InputTypeObserver, toAxis } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
 import {
   isOutside,
@@ -11,14 +10,14 @@ import {
   isEndofBounce,
 } from "./Coordinate";
 import { map, equal } from "./utils";
-import { AnimationParam } from "./types";
+import { AnimationManagerTypes, AnimationParam } from "./types";
 
 export class InputObserver implements InputTypeObserver {
   public options: AxesOption;
   private _interruptManager: InterruptManager;
   private _eventManager: EventManager;
   private _axisManager: AxisManager;
-  private _animationManager: AnimationManager;
+  private _animationManager: AnimationManagerTypes;
   private _isOutside = false;
   private _moveDistance: Axis = null;
   private _isStopped = false;
@@ -33,7 +32,7 @@ export class InputObserver implements InputTypeObserver {
     interruptManager: InterruptManager;
     eventManager: EventManager;
     axisManager: AxisManager;
-    animationManager: AnimationManager;
+    animationManager: AnimationManagerTypes;
   }) {
     this.options = options;
     this._interruptManager = interruptManager;

@@ -1,7 +1,7 @@
-import { AnimationManager } from "../../src/AnimationManager";
 import { AxisManager } from "../../src/AxisManager";
 import { InterruptManager } from "../../src/InterruptManager";
 import { EventManager } from "../../src/EventManager";
+import { EasingManager } from "../../src/animation/EasingManager";
 import Axes from "../../src";
 
 describe("AnimationManager", () => {
@@ -34,7 +34,7 @@ describe("AnimationManager", () => {
         maximumDuration: 2000,
         minimumDuration: 0,
       };
-      inst = new AnimationManager({
+      inst = new EasingManager({
         options: options,
         interruptManager: new InterruptManager(options),
         eventManager: new EventManager(null),
@@ -159,7 +159,7 @@ describe("AnimationManager", () => {
       axes = new Axes(axis, options);
       const axisManager = new AxisManager(axis, options);
       const eventManager = new EventManager(axes);
-      inst = new AnimationManager({
+      inst = new EasingManager({
         options: options,
         interruptManager: new InterruptManager(options),
         eventManager,

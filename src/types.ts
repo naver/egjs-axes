@@ -4,10 +4,13 @@ import { TouchEventInput } from "./eventInput/TouchEventInput";
 import { PointerEventInput } from "./eventInput/PointerEventInput";
 import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
 import { InputType } from "./inputType/InputType";
+import { EasingManager } from "./animation/EasingManager";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
 
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
+
+export type AnimationManagerTypes = EasingManager;
 
 export type ActiveEvent =
   | MouseEventInput
