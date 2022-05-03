@@ -167,8 +167,8 @@ export class PinchInput implements InputType {
       return;
     }
 
-    this._observer.release(this, event, [0], 0);
     activeEvent.onRelease();
+    this._observer.release(this, event, [0], 0);
     this._baseValue = null;
     this._pinchFlag = false;
   }

@@ -100,10 +100,10 @@ export class RotatePanInput extends PanInput {
     const vy = prevEvent.velocityY;
     const velocity =
       Math.sqrt(vx * vx + vy * vy) * (this._lastDiff > 0 ? -1 : 1); // clockwise
+    activeEvent.onRelease();
     this._observer.release(this, prevEvent, [
       velocity * this._coefficientForDistanceToAngle,
     ]);
-    activeEvent.onRelease();
     this._detachWindowEvent(activeEvent);
   }
 

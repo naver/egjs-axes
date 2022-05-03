@@ -1,7 +1,12 @@
-import { ExtendedEvent, InputEventType } from "../types";
+import { ExtendedEvent, InputEventType, LatestInterval } from "../types";
 import { getAngle } from "../utils";
 import { window } from "../browser";
-import { MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT } from "../const";
+import {
+  MOUSE_LEFT,
+  MOUSE_MIDDLE,
+  MOUSE_RIGHT,
+  VELOCITY_INTERVAL,
+} from "../const";
 
 export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const SUPPORT_POINTER = "PointerEvent" in window;
@@ -10,6 +15,7 @@ export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
 
 export abstract class EventInput {
   public prevEvent: ExtendedEvent;
+  private _latestInterval: LatestInterval;
 
   public abstract onEventStart(
     event: InputEventType,
@@ -49,13 +55,27 @@ export abstract class EventInput {
       : 0;
     const deltaX = prevEvent ? prevEvent.deltaX + movement.x : movement.x;
     const deltaY = prevEvent ? prevEvent.deltaY + movement.y : movement.y;
-    const offsetX = prevEvent ? deltaX - prevEvent.deltaX : 0;
-    const offsetY = prevEvent ? deltaY - prevEvent.deltaY : 0;
-    const deltaTime = prevEvent
-      ? event.timeStamp - prevEvent.srcEvent.timeStamp
+    const offsetX = movement.x;
+    const offsetY = movement.y;
+    const latestInterval = this._latestInterval;
+    const deltaTime = latestInterval
+      ? event.timeStamp - latestInterval.timestamp
       : 0;
-    const velocityX = prevEvent && deltaTime !== 0 ? offsetX / deltaTime : 0;
-    const velocityY = prevEvent && deltaTime !== 0 ? offsetY / deltaTime : 0;
+    let velocityX = prevEvent ? prevEvent.velocityX : 0;
+    let velocityY = prevEvent ? prevEvent.velocityY : 0;
+    if (!latestInterval || deltaTime >= VELOCITY_INTERVAL) {
+      if (latestInterval) {
+        [velocityX, velocityY] = [
+          (deltaX - latestInterval.deltaX) / deltaTime,
+          (deltaY - latestInterval.deltaY) / deltaTime,
+        ];
+      }
+      this._latestInterval = {
+        timestamp: event.timeStamp,
+        deltaX,
+        deltaY,
+      };
+    }
     return {
       srcEvent: event,
       scale,
