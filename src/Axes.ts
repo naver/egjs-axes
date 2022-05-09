@@ -16,13 +16,9 @@ import {
   DIRECTION_ALL,
 } from "./const";
 import { InputType } from "./inputType/InputType";
-import {
-  AnimationManagerType,
-  AxesEvents,
-  ObjectInterface,
-  UpdateAnimationOption,
-} from "./types";
+import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
 import { EasingManager } from "./animation/EasingManager";
+import { AnimationManager } from "./animation/AnimationManager";
 
 export interface AxesOption {
   easing?: (x: number) => number;
@@ -225,7 +221,7 @@ class Axes extends Component<AxesEvents> {
   public eventManager: EventManager;
   public axisManager: AxisManager;
   public interruptManager: InterruptManager;
-  public animationManager: AnimationManagerType;
+  public animationManager: AnimationManager;
   public inputObserver: InputObserver;
   private _inputs: InputType[] = [];
 
