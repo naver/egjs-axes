@@ -58,9 +58,8 @@ export abstract class EventInput {
     const offsetX = movement.x;
     const offsetY = movement.y;
     const latestInterval = this._latestInterval;
-    const deltaTime = latestInterval
-      ? event.timeStamp - latestInterval.timestamp
-      : 0;
+    const timeStamp = Date.now();
+    const deltaTime = latestInterval ? timeStamp - latestInterval.timestamp : 0;
     let velocityX = prevEvent ? prevEvent.velocityX : 0;
     let velocityY = prevEvent ? prevEvent.velocityY : 0;
     if (!latestInterval || deltaTime >= VELOCITY_INTERVAL) {
@@ -71,7 +70,7 @@ export abstract class EventInput {
         ];
       }
       this._latestInterval = {
-        timestamp: event.timeStamp,
+        timestamp: timeStamp,
         deltaX,
         deltaY,
       };
