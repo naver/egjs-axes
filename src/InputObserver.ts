@@ -10,14 +10,14 @@ import {
   isEndofBounce,
 } from "./Coordinate";
 import { map, equal } from "./utils";
-import { AnimationManagerTypes, AnimationParam } from "./types";
+import { AnimationManagerType, AnimationParam } from "./types";
 
 export class InputObserver implements InputTypeObserver {
   public options: AxesOption;
   private _interruptManager: InterruptManager;
   private _eventManager: EventManager;
   private _axisManager: AxisManager;
-  private _animationManager: AnimationManagerTypes;
+  private _animationManager: AnimationManagerType;
   private _isOutside = false;
   private _moveDistance: Axis = null;
   private _isStopped = false;
@@ -32,7 +32,7 @@ export class InputObserver implements InputTypeObserver {
     interruptManager: InterruptManager;
     eventManager: EventManager;
     axisManager: AxisManager;
-    animationManager: AnimationManagerTypes;
+    animationManager: AnimationManagerType;
   }) {
     this.options = options;
     this._interruptManager = interruptManager;

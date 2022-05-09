@@ -5,7 +5,7 @@ import { Axis } from "./AxisManager";
 import Axes from "./Axes";
 import { roundNumbers } from "./utils";
 import {
-  AnimationManagerTypes,
+  AnimationManagerType,
   AnimationParam,
   OnAnimationStart,
   OnRelease,
@@ -17,7 +17,7 @@ export interface ChangeEventOption {
 }
 
 export class EventManager {
-  public animationManager: AnimationManagerTypes;
+  public animationManager: AnimationManagerType;
   public constructor(private _axes: Axes) {}
   /**
    * This event is fired when a user holds an element on the screen of the device.
@@ -331,7 +331,7 @@ export class EventManager {
     );
   }
 
-  public setAnimationManager(animationManager: AnimationManagerTypes) {
+  public setAnimationManager(animationManager: AnimationManagerType) {
     this.animationManager = animationManager;
   }
 

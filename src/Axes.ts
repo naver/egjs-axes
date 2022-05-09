@@ -17,7 +17,7 @@ import {
 } from "./const";
 import { InputType } from "./inputType/InputType";
 import {
-  AnimationManagerTypes,
+  AnimationManagerType,
   AxesEvents,
   ObjectInterface,
   UpdateAnimationOption,
@@ -225,7 +225,7 @@ class Axes extends Component<AxesEvents> {
   public eventManager: EventManager;
   public axisManager: AxisManager;
   public interruptManager: InterruptManager;
-  public animationManager: AnimationManagerTypes;
+  public animationManager: AnimationManagerType;
   public inputObserver: InputObserver;
   private _inputs: InputType[] = [];
 

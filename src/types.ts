@@ -10,7 +10,7 @@ export type ObjectInterface<T = any> = Record<string | number, T>;
 
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
 
-export type AnimationManagerTypes = EasingManager;
+export type AnimationManagerType = EasingManager;
 
 export type ActiveEvent =
   | MouseEventInput
