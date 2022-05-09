@@ -11,7 +11,7 @@ export const MOUSE_LEFT = "left";
 export const MOUSE_RIGHT = "right";
 export const MOUSE_MIDDLE = "middle";
 
-export const VELOCITY_INTERVAL = 20;
+export const VELOCITY_INTERVAL = 16;
 
 import getAgent from "@egjs/agent";
 
