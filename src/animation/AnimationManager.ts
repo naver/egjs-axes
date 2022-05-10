@@ -3,10 +3,10 @@ import {
   isCircularable,
   getCirculatedPos,
   getDuration,
-} from "./Coordinate";
-import { Axis, AxisManager } from "./AxisManager";
-import { InterruptManager } from "./InterruptManager";
-import { EventManager, ChangeEventOption } from "./EventManager";
+} from "../Coordinate";
+import { Axis, AxisManager } from "../AxisManager";
+import { InterruptManager } from "../InterruptManager";
+import { EventManager, ChangeEventOption } from "../EventManager";
 import {
   requestAnimationFrame,
   cancelAnimationFrame,
@@ -17,28 +17,31 @@ import {
   roundNumber,
   getDecimalPlace,
   inversePow,
-} from "./utils";
-import { AxesOption } from "./Axes";
+} from "../utils";
+import { AxesOption } from "../Axes";
 import {
   AnimationParam,
   ObjectInterface,
   UpdateAnimationOption,
-} from "./types";
+} from "../types";
+
+export interface AnimationState {
+  pos: Axis;
+  easingPer: number;
+  finished: boolean;
+}
 
 const clamp = (value: number, min: number, max: number): number => {
   return Math.max(Math.min(value, max), min);
 };
 
-export class AnimationManager {
+export abstract class AnimationManager {
   public interruptManager: InterruptManager;
   public eventManager: EventManager;
   public axisManager: AxisManager;
+  protected _options: AxesOption;
+  protected _animateParam: AnimationParam;
   private _raf: number;
-  private _animateParam: AnimationParam;
-  private _initialEasingPer: number;
-  private _prevEasingPer: number;
-  private _durationOffset: number;
-  private _options: AxesOption;
 
   public constructor({
     options,
@@ -57,6 +60,14 @@ export class AnimationManager {
     this.axisManager = axisManager;
     this.animationEnd = this.animationEnd.bind(this);
   }
+
+  public abstract interpolate(displacement: number, threshold: number): number;
+
+  public abstract updateAnimation(options: UpdateAnimationOption): void;
+
+  protected abstract _initState(info: AnimationParam): AnimationState;
+
+  protected abstract _getNextState(prevState: AnimationState): AnimationState;
 
   public getDuration(
     depaPos: Axis,
@@ -89,11 +100,6 @@ export class AnimationManager {
     );
     const duration = Math.abs(totalVelocity / -this._options.deceleration);
     return velocity.map((v) => (v / 2) * duration);
-  }
-
-  public interpolate(displacement: number, threshold: number): number {
-    const initSlope = this.easing(0.00001) / 0.00001;
-    return this.easing(displacement / (threshold * initSlope)) * threshold;
   }
 
   public stopAnimation(option?: ChangeEventOption): void {
@@ -229,10 +235,6 @@ export class AnimationManager {
     }
   }
 
-  public easing(p: number): number {
-    return p > 1 ? 1 : this._options.easing(p);
-  }
-
   public setTo(pos: Axis, duration: number = 0) {
     const axes: string[] = Object.keys(pos);
     const orgPos: Axis = this.axisManager.get(axes);
@@ -278,39 +280,6 @@ export class AnimationManager {
     );
   }
 
-  public updateAnimation(options: UpdateAnimationOption): void {
-    const animateParam = this._animateParam;
-    if (!animateParam) {
-      return;
-    }
-
-    const diffTime = new Date().getTime() - animateParam.startTime;
-    const pos = options?.destPos || animateParam.destPos;
-    const duration = options?.duration || animateParam.duration;
-    if (options?.restart || duration <= diffTime) {
-      this.setTo(pos, duration - diffTime);
-      return;
-    }
-    if (options?.destPos) {
-      const currentPos = this.axisManager.get();
-      // When destination is changed, new delta should be calculated as remaining percent.
-      // For example, moving x:0, y:0 to x:200, y:200 and it has current easing percent of 92%. coordinate is x:184 and y:184
-      // If destination changes to x:300, y:300. xdelta:200, ydelta:200 changes to xdelta:116, ydelta:116 and use remaining easingPer as 100%, not 8% as previous.
-      // Therefore, original easingPer by time is kept. And divided by (1 - self._initialEasingPer) which means new total easing percent. Like calculating 8% as 100%.
-      this._initialEasingPer = this._prevEasingPer;
-      animateParam.delta = this.axisManager.getDelta(currentPos, pos);
-      animateParam.destPos = pos;
-    }
-    if (options?.duration) {
-      const ratio = (diffTime + this._durationOffset) / animateParam.duration;
-      // Use durationOffset for keeping animation ratio after duration is changed.
-      // newRatio = (diffTime + newDurationOffset) / newDuration = oldRatio
-      // newDurationOffset = oldRatio * newDuration - diffTime
-      this._durationOffset = ratio * duration - diffTime;
-      animateParam.duration = duration;
-    }
-  }
-
   private _createAnimationParam(
     pos: Axis,
     duration: number,
@@ -337,78 +306,45 @@ export class AnimationManager {
 
   private _animateLoop(param: AnimationParam, complete: () => void): void {
     if (param.duration) {
-      let prevPos = param.depaPos;
-      this._initialEasingPer = 0;
-      this._prevEasingPer = 0;
-      this._durationOffset = 0;
       this._animateParam = {
         ...param,
         startTime: new Date().getTime(),
       };
-      const directions = map(prevPos, (value, key) => {
-        return value <= param.destPos[key] ? 1 : -1;
-      });
       const originalIntendedPos = map(param.destPos, (v) => v);
+      let state = this._initState(this._animateParam);
+
       const loop = () => {
-        const animateParam = this._animateParam;
-        const diffTime = new Date().getTime() - animateParam.startTime;
-        const ratio = (diffTime + this._durationOffset) / animateParam.duration;
-        const easingPer = this.easing(ratio);
         this._raf = null;
-        const toPos: Axis = this.axisManager.map(
-          prevPos,
-          (pos, options, key) => {
-            const nextPos =
-              ratio >= 1
-                ? animateParam.destPos[key]
-                : pos +
-                  (animateParam.delta[key] *
-                    (easingPer - this._prevEasingPer)) /
-                    (1 - this._initialEasingPer);
-
-            // Subtract distance from distance already moved.
-            // Recalculate the remaining distance.
-            // Fix the bouncing phenomenon by changing the range.
-            const circulatedPos = getCirculatedPos(
-              nextPos,
-              options.range,
-              options.circular as boolean[]
-            );
-            if (nextPos !== circulatedPos) {
-              // circular
-              const rangeOffset =
-                directions[key] * (options.range[1] - options.range[0]);
-
-              animateParam.destPos[key] -= rangeOffset;
-              prevPos[key] -= rangeOffset;
-            }
-            return circulatedPos;
-          }
+        const animateParam = this._animateParam;
+        const nextState = this._getNextState(state);
+        const isCanceled = !this.eventManager.triggerChange(
+          nextState.pos,
+          state.pos
         );
-        const isCanceled = !this.eventManager.triggerChange(toPos, prevPos);
 
-        prevPos = toPos;
-        this._prevEasingPer = easingPer;
-        if (easingPer >= 1) {
+        state = nextState;
+
+        if (nextState.finished) {
           animateParam.destPos = this._getFinalPos(
             animateParam.destPos,
             originalIntendedPos
           );
-
           if (
             !equal(
               animateParam.destPos,
               this.axisManager.get(Object.keys(animateParam.destPos))
             )
           ) {
-            this.eventManager.triggerChange(animateParam.destPos, prevPos);
+            this.eventManager.triggerChange(
+              animateParam.destPos,
+              nextState.pos
+            );
           }
           complete();
           return;
         } else if (isCanceled) {
           this.finish(false);
         } else {
-          // animationEnd
           this._raf = requestAnimationFrame(loop);
         }
       };

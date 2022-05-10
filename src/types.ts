@@ -117,3 +117,9 @@ export interface ExtendedEvent {
   velocityY: number;
   preventSystemEvent: boolean;
 }
+
+export interface LatestInterval {
+  timestamp: number;
+  deltaX: number;
+  deltaY: number;
+}

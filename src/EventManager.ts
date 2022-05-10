@@ -2,10 +2,10 @@ import { ComponentEvent } from "@egjs/component";
 
 import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
 import Axes from "./Axes";
 import { roundNumbers } from "./utils";
 import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
+import { AnimationManager } from "./animation/AnimationManager";
 
 export interface ChangeEventOption {
   input: InputType;

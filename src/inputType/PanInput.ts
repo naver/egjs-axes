@@ -265,7 +265,7 @@ export class PanInput implements InputType {
         }
       }
     }
-    const offset: number[] = this._getOffset(
+    const offset: number[] = this._applyScale(
       [panEvent.offsetX, panEvent.offsetY],
       [
         useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
@@ -296,7 +296,7 @@ export class PanInput implements InputType {
     this._detachWindowEvent(activeEvent);
     clearTimeout(this._rightEdgeTimer);
     const prevEvent = activeEvent.prevEvent;
-    const velocity = this._getOffset(
+    const velocity = this._applyScale(
       [
         Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
         Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
@@ -306,8 +306,8 @@ export class PanInput implements InputType {
         useDirection(DIRECTION_VERTICAL, this._direction),
       ]
     );
-    this._observer.release(this, prevEvent, velocity);
     activeEvent.onRelease();
+    this._observer.release(this, prevEvent, velocity);
   }
 
   protected _attachWindowEvent(activeEvent: ActiveEvent) {
@@ -352,7 +352,7 @@ export class PanInput implements InputType {
     this._observer = null;
   }
 
-  private _getOffset(properties: number[], direction: boolean[]): number[] {
+  private _applyScale(properties: number[], direction: boolean[]): number[] {
     const offset: number[] = [0, 0];
     const scale = this.options.scale;
 
@@ -367,8 +367,9 @@ export class PanInput implements InputType {
 
   private _forceRelease = () => {
     const activeEvent = this._activeEvent;
+    const prevEvent = activeEvent.prevEvent;
     this._detachWindowEvent(activeEvent);
-    this._observer.release(this, activeEvent.prevEvent, [0, 0]);
     activeEvent.onRelease();
+    this._observer.release(this, prevEvent, [0, 0]);
   };
 }

@@ -2,7 +2,6 @@ import { InterruptManager } from "./InterruptManager";
 import { InputType, InputTypeObserver, toAxis } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
-import { AnimationManager } from "./AnimationManager";
 import { AxesOption } from "./Axes";
 import {
   isOutside,
@@ -12,6 +11,7 @@ import {
 } from "./Coordinate";
 import { map, equal } from "./utils";
 import { AnimationParam } from "./types";
+import { AnimationManager } from "./animation/AnimationManager";
 
 export class InputObserver implements InputTypeObserver {
   public options: AxesOption;

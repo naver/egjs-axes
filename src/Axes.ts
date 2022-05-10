@@ -1,6 +1,5 @@
 import Component from "@egjs/component";
 
-import { AnimationManager } from "./AnimationManager";
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
@@ -18,6 +17,8 @@ import {
 } from "./const";
 import { InputType } from "./inputType/InputType";
 import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
+import { EasingManager } from "./animation/EasingManager";
+import { AnimationManager } from "./animation/AnimationManager";
 
 export interface AxesOption {
   easing?: (x: number) => number;
@@ -251,7 +252,7 @@ class Axes extends Component<AxesEvents> {
     this.interruptManager = new InterruptManager(this.options);
     this.axisManager = new AxisManager(this.axis);
     this.eventManager = new EventManager(this);
-    this.animationManager = new AnimationManager(this);
+    this.animationManager = new EasingManager(this);
     this.inputObserver = new InputObserver(this);
     this.eventManager.setAnimationManager(this.animationManager);
     if (startPos) {
