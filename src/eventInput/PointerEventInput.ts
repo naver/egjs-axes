@@ -81,8 +81,8 @@ export class PointerEventInput extends EventInput {
       };
     }
     return {
-      x: event.pageX - prev.pageX,
-      y: event.pageY - prev.pageY,
+      x: event.clientX - prev.clientX,
+      y: event.clientY - prev.clientY,
     };
   }
 

@@ -92,14 +92,14 @@ export class TouchMouseEventInput extends EventInput {
       if (this._isTouchEvent(event)) {
         return {
           id: (e as TouchEvent).touches[0].identifier,
-          x: (e as TouchEvent).touches[0].pageX,
-          y: (e as TouchEvent).touches[0].pageY,
+          x: (e as TouchEvent).touches[0].clientX,
+          y: (e as TouchEvent).touches[0].clientY,
         };
       }
       return {
         id: null,
-        x: (e as MouseEvent).pageX,
-        y: (e as MouseEvent).pageY,
+        x: (e as MouseEvent).clientX,
+        y: (e as MouseEvent).clientY,
       };
     });
     return nextSpot.id === prevSpot.id
