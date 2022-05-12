@@ -89,17 +89,17 @@ export class TouchMouseEventInput extends EventInput {
   } {
     const prev = this.prevEvent.srcEvent;
     const [nextSpot, prevSpot] = [event, prev].map((e) => {
-      if (this._isTouchEvent(event)) {
+      if (this._isTouchEvent(e)) {
         return {
-          id: (e as TouchEvent).touches[0].identifier,
-          x: (e as TouchEvent).touches[0].clientX,
-          y: (e as TouchEvent).touches[0].clientY,
+          id: e.touches[0].identifier,
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY,
         };
       }
       return {
         id: null,
-        x: (e as MouseEvent).clientX,
-        y: (e as MouseEvent).clientY,
+        x: e.clientX,
+        y: e.clientY,
       };
     });
     return nextSpot.id === prevSpot.id
