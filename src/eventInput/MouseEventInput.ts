@@ -59,8 +59,8 @@ export class MouseEventInput extends EventInput {
   protected _getMovement(event: MouseEvent): { x: number; y: number } {
     const prev = this.prevEvent.srcEvent as MouseEvent;
     return {
-      x: event.pageX - prev.pageX,
-      y: event.pageY - prev.pageY,
+      x: event.clientX - prev.clientX,
+      y: event.clientY - prev.clientY,
     };
   }
 }

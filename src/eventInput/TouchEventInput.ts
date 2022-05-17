@@ -59,8 +59,8 @@ export class TouchEventInput extends EventInput {
       };
     }
     return {
-      x: event.touches[0].pageX - prev.touches[0].pageX,
-      y: event.touches[0].pageY - prev.touches[0].pageY,
+      x: event.touches[0].clientX - prev.touches[0].clientX,
+      y: event.touches[0].clientY - prev.touches[0].clientY,
     };
   }
 }
