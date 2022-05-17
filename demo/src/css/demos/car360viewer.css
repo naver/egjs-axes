@@ -10,7 +10,6 @@
 }
 .img_cont img {
   height: 150px;
-  touch-action: none; user-select: none; -webkit-user-drag: none;
   transform: translate3d(0,0,0);
 }
 .car_rotate {
@@ -31,7 +30,6 @@
   background:url(../../../static/img/demos/car360/bg_rotate.png) no-repeat;
   background-size:304px 50px;
   -webkit-background-size:304px 50px;
-  touch-action: none; user-select: none; -webkit-user-drag: none;
   color:transparent;
 }
 

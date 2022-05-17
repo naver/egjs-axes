@@ -4,7 +4,7 @@ import Axes, { PanInput, WheelInput } from "../../../../src/index";
 import "../../css/demos/nestedaxes.css";
 
 const NestedAxes = () => {
-  const range = (v: number) => [...Array(v).keys()];
+  const range = (v: number) => Array.from(Array(v).keys());
   const HEAD_COUNT = 3;
   const HEAD_SLIDES = range(HEAD_COUNT);
   const BODY_COUNT = 7;

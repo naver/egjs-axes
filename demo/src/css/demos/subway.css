@@ -10,7 +10,6 @@
 }
 
 #subway {
-  transform-origin: 0 0; 
+  transform-origin: 0 0;
   touch-action: none; user-select: none; -webkit-user-drag: none;
 }
-  
