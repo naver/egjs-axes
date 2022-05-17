@@ -1,5 +1,7 @@
 import { window } from "./browser";
-import { PREVENT_SCROLL_CSSPROPS } from "./const";
+import { PREVENT_DRAG_CSSPROPS } from "./const";
+import { PanInputOption } from "./inputType/PanInput";
+import { PinchInputOption } from "./inputType/PinchInput";
 import { ObjectInterface } from "./types";
 
 declare let jQuery: any;
@@ -225,15 +227,31 @@ export const getAngle = (posX: number, posY: number) => {
   return (Math.atan2(posY, posX) * 180) / Math.PI;
 };
 
+export const isCssPropsFromAxes = (originalCssProps: {
+  [key: string]: string;
+}) => {
+  let same = true;
+  Object.keys(PREVENT_DRAG_CSSPROPS).forEach((prop) => {
+    if (
+      !originalCssProps ||
+      originalCssProps[prop] !== PREVENT_DRAG_CSSPROPS[prop]
+    ) {
+      same = false;
+    }
+  });
+  return same;
+};
+
 export const setCssProps = (
   element: HTMLElement,
+  option: PanInputOption | PinchInputOption,
   originalCssProps?: { [key: string]: string }
 ): { [key: string]: string } => {
   const oldCssProps = {};
   if (element && element.style) {
     const newCssProps = originalCssProps
       ? originalCssProps
-      : PREVENT_SCROLL_CSSPROPS;
+      : { ...PREVENT_DRAG_CSSPROPS, "touch-action": option.touchAction };
     Object.keys(newCssProps).forEach((prop) => {
       oldCssProps[prop] = element.style[prop];
       element.style[prop] = newCssProps[prop];

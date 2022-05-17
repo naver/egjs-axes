@@ -85,6 +85,7 @@ describe("PanInput", () => {
       inst = null;
     });
   });
+
   describe("enable/disable", () => {
     beforeEach(() => {
       el = sandbox();
@@ -372,5 +373,21 @@ describe("PanInput", () => {
         );
       });
     });
+
+    ["auto", "none", "manipulation", "pan-x", "pan-y"].forEach(
+      (touchAction) => {
+        it(`should check 'touchAction' option (${touchAction})`, () => {
+          // Given
+          input = new PanInput(el, {
+            touchAction,
+          });
+          inst.connect(["x", "y"], input);
+
+          // Then
+          expect(el.style.touchAction).to.be.equal(touchAction);
+          expect(el.style.userSelect).to.be.equal("none");
+        });
+      }
+    );
   });
 });

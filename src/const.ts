@@ -41,8 +41,7 @@ export const TRANSFORM = (() => {
   return "";
 })();
 
-export const PREVENT_SCROLL_CSSPROPS = {
-  "touch-action": "none",
+export const PREVENT_DRAG_CSSPROPS = {
   "user-select": "none",
   "-webkit-user-drag": "none",
 };

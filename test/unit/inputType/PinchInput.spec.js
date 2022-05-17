@@ -43,6 +43,7 @@ describe("PinchInput", () => {
       inst = null;
     });
   });
+
   describe("enable/disable", () => {
     beforeEach(() => {
       el = sandbox();
@@ -214,5 +215,45 @@ describe("PinchInput", () => {
         }
       );
     });
+  });
+
+  describe("options test", () => {
+    beforeEach(() => {
+      el = sandbox();
+      input = new PinchInput(el, { inputType: ["touch"] });
+      inst = new Axes({
+        zoom: {
+          range: [0, 100],
+        },
+      });
+      inst.connect(["x"], input);
+    });
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      if (input) {
+        input.destroy();
+        input = null;
+      }
+      cleanup();
+    });
+
+    ["auto", "none", "manipulation", "pan-x", "pan-y"].forEach(
+      (touchAction) => {
+        it(`should check 'touchAction' option (${touchAction})`, () => {
+          // Given
+          input = new PinchInput(el, {
+            touchAction,
+          });
+          inst.connect(["zoom"], input);
+
+          // Then
+          expect(el.style.touchAction).to.be.equal(touchAction);
+          expect(el.style.userSelect).to.be.equal("none");
+        });
+      }
+    );
   });
 });
