@@ -220,13 +220,11 @@ describe("PinchInput", () => {
   describe("options test", () => {
     beforeEach(() => {
       el = sandbox();
-      input = new PinchInput(el, { inputType: ["touch"] });
       inst = new Axes({
         zoom: {
           range: [0, 100],
         },
       });
-      inst.connect(["x"], input);
     });
     afterEach(() => {
       if (inst) {
