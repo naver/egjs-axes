@@ -1,5 +1,6 @@
-import { $, isCssPropsFromAxes, setCssProps } from "../utils";
+import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
 import { ActiveEvent, InputEventType } from "../types";
+import { DIRECTION_ALL } from "../const";
 
 import {
   toAxis,
@@ -80,14 +81,18 @@ export class PinchInput implements InputType {
       this._detachEvent();
     }
     this._attachEvent(observer);
-    this._originalCssProps = setCssProps(this.element, this.options);
+    this._originalCssProps = setCssProps(
+      this.element,
+      this.options,
+      DIRECTION_ALL
+    );
     return this;
   }
 
   public disconnect() {
     this._detachEvent();
     if (!isCssPropsFromAxes(this._originalCssProps)) {
-      setCssProps(this.element, this.options, this._originalCssProps);
+      revertCssProps(this.element, this._originalCssProps);
     }
     return this;
   }

@@ -1,10 +1,17 @@
 import {
+  DIRECTION_ALL,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_NONE,
+  DIRECTION_VERTICAL,
+} from "../../src/const";
+import {
   $,
   toArray,
   equal,
   getDecimalPlace,
   roundNumber,
   isCssPropsFromAxes,
+  setCssProps,
 } from "../../src/utils";
 
 describe("Util Test", () => {
@@ -91,6 +98,36 @@ describe("Util Test", () => {
     expect(isCssPropsFromAxes(cssProps3)).to.be.false;
     expect(isCssPropsFromAxes(cssProps4)).to.be.true;
     expect(isCssPropsFromAxes(cssProps5)).to.be.false;
+  });
+
+  [
+    DIRECTION_NONE,
+    DIRECTION_ALL,
+    DIRECTION_HORIZONTAL,
+    DIRECTION_VERTICAL,
+  ].forEach((direction) => {
+    it(`should check 'setCssProps' method (direction:${direction})`, () => {
+      // Given
+      setCssProps(el, {}, direction);
+
+      // Then
+      const answers = {
+        [DIRECTION_NONE]: "auto",
+        [DIRECTION_ALL]: "none",
+        [DIRECTION_VERTICAL]: "pan-x",
+        [DIRECTION_HORIZONTAL]: "pan-y",
+      };
+      expect(el.style.touchAction).to.be.equal(answers[direction]);
+    });
+  });
+
+  it(`should check 'setCssProps' method (multiple times)`, () => {
+    // Given
+    setCssProps(el, {}, DIRECTION_ALL);
+    setCssProps(el, {}, DIRECTION_VERTICAL);
+
+    // Then
+    expect(el.style.touchAction).to.be.equal("none");
   });
 
   it("should roundNumber by round unit", () => {

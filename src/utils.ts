@@ -3,6 +3,12 @@ import { PREVENT_DRAG_CSSPROPS } from "./const";
 import { PanInputOption } from "./inputType/PanInput";
 import { PinchInputOption } from "./inputType/PinchInput";
 import { ObjectInterface } from "./types";
+import {
+  DIRECTION_NONE,
+  DIRECTION_VERTICAL,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_ALL,
+} from "./const";
 
 declare let jQuery: any;
 
@@ -245,17 +251,40 @@ export const isCssPropsFromAxes = (originalCssProps: {
 export const setCssProps = (
   element: HTMLElement,
   option: PanInputOption | PinchInputOption,
-  originalCssProps?: { [key: string]: string }
+  direction: number
 ): { [key: string]: string } => {
+  const touchActionMap = {
+    [DIRECTION_NONE]: "auto",
+    [DIRECTION_ALL]: "none",
+    [DIRECTION_VERTICAL]: "pan-x",
+    [DIRECTION_HORIZONTAL]: "pan-y",
+  };
   const oldCssProps = {};
   if (element && element.style) {
-    const newCssProps = originalCssProps
-      ? originalCssProps
-      : { ...PREVENT_DRAG_CSSPROPS, "touch-action": option.touchAction };
+    const touchAction = option.touchAction
+      ? option.touchAction
+      : touchActionMap[direction];
+    const newCssProps = {
+      ...PREVENT_DRAG_CSSPROPS,
+      "touch-action":
+        element.style["touch-action"] === "none" ? "none" : touchAction,
+    };
     Object.keys(newCssProps).forEach((prop) => {
       oldCssProps[prop] = element.style[prop];
       element.style[prop] = newCssProps[prop];
     });
   }
   return oldCssProps;
+};
+
+export const revertCssProps = (
+  element: HTMLElement,
+  originalCssProps: { [key: string]: string }
+): { [key: string]: string } => {
+  if (element && element.style && originalCssProps) {
+    Object.keys(originalCssProps).forEach((prop) => {
+      element.style[prop] = originalCssProps[prop];
+    });
+  }
+  return;
 };
