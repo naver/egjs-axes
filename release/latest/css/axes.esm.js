@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.1.1-snapshot
+version: 3.2.0
 */
 import getAgent from '@egjs/agent';
 import Component, { ComponentEvent } from '@egjs/component';
@@ -104,8 +104,7 @@ var TRANSFORM = function () {
 
   return "";
 }();
-var PREVENT_SCROLL_CSSPROPS = {
-  "touch-action": "none",
+var PREVENT_DRAG_CSSPROPS = {
   "user-select": "none",
   "-webkit-user-drag": "none"
 };
@@ -315,11 +314,28 @@ var getRoundFunc = function (v) {
 var getAngle = function (posX, posY) {
   return Math.atan2(posY, posX) * 180 / Math.PI;
 };
-var setCssProps = function (element, originalCssProps) {
+var isCssPropsFromAxes = function (originalCssProps) {
+  var same = true;
+  Object.keys(PREVENT_DRAG_CSSPROPS).forEach(function (prop) {
+    if (!originalCssProps || originalCssProps[prop] !== PREVENT_DRAG_CSSPROPS[prop]) {
+      same = false;
+    }
+  });
+  return same;
+};
+var setCssProps = function (element, option, direction) {
+  var _a;
+
+  var touchActionMap = (_a = {}, _a[DIRECTION_NONE] = "auto", _a[DIRECTION_ALL] = "none", _a[DIRECTION_VERTICAL] = "pan-x", _a[DIRECTION_HORIZONTAL] = "pan-y", _a);
   var oldCssProps = {};
 
   if (element && element.style) {
-    var newCssProps_1 = originalCssProps ? originalCssProps : PREVENT_SCROLL_CSSPROPS;
+    var touchAction = option.touchAction ? option.touchAction : touchActionMap[direction];
+
+    var newCssProps_1 = __assign(__assign({}, PREVENT_DRAG_CSSPROPS), {
+      "touch-action": element.style["touch-action"] === "none" ? "none" : touchAction
+    });
+
     Object.keys(newCssProps_1).forEach(function (prop) {
       oldCssProps[prop] = element.style[prop];
       element.style[prop] = newCssProps_1[prop];
@@ -327,6 +343,15 @@ var setCssProps = function (element, originalCssProps) {
   }
 
   return oldCssProps;
+};
+var revertCssProps = function (element, originalCssProps) {
+  if (element && element.style && originalCssProps) {
+    Object.keys(originalCssProps).forEach(function (prop) {
+      element.style[prop] = originalCssProps[prop];
+    });
+  }
+
+  return;
 };
 
 var EventManager =
@@ -1079,8 +1104,8 @@ function (_super) {
   __proto._getMovement = function (event) {
     var prev = this.prevEvent.srcEvent;
     return {
-      x: event.pageX - prev.pageX,
-      y: event.pageY - prev.pageY
+      x: event.clientX - prev.clientX,
+      y: event.clientY - prev.clientY
     };
   };
 
@@ -1153,8 +1178,8 @@ function (_super) {
     }
 
     return {
-      x: event.touches[0].pageX - prev.touches[0].pageX,
-      y: event.touches[0].pageY - prev.touches[0].pageY
+      x: event.touches[0].clientX - prev.touches[0].clientX,
+      y: event.touches[0].clientY - prev.touches[0].clientY
     };
   };
 
@@ -1245,8 +1270,8 @@ function (_super) {
     }
 
     return {
-      x: event.pageX - prev.pageX,
-      y: event.pageY - prev.pageY
+      x: event.clientX - prev.clientX,
+      y: event.clientY - prev.clientY
     };
   };
 
@@ -1371,18 +1396,18 @@ function (_super) {
     var prev = this.prevEvent.srcEvent;
 
     var _a = [event, prev].map(function (e) {
-      if (_this._isTouchEvent(event)) {
+      if (_this._isTouchEvent(e)) {
         return {
           id: e.touches[0].identifier,
-          x: e.touches[0].pageX,
-          y: e.touches[0].pageY
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
         };
       }
 
       return {
         id: null,
-        x: e.pageX,
-        y: e.pageY
+        x: e.clientX,
+        y: e.clientY
       };
     }),
         nextSpot = _a[0],
@@ -2593,7 +2618,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.1.1-snapshot";
+  Axes.VERSION = "3.2.0";
   /* eslint-enable */
 
   /**
@@ -2687,11 +2712,13 @@ var useDirection = function (checkType, direction, userDirection) {
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @param {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices
+ * @param {String[]} [inputType=["touch", "mouse", "pointer"]] Types of input devices
  * - touch: Touch screen
- * - mouse: Mouse <ko>입력 장치 종류
+ * - mouse: Mouse
+ * - pointer: Mouse and touch <ko>입력 장치 종류
  * - touch: 터치 입력 장치
- * - mouse: 마우스</ko>
+ * - mouse: 마우스
+ * - pointer: 마우스 및 터치</ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -2705,6 +2732,7 @@ var useDirection = function (checkType, direction, userDirection) {
  * @param {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
  * @param {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
  * @param {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
+ * @param {String} [touchAction=null] Value that overrides the element's "touch-action" css property. If set to null, it is automatically set to prevent scrolling in the direction of the connected axis. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 만약 null로 설정된 경우, 연결된 축 방향으로의 스크롤을 방지하게끔 자동으로 설정된다.</ko>
  **/
 
 /**
@@ -2767,7 +2795,8 @@ function () {
       thresholdAngle: 45,
       threshold: 0,
       iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
-      releaseOnScroll: false
+      releaseOnScroll: false,
+      touchAction: null
     }, options);
     this._onPanstart = this._onPanstart.bind(this);
     this._onPanmove = this._onPanmove.bind(this);
@@ -2802,7 +2831,7 @@ function () {
 
     this._attachElementEvent(observer);
 
-    this._originalCssProps = setCssProps(this.element);
+    this._originalCssProps = setCssProps(this.element, this.options, this._direction);
     return this;
   };
 
@@ -2811,8 +2840,8 @@ function () {
 
     this._detachWindowEvent(this._activeEvent);
 
-    if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
-      setCssProps(this.element, this._originalCssProps);
+    if (!isCssPropsFromAxes(this._originalCssProps)) {
+      revertCssProps(this.element, this._originalCssProps);
     }
 
     this._direction = DIRECTION_NONE;
@@ -3244,6 +3273,12 @@ function (_super) {
  * @ko eg.Axes.PinchInput 모듈의 옵션 객체
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+ * @param {String[]} [inputType=["touch", "pointer"]] Types of input devices
+ * - touch: Touch screen
+ * - pointer: Mouse and touch <ko>입력 장치 종류
+ * - touch: 터치 입력 장치
+ * - pointer: 마우스 및 터치</ko>
+ * @param {String} [touchAction="none"] Value that overrides the element's "touch-action" css property. It is set to "none" to prevent scrolling during touch. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 터치 도중 스크롤을 방지하기 위해 "none" 으로 설정되어 있다.</ko>
  **/
 
 /**
@@ -3278,7 +3313,8 @@ function () {
     this.options = __assign({
       scale: 1,
       threshold: 0,
-      inputType: ["touch", "pointer"]
+      inputType: ["touch", "pointer"],
+      touchAction: "none"
     }, options);
     this._onPinchStart = this._onPinchStart.bind(this);
     this._onPinchMove = this._onPinchMove.bind(this);
@@ -3298,15 +3334,15 @@ function () {
 
     this._attachEvent(observer);
 
-    this._originalCssProps = setCssProps(this.element);
+    this._originalCssProps = setCssProps(this.element, this.options, DIRECTION_ALL);
     return this;
   };
 
   __proto.disconnect = function () {
     this._detachEvent();
 
-    if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
-      setCssProps(this.element, this._originalCssProps);
+    if (!isCssPropsFromAxes(this._originalCssProps)) {
+      revertCssProps(this.element, this._originalCssProps);
     }
 
     return this;
