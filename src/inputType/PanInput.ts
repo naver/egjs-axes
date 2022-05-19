@@ -1,4 +1,4 @@
-import { $, setCssProps } from "../utils";
+import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
 import {
   IS_IOS_SAFARI,
   IOS_EDGE_THRESHOLD,
@@ -6,7 +6,6 @@ import {
   DIRECTION_VERTICAL,
   DIRECTION_HORIZONTAL,
   DIRECTION_ALL,
-  PREVENT_SCROLL_CSSPROPS,
   MOUSE_LEFT,
 } from "../const";
 import { ActiveEvent, InputEventType } from "../types";
@@ -26,6 +25,7 @@ export interface PanInputOption {
   threshold?: number;
   iOSEdgeSwipeThreshold?: number;
   releaseOnScroll?: boolean;
+  touchAction?: string;
 }
 
 // get user's direction
@@ -57,11 +57,13 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
 /**
  * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
  * @ko eg.Axes.PanInput 모듈의 옵션 객체
- * @param {String[]} [inputType=["touch","mouse", "pointer"]] Types of input devices
+ * @param {String[]} [inputType=["touch", "mouse", "pointer"]] Types of input devices
  * - touch: Touch screen
- * - mouse: Mouse <ko>입력 장치 종류
+ * - mouse: Mouse
+ * - pointer: Mouse and touch <ko>입력 장치 종류
  * - touch: 터치 입력 장치
- * - mouse: 마우스</ko>
+ * - mouse: 마우스
+ * - pointer: 마우스 및 터치</ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -75,6 +77,7 @@ export const useDirection = (checkType, direction, userDirection?): boolean => {
  * @param {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
  * @param {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
  * @param {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
+ * @param {String} [touchAction=null] Value that overrides the element's "touch-action" css property. If set to null, it is automatically set to prevent scrolling in the direction of the connected axis. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 만약 null로 설정된 경우, 연결된 축 방향으로의 스크롤을 방지하게끔 자동으로 설정된다.</ko>
  **/
 /**
  * A module that passes the amount of change to eg.Axes when the mouse or touchscreen is down and moved. use less than two axes.
@@ -105,7 +108,7 @@ export class PanInput implements InputType {
   public axes: string[] = [];
   public element: HTMLElement = null;
   protected _observer: InputTypeObserver;
-  protected _direction;
+  protected _direction: number;
   protected _enabled = false;
   protected _activeEvent: ActiveEvent = null;
   private _originalCssProps: { [key: string]: string };
@@ -125,6 +128,7 @@ export class PanInput implements InputType {
       threshold: 0,
       iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
       releaseOnScroll: false,
+      touchAction: null,
       ...options,
     };
     this._onPanstart = this._onPanstart.bind(this);
@@ -153,15 +157,19 @@ export class PanInput implements InputType {
       this._detachWindowEvent(this._activeEvent);
     }
     this._attachElementEvent(observer);
-    this._originalCssProps = setCssProps(this.element);
+    this._originalCssProps = setCssProps(
+      this.element,
+      this.options,
+      this._direction
+    );
     return this;
   }
 
   public disconnect() {
     this._detachElementEvent();
     this._detachWindowEvent(this._activeEvent);
-    if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
-      setCssProps(this.element, this._originalCssProps);
+    if (!isCssPropsFromAxes(this._originalCssProps)) {
+      revertCssProps(this.element, this._originalCssProps);
     }
     this._direction = DIRECTION_NONE;
     return this;

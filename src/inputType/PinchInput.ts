@@ -1,6 +1,6 @@
-import { $, setCssProps } from "../utils";
+import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
 import { ActiveEvent, InputEventType } from "../types";
-import { PREVENT_SCROLL_CSSPROPS } from "../const";
+import { DIRECTION_ALL } from "../const";
 
 import {
   toAxis,
@@ -13,6 +13,7 @@ export interface PinchInputOption {
   scale?: number;
   threshold?: number;
   inputType?: string[];
+  touchAction?: string;
 }
 
 /**
@@ -20,6 +21,12 @@ export interface PinchInputOption {
  * @ko eg.Axes.PinchInput 모듈의 옵션 객체
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [threshold=0] Minimal scale before recognizing <ko>사용자의 Pinch 동작을 인식하기 위해산 최소한의 배율</ko>
+ * @param {String[]} [inputType=["touch", "pointer"]] Types of input devices
+ * - touch: Touch screen
+ * - pointer: Mouse and touch <ko>입력 장치 종류
+ * - touch: 터치 입력 장치
+ * - pointer: 마우스 및 터치</ko>
+ * @param {String} [touchAction="none"] Value that overrides the element's "touch-action" css property. It is set to "none" to prevent scrolling during touch. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 터치 도중 스크롤을 방지하기 위해 "none" 으로 설정되어 있다.</ko>
  **/
 
 /**
@@ -57,6 +64,7 @@ export class PinchInput implements InputType {
       scale: 1,
       threshold: 0,
       inputType: ["touch", "pointer"],
+      touchAction: "none",
       ...options,
     };
     this._onPinchStart = this._onPinchStart.bind(this);
@@ -73,14 +81,18 @@ export class PinchInput implements InputType {
       this._detachEvent();
     }
     this._attachEvent(observer);
-    this._originalCssProps = setCssProps(this.element);
+    this._originalCssProps = setCssProps(
+      this.element,
+      this.options,
+      DIRECTION_ALL
+    );
     return this;
   }
 
   public disconnect() {
     this._detachEvent();
-    if (this._originalCssProps !== PREVENT_SCROLL_CSSPROPS) {
-      setCssProps(this.element, this._originalCssProps);
+    if (!isCssPropsFromAxes(this._originalCssProps)) {
+      revertCssProps(this.element, this._originalCssProps);
     }
     return this;
   }

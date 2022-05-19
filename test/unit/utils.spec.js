@@ -1,9 +1,17 @@
 import {
+  DIRECTION_ALL,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_NONE,
+  DIRECTION_VERTICAL,
+} from "../../src/const";
+import {
   $,
   toArray,
   equal,
   getDecimalPlace,
   roundNumber,
+  isCssPropsFromAxes,
+  setCssProps,
 } from "../../src/utils";
 
 describe("Util Test", () => {
@@ -15,6 +23,7 @@ describe("Util Test", () => {
   afterEach(() => {
     cleanup();
   });
+
   it("should check 'equal' method", () => {
     // Given
     const target1 = {
@@ -31,6 +40,7 @@ describe("Util Test", () => {
     expect(equal(target1, target2)).to.be.false;
     expect(equal(target2, target1)).to.be.true;
   });
+
   it("should check `$` method", () => {
     // Given
     // When
@@ -48,6 +58,7 @@ describe("Util Test", () => {
     expect($("#sandbox")).to.be.equal(el);
     expect(el).to.be.equal(el);
   });
+
   it("should check `toArray` method", () => {
     // Given
     el.innerHTML = `<div>content1</div>
@@ -58,6 +69,65 @@ describe("Util Test", () => {
 
     // Then
     expect(toArray(el.childNodes)).to.be.eql(useSlice);
+  });
+
+  it("should check 'isCssPropsFromAxes' method", () => {
+    // Given
+    const cssProps1 = {
+      "touch-action": "auto",
+      "user-select": "none",
+      "-webkit-user-drag": "none",
+    };
+    const cssProps2 = {
+      "touch-action": "none",
+      "user-select": "text",
+      "-webkit-user-drag": "auto",
+    };
+    const cssProps3 = {
+      "text-align": "center",
+    };
+    const cssProps4 = {
+      "user-select": "none",
+      "-webkit-user-drag": "none",
+    };
+    const cssProps5 = null;
+
+    // Then
+    expect(isCssPropsFromAxes(cssProps1)).to.be.true;
+    expect(isCssPropsFromAxes(cssProps2)).to.be.false;
+    expect(isCssPropsFromAxes(cssProps3)).to.be.false;
+    expect(isCssPropsFromAxes(cssProps4)).to.be.true;
+    expect(isCssPropsFromAxes(cssProps5)).to.be.false;
+  });
+
+  [
+    DIRECTION_NONE,
+    DIRECTION_ALL,
+    DIRECTION_HORIZONTAL,
+    DIRECTION_VERTICAL,
+  ].forEach((direction) => {
+    it(`should check 'setCssProps' method (direction:${direction})`, () => {
+      // Given
+      setCssProps(el, {}, direction);
+
+      // Then
+      const answers = {
+        [DIRECTION_NONE]: "auto",
+        [DIRECTION_ALL]: "none",
+        [DIRECTION_VERTICAL]: "pan-x",
+        [DIRECTION_HORIZONTAL]: "pan-y",
+      };
+      expect(el.style.touchAction).to.be.equal(answers[direction]);
+    });
+  });
+
+  it(`should check 'setCssProps' method (multiple times)`, () => {
+    // Given
+    setCssProps(el, {}, DIRECTION_ALL);
+    setCssProps(el, {}, DIRECTION_VERTICAL);
+
+    // Then
+    expect(el.style.touchAction).to.be.equal("none");
   });
 
   it("should roundNumber by round unit", () => {

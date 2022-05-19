@@ -4,7 +4,6 @@
     padding-top: 10px;
     overflow: hidden;
     position:relative;
-    touch-action: none; user-select: none; -webkit-user-drag: none;
 }
 
 .list_container {
@@ -13,7 +12,6 @@
     height: 210px;
     position: relative;
     perspective: 1000px;
-    touch-action: none; user-select: none; -webkit-user-drag: none;
 }
 
 #carousel {
@@ -21,7 +19,6 @@
     height: 100%;
     position: absolute;
     transform-style: preserve-3d;
-    touch-action: none; user-select: none; -webkit-user-drag: none;
 }
 
 #carousel figure {
@@ -36,7 +33,7 @@
     position: relative;
     background-position: center;
     background-size: cover;
-    background-repeat: no-repeat;  
+    background-repeat: no-repeat;
     width: 100%;
     border-radius: 100%;
     opacity: 0.75;
@@ -53,9 +50,9 @@
     text-align: center;
     padding-top: 10px;
     font-size: 0.9em;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;   
+    white-space: nowrap;
 }
 
 #list_cd_artist {
@@ -84,7 +81,7 @@
 }
 
 .bullet {
-    display: inline-block;  
+    display: inline-block;
     margin: 0 15px;
 }
 

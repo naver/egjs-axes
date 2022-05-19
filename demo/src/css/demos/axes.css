@@ -27,12 +27,10 @@
   border-radius: 50px;
   line-height: 100px;
   text-align: center;
-  touch-action: none; user-select: none; -webkit-user-drag: none;
 }
 #uiWrapper .ui img {
   width: 45px;
   height: 75px;
-  touch-action: none; user-select: none; -webkit-user-drag: none;
 }
 
 #grid canvas {
