@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.2.0
+version: 3.2.1
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -3421,7 +3421,7 @@ version: 3.2.0
        */
 
 
-      Axes.VERSION = "3.2.0";
+      Axes.VERSION = "3.2.1";
       /* eslint-enable */
 
       /**
@@ -3806,10 +3806,14 @@ version: 3.2.0
         var _this = this;
 
         activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-          window.addEventListener(event, _this._onPanmove);
+          window.addEventListener(event, _this._onPanmove, {
+            passive: false
+          });
         });
         activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
-          window.addEventListener(event, _this._onPanend);
+          window.addEventListener(event, _this._onPanend, {
+            passive: false
+          });
         });
       };
 
