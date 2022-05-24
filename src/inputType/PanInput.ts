@@ -320,10 +320,10 @@ export class PanInput implements InputType {
 
   protected _attachWindowEvent(activeEvent: ActiveEvent) {
     activeEvent?.move.forEach((event) => {
-      window.addEventListener(event, this._onPanmove);
+      window.addEventListener(event, this._onPanmove, { passive: false });
     });
     activeEvent?.end.forEach((event) => {
-      window.addEventListener(event, this._onPanend);
+      window.addEventListener(event, this._onPanend, { passive: false });
     });
   }
 
