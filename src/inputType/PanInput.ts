@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
 import {
   IS_IOS_SAFARI,
@@ -339,15 +341,17 @@ export class PanInput implements InputType {
   private _attachElementEvent(observer: InputTypeObserver) {
     const activeEvent = convertInputType(this.options.inputType);
     if (!activeEvent) {
-      throw new Error(
-        "There is currently no inputType available for current device. There must be at least one available inputType."
-      );
+      return;
     }
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
-    activeEvent?.start.forEach((event) => {
+    activeEvent.start.forEach((event) => {
       this.element?.addEventListener(event, this._onPanstart);
+    });
+    // adding event listener to element prevents invalid behavior in iOS Safari
+    activeEvent.move.forEach((event) => {
+      this.element?.addEventListener(event, () => {});
     });
   }
 
@@ -355,6 +359,9 @@ export class PanInput implements InputType {
     const activeEvent = this._activeEvent;
     activeEvent?.start.forEach((event) => {
       this.element?.removeEventListener(event, this._onPanstart);
+    });
+    activeEvent?.move.forEach((event) => {
+      this.element?.removeEventListener(event, () => {});
     });
     this._enabled = false;
     this._observer = null;
