@@ -188,20 +188,18 @@ export class PinchInput implements InputType {
   private _attachEvent(observer: InputTypeObserver) {
     const activeEvent = convertInputType(this.options.inputType);
     if (!activeEvent) {
-      throw new Error(
-        "There is currently no inputType available for current device. There must be at least one available inputType."
-      );
+      return;
     }
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
-    activeEvent?.start.forEach((event) => {
+    activeEvent.start.forEach((event) => {
       this.element.addEventListener(event, this._onPinchStart, false);
     });
-    activeEvent?.move.forEach((event) => {
+    activeEvent.move.forEach((event) => {
       this.element.addEventListener(event, this._onPinchMove, false);
     });
-    activeEvent?.end.forEach((event) => {
+    activeEvent.end.forEach((event) => {
       this.element.addEventListener(event, this._onPinchEnd, false);
     });
   }
