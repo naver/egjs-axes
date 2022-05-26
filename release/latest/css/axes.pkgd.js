@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.2.1
+version: 3.2.2
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -3421,7 +3421,7 @@ version: 3.2.1
        */
 
 
-      Axes.VERSION = "3.2.1";
+      Axes.VERSION = "3.2.2";
       /* eslint-enable */
 
       /**
@@ -3496,6 +3496,8 @@ version: 3.2.1
       Axes.DIRECTION_ALL = DIRECTION_ALL;
       return Axes;
     }(Component);
+
+    /* eslint-disable @typescript-eslint/no-empty-function */
 
     var getDirectionByAngle = function (angle, thresholdAngle) {
       if (thresholdAngle < 0 || thresholdAngle > 90) {
@@ -3834,16 +3836,22 @@ version: 3.2.1
         var activeEvent = convertInputType(this.options.inputType);
 
         if (!activeEvent) {
-          throw new Error("There is currently no inputType available for current device. There must be at least one available inputType.");
+          return;
         }
 
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+        activeEvent.start.forEach(function (event) {
           var _a;
 
           (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._onPanstart);
+        }); // adding event listener to element prevents invalid behavior in iOS Safari
+
+        activeEvent.move.forEach(function (event) {
+          var _a;
+
+          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, function () {});
         });
       };
 
@@ -3855,6 +3863,11 @@ version: 3.2.1
           var _a;
 
           (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._onPanstart);
+        });
+        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+          var _a;
+
+          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, function () {});
         });
         this._enabled = false;
         this._observer = null;
@@ -4250,19 +4263,19 @@ version: 3.2.1
         var activeEvent = convertInputType(this.options.inputType);
 
         if (!activeEvent) {
-          throw new Error("There is currently no inputType available for current device. There must be at least one available inputType.");
+          return;
         }
 
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+        activeEvent.start.forEach(function (event) {
           _this.element.addEventListener(event, _this._onPinchStart, false);
         });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+        activeEvent.move.forEach(function (event) {
           _this.element.addEventListener(event, _this._onPinchMove, false);
         });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
+        activeEvent.end.forEach(function (event) {
           _this.element.addEventListener(event, _this._onPinchEnd, false);
         });
       };
