@@ -351,7 +351,7 @@ export class PanInput implements InputType {
     });
     // adding event listener to element prevents invalid behavior in iOS Safari
     activeEvent.move.forEach((event) => {
-      this.element?.addEventListener(event, () => {});
+      this.element?.addEventListener(event, this._voidFunction);
     });
   }
 
@@ -361,7 +361,7 @@ export class PanInput implements InputType {
       this.element?.removeEventListener(event, this._onPanstart);
     });
     activeEvent?.move.forEach((event) => {
-      this.element?.removeEventListener(event, () => {});
+      this.element?.removeEventListener(event, this._voidFunction);
     });
     this._enabled = false;
     this._observer = null;
@@ -383,8 +383,10 @@ export class PanInput implements InputType {
   private _forceRelease = () => {
     const activeEvent = this._activeEvent;
     const prevEvent = activeEvent.prevEvent;
-    this._detachWindowEvent(activeEvent);
     activeEvent.onRelease();
     this._observer.release(this, prevEvent, [0, 0]);
+    this._detachWindowEvent(activeEvent);
   };
+
+  private _voidFunction = () => {};
 }
