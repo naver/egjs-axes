@@ -25,7 +25,7 @@ export interface InputType {
 export interface InputTypeObserver {
   options: AxesOption;
   get(inputType: InputType): Axis;
-  change(inputType: InputType, event, offset: Axis, useDuration?: boolean);
+  change(inputType: InputType, event, offset: Axis, useAnimation?: boolean);
   hold(inputType: InputType, event);
   release(
     inputType: InputType,
