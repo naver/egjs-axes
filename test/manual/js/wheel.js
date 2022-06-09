@@ -2,11 +2,16 @@ const wrapper = document.getElementById("content");
 const ui0 = document.getElementById("ui0");
 const ui1 = document.getElementById("ui1");
 
-const axes0 = new eg.Axes({
-  zoom: {
-    range: [1, 4],
+const axes0 = new eg.Axes(
+  {
+    zoom: {
+      range: [1, 4],
+    },
   },
-});
+  {
+    deceleration: 0.00002,
+  }
+);
 
 axes0.on({
   animationStart: (e) => {
