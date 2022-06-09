@@ -275,7 +275,7 @@ export class PanInput implements InputType {
         }
       }
     }
-    const offset: number[] = this._getVector(
+    const offset: number[] = this._getOffset(
       [panEvent.offsetX, panEvent.offsetY],
       [
         useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
@@ -306,7 +306,7 @@ export class PanInput implements InputType {
     this._detachWindowEvent(activeEvent);
     clearTimeout(this._rightEdgeTimer);
     const prevEvent = activeEvent.prevEvent;
-    const velocity = this._getVector(
+    const velocity = this._getOffset(
       [
         Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
         Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
@@ -338,7 +338,7 @@ export class PanInput implements InputType {
     });
   }
 
-  protected _getVector(properties: number[], direction: boolean[]): number[] {
+  protected _getOffset(properties: number[], direction: boolean[]): number[] {
     const offset: number[] = [0, 0];
     const scale = this.options.scale;
 
