@@ -6,7 +6,6 @@ const axes0 = new eg.Axes(
   {
     zoom: {
       range: [1, 4],
-      bounce: 1,
     },
   },
   {
@@ -35,7 +34,6 @@ const axes1 = new eg.Axes(
   {
     zoom: {
       range: [1, 4],
-      bounce: 1,
     },
   },
   {
