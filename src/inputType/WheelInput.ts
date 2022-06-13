@@ -6,6 +6,7 @@ export interface WheelInputOption {
   scale?: number;
   releaseDelay?: number;
   useNormalized?: boolean;
+  useAnimation?: boolean;
 }
 
 /**
@@ -13,6 +14,8 @@ export interface WheelInputOption {
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
+ * @param {Boolean} [useNormalized=true] Whether to calculate scroll speed the same in all browsers<ko>모든 브라우저에서 스크롤 속도를 동일하게 처리할지 여부</ko>
+ * @param {Boolean} [useAnimation=false] Whether to process coordinate changes through the mouse wheel as a continuous animation<ko>마우스 휠을 통한 좌표 변화를 연속적인 애니메이션으로 처리할지 여부</ko>
  **/
 
 /**
@@ -50,6 +53,7 @@ export class WheelInput implements InputType {
         scale: 1,
         releaseDelay: 300,
         useNormalized: true,
+        useAnimation: false,
       },
       ...options,
     };
@@ -127,7 +131,12 @@ export class WheelInput implements InputType {
       (event.deltaY > 0 ? -1 : 1) *
       this.options.scale *
       (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
-    this._observer.change(this, event, toAxis(this.axes, [offset]), true);
+    this._observer.change(
+      this,
+      event,
+      toAxis(this.axes, [offset]),
+      this.options.useAnimation
+    );
     clearTimeout(this._timer);
 
     this._timer = setTimeout(() => {

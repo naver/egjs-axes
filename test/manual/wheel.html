@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>egjs-axes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+  <style>
+    .content {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .uiWrapper {
+      overflow: hidden;
+      position: relative;
+      width: 400px;
+      height: 400px;
+      background-color: #eebf3f;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      box-shadow: 0px 1px 2px #8c532e;
+      float: left;
+    }
+
+    .uiWrapper .ui {
+      width: 100px;
+      height: 100px;
+      left: -50px;
+      top: -50px;
+      position: absolute;
+      background-color: black;
+      color: white;
+      border-radius: 50px;
+      line-height: 100px;
+      text-align: center;
+    }
+
+    .uiWrapper .ui img {
+      width: 45px;
+      height: 75px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Pan Input</h1>
+  <div id="content" class="content">
+    <div>
+      <h3>UseAnimation: true</h3>
+      <div id="delegateTarget0">
+        <div id="uiWrapper" class="uiWrapper">
+          <div id="ui0" class="ui">
+            3.0
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>UseAnimation: false</h3>
+      <div id="delegateTarget1">
+        <div id="uiWrapper" class="uiWrapper">
+          <div id="ui1" class="ui">
+            3.0
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../../dist/axes.pkgd.js"></script>
+  <script src="js/wheel.js"></script>
+</body>
+
+</html>

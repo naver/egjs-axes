@@ -274,4 +274,75 @@ describe("WheelInput", () => {
       });
     });
   });
+
+  describe("Options", () => {
+    beforeEach(() => {
+      el = sandbox();
+      inst = new Axes({
+        x: {
+          range: [0, 200],
+        },
+      });
+    });
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      if (input) {
+        input.destroy();
+        input = null;
+      }
+      cleanup();
+    });
+    describe("useAnimation", () => {
+      let animationStartHandler;
+      let animationEndHandler;
+      beforeEach(() => {
+        animationStartHandler = sinon.spy();
+        animationEndHandler = sinon.spy();
+        inst.on({
+          animationStart: animationStartHandler,
+          animationEnd: animationEndHandler,
+        });
+      });
+
+      it("should change coordinate smoothly by animation when useAnimation is true", (done) => {
+        // Given
+        const deltaY = 1;
+        input = new WheelInput(el, { scale: -10, useAnimation: true });
+        inst.connect(["x"], input);
+
+        // When
+        TestHelper.wheelVertical(el, deltaY, () => {
+          // Then
+          expect(inst.axisManager.get().x).to.be.not.equal(10);
+          setTimeout(() => {
+            expect(animationStartHandler.calledOnce).to.be.true;
+            expect(animationEndHandler.calledOnce).to.be.true;
+            expect(inst.axisManager.get().x).to.be.equal(10);
+            done();
+          }, 200);
+        });
+      });
+
+      it("should change coordinate immediately when useAnimation is false", (done) => {
+        // Given
+        const deltaY = 1;
+        input = new WheelInput(el, { scale: -10, useAnimation: false });
+        inst.connect(["x"], input);
+
+        // When
+        TestHelper.wheelVertical(el, deltaY, () => {
+          // Then
+          expect(inst.axisManager.get().x).to.be.equal(10);
+          setTimeout(() => {
+            expect(animationStartHandler.called).to.be.false;
+            expect(animationEndHandler.called).to.be.false;
+            done();
+          }, 200);
+        });
+      });
+    });
+  });
 });

@@ -314,7 +314,7 @@ describe("PanInput", () => {
     });
   });
 
-  describe("options test", () => {
+  describe("Options", () => {
     beforeEach(() => {
       el = sandbox();
       inst = new Axes({

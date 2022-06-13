@@ -64,7 +64,7 @@ export class InputObserver implements InputTypeObserver {
     this._moveDistance = this._axisManager.get(input.axes);
   }
 
-  public change(input: InputType, event, offset: Axis, useDuration?: boolean) {
+  public change(input: InputType, event, offset: Axis, useAnimation?: boolean) {
     if (
       this._isStopped ||
       !this._interruptManager.isInterrupting() ||
@@ -108,7 +108,7 @@ export class InputObserver implements InputTypeObserver {
       input,
       event,
     };
-    if (useDuration) {
+    if (useAnimation) {
       const duration = this._animationManager.getDuration(destPos, depaPos);
       this._animationManager.animateTo(destPos, duration, changeOption);
     } else {
