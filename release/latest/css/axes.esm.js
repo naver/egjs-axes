@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.2.2
+version: 3.3.0
 */
 import getAgent from '@egjs/agent';
 import Component, { ComponentEvent } from '@egjs/component';
@@ -1519,7 +1519,7 @@ function () {
     this._moveDistance = this._axisManager.get(input.axes);
   };
 
-  __proto.change = function (input, event, offset, useDuration) {
+  __proto.change = function (input, event, offset, useAnimation) {
     if (this._isStopped || !this._interruptManager.isInterrupting() || this._axisManager.every(offset, function (v) {
       return v === 0;
     })) {
@@ -1567,7 +1567,7 @@ function () {
       event: event
     };
 
-    if (useDuration) {
+    if (useAnimation) {
       var duration = this._animationManager.getDuration(destPos, depaPos);
 
       this._animationManager.animateTo(destPos, duration, changeOption);
@@ -2618,7 +2618,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.2.2";
+  Axes.VERSION = "3.3.0";
   /* eslint-enable */
 
   /**
@@ -2781,13 +2781,14 @@ function () {
     this._forceRelease = function () {
       var activeEvent = _this._activeEvent;
       var prevEvent = activeEvent.prevEvent;
-
-      _this._detachWindowEvent(activeEvent);
-
       activeEvent.onRelease();
 
       _this._observer.release(_this, prevEvent, [0, 0]);
+
+      _this._detachWindowEvent(activeEvent);
     };
+
+    this._voidFunction = function () {};
 
     this.element = $(el);
     this.options = __assign({
@@ -2958,7 +2959,7 @@ function () {
       }
     }
 
-    var offset = this._applyScale([panEvent.offsetX, panEvent.offsetY], [useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection), useDirection(DIRECTION_VERTICAL, this._direction, userDirection)]);
+    var offset = this._getOffset([panEvent.offsetX, panEvent.offsetY], [useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection), useDirection(DIRECTION_VERTICAL, this._direction, userDirection)]);
 
     var prevent = offset.some(function (v) {
       return v !== 0;
@@ -2994,7 +2995,7 @@ function () {
     clearTimeout(this._rightEdgeTimer);
     var prevEvent = activeEvent.prevEvent;
 
-    var velocity = this._applyScale([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]);
+    var velocity = this._getOffset([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]);
 
     activeEvent.onRelease();
 
@@ -3027,6 +3028,21 @@ function () {
     });
   };
 
+  __proto._getOffset = function (properties, direction) {
+    var offset = [0, 0];
+    var scale = this.options.scale;
+
+    if (direction[0]) {
+      offset[0] = properties[0] * scale[0];
+    }
+
+    if (direction[1]) {
+      offset[1] = properties[1] * scale[1];
+    }
+
+    return offset;
+  };
+
   __proto._attachElementEvent = function (observer) {
     var _this = this;
 
@@ -3048,7 +3064,7 @@ function () {
     activeEvent.move.forEach(function (event) {
       var _a;
 
-      (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, function () {});
+      (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._voidFunction);
     });
   };
 
@@ -3064,25 +3080,10 @@ function () {
     activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
       var _a;
 
-      (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, function () {});
+      (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._voidFunction);
     });
     this._enabled = false;
     this._observer = null;
-  };
-
-  __proto._applyScale = function (properties, direction) {
-    var offset = [0, 0];
-    var scale = this.options.scale;
-
-    if (direction[0]) {
-      offset[0] = properties[0] * scale[0];
-    }
-
-    if (direction[1]) {
-      offset[1] = properties[1] * scale[1];
-    }
-
-    return offset;
   };
 
   return PanInput;
@@ -3510,6 +3511,8 @@ function () {
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
+ * @param {Boolean} [useNormalized=true] Whether to calculate scroll speed the same in all browsers<ko>모든 브라우저에서 스크롤 속도를 동일하게 처리할지 여부</ko>
+ * @param {Boolean} [useAnimation=false] Whether to process coordinate changes through the mouse wheel as a continuous animation<ko>마우스 휠을 통한 좌표 변화를 연속적인 애니메이션으로 처리할지 여부</ko>
  **/
 
 /**
@@ -3545,7 +3548,8 @@ function () {
     this.options = __assign({
       scale: 1,
       releaseDelay: 300,
-      useNormalized: true
+      useNormalized: true,
+      useAnimation: false
     }, options);
     this._onWheel = this._onWheel.bind(this);
   }
@@ -3633,7 +3637,7 @@ function () {
 
     var offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
 
-    this._observer.change(this, event, toAxis(this.axes, [offset]), true);
+    this._observer.change(this, event, toAxis(this.axes, [offset]), this.options.useAnimation);
 
     clearTimeout(this._timer);
     this._timer = setTimeout(function () {
