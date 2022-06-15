@@ -1,10 +1,11 @@
 export default class TestHelper {
-  static wheelVertical(target, value, callback) {
+  static dispatchWheel(target, direction, value, callback) {
     if (target instanceof Element === false) {
       return;
     }
 
-    const params = { deltaY: value };
+    const params =
+      direction === "horizontal" ? { deltaX: value } : { deltaY: value };
     let wheelEvent;
 
     try {

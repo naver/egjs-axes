@@ -1,4 +1,5 @@
-import { $ } from "../utils";
+import { $, getDirection, useDirection } from "../utils";
+import { DIRECTION_HORIZONTAL, DIRECTION_VERTICAL } from "../const";
 
 import { toAxis, InputType, InputTypeObserver } from "./InputType";
 
@@ -20,7 +21,7 @@ export interface WheelInputOption {
 
 /**
  * A module that passes the amount of change to eg.Axes when the mouse wheel is moved. use one axis.
- * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
+ * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
  *
  * @example
  * ```js
@@ -28,8 +29,15 @@ export interface WheelInputOption {
  * 		scale: 1
  * });
  *
- * // Connect 'something' axis when the mousewheel is moved.
- * axes.connect("something", wheel);
+ * // Connect only one 'something1' axis to the vertical mouse wheel.
+ * axes.connect(["something1"], wheel); // or axes.connect("something1", wheel);
+ *
+ * // Connect only one 'something2' axis to the horizontal mouse wheel.
+ * axes.connect(["", "something2"], wheel); // or axes.connect(" something2", pan);
+ *
+ * // Connect the 'something1' axis to the vertical mouse wheel.
+ * // Connect the 'something2' axis to the horizontal mouse wheel.
+ * axes.connect(["something1", "something2"], wheel);
  * ```
  * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
  * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
@@ -39,6 +47,7 @@ export class WheelInput implements InputType {
   public axes: string[] = [];
   public element: HTMLElement = null;
   private _observer: InputTypeObserver;
+  private _direction: number;
   private _enabled = false;
   private _holding = false;
   private _timer: NodeJS.Timeout = null;
@@ -61,6 +70,8 @@ export class WheelInput implements InputType {
   }
 
   public mapAxes(axes: string[]) {
+    // vertical mouse wheel is mapped into axes[0]
+    this._direction = getDirection(!!axes[1], !!axes[0]);
     this.axes = axes;
   }
 
@@ -119,7 +130,15 @@ export class WheelInput implements InputType {
     }
     event.preventDefault();
 
-    if (event.deltaY === 0) {
+    const offset = this._getOffset(
+      [event.deltaY, event.deltaX],
+      [
+        useDirection(DIRECTION_VERTICAL, this._direction),
+        useDirection(DIRECTION_HORIZONTAL, this._direction),
+      ]
+    );
+
+    if (offset[0] === 0 && offset[1] === 0) {
       return;
     }
 
@@ -127,14 +146,11 @@ export class WheelInput implements InputType {
       this._observer.hold(this, event);
       this._holding = true;
     }
-    const offset =
-      (event.deltaY > 0 ? -1 : 1) *
-      this.options.scale *
-      (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
+
     this._observer.change(
       this,
       event,
-      toAxis(this.axes, [offset]),
+      toAxis(this.axes, offset),
       this.options.useAnimation
     );
     clearTimeout(this._timer);
@@ -145,6 +161,23 @@ export class WheelInput implements InputType {
         this._observer.release(this, event, [0]);
       }
     }, this.options.releaseDelay);
+  }
+
+  private _getOffset(properties: number[], direction: boolean[]): number[] {
+    const scale = this.options.scale;
+    const useNormalized = this.options.useNormalized;
+    return [
+      direction[0] && properties[0]
+        ? (properties[0] > 0 ? -1 : 1) *
+          (useNormalized ? 1 : Math.abs(properties[0])) *
+          scale
+        : 0,
+      direction[1] && properties[1]
+        ? (properties[1] > 0 ? -1 : 1) *
+          (useNormalized ? 1 : Math.abs(properties[1])) *
+          scale
+        : 0,
+    ];
   }
 
   private _attachEvent(observer: InputTypeObserver) {

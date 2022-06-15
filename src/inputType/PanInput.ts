@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
+import {
+  $,
+  isCssPropsFromAxes,
+  setCssProps,
+  revertCssProps,
+  useDirection,
+  getDirection,
+} from "../utils";
 import {
   IS_IOS_SAFARI,
   IOS_EDGE_THRESHOLD,
   DIRECTION_NONE,
   DIRECTION_VERTICAL,
   DIRECTION_HORIZONTAL,
-  DIRECTION_ALL,
   MOUSE_LEFT,
 } from "../const";
 import { ActiveEvent, InputEventType } from "../types";
@@ -43,17 +49,6 @@ export const getDirectionByAngle = (
   return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle
     ? DIRECTION_VERTICAL
     : DIRECTION_HORIZONTAL;
-};
-
-export const useDirection = (checkType, direction, userDirection?): boolean => {
-  if (userDirection) {
-    return !!(
-      direction === DIRECTION_ALL ||
-      (direction & checkType && userDirection & checkType)
-    );
-  } else {
-    return !!(direction & checkType);
-  }
 };
 
 /**
@@ -139,17 +134,7 @@ export class PanInput implements InputType {
   }
 
   public mapAxes(axes: string[]) {
-    const useHorizontal = !!axes[0];
-    const useVertical = !!axes[1];
-    if (useHorizontal && useVertical) {
-      this._direction = DIRECTION_ALL;
-    } else if (useHorizontal) {
-      this._direction = DIRECTION_HORIZONTAL;
-    } else if (useVertical) {
-      this._direction = DIRECTION_VERTICAL;
-    } else {
-      this._direction = DIRECTION_NONE;
-    }
+    this._direction = getDirection(!!axes[0], !!axes[1]);
     this.axes = axes;
   }
 
@@ -275,7 +260,7 @@ export class PanInput implements InputType {
         }
       }
     }
-    const offset: number[] = this._getOffset(
+    const offset = this._getOffset(
       [panEvent.offsetX, panEvent.offsetY],
       [
         useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection),
@@ -339,16 +324,11 @@ export class PanInput implements InputType {
   }
 
   protected _getOffset(properties: number[], direction: boolean[]): number[] {
-    const offset: number[] = [0, 0];
     const scale = this.options.scale;
-
-    if (direction[0]) {
-      offset[0] = properties[0] * scale[0];
-    }
-    if (direction[1]) {
-      offset[1] = properties[1] * scale[1];
-    }
-    return offset;
+    return [
+      direction[0] ? properties[0] * scale[0] : 0,
+      direction[1] ? properties[1] * scale[1] : 0,
+    ];
   }
 
   private _attachElementEvent(observer: InputTypeObserver) {

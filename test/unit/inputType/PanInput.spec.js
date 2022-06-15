@@ -1,9 +1,5 @@
 import Axes from "../../../src/Axes.ts";
-import {
-  PanInput,
-  getDirectionByAngle,
-  useDirection,
-} from "../../../src/inputType/PanInput";
+import { PanInput, getDirectionByAngle } from "../../../src/inputType/PanInput";
 import {
   DIRECTION_ALL,
   DIRECTION_HORIZONTAL,
@@ -226,91 +222,6 @@ describe("PanInput", () => {
       // When thresholdAngle = -10, 100
       expect(getDirectionByAngle(0, -10)).to.be.equal(DIRECTION_NONE);
       expect(getDirectionByAngle(0, 100)).to.be.equal(DIRECTION_NONE);
-    });
-
-    it("should check 'useDirection' method", () => {
-      // DIRECTION_HORIZONTAL
-      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL)).to.be.true;
-      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_HORIZONTAL)).to.be
-        .true;
-      expect(useDirection(DIRECTION_HORIZONTAL, DIRECTION_VERTICAL)).to.be
-        .false;
-
-      // DIRECTION_VERTICAL
-      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_ALL)).to.be.true;
-      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_HORIZONTAL)).to.be
-        .false;
-      expect(useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL)).to.be.true;
-    });
-
-    it("should check 'useDirection' method (using userDirection)", () => {
-      // DIRECTION_HORIZONTAL
-      expect(
-        useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL, DIRECTION_HORIZONTAL)
-      ).to.be.true;
-      expect(
-        useDirection(DIRECTION_HORIZONTAL, DIRECTION_ALL, DIRECTION_VERTICAL)
-      ).to.be.true;
-      expect(
-        useDirection(
-          DIRECTION_HORIZONTAL,
-          DIRECTION_HORIZONTAL,
-          DIRECTION_HORIZONTAL
-        )
-      ).to.be.true;
-      expect(
-        useDirection(
-          DIRECTION_HORIZONTAL,
-          DIRECTION_HORIZONTAL,
-          DIRECTION_VERTICAL
-        )
-      ).to.be.false;
-      expect(
-        useDirection(
-          DIRECTION_HORIZONTAL,
-          DIRECTION_VERTICAL,
-          DIRECTION_HORIZONTAL
-        )
-      ).to.be.false;
-      expect(
-        useDirection(
-          DIRECTION_HORIZONTAL,
-          DIRECTION_VERTICAL,
-          DIRECTION_VERTICAL
-        )
-      ).to.be.false;
-
-      // DIRECTION_VERTICAL
-      expect(
-        useDirection(DIRECTION_VERTICAL, DIRECTION_ALL, DIRECTION_HORIZONTAL)
-      ).to.be.true;
-      expect(
-        useDirection(DIRECTION_VERTICAL, DIRECTION_ALL, DIRECTION_VERTICAL)
-      ).to.be.true;
-      expect(
-        useDirection(
-          DIRECTION_VERTICAL,
-          DIRECTION_HORIZONTAL,
-          DIRECTION_HORIZONTAL
-        )
-      ).to.be.false;
-      expect(
-        useDirection(
-          DIRECTION_VERTICAL,
-          DIRECTION_HORIZONTAL,
-          DIRECTION_VERTICAL
-        )
-      ).to.be.false;
-      expect(
-        useDirection(
-          DIRECTION_VERTICAL,
-          DIRECTION_VERTICAL,
-          DIRECTION_HORIZONTAL
-        )
-      ).to.be.false;
-      expect(
-        useDirection(DIRECTION_VERTICAL, DIRECTION_VERTICAL, DIRECTION_VERTICAL)
-      ).to.be.true;
     });
   });
 
