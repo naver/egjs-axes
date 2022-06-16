@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, MoveKeyInput } from "../../../../src/index";
+import Axes, {
+  PanInput,
+  MoveKeyInput,
+  WheelInput,
+} from "../../../../src/index";
 import "../../css/demos/minimap.css";
 
 const Minimap = () => {
@@ -66,7 +70,11 @@ const Minimap = () => {
           scale: [-1, -1],
         })
       )
-      .connect("rawX rawY", new MoveKeyInput(view, { scale: [10, -10] }));
+      .connect("rawX rawY", new MoveKeyInput(view, { scale: [10, -10] }))
+      .connect(
+        "rawY rawX",
+        new WheelInput(view, { scale: -30, useNormalized: true })
+      );
   }, []);
 
   return (

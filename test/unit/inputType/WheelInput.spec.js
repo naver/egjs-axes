@@ -1,5 +1,10 @@
 import Axes from "../../../src/Axes.ts";
 import { WheelInput } from "../../../src/inputType/WheelInput";
+import {
+  DIRECTION_ALL,
+  DIRECTION_HORIZONTAL,
+  DIRECTION_VERTICAL,
+} from "../../../src/const";
 
 import TestHelper from "./TestHelper";
 
@@ -20,6 +25,28 @@ describe("WheelInput", () => {
         inst = null;
       }
       cleanup();
+    });
+    it("should check 'mapAxes' method", () => {
+      // when
+      inst.mapAxes(["vertical"]);
+
+      // then
+      expect(inst.axes).to.be.eql(["vertical"]);
+      expect(inst._direction).to.be.equal(DIRECTION_VERTICAL);
+
+      // when
+      inst.mapAxes(["", "horizontal"]);
+
+      // then
+      expect(inst.axes).to.be.eql(["", "horizontal"]);
+      expect(inst._direction).to.be.equal(DIRECTION_HORIZONTAL);
+
+      // when
+      inst.mapAxes(["vertical", "horizontal"]);
+
+      // then
+      expect(inst.axes).to.be.eql(["vertical", "horizontal"]);
+      expect(inst._direction).to.be.equal(DIRECTION_ALL);
     });
     it("should check status after disconnect", () => {
       // Given
@@ -132,7 +159,7 @@ describe("WheelInput", () => {
       const deltaY = 300;
       // When
       // 1. Scroll
-      TestHelper.wheelVertical(el, deltaY, () => {
+      TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
         // 2. detach & destroy wheel input
         inst.disconnect(input);
         input.destroy();
@@ -159,7 +186,10 @@ describe("WheelInput", () => {
           });
           inst = new Axes(
             {
-              x: {
+              horizontal: {
+                range: [10, 120],
+              },
+              vertical: {
                 range: [10, 120],
               },
             },
@@ -167,7 +197,7 @@ describe("WheelInput", () => {
               maximumDuration: 0,
             }
           );
-          inst.connect(["x"], input);
+          inst.connect(["vertical", "horizontal"], input);
         });
 
         afterEach(() => {
@@ -182,21 +212,23 @@ describe("WheelInput", () => {
           }
           cleanup();
         });
-        [-1, -3, -5, -9].forEach((d) => {
-          it(`should check delta test (delta: ${d}, useNormalized: ${useNormalized})`, (done) => {
-            inst.on("change", ({ pos, delta }) => {
-              if (delta.x === 0) {
-                return;
-              }
-              const sign = 1;
-              expect(delta.x).to.be.equals(
-                scale * (useNormalized ? sign : sign * Math.abs(d))
-              );
+        ["vertical", "horizontal"].forEach((direction) => {
+          [-1, -3, -5, -9].forEach((d) => {
+            it(`should check delta test (delta: ${d}, dirtection: ${direction}, useNormalized: ${useNormalized})`, (done) => {
+              inst.on("change", ({ pos, delta }) => {
+                if (delta[direction] === 0) {
+                  return;
+                }
+                const sign = 1;
+                expect(delta[direction]).to.be.equals(
+                  scale * (useNormalized ? sign : sign * Math.abs(d))
+                );
+              });
+              inst.on("release", (e) => {
+                done();
+              });
+              TestHelper.dispatchWheel(el, direction, d, () => {});
             });
-            inst.on("release", (e) => {
-              done();
-            });
-            TestHelper.wheelVertical(el, d, () => {});
           });
         });
         it("no event triggering when disconnected", (done) => {
@@ -210,7 +242,7 @@ describe("WheelInput", () => {
           inst.disconnect();
 
           // When
-          TestHelper.wheelVertical(el, deltaY, () => {
+          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -227,7 +259,7 @@ describe("WheelInput", () => {
           });
 
           // When
-          TestHelper.wheelVertical(el, deltaY, () => {
+          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -251,9 +283,9 @@ describe("WheelInput", () => {
             });
 
           // When
-          TestHelper.wheelVertical(el, deltaY, () => {
+          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
             setTimeout(() => {
-              TestHelper.wheelVertical(el, deltaY, () => {
+              TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
                 setTimeout(() => {
                   // Then
                   eventLog.forEach((log, index) => {
@@ -314,7 +346,7 @@ describe("WheelInput", () => {
         inst.connect(["x"], input);
 
         // When
-        TestHelper.wheelVertical(el, deltaY, () => {
+        TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.not.equal(10);
           setTimeout(() => {
@@ -333,7 +365,7 @@ describe("WheelInput", () => {
         inst.connect(["x"], input);
 
         // When
-        TestHelper.wheelVertical(el, deltaY, () => {
+        TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(10);
           setTimeout(() => {

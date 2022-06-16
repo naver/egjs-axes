@@ -248,6 +248,36 @@ export const isCssPropsFromAxes = (originalCssProps: {
   return same;
 };
 
+export const getDirection = (
+  useHorizontal: boolean,
+  useVertical: boolean
+): number => {
+  if (useHorizontal && useVertical) {
+    return DIRECTION_ALL;
+  } else if (useHorizontal) {
+    return DIRECTION_HORIZONTAL;
+  } else if (useVertical) {
+    return DIRECTION_VERTICAL;
+  } else {
+    return DIRECTION_NONE;
+  }
+};
+
+export const useDirection = (
+  checkType: number,
+  direction: number,
+  userDirection?: number
+): boolean => {
+  if (userDirection) {
+    return !!(
+      direction === DIRECTION_ALL ||
+      (direction & checkType && userDirection & checkType)
+    );
+  } else {
+    return !!(direction & checkType);
+  }
+};
+
 export const setCssProps = (
   element: HTMLElement,
   option: PanInputOption | PinchInputOption,
