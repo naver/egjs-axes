@@ -128,7 +128,6 @@ export class WheelInput implements InputType {
     if (!this._enabled) {
       return;
     }
-    event.preventDefault();
 
     const offset = this._getOffset(
       [event.deltaY, event.deltaX],
@@ -141,6 +140,7 @@ export class WheelInput implements InputType {
     if (offset[0] === 0 && offset[1] === 0) {
       return;
     }
+    event.preventDefault();
 
     if (!this._holding) {
       this._observer.hold(this, event);
