@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.3.0
+version: 3.4.0
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -1125,6 +1125,24 @@ version: 3.3.0
         }
       });
       return same;
+    };
+    var getDirection = function (useHorizontal, useVertical) {
+      if (useHorizontal && useVertical) {
+        return DIRECTION_ALL;
+      } else if (useHorizontal) {
+        return DIRECTION_HORIZONTAL;
+      } else if (useVertical) {
+        return DIRECTION_VERTICAL;
+      } else {
+        return DIRECTION_NONE;
+      }
+    };
+    var useDirection = function (checkType, direction, userDirection) {
+      if (userDirection) {
+        return !!(direction === DIRECTION_ALL || direction & checkType && userDirection & checkType);
+      } else {
+        return !!(direction & checkType);
+      }
     };
     var setCssProps = function (element, option, direction) {
       var _a;
@@ -3421,7 +3439,7 @@ version: 3.3.0
        */
 
 
-      Axes.VERSION = "3.3.0";
+      Axes.VERSION = "3.4.0";
       /* eslint-enable */
 
       /**
@@ -3506,13 +3524,6 @@ version: 3.3.0
 
       var toAngle = Math.abs(angle);
       return toAngle > thresholdAngle && toAngle < 180 - thresholdAngle ? DIRECTION_VERTICAL : DIRECTION_HORIZONTAL;
-    };
-    var useDirection = function (checkType, direction, userDirection) {
-      if (userDirection) {
-        return !!(direction === DIRECTION_ALL || direction & checkType && userDirection & checkType);
-      } else {
-        return !!(direction & checkType);
-      }
     };
     /**
      * @typedef {Object} PanInputOption The option object of the eg.Axes.PanInput module.
@@ -3612,19 +3623,7 @@ version: 3.3.0
       var __proto = PanInput.prototype;
 
       __proto.mapAxes = function (axes) {
-        var useHorizontal = !!axes[0];
-        var useVertical = !!axes[1];
-
-        if (useHorizontal && useVertical) {
-          this._direction = DIRECTION_ALL;
-        } else if (useHorizontal) {
-          this._direction = DIRECTION_HORIZONTAL;
-        } else if (useVertical) {
-          this._direction = DIRECTION_VERTICAL;
-        } else {
-          this._direction = DIRECTION_NONE;
-        }
-
+        this._direction = getDirection(!!axes[0], !!axes[1]);
         this.axes = axes;
       };
 
@@ -3832,18 +3831,8 @@ version: 3.3.0
       };
 
       __proto._getOffset = function (properties, direction) {
-        var offset = [0, 0];
         var scale = this.options.scale;
-
-        if (direction[0]) {
-          offset[0] = properties[0] * scale[0];
-        }
-
-        if (direction[1]) {
-          offset[1] = properties[1] * scale[1];
-        }
-
-        return offset;
+        return [direction[0] ? properties[0] * scale[0] : 0, direction[1] ? properties[1] * scale[1] : 0];
       };
 
       __proto._attachElementEvent = function (observer) {
@@ -4320,7 +4309,7 @@ version: 3.3.0
 
     /**
      * A module that passes the amount of change to eg.Axes when the mouse wheel is moved. use one axis.
-     * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 한 개 의 축을 사용한다.
+     * @ko 마우스 휠이 움직일때의 변화량을 eg.Axes에 전달하는 모듈. 두개 이하의 축을 사용한다.
      *
      * @example
      * ```js
@@ -4328,8 +4317,15 @@ version: 3.3.0
      * 		scale: 1
      * });
      *
-     * // Connect 'something' axis when the mousewheel is moved.
-     * axes.connect("something", wheel);
+     * // Connect only one 'something1' axis to the vertical mouse wheel.
+     * axes.connect(["something1"], wheel); // or axes.connect("something1", wheel);
+     *
+     * // Connect only one 'something2' axis to the horizontal mouse wheel.
+     * axes.connect(["", "something2"], wheel); // or axes.connect(" something2", pan);
+     *
+     * // Connect the 'something1' axis to the vertical mouse wheel.
+     * // Connect the 'something2' axis to the horizontal mouse wheel.
+     * axes.connect(["something1", "something2"], wheel);
      * ```
      * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.WheelInput module <ko>eg.Axes.WheelInput 모듈을 사용할 엘리먼트</ko>
      * @param {WheelInputOption} [options] The option object of the eg.Axes.WheelInput module<ko>eg.Axes.WheelInput 모듈의 옵션 객체</ko>
@@ -4360,6 +4356,8 @@ version: 3.3.0
       var __proto = WheelInput.prototype;
 
       __proto.mapAxes = function (axes) {
+        // vertical mouse wheel is mapped into axes[0]
+        this._direction = getDirection(!!axes[1], !!axes[0]);
         this.axes = axes;
       };
 
@@ -4426,11 +4424,13 @@ version: 3.3.0
           return;
         }
 
-        event.preventDefault();
+        var offset = this._getOffset([event.deltaY, event.deltaX], [useDirection(DIRECTION_VERTICAL, this._direction), useDirection(DIRECTION_HORIZONTAL, this._direction)]);
 
-        if (event.deltaY === 0) {
+        if (offset[0] === 0 && offset[1] === 0) {
           return;
         }
+
+        event.preventDefault();
 
         if (!this._holding) {
           this._observer.hold(this, event);
@@ -4438,9 +4438,7 @@ version: 3.3.0
           this._holding = true;
         }
 
-        var offset = (event.deltaY > 0 ? -1 : 1) * this.options.scale * (this.options.useNormalized ? 1 : Math.abs(event.deltaY));
-
-        this._observer.change(this, event, toAxis(this.axes, [offset]), this.options.useAnimation);
+        this._observer.change(this, event, toAxis(this.axes, offset), this.options.useAnimation);
 
         clearTimeout(this._timer);
         this._timer = setTimeout(function () {
@@ -4450,6 +4448,12 @@ version: 3.3.0
             _this._observer.release(_this, event, [0]);
           }
         }, this.options.releaseDelay);
+      };
+
+      __proto._getOffset = function (properties, direction) {
+        var scale = this.options.scale;
+        var useNormalized = this.options.useNormalized;
+        return [direction[0] && properties[0] ? (properties[0] > 0 ? -1 : 1) * (useNormalized ? 1 : Math.abs(properties[0])) * scale : 0, direction[1] && properties[1] ? (properties[1] > 0 ? -1 : 1) * (useNormalized ? 1 : Math.abs(properties[1])) * scale : 0];
       };
 
       __proto._attachEvent = function (observer) {
