@@ -1,0 +1,13 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "lernaHelperOptions": {
+    "beforeReleaseScripts": [
+      "npm run packages:build",
+      "npm run demo:build",
+      "npm run demo:deploy"
+    ]
+  }
+}

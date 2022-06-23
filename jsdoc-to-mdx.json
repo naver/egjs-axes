@@ -1,8 +1,8 @@
 {
   "locales": ["ko"],
-  "outDir": "./demo/docs/api",
-  "localesDir": "./demo/i18n/{locale}/docusaurus-plugin-content-docs/current/api",
-  "sidebar": "./demo",
+  "outDir": "./packages/demo/docs/api",
+  "localesDir": "./packages/demo/i18n/{locale}/docusaurus-plugin-content-docs/current/api",
+  "sidebar": "./packages/demo",
   "jsdoc": "./jsdoc.json",
   "bulma": true
 }
