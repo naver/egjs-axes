@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, WheelInput } from "../../../../src/index";
+import Axes, { PanInput, WheelInput } from "../../../../axes/src/index";
 import "../../css/demos/3dcarousel.css";
 
 const Carousel = () => {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, MoveKeyInput } from "../../../../src/index";
+import Axes, { PanInput, MoveKeyInput } from "../../../../axes/src/index";
 import "../../css/demos/cube.css";
 
 const Cube = () => {

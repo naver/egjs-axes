@@ -5,7 +5,7 @@
   "scripts": {
     "packages": "npm run packages:update && npm run packages:build && npm run packages:publish",
     "packages:update": "lerna-helper version",
-    "packages:build": "lerna run build",
+    "packages:build": "lerna run build --ignore demo",
     "docs:build": "rm -rf ./packages/demo/docs/api && jsdoc-to-mdx -c ./jsdoc-to-mdx.json",
     "demo:build": "npm run docs:build && npm run build --prefix packages/demo",
     "demo:build-docusaurus": "npm run build --prefix demo",
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/naver/egjs-axes",
   "devDependencies": {
     "@daybrush/jsdoc": "^0.3.12",
-    "@egjs/release-helper": "^0.2.3",
+    "@egjs/release-helper": "^0.2.6",
     "egjs-jsdoc-template": "^1.4.4",
     "jsdoc-to-mdx": "^1.1.2",
     "lerna": "^5.1.4",

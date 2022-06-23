@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Axes, { RotatePanInput } from "../../../../src/index";
+import Axes, { RotatePanInput } from "../../../../axes/src/index";
 import "../../css/demos/schedule.css";
 
 type DurationType = "slow" | "average" | "fast";
