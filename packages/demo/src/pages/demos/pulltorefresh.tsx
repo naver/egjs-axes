@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Axes, { PanInput } from "../../../../src/index";
+import Axes, { PanInput } from "../../../../axes/src/index";
 import "../../css/demos/pulltorefresh.css";
 
 declare function require(path: string): any;

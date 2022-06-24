@@ -5,7 +5,7 @@ import Axes, {
   PinchInput,
   MoveKeyInput,
   WheelInput,
-} from "../../../../src/index";
+} from "../../../../axes/src/index";
 import Icon from "../../../static/img/demos/axes/logo.svg";
 import "../../css/demos/axes.css";
 

@@ -4,7 +4,7 @@ import Axes, {
   PanInput,
   MoveKeyInput,
   WheelInput,
-} from "../../../../src/index";
+} from "../../../../axes/src/index";
 import "../../css/demos/minimap.css";
 
 const Minimap = () => {

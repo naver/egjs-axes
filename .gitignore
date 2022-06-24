@@ -192,10 +192,7 @@ GitHub.sublime-settings
 !.vscode/extensions.json
 
 ### Custom ###
-report/
-temp/
-doc/
-demo/release/
+demo/
 CHANGELOG.md
 build/
 outjs/

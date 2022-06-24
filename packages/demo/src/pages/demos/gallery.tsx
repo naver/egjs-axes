@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput } from "../../../../src/index";
+import Axes, { PanInput } from "../../../../axes/src/index";
 import "../../css/demos/gallery.css";
 
 const Gallery = () => {

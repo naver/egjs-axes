@@ -1,0 +1,21 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "lernaHelperOptions": {
+    "deployFileMap": [
+      {
+        "basePath": "packages/axes/dist",
+        "dists": [
+          "demo/dist"
+        ]
+      }
+    ],
+    "beforeReleaseScripts": [
+      "npm run packages:build",
+      "npm run demo:build",
+      "npm run demo:deploy"
+    ]
+  }
+}
