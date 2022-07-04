@@ -1,5 +1,6 @@
 import { $, getDirection, useDirection } from "../utils";
 import { DIRECTION_HORIZONTAL, DIRECTION_VERTICAL } from "../const";
+import { ElementType } from "../types";
 
 import { toAxis, InputType, InputTypeObserver } from "./InputType";
 
@@ -55,7 +56,7 @@ export class WheelInput implements InputType {
   /**
    *
    */
-  public constructor(el, options?: WheelInputOption) {
+  public constructor(el: ElementType, options?: WheelInputOption) {
     this.element = $(el);
     this.options = {
       ...{

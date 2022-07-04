@@ -14,7 +14,7 @@ const config = {
   baseUrl: "/egjs-axes/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.png",
+  favicon: 'img/favicon.ico',
   organizationName: "naver",
   projectName: "naver.github.io",
 	trailingSlash: false,

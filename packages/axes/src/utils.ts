@@ -24,7 +24,6 @@ export const toArray = (nodes: NodeList): HTMLElement[] => {
 
 export const $ = (param, multi = false) => {
   let el;
-
   if (typeof param === "string") {
     // String (HTML, Selector)
     // check if string is HTML tag format
@@ -47,6 +46,8 @@ export const $ = (param, multi = false) => {
   } else if (param === window) {
     // window
     el = param;
+  } else if ("value" in param || "current" in param) {
+    el = param.value! || param.current!;
   } else if (param.nodeName && (param.nodeType === 1 || param.nodeType === 9)) {
     // HTMLElement, Document
     el = param;
@@ -106,7 +107,7 @@ export const requestAnimationFrame = (fp) => {
 };
 /**
  * A polyfill for the window.cancelAnimationFrame() method. It cancels an animation executed through a call to the requestAnimationFrame() method.
- * @param {Number} key −	The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
+ * @param {Number} key −  The ID value returned through a call to the requestAnimationFrame() method. <ko>requestAnimationFrame() 메서드가 반환한 아이디 값</ko>
  * @see  https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
  * @private
  */

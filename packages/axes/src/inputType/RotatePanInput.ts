@@ -1,5 +1,5 @@
-import { ExtendedEvent } from "../types";
 import Axes from "../Axes";
+import { ElementType, ExtendedEvent } from "../types";
 import { getAngle } from "../utils";
 
 import { toAxis } from "./InputType";
@@ -38,7 +38,7 @@ export class RotatePanInput extends PanInput {
   /**
    *
    */
-  public constructor(el: string | HTMLElement, options?: PanInputOption) {
+  public constructor(el: ElementType, options?: PanInputOption) {
     super(el, options);
   }
 

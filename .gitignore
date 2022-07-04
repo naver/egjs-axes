@@ -197,4 +197,5 @@ CHANGELOG.md
 build/
 outjs/
 declaration/
+packages/*/dist/
 dist/

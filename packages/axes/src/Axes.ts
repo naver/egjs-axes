@@ -1,5 +1,6 @@
 import Component from "@egjs/component";
 
+import { ReactiveSubscribe } from "./cfcs";
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";
@@ -16,7 +17,12 @@ import {
   DIRECTION_ALL,
 } from "./const";
 import { InputType } from "./inputType/InputType";
-import { AxesEvents, ObjectInterface, UpdateAnimationOption } from "./types";
+import {
+  AxesEvents,
+  AxesReactiveState,
+  ObjectInterface,
+  UpdateAnimationOption,
+} from "./types";
 import { EasingManager } from "./animation/EasingManager";
 import { AnimationManager } from "./animation/AnimationManager";
 
@@ -132,6 +138,7 @@ export interface AxesOption {
  * axes.connect("something2", pinchInputArea);
  * ```
  */
+@ReactiveSubscribe
 class Axes extends Component<AxesEvents> {
   /**
    * @name VERSION
@@ -535,5 +542,9 @@ class Axes extends Component<AxesEvents> {
     this.eventManager.destroy();
   }
 }
+
+interface Axes
+  extends AxesReactiveState,
+    ReactiveSubscribe<AxesReactiveState> {}
 
 export default Axes;

@@ -13,6 +13,26 @@ export const MOUSE_MIDDLE = "middle";
 
 export const VELOCITY_INTERVAL = 16;
 
+export const AXES_METHODS = [
+  "connect",
+  "disconnect",
+  "get",
+  "setTo",
+  "setBy",
+  "stopAnimation",
+  "updateAnimation",
+  "isBounceArea",
+] as const;
+
+export const AXES_EVENTS = [
+  "hold",
+  "release",
+  "change",
+  "animationStart",
+  "animationEnd",
+  "finish",
+] as const;
+
 import getAgent from "@egjs/agent";
 
 import { window } from "./browser";
