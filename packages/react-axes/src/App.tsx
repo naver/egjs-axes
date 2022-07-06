@@ -1,4 +1,4 @@
-import { createRef, useEffect } from "react";
+import { createRef } from "react";
 import { PanInput, MoveKeyInput } from "./react-axes";
 import { useAxes } from "./react-axes/useAxes";
 import "./App.css";
@@ -20,6 +20,19 @@ function App() {
     },
     {
       deceleration: 0.0024,
+    },
+    {
+      rotateX: 0,
+      rotateY: 0,
+    },
+    (axes) => {
+      axes
+        .connect("rotateX rotateY", new PanInput(area))
+        .connect("rotateX rotateY", new MoveKeyInput(area, { scale: [10, -10] }));
+      axes.setTo({
+        rotateX: 40,
+        rotateY: 315,
+      }, 200);
     }
   );
 
@@ -29,12 +42,6 @@ function App() {
         "transform"
       ] = `rotateY(${pos.rotateX}deg) rotateX(${pos.rotateY}deg)`;
     }
-  }, []);
-
-  useEffect(() => {
-    axes
-      .connect("rotateX rotateY", new PanInput(area))
-      .connect("rotateX rotateY", new MoveKeyInput(area, { scale: [10, -10] }));
   }, []);
 
   return (
