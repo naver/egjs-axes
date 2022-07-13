@@ -1,13 +1,19 @@
-import { createRef } from "react";
+import { useRef } from "react";
 import { PanInput, MoveKeyInput } from "./react-axes";
 import { useAxes } from "./react-axes/useAxes";
 import "./App.css";
 
 function App() {
-  const box = createRef<HTMLDivElement>();
-  const container = createRef<HTMLDivElement>();
-  const area = createRef<HTMLDivElement>();
-  const axes = useAxes(
+  const box = useRef<HTMLElement>(null) as any as ((
+    e: HTMLElement | null
+  ) => void) & { current: HTMLElement | null };
+  const container = useRef<HTMLElement>(null) as any as ((
+    e: HTMLElement | null
+  ) => void) & { current: HTMLElement | null };
+  const area = useRef<HTMLElement>(null) as any as ((
+    e: HTMLElement | null
+  ) => void) & { current: HTMLElement | null };
+  const { rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -28,28 +34,35 @@ function App() {
     (axes) => {
       axes
         .connect("rotateX rotateY", new PanInput(area))
-        .connect("rotateX rotateY", new MoveKeyInput(area, { scale: [10, -10] }));
-      axes.setTo({
-        rotateX: 40,
-        rotateY: 315,
-      }, 200);
+        .connect(
+          "rotateX rotateY",
+          new MoveKeyInput(area, { scale: [10, -10] })
+        );
+      axes.setTo(
+        {
+          rotateX: 40,
+          rotateY: 315,
+        },
+        200
+      );
     }
   );
 
-  axes.onChange(({ pos }) => {
-    if (box.current && container.current) {
-      box.current.style[
-        "transform"
-      ] = `rotateY(${pos.rotateX}deg) rotateX(${pos.rotateY}deg)`;
-    }
-  }, []);
-
   return (
     <div className="App">
-      <p>You can rotate the cube using two axes.</p>
+      <p>
+        You can rotate the cube using two axes.
+      </p>
       <div id="area" ref={area}>
         <div id="container" ref={container}>
-          <div id="box" ref={box}>
+          <div
+            id="box"
+            ref={box}
+            style={{
+              transform:
+                `rotateY(${rotateX}deg) rotateX(${rotateY}deg)`,
+            }}
+          >
             <div
               className="face metal-linear"
               style={{

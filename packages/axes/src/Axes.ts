@@ -83,43 +83,43 @@ export interface AxesOption {
  * ```js
  * // 1. Initialize eg.Axes
  * const axes = new eg.Axes({
- *	something1: {
- *		range: [0, 150],
- *		bounce: 50
- *	},
- *	something2: {
- *		range: [0, 200],
- *		bounce: 100
- *	},
- *	somethingN: {
- *		range: [1, 10],
- *	}
+ *  something1: {
+ *    range: [0, 150],
+ *    bounce: 50
+ *  },
+ *  something2: {
+ *    range: [0, 200],
+ *    bounce: 100
+ *  },
+ *  somethingN: {
+ *    range: [1, 10],
+ *  }
  * }, {
  *  deceleration : 0.0024
  * });
  *
  * // 2. attach event handler
  * axes.on({
- *	"hold" : function(evt) {
- *	},
- *	"release" : function(evt) {
- *	},
- *	"animationStart" : function(evt) {
- *	},
- *	"animationEnd" : function(evt) {
- *	},
- *	"change" : function(evt) {
- *	}
+ *  "hold" : function(evt) {
+ *  },
+ *  "release" : function(evt) {
+ *  },
+ *  "animationStart" : function(evt) {
+ *  },
+ *  "animationEnd" : function(evt) {
+ *  },
+ *  "change" : function(evt) {
+ *  }
  * });
  *
  * // 3. Initialize inputTypes
  * const panInputArea = new eg.Axes.PanInput("#area", {
- *	scale: [0.5, 1]
+ *  scale: [0.5, 1]
  * });
  * const panInputHmove = new eg.Axes.PanInput("#hmove");
  * const panInputVmove = new eg.Axes.PanInput("#vmove");
  * const pinchInputArea = new eg.Axes.PinchInput("#area", {
- *	scale: 1.5
+ *  scale: 1.5
  * });
  *
  * // 4. Connect eg.Axes and InputTypes
@@ -368,7 +368,7 @@ class Axes extends Component<AxesEvents> {
    *   "xOther": {
    *      range: [-100, 100]
    *   },
-   * 	 "zoom": {
+   *    "zoom": {
    *      range: [50, 30]
    *   }
    * });
@@ -396,7 +396,7 @@ class Axes extends Component<AxesEvents> {
    *   "xOther": {
    *      range: [-100, 100]
    *   },
-   * 	 "zoom": {
+   *    "zoom": {
    *      range: [50, 30]
    *   }
    * });
@@ -430,7 +430,7 @@ class Axes extends Component<AxesEvents> {
    *   "xOther": {
    *      range: [-100, 100]
    *   },
-   * 	 "zoom": {
+   *    "zoom": {
    *      range: [50, 30]
    *   }
    * });
@@ -519,7 +519,7 @@ class Axes extends Component<AxesEvents> {
    *   "xOther": {
    *      range: [-100, 100]
    *   },
-   * 	 "zoom": {
+   *    "zoom": {
    *      range: [50, 30]
    *   }
    * });

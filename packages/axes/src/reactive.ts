@@ -1,7 +1,12 @@
 import Axes, { AxesOption } from "./Axes";
 import { AXES_EVENTS, AXES_METHODS } from "./const";
 import { ReactiveAdapter } from "./cfcs";
-import { AxesEvents, AxesMethods, ObjectInterface } from "./types";
+import {
+  AxesEvents,
+  AxesMethods,
+  AxesReactiveState,
+  ObjectInterface,
+} from "./types";
 import { Axis, AxisOption } from "./AxisManager";
 
 export interface AxesData {
@@ -13,7 +18,7 @@ export interface AxesData {
 
 export const REACTIVE_AXES: ReactiveAdapter<
   Axes,
-  {},
+  AxesReactiveState,
   keyof AxesMethods,
   AxesData,
   AxesEvents

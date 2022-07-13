@@ -41,9 +41,6 @@ export function ReactiveSubscribe(Constructor: any) {
   const prototype = Constructor.prototype;
 
   prototype["subscribe"] = function (name: string, callback: (value: any) => void) {
-    if (!(name in this)) {
-      return;
-    }
     getObserver(this, name).subscribe(callback);
   };
   prototype["unsubscribe"] = function (name?: string, callback?: (value: any) => void) {

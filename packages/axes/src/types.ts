@@ -29,7 +29,9 @@ export interface AxesEvents {
   finish: OnFinish;
 }
 
-export interface AxesReactiveState {}
+export interface AxesReactiveState {
+  [key: string]: any;
+}
 
 export type AxesMethods = {
   [key in typeof AXES_METHODS[number]]: Axes[key];
