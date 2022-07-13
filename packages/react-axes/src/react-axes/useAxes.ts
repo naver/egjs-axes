@@ -23,5 +23,10 @@ export function useAxes(
       };
     },
     ...REACTIVE_AXES,
+    state: {
+      ...REACTIVE_AXES.state,
+      ...Object.keys(axis).reduce((result, key) => Object.assign(result, {[key]: axis[key].range![0] ?? 0}), {}),
+      ...startPos,
+    },
   });
 }

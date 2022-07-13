@@ -10,15 +10,14 @@ export function useReactive<
   Data = any,
   Events extends Record<string, any> = {},
   >(reactiveProps: ReactiveAdapter<Instance, State, Methods, Data, Events>): ReactReactiveResult<Instance, State, Methods, Events> {
-  const data = reactiveProps.data ? reactiveProps.data() : {} as any;
   const reactiveState = reactiveProps.state as any;
-  const names = keys<Record<string, any>>(data.axis);
+  const names = keys<Record<string, any>>(reactiveState);
   const [states] = useState<Record<string, {
     getter: boolean,
     value: any,
     set: (value: any) => void,
   }>>({});
-	names.forEach(name => {
+  names.forEach(name => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const state = useState(reactiveState[name]);
     states[name] = {
@@ -26,11 +25,12 @@ export function useReactive<
       set: state[1],
       value: state[0],
     };
-	});
+  });
   const instanceRef = useRef<Instance>();
   const [methods] = useState(() => withReactiveMethods(instanceRef, reactiveProps.methods || []));
 
   useEffect(() => {
+    const data = reactiveProps.data ? reactiveProps.data() : {} as any;
     const inst = reactiveProps.instance(data);
 
     instanceRef.current = inst;
