@@ -1,5 +1,6 @@
 import { window } from "./browser";
 import { PREVENT_DRAG_CSSPROPS } from "./const";
+import { Axis, AxisOption } from "./AxisManager";
 import { PanInputOption } from "./inputType/PanInput";
 import { PinchInputOption } from "./inputType/PinchInput";
 import { ObjectInterface } from "./types";
@@ -262,6 +263,22 @@ export const getDirection = (
   } else {
     return DIRECTION_NONE;
   }
+};
+
+export const getInitialPos = (
+  axis: ObjectInterface<AxisOption>,
+  startPos: Axis
+): Axis => {
+  return {
+    ...Object.keys(axis).reduce(
+      (result, key) =>
+        Object.assign(result, {
+          [key]: axis[key].startPos ?? axis[key].range[0] ?? 0,
+        }),
+      {}
+    ),
+    ...startPos,
+  };
 };
 
 export const useDirection = (

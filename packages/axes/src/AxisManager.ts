@@ -10,6 +10,7 @@ export interface AxisOption {
   range?: number[];
   bounce?: number | number[];
   circular?: boolean | boolean[];
+  startPos?: number;
 }
 
 export class AxisManager {
@@ -115,6 +116,7 @@ export class AxisManager {
           range: [0, 100],
           bounce: [0, 0],
           circular: [false, false],
+          startPos: this._axis[axis].range[0],
         },
         ...this._axis[axis],
       };

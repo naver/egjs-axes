@@ -23,6 +23,7 @@ import {
   ObjectInterface,
   UpdateAnimationOption,
 } from "./types";
+import { getInitialPos } from "./utils";
 import { EasingManager } from "./animation/EasingManager";
 import { AnimationManager } from "./animation/AnimationManager";
 
@@ -48,6 +49,7 @@ export interface AxesOption {
  * @param {Boolean[]} [circular] Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
  * @param {Boolean} [circular[0]=false] Indicates whether to circulate to the coordinate of the minimum <ko>최소 좌표 방향의 순환 여부</ko>
  * @param {Boolean} [circular[1]=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
+ * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
  **/
 
 /**
@@ -76,7 +78,7 @@ export interface AxesOption {
  *
  * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
  * @param {AxesOption} [options={}] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
- * @param {Object.<string, number>} [startPos=null] The coordinates to be moved when creating an instance. not triggering change event.<ko>인스턴스 생성시 이동할 좌표, change 이벤트는 발생하지 않음.</ko>
+ * @param {Object.<string, number>} [startPos=null] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  * @example
@@ -262,9 +264,7 @@ class Axes extends Component<AxesEvents> {
     this.animationManager = new EasingManager(this);
     this.inputObserver = new InputObserver(this);
     this.eventManager.setAnimationManager(this.animationManager);
-    if (startPos) {
-      this.eventManager.triggerChange(startPos);
-    }
+    this.eventManager.triggerChange(getInitialPos(axis, startPos));
   }
 
   /**

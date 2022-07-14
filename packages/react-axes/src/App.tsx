@@ -18,18 +18,16 @@ function App() {
       rotateX: {
         range: [0, 360],
         circular: true,
+        startPos: 40,
       },
       rotateY: {
         range: [0, 360],
         circular: true,
+        startPos: 315,
       },
     },
     {
       deceleration: 0.0024,
-    },
-    {
-      rotateX: 0,
-      rotateY: 0,
     },
     (axes) => {
       axes
@@ -38,13 +36,6 @@ function App() {
           "rotateX rotateY",
           new MoveKeyInput(area, { scale: [10, -10] })
         );
-      axes.setTo(
-        {
-          rotateX: 40,
-          rotateY: 315,
-        },
-        200
-      );
     }
   );
 
