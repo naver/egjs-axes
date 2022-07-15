@@ -7,12 +7,12 @@ import {
   AxesReactiveState,
   ObjectInterface,
 } from "./types";
-import { Axis, AxisOption } from "./AxisManager";
+import { AxisOption } from "./AxisManager";
 
 export interface AxesData {
   axis: ObjectInterface<AxisOption>;
   options: AxesOption;
-  onInit: (axes: Axes) => void;
+  onInit?: (axes: Axes) => void;
 }
 
 export const REACTIVE_AXES: ReactiveAdapter<
@@ -29,7 +29,7 @@ export const REACTIVE_AXES: ReactiveAdapter<
     return new Axes(data.axis, data.options);
   },
   init(instance, data) {
-    data.onInit(instance);
+    data.onInit && data.onInit(instance);
   },
   on(instance, name, callback) {
     instance.on(name, callback);
