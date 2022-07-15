@@ -12,7 +12,6 @@ import { AxisOption } from "./AxisManager";
 export interface AxesData {
   axis: ObjectInterface<AxisOption>;
   options: AxesOption;
-  onInit?: (axes: Axes) => void;
 }
 
 export const REACTIVE_AXES: ReactiveAdapter<
@@ -27,9 +26,6 @@ export const REACTIVE_AXES: ReactiveAdapter<
   events: AXES_EVENTS,
   instance(data) {
     return new Axes(data.axis, data.options);
-  },
-  init(instance, data) {
-    data.onInit && data.onInit(instance);
   },
   on(instance, name, callback) {
     instance.on(name, callback);

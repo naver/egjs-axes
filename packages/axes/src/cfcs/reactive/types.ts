@@ -37,7 +37,6 @@ export type ReactiveAdapter<
     instance: (data: Data) => Instance;
     methods: readonly Methods[];
     events: readonly (keyof Events)[];
-    init: (instance: Instance, data: Data) => void;
     destroy: (instance: Instance, data: Data) => void;
     on?: <EventName extends EventKey<Events>>(
       instance: Instance, eventName: EventName, listener: ReactiveEventCallback<Events, EventName>) => void;

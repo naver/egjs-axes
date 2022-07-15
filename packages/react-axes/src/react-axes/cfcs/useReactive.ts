@@ -42,7 +42,6 @@ export function useReactive<
       });
     });
 
-    reactiveProps.init(inst, data);
     return () => {
       const data = reactiveProps.data ? reactiveProps.data() : {} as any;
 

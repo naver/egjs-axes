@@ -10,14 +10,12 @@ export interface ReactAxesResult extends ReactReactiveAdapterResult<typeof REACT
 export function useAxes(
   axis: ObjectInterface<AxisOption>,
   options: AxesOption,
-  onInit?: (axes: Axes) => void,
 ): ReactAxesResult {
   return useReactive({
     data() {
       return {
         axis,
         options,
-        onInit,
       };
     },
     ...REACTIVE_AXES,
