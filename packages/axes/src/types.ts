@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { Axis } from "./AxisManager";
 import { MouseEventInput } from "./eventInput/MouseEventInput";
 import { TouchEventInput } from "./eventInput/TouchEventInput";

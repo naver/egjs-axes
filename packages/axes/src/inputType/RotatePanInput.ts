@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import Axes from "../Axes";
 import { ElementType, ExtendedEvent } from "../types";
 import { getAngle } from "../utils";

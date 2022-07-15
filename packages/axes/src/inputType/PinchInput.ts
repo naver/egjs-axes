@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
 import { ActiveEvent, ElementType, InputEventType } from "../types";
 import { DIRECTION_ALL } from "../const";

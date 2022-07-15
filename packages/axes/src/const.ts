@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 export const DIRECTION_NONE = 1;
 export const DIRECTION_LEFT = 2;
 export const DIRECTION_RIGHT = 4;

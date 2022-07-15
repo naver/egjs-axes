@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { isOutside, getCirculatedPos } from "./Coordinate";
 import { map, filter, every } from "./utils";
 import { ObjectInterface } from "./types";

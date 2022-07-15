@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import Axes, { AxesOption } from "./Axes";
 import { AXES_EVENTS, AXES_METHODS } from "./const";
 import { ReactiveAdapter } from "./cfcs";

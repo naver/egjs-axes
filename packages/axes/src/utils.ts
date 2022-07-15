@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { window } from "./browser";
 import { PREVENT_DRAG_CSSPROPS } from "./const";
 import { Axis, AxisOption } from "./AxisManager";

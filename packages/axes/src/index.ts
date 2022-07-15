@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import Axes from "./Axes";
 export { PanInput } from "./inputType/PanInput";
 export { RotatePanInput } from "./inputType/RotatePanInput";

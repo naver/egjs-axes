@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { AxesOption } from "./Axes";
 export class InterruptManager {
   private _prevented = false; //  check whether the animation event was prevented
