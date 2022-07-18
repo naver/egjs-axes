@@ -1,4 +1,4 @@
-import Axes, { ObjectInterface, REACTIVE_AXES, getInitialPos } from "@egjs/axes";
+import { ObjectInterface, REACTIVE_AXES, getInitialPos } from "@egjs/axes";
 import { AxesOption } from "@egjs/axes/declaration/Axes";
 import { AxisOption } from "@egjs/axes/declaration/AxisManager";
 import { ReactReactiveAdapterResult } from "./cfcs/types";
@@ -9,7 +9,7 @@ export interface ReactAxesResult extends ReactReactiveAdapterResult<typeof REACT
 
 export function useAxes(
   axis: ObjectInterface<AxisOption>,
-  options: AxesOption,
+  options: AxesOption = {},
 ): ReactAxesResult {
   return useReactive({
     data() {

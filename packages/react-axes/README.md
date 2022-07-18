@@ -46,77 +46,52 @@
 ## ⚙️ Installation
 #### npm
 ```bash
-$ npm install @egjs/axes
+$ npm install @egjs/react-axes
 ```
-
-#### CDN
-- jsDelivr: https://cdn.jsdelivr.net/npm/@egjs/axes/dist/
-- unpkg: https://unpkg.com/@egjs/axes@latest/dist/
-- cdnjs: https://cdnjs.com/libraries/egjs-axes
 
 ## 🏃 Quick Start
-#### 1. Set up your HTML
 
-``` html
-<div id="area"></div>
+### Using reactive properties from useAxes
+* You can change the value of the axis through touch screen, mouse or anything else.
+* You can use the names of each axis as reactive properties.
+* Connect axis with various InputTypes inside useEffect.
+
+```jsx
+import { useAxes } from "@egjs/react-axes";
+
+function App() {
+  const area = useRef<HTMLDivElement>(null);
+  const axes = useAxes(
+    {
+      rotateX: {
+        range: [0, 360],
+        circular: true,
+        startPos: 0,
+      },
+      rotateY: {
+        range: [0, 360],
+        circular: true,
+        startPos: 0,
+      },
+    },
+    {
+      deceleration: 0.0024,
+    },
+  );
+
+  useEffect(() => {
+    axes.connect("rotateX rotateY", new PanInput(area));
+  }, []);
+
+  return (
+    <div className="App">
+      <div id="area" ref={area} style={{ transform: `rotateY(${axes.rotateX}deg) rotateX(${axes.rotateY}deg)` }}>
+			  <div id="item"></div>
+			</div>
+		</div>
+  );
+}
 ```
-
-#### 2. Load files or import library
-
-##### ES5
-``` html
-<script src="https://naver.github.io/egjs-axes/release/latest/axes.pkgd.js"></script>
-```
-```js
-var Axes = eg.Axes;
-var PanInput = Axes.PanInput;
-var PinchInput = Axes.PinchInput;
-var WheelInput = Axes.WheelInput;
-var MoveKeyInput = Axes.MoveKeyInput;
-```
-
-##### ES6+
-```js
-import Axes, {PanInput, PinchInput, WheelInput, MoveKeyInput} from "@egjs/axes";
-```
-
-#### 3. Initialize Axes
-
-```js
-// create eg.Axes with option
-const axes = new Axes({
-  something1: { range: [0, 100] },
-  something2: { range: [0, 100] },
-  somethingN: { range: [-200, 200] }
-});
-```
-
-#### 4. Attach event handlers
-```js
-axes.on({
- "change": evt => /* ... */
-});
-```
-
-#### 5. Initialize InputTypes to use
-```js
-const panInput = new PanInput("#area");
-const wheelInput = new WheelInput("#wArea");
-const pinchInput = new PinchInput("#pArea");
-const movekeyInput = new MoveKeyInput("#mArea");
-```
-
-#### 6. Connect eg.Axes and InputTypes
-
-```js
-axes.connect(["something2", "somethingN"], panInput);
-axes.connect(["something1"], wheelInput);
-axes.connect(["something2"], pinchInput);
-axes.connect(["something1", "something2"], movekeyInput);
-```
-
-#### 7. Enjoy!
-You can change the value of the axis through touch screen, mouse or anything else.
 
 ## 🌐 Supported Browsers
 |<img width="20" src="https://simpleicons.org/icons/internetexplorer.svg" alt="IE" />|<img width="20" src="https://simpleicons.org/icons/googlechrome.svg" alt="Chrome" />|<img width="20" src="https://simpleicons.org/icons/firefoxbrowser.svg" alt="Firefox" />|<img width="20" src="https://simpleicons.org/icons/safari.svg" alt="Safari" />|<img width="20" src="https://simpleicons.org/icons/apple.svg" alt="iOS" />|<img width="20" src="https://simpleicons.org/icons/android.svg" alt="Android" />|

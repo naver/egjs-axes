@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { PanInput, MoveKeyInput } from "./react-axes";
 import { useAxes } from "./react-axes/useAxes";
 import "./App.css";
@@ -13,7 +13,8 @@ function App() {
   const area = useRef<HTMLElement>(null) as any as ((
     e: HTMLElement | null
   ) => void) & { current: HTMLElement | null };
-  const { rotateX, rotateY } = useAxes(
+
+  const axes = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -29,15 +30,13 @@ function App() {
     {
       deceleration: 0.0024,
     },
-    (axes) => {
-      axes
-        .connect("rotateX rotateY", new PanInput(area))
-        .connect(
-          "rotateX rotateY",
-          new MoveKeyInput(area, { scale: [10, -10] })
-        );
-    }
   );
+
+  useEffect(() => {
+    axes
+      .connect("rotateX rotateY", new PanInput(area))
+      .connect("rotateX rotateY", new MoveKeyInput(area, { scale: [10, -10] }));
+  }, []);
 
   return (
     <div className="App">
@@ -51,7 +50,7 @@ function App() {
             ref={box}
             style={{
               transform:
-                `rotateY(${rotateX}deg) rotateX(${rotateY}deg)`,
+                `rotateY(${axes.rotateX}deg) rotateX(${axes.rotateY}deg)`,
             }}
           >
             <div
