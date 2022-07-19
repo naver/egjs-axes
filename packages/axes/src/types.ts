@@ -1,13 +1,22 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { Axis } from "./AxisManager";
 import { MouseEventInput } from "./eventInput/MouseEventInput";
 import { TouchEventInput } from "./eventInput/TouchEventInput";
 import { PointerEventInput } from "./eventInput/PointerEventInput";
 import { TouchMouseEventInput } from "./eventInput/TouchMouseEventInput";
 import { InputType } from "./inputType/InputType";
+import { AXES_METHODS } from "./const";
+import Axes from "./Axes";
+import { Ref } from "./cfcs";
 
 export type ObjectInterface<T = any> = Record<string | number, T>;
 
 export type InputEventType = PointerEvent | MouseEvent | TouchEvent;
+
+export type ElementType = string | HTMLElement | Ref<HTMLElement>;
 
 export type ActiveEvent =
   | MouseEventInput
@@ -23,6 +32,14 @@ export interface AxesEvents {
   animationEnd: OnAnimationEnd;
   finish: OnFinish;
 }
+
+export interface AxesReactiveState {
+  [key: string]: any;
+}
+
+export type AxesMethods = {
+  [key in typeof AXES_METHODS[number]]: Axes[key];
+};
 
 export interface AnimationParam {
   depaPos: Axis;

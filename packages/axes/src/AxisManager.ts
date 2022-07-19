@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { isOutside, getCirculatedPos } from "./Coordinate";
 import { map, filter, every } from "./utils";
 import { ObjectInterface } from "./types";
@@ -10,6 +14,7 @@ export interface AxisOption {
   range?: number[];
   bounce?: number | number[];
   circular?: boolean | boolean[];
+  startPos?: number;
 }
 
 export class AxisManager {
@@ -115,6 +120,7 @@ export class AxisManager {
           range: [0, 100],
           bounce: [0, 0],
           circular: [false, false],
+          startPos: this._axis[axis].range[0],
         },
         ...this._axis[axis],
       };

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 export const DIRECTION_NONE = 1;
 export const DIRECTION_LEFT = 2;
 export const DIRECTION_RIGHT = 4;
@@ -12,6 +16,26 @@ export const MOUSE_RIGHT = "right";
 export const MOUSE_MIDDLE = "middle";
 
 export const VELOCITY_INTERVAL = 16;
+
+export const AXES_METHODS = [
+  "connect",
+  "disconnect",
+  "get",
+  "setTo",
+  "setBy",
+  "stopAnimation",
+  "updateAnimation",
+  "isBounceArea",
+] as const;
+
+export const AXES_EVENTS = [
+  "hold",
+  "release",
+  "change",
+  "animationStart",
+  "animationEnd",
+  "finish",
+] as const;
 
 import getAgent from "@egjs/agent";
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 import {
@@ -16,7 +20,7 @@ import {
   DIRECTION_HORIZONTAL,
   MOUSE_LEFT,
 } from "../const";
-import { ActiveEvent, InputEventType } from "../types";
+import { ActiveEvent, ElementType, InputEventType } from "../types";
 
 import {
   convertInputType,
@@ -97,7 +101,7 @@ export const getDirectionByAngle = (
  * // Connect only one 'something2' axis to the mouse or touchscreen y position when the mouse or touchscreen is down and moved.
  * axes.connect(["", "something2"], pan); // or axes.connect(" something2", pan);
  * ```
- * @param {HTMLElement|String|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
+ * @param {String|HTMLElement|Ref<HTMLElement>|jQuery} element An element to use the eg.Axes.PanInput module <ko>eg.Axes.PanInput 모듈을 사용할 엘리먼트</ko>
  * @param {PanInputOption} [options={}] The option object of the eg.Axes.PanInput module<ko>eg.Axes.PanInput 모듈의 옵션 객체</ko>
  */
 export class PanInput implements InputType {
@@ -115,7 +119,7 @@ export class PanInput implements InputType {
   /**
    *
    */
-  public constructor(el: string | HTMLElement, options?: PanInputOption) {
+  public constructor(el: ElementType, options?: PanInputOption) {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],

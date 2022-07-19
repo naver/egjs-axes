@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { ComponentEvent } from "@egjs/component";
 
 import { InputType } from "./inputType/InputType";
@@ -6,6 +10,7 @@ import Axes from "./Axes";
 import { roundNumbers } from "./utils";
 import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
 import { AnimationManager } from "./animation/AnimationManager";
+import { getObserver } from "./cfcs";
 
 export interface ChangeEventOption {
   input: InputType;
@@ -206,6 +211,10 @@ export class EventManager {
     };
     const event = new ComponentEvent("change", param);
     this._axes.trigger(event);
+    Object.keys(moveTo.pos).forEach((axis) => {
+      const p = moveTo.pos[axis];
+      getObserver(this._axes, axis, p).current = p;
+    });
 
     if (inputEvent) {
       axisManager.set(

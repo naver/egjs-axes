@@ -99,6 +99,37 @@ describe("Axes", () => {
       expect(inst.get().x).to.equal(50);
       expect(inst.get().otherX).to.equal(0);
     });
+
+    it("should check startPos set correctly when initializing an instance", () => {
+      // Given
+      // When
+      changeHandler = sinon.spy();
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 100],
+            bounce: [30, 50],
+            circular: true,
+            startPos: 100,
+          },
+          otherX: {
+            range: [-100, 100],
+            bounce: 40,
+            circular: [false, true],
+          },
+        },
+        {
+          deceleration: 0.001,
+        }
+      ).on({
+        change: changeHandler,
+      });
+
+      // Then
+      expect(inst.get().x).to.equal(100);
+      expect(inst.get().otherX).to.equal(-100);
+      expect(changeHandler.called).to.be.false;
+    });
     it("should check `setTo/setBy` method", () => {
       // Given
       inst = new Axes(
@@ -383,7 +414,7 @@ describe("Axes", () => {
       );
       el = sandbox();
       el.innerHTML = `<div id="parent"
-			style="width:300px; height:200px;"><div id="child" style="width:200px; height:200px;"></div></div>`;
+      style="width:300px; height:200px;"><div id="child" style="width:200px; height:200px;"></div></div>`;
     });
     afterEach(() => {
       if (inst) {
@@ -494,7 +525,7 @@ describe("Axes", () => {
         );
         el = sandbox();
         el.innerHTML = `<div id="area"
-		style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
+    style="position:relative; border:5px solid #444; width:300px; height:400px; color:#aaa; margin:0;box-sizing:content-box; z-index:9;"></div>`;
 
         releaseHandler = sinon.spy();
         finishHandler = sinon.spy();

@@ -1,5 +1,9 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
 import { $, isCssPropsFromAxes, setCssProps, revertCssProps } from "../utils";
-import { ActiveEvent, InputEventType } from "../types";
+import { ActiveEvent, ElementType, InputEventType } from "../types";
 import { DIRECTION_ALL } from "../const";
 
 import {
@@ -58,7 +62,7 @@ export class PinchInput implements InputType {
   /**
    *
    */
-  public constructor(el: string | HTMLElement, options?: PinchInputOption) {
+  public constructor(el: ElementType, options?: PinchInputOption) {
     this.element = $(el);
     this.options = {
       scale: 1,

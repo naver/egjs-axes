@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
+import { ElementType } from "../types";
 import { $ } from "../utils";
 
 import { toAxis, InputType, InputTypeObserver } from "./InputType";
@@ -59,7 +64,7 @@ export class MoveKeyInput implements InputType {
   /**
    *
    */
-  public constructor(el, options?: MoveKeyInputOption) {
+  public constructor(el: ElementType, options?: MoveKeyInputOption) {
     this.element = $(el);
     this.options = {
       ...{
