@@ -5,12 +5,10 @@ import { ReactReactiveAdapterResult } from "./cfcs/types";
 import { useReactive } from "./cfcs/useReactive";
 
 
-export interface ReactAxesResult extends ReactReactiveAdapterResult<typeof REACTIVE_AXES> { }
-
 export function useAxes(
   axis: ObjectInterface<AxisOption>,
   options: AxesOption = {},
-): ReactAxesResult {
+): ReactReactiveAdapterResult<typeof REACTIVE_AXES> {
   return useReactive({
     data() {
       return {

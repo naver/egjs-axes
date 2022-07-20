@@ -1,6 +1,6 @@
 <h1 align="center" style="max-width: 100%;">
   <img width="256" alt="Axes Logo" src="https://raw.githubusercontent.com/naver/egjs-axes/master/packages/demo/static/img/axes.svg" style="max-width: 256px;" /><br/>
-  <a href="https://naver.github.io/egjs-axes/">@egjs/axes</a>
+  <a href="https://naver.github.io/egjs-axes/">React Axes</a>
 </h1>
 
 <p align="center" style="line-height: 2;">
@@ -57,7 +57,7 @@ $ npm install @egjs/react-axes
 * Connect axis with various InputTypes inside useEffect.
 
 ```jsx
-import { useAxes } from "@egjs/react-axes";
+import { PanInput, useAxes } from "@egjs/react-axes";
 
 function App() {
   const area = useRef<HTMLDivElement>(null);
@@ -86,9 +86,9 @@ function App() {
   return (
     <div className="App">
       <div id="area" ref={area} style={{ transform: `rotateY(${axes.rotateX}deg) rotateX(${axes.rotateY}deg)` }}>
-			  <div id="item"></div>
-			</div>
-		</div>
+        <div id="item"></div>
+      </div>
+    </div>
   );
 }
 ```

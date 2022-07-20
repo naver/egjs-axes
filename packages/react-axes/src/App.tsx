@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import { PanInput, MoveKeyInput } from "./react-axes";
-import { useAxes } from "./react-axes/useAxes";
+import { useAxes, PanInput, MoveKeyInput } from "./react-axes";
 import "./App.css";
 
 function App() {
