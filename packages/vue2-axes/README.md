@@ -1,6 +1,6 @@
 <h1 align="center" style="max-width: 100%;">
   <img width="256" alt="Axes Logo" src="https://raw.githubusercontent.com/naver/egjs-axes/master/packages/demo/static/img/axes.svg" style="max-width: 256px;" /><br/>
-  <a href="https://naver.github.io/egjs-axes/">React Axes</a>
+  <a href="https://naver.github.io/egjs-axes/">Vue 2 Axes</a>
 </h1>
 
 <p align="center" style="line-height: 2;">
@@ -46,7 +46,7 @@
 ## ⚙️ Installation
 #### npm
 ```bash
-$ npm install @egjs/react-axes
+$ npm install @egjs/vue2-axes
 ```
 
 ## 🏃 Quick Start
@@ -54,14 +54,26 @@ $ npm install @egjs/react-axes
 ### Using reactive properties from useAxes
 * You can change the value of the axis through touch screen, mouse or anything else.
 * You can use the names of each axis as reactive properties.
-* Connect axis with various InputTypes inside useEffect.
+* Connect axis with various InputTypes after mounted.
 
-```jsx
-import { PanInput, useAxes } from "@egjs/react-axes";
+```vue
+<template>
+  <div class="App">
+    <div id="area" ref="area" :style="{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }">
+      <div id="item"></div>
+    </div>
+  </div>
+</template>
 
-function App() {
-  const area = useRef<HTMLDivElement>(null);
-  const { connect, rotateX, rotateY } = useAxes(
+<script lang="ts">
+import { ref, defineComponent, onMounted } from "@vue/composition-api";
+import { PanInput, useAxes } from "../src";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const area = ref(null);
+    const { connect, rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -76,21 +88,20 @@ function App() {
     },
     {
       deceleration: 0.0024,
-    },
-  );
+    });
 
-  useEffect(() => {
-    connect("rotateX rotateY", new PanInput(area));
-  }, []);
+    onMounted(() => {
+      axes.connect("rotateX rotateY", new PanInput(area));
+    })
 
-  return (
-    <div className="App">
-      <div id="area" ref={area} style={{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }}>
-        <div id="item"></div>
-      </div>
-    </div>
-  );
-}
+    return {
+      area,
+      rotateX,
+      rotateY,
+    };
+  },
+});
+</script>
 ```
 
 ## 🌐 Supported Browsers
