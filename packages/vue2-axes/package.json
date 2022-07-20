@@ -1,0 +1,50 @@
+{
+  "name": "@egjs/vue2-axes",
+  "version": "3.4.0",
+  "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
+  "sideEffects": false,
+  "main": "dist/axes.cjs.js",
+  "module": "dist/axes.esm.js",
+  "types": "declaration/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "serve": "vue-cli-service serve demo",
+    "lint": "vue-cli-service lint --no-fix",
+    "build": "rollup -c && npm run declaration && print-sizes ./dist ",
+    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
+  },
+  "dependencies": {
+    "@egjs/axes": "~3.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@egjs/build-helper": "^0.1.2",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/composition-api": "^1.2.4",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "@vue/test-utils": "^1.0.3",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "print-sizes": "^0.1.0",
+    "rollup-plugin-vue": "^5.1.9",
+    "tslib": "^2.3.1",
+    "typescript": "^4.1.6",
+    "vue": "^2.6.12",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "peerDependencies": {
+    "@vue/composition-api": "^1.0.0",
+    "vue": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naver/egjs-axes"
+  },
+  "author": {
+    "name": "NAVER Corp."
+  }
+}
