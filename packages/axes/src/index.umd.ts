@@ -2,17 +2,10 @@
  * Copyright (c) 2015 NAVER Corp.
  * egjs projects are licensed under the MIT license
  */
-import Axes from "./Axes";
-import { PanInput } from "./inputType/PanInput";
-import { RotatePanInput } from "./inputType/RotatePanInput";
-import { PinchInput } from "./inputType/PinchInput";
-import { WheelInput } from "./inputType/WheelInput";
-import { MoveKeyInput } from "./inputType/MoveKeyInput";
+import Axes, * as modules from "./index";
 
-Axes.PanInput = PanInput;
-Axes.RotatePanInput = RotatePanInput;
-Axes.PinchInput = PinchInput;
-Axes.WheelInput = WheelInput;
-Axes.MoveKeyInput = MoveKeyInput;
+for (const name in modules) {
+  (Axes as any)[name] = (modules as any)[name];
+}
 
 export default Axes;
