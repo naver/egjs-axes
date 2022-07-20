@@ -3,7 +3,7 @@
     <p>You can rotate the cube using two axes.</p>
     <div id="area" ref="area">
       <div id="container" ref="container">
-        <div id="box" ref="box" :style="{ transform: `rotateY(${axes.rotateX.value}deg) rotateX(${axes.rotateY.value}deg)` }">
+        <div id="box" ref="box" :style="{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }">
           <div class="face metal-linear" :style="{ transform: 'rotateX(0deg) rotateY(0deg) translate3d(-50px,-50px,50px)' }">1</div>
           <div class="face metal-linear" :style="{ transform: 'rotateY(-90deg) translate3d(0px,-50px,100px)' }">2</div>
           <div class="face metal-linear" :style="{ transform: 'rotateY(90deg) translate3d(0px,-50px,0px)' }" >3</div>
@@ -24,7 +24,7 @@ export default defineComponent({
   name: "App",
   setup() {
     const area = ref(null);
-    const axes = useAxes(
+    const { connect, rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -42,12 +42,13 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      axes.connect("rotateX rotateY", new PanInput(area));
+      connect("rotateX rotateY", new PanInput(area));
     })
 
     return {
       area,
-      axes,
+      rotateX,
+      rotateY,
     };
   },
 });

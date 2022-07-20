@@ -59,7 +59,7 @@ $ npm install @egjs/vue2-axes
 ```vue
 <template>
   <div class="App">
-    <div id="area" ref="area" :style="{ transform: `rotateY(${axes.rotateX.value}deg) rotateX(${axes.rotateY.value}deg)` }">
+    <div id="area" ref="area" :style="{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }">
       <div id="item"></div>
     </div>
   </div>
@@ -73,7 +73,7 @@ export default defineComponent({
   name: "App",
   setup() {
     const area = ref(null);
-    const axes = useAxes(
+    const { connect, rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -96,7 +96,8 @@ export default defineComponent({
 
     return {
       area,
-      axes,
+      rotateX,
+      rotateY,
     };
   },
 });

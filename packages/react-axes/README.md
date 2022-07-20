@@ -61,7 +61,7 @@ import { PanInput, useAxes } from "@egjs/react-axes";
 
 function App() {
   const area = useRef<HTMLDivElement>(null);
-  const axes = useAxes(
+  const { connect, rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -80,12 +80,12 @@ function App() {
   );
 
   useEffect(() => {
-    axes.connect("rotateX rotateY", new PanInput(area));
+    connect("rotateX rotateY", new PanInput(area));
   }, []);
 
   return (
     <div className="App">
-      <div id="area" ref={area} style={{ transform: `rotateY(${axes.rotateX}deg) rotateX(${axes.rotateY}deg)` }}>
+      <div id="area" ref={area} style={{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }}>
         <div id="item"></div>
       </div>
     </div>
