@@ -43,7 +43,7 @@ export default defineComponent({
 
     onMounted(() => {
       connect("rotateX rotateY", new PanInput(area));
-    })
+    });
 
     return {
       area,

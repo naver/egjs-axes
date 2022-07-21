@@ -4,9 +4,9 @@
 </h1>
 
 <p align="center" style="line-height: 2;">
-  <a href="https://www.npmjs.com/package/@egjs/axes" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/axes.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
-  <a href="https://www.npmjs.com/package/@egjs/axes" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/axes?logo=npm&style=flat-square&color=007acc" /></a>
-  <a href="https://www.npmjs.com/package/@egjs/axes" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/axes.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-axes.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/react-axes?logo=npm&style=flat-square&color=007acc" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/react-axes.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
   <a href="https://travis-ci.org/naver/egjs-axes" target="_blank"><img alt="Build Status" src="https://api.travis-ci.org/naver/egjs-axes.svg?branch=master" /></a>
   <a href="https://coveralls.io/github/naver/egjs-axes?branch=master&style=flat-square" target="_blank"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/naver/egjs-axes.svg?style=flat-square&label=%E2%9C%85%20coverage" /></a>
   <a href="https://github.com/naver/egjs-axes/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/static/v1?style=flat-square&label=%F0%9F%93%9C%20license&message=MIT&color=08CE5D" /></a>
@@ -118,7 +118,7 @@ See [CONTRIBUTING.md](https://github.com/naver/egjs-axes/blob/master/CONTRIBUTIN
 Please file an [Issue](https://github.com/naver/egjs-axes/issues).
 
 ## 📜 License
-@egjs/axes is released under the [MIT license](https://github.com/naver/egjs-axes/blob/master/LICENSE).
+@egjs/react-axes is released under the [MIT license](https://github.com/naver/egjs-axes/blob/master/LICENSE).
 
 ```
 Copyright (c) 2015 NAVER Corp.
