@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, onMounted } from "@vue/composition-api";
-import { PanInput, useAxes } from "../src";
+import { ref, defineComponent, onMounted } from "vue";
+import { PanInput, useAxes } from "./vue-axes";
 
 export default defineComponent({
   name: "App",

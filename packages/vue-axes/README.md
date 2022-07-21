@@ -1,12 +1,12 @@
 <h1 align="center" style="max-width: 100%;">
   <img width="256" alt="Axes Logo" src="https://raw.githubusercontent.com/naver/egjs-axes/master/packages/demo/static/img/axes.svg" style="max-width: 256px;" /><br/>
-  <a href="https://naver.github.io/egjs-axes/">React Axes</a>
+  <a href="https://naver.github.io/egjs-axes/">Vue 3 Axes</a>
 </h1>
 
 <p align="center" style="line-height: 2;">
-  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-axes.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
-  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/react-axes?logo=npm&style=flat-square&color=007acc" /></a>
-  <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/react-axes.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/vue-axes" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/vue-axes.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/vue-axes" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/vue-axes?logo=npm&style=flat-square&color=007acc" /></a>
+  <a href="https://www.npmjs.com/package/@egjs/vue-axes" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/vue-axes.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
   <a href="https://travis-ci.org/naver/egjs-axes" target="_blank"><img alt="Build Status" src="https://api.travis-ci.org/naver/egjs-axes.svg?branch=master" /></a>
   <a href="https://coveralls.io/github/naver/egjs-axes?branch=master&style=flat-square" target="_blank"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/naver/egjs-axes.svg?style=flat-square&label=%E2%9C%85%20coverage" /></a>
   <a href="https://github.com/naver/egjs-axes/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/static/v1?style=flat-square&label=%F0%9F%93%9C%20license&message=MIT&color=08CE5D" /></a>
@@ -46,7 +46,7 @@
 ## ⚙️ Installation
 #### npm
 ```bash
-$ npm install @egjs/react-axes
+$ npm install @egjs/vue-axes
 ```
 
 ## 🏃 Quick Start
@@ -54,14 +54,26 @@ $ npm install @egjs/react-axes
 ### Using reactive properties from useAxes
 * You can change the value of the axis through touch screen, mouse or anything else.
 * You can use the names of each axis as reactive properties.
-* Connect axis with various InputTypes inside useEffect.
+* Connect axis with various InputTypes after mounted.
 
-```jsx
-import { PanInput, useAxes } from "@egjs/react-axes";
+```vue
+<template>
+  <div class="App">
+    <div id="area" ref="area" :style="{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }">
+      <div id="item"></div>
+    </div>
+  </div>
+</template>
 
-function App() {
-  const area = useRef<HTMLDivElement>(null);
-  const { connect, rotateX, rotateY } = useAxes(
+<script lang="ts">
+import { ref, defineComponent, onMounted } from "vue";
+import { PanInput, useAxes } from "@egjs/vue-axes";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const area = ref(null);
+    const { connect, rotateX, rotateY } = useAxes(
     {
       rotateX: {
         range: [0, 360],
@@ -76,21 +88,20 @@ function App() {
     },
     {
       deceleration: 0.0024,
-    },
-  );
+    });
 
-  useEffect(() => {
-    connect("rotateX rotateY", new PanInput(area));
-  }, []);
+    onMounted(() => {
+      connect("rotateX rotateY", new PanInput(area));
+    });
 
-  return (
-    <div className="App">
-      <div id="area" ref={area} style={{ transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)` }}>
-        <div id="item"></div>
-      </div>
-    </div>
-  );
-}
+    return {
+      area,
+      rotateX,
+      rotateY,
+    };
+  },
+});
+</script>
 ```
 
 ## 🌐 Supported Browsers
@@ -118,7 +129,7 @@ See [CONTRIBUTING.md](https://github.com/naver/egjs-axes/blob/master/CONTRIBUTIN
 Please file an [Issue](https://github.com/naver/egjs-axes/issues).
 
 ## 📜 License
-@egjs/react-axes is released under the [MIT license](https://github.com/naver/egjs-axes/blob/master/LICENSE).
+@egjs/vue-axes is released under the [MIT license](https://github.com/naver/egjs-axes/blob/master/LICENSE).
 
 ```
 Copyright (c) 2015 NAVER Corp.
