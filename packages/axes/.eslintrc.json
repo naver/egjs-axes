@@ -144,77 +144,8 @@
         "@typescript-eslint/no-shadow": ["error"],
         "@typescript-eslint/naming-convention": [
           "error",
-          {
-            "selector": "variableLike",
-            "format": ["camelCase"],
-            "leadingUnderscore": "forbid",
-            "trailingUnderscore": "forbid"
-          },
-          {
-            "selector": "variable",
-            "format": ["camelCase", "UPPER_CASE"],
-            "modifiers": ["exported", "const"]
-          },
-          {
-            "selector": "memberLike",
-            "modifiers": ["public"],
-            "format": ["camelCase"],
-            "leadingUnderscore": "forbid",
-            "trailingUnderscore": "forbid"
-          },
-          {
-            "selector": "memberLike",
-            "modifiers": ["protected"],
-            "format": ["camelCase"],
-            "leadingUnderscore": "require",
-            "trailingUnderscore": "forbid"
-          },
-          {
-            "selector": "memberLike",
-            "modifiers": ["private"],
-            "format": ["camelCase"],
-            "leadingUnderscore": "require",
-            "trailingUnderscore": "forbid"
-          },
-          {
-            "selector": "classProperty",
-            "modifiers": ["static"],
-            "format": ["camelCase", "UPPER_CASE"]
-          },
-          {
-            "selector": "classMethod",
-            "modifiers": ["static"],
-            "format": ["camelCase", "UPPER_CASE"]
-          },
-          {
-            "selector": "property",
-            "modifiers": ["static"],
-            "format": ["UPPER_CASE"]
-          },
-          {
-            "selector": "objectLiteralProperty",
-            "format": ["camelCase", "UPPER_CASE"]
-          },
-          {
-            "selector": "objectLiteralMethod",
-            "format": ["camelCase", "UPPER_CASE"]
-          },
-          {
-            "selector": "parameter",
-            "modifiers": ["unused"],
-            "format": ["camelCase"],
-            "leadingUnderscore": "allow"
-          },
-          {
-            "selector": "typeLike",
-            "format": ["PascalCase", "UPPER_CASE"],
-            "leadingUnderscore": "allow"
-          },
-          {
-            "selector": "typeProperty",
-            "format": ["camelCase", "UPPER_CASE"],
-            "leadingUnderscore": "allow"
-          }
+          { "selector": "default", "modifiers": ["protected"], "format": ["camelCase"], "leadingUnderscore": "require" },
+          { "selector": "default", "modifiers": ["private"], "format": ["camelCase"], "leadingUnderscore": "require" }
         ],
         "@typescript-eslint/tslint/config": [
           "error",
