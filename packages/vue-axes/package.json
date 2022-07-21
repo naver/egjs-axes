@@ -1,6 +1,6 @@
 {
   "name": "@egjs/vue-axes",
-  "version": "3.4.0",
+  "version": "3.0.0",
   "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
   "main": "dist/axes.cjs.js",
   "module": "dist/axes.esm.js",
@@ -14,7 +14,7 @@
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
   },
   "dependencies": {
-    "@egjs/axes": "~3.4.0"
+    "@egjs/axes": "~3.5.0"
   },
   "devDependencies": {
     "@egjs/build-helper": "^0.1.2",
