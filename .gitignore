@@ -198,3 +198,4 @@ outjs/
 declaration/
 packages/*/dist/
 dist/
+demo/

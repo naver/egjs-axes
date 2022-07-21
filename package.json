@@ -13,7 +13,7 @@
     "demo:build-docusaurus": "npm run build --prefix demo",
     "demo:deploy": "lerna-helper deploy --base @egjs/axes --remote upstream",
     "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --remote origin",
-    "release": "lerna-helper release --base @egjs/axes --remote upstream --branch main",
+    "release": "lerna-helper release --base @egjs/axes --remote upstream --branch master",
     "bootstrap": "lerna bootstrap",
     "bootstrap:force": "npm run bootstrap --legacy-peer-deps",
     "prepush": "npm run lint",
