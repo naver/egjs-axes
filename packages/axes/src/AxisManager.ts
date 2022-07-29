@@ -118,9 +118,9 @@ export class AxisManager {
       this._axis[axis] = {
         ...{
           range: [0, 100],
+          startPos: this._axis[axis].range[0],
           bounce: [0, 0],
           circular: [false, false],
-          startPos: this._axis[axis].range[0],
         },
         ...this._axis[axis],
       };
