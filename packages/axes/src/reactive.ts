@@ -25,7 +25,6 @@ export const REACTIVE_AXES: ReactiveAdapter<
   AxesData,
   AxesEvents
 > = {
-  state: {},
   methods: AXES_METHODS,
   events: AXES_EVENTS,
   created(data) {

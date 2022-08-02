@@ -15,9 +15,5 @@ export function useAxes(
       };
     },
     ...REACTIVE_AXES,
-    state: {
-      ...REACTIVE_AXES.state,
-      ...getInitialPos(axis, {}),
-    },
   });
 }

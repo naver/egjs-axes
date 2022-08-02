@@ -3,7 +3,6 @@
  * egjs projects are licensed under the MIT license
  */
 import { ComponentEvent } from "@egjs/component";
-import { getObserver } from "@cfcs/core";
 
 import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
@@ -197,7 +196,7 @@ export class EventManager {
     const axisManager = animationManager.axisManager;
     const eventInfo = animationManager.getEventInfo();
     const { roundPos, roundDepa } = this._getRoundPos(pos, depaPos);
-    const moveTo = axisManager.moveTo(roundPos, roundDepa);
+    const moveTo = axisManager.moveTo(roundPos, roundDepa, this._axes);
     const inputEvent = option?.event || eventInfo?.event || null;
     const param = {
       pos: moveTo.pos,
@@ -211,10 +210,6 @@ export class EventManager {
     };
     const event = new ComponentEvent("change", param);
     this._axes.trigger(event);
-    Object.keys(moveTo.pos).forEach((axis) => {
-      const p = moveTo.pos[axis];
-      getObserver(this._axes, axis, p).current = p;
-    });
 
     if (inputEvent) {
       axisManager.set(
