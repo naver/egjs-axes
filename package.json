@@ -14,8 +14,6 @@
     "demo:deploy": "lerna-helper deploy --base @egjs/axes --remote upstream",
     "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --remote origin",
     "release": "lerna-helper release --base @egjs/axes --remote upstream --branch master",
-    "bootstrap": "lerna bootstrap",
-    "bootstrap:force": "npm run bootstrap --legacy-peer-deps",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
   },
@@ -45,5 +43,28 @@
 		"@typescript-eslint/eslint-plugin": "^5.11.0",
 		"@typescript-eslint/eslint-plugin-tslint": "^5.11.0",
 		"@typescript-eslint/parser": "^5.11.0"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@egjs/build-helper",
+      "**/@egjs/build-helper/**",
+      "**/rollup-plugin-vue",
+      "**/rollup-plugin-vue/**",
+      "**/karma",
+      "**/karma/**",
+      "**/karma-*",
+      "**/karma-*/**",
+      "**/@tyoes/chai",
+      "**/@tyoes/chai/**",
+      "**/@types/karma-chai",
+      "**/@types/karma-chai/**",
+      "**/@types/mocha",
+      "**/@types/mocha/**",
+      "**/@vue/cli-plugin-eslint",
+      "**/@vue/cli-plugin-eslint/**"
+    ]
   }
 }

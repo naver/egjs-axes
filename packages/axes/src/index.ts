@@ -15,4 +15,3 @@ export { AXES_METHODS, AXES_EVENTS } from "./const";
 export { getInitialPos } from "./utils";
 export * from "./types";
 export * from "./reactive";
-export * from "./cfcs";

@@ -1,9 +1,7 @@
 import { ObjectInterface, REACTIVE_AXES, getInitialPos } from "@egjs/axes";
 import { AxesOption } from "@egjs/axes/declaration/Axes";
 import { AxisOption } from "@egjs/axes/declaration/AxisManager";
-import { ReactReactiveAdapterResult } from "./cfcs/types";
-import { useReactive } from "./cfcs/useReactive";
-
+import { useReactive, ReactReactiveAdapterResult } from "@cfcs/react";
 
 export function useAxes(
   axis: ObjectInterface<AxisOption>,

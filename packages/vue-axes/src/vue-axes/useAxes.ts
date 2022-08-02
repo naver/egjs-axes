@@ -1,8 +1,7 @@
 import { ObjectInterface, REACTIVE_AXES, getInitialPos } from "@egjs/axes";
 import { AxesOption } from "@egjs/axes/declaration/Axes";
 import { AxisOption } from "@egjs/axes/declaration/AxisManager";
-import { useReactive } from "./cfcs/useReactive";
-import { VueReactiveAdapterResult } from "./cfcs/types";
+import { useReactive, VueReactiveAdapterResult } from "@cfcs/vue3";
 
 export function useAxes(
   axis: ObjectInterface<AxisOption>,

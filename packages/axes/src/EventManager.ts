@@ -3,6 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import { ComponentEvent } from "@egjs/component";
+import { getObserver } from "@cfcs/core";
 
 import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
@@ -10,7 +11,6 @@ import Axes from "./Axes";
 import { roundNumbers } from "./utils";
 import { AnimationParam, OnAnimationStart, OnRelease } from "./types";
 import { AnimationManager } from "./animation/AnimationManager";
-import { getObserver } from "./cfcs";
 
 export interface ChangeEventOption {
   input: InputType;

@@ -4,7 +4,7 @@
  */
 import Axes, { AxesOption } from "./Axes";
 import { AXES_EVENTS, AXES_METHODS } from "./const";
-import { ReactiveAdapter } from "./cfcs";
+import { ReactiveAdapter } from "@cfcs/core";
 import {
   AxesEvents,
   AxesMethods,
@@ -28,7 +28,7 @@ export const REACTIVE_AXES: ReactiveAdapter<
   state: {},
   methods: AXES_METHODS,
   events: AXES_EVENTS,
-  instance(data) {
+  created(data) {
     return new Axes(data.axis, data.options);
   },
   on(instance, name, callback) {
