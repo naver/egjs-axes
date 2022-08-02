@@ -87,8 +87,8 @@ export const getDirectionByAngle = (
  * @example
  * ```js
  * const pan = new eg.Axes.PanInput("#area", {
- * 		inputType: ["touch"],
- * 		scale: [1, 1.3],
+ *     inputType: ["touch"],
+ *     scale: [1, 1.3],
  * });
  *
  * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
@@ -197,11 +197,25 @@ export class PanInput implements InputType {
 
   /**
    * Returns whether to use an input device
-   * @ko 입력 장치를 사용 여부를 반환한다.
+   * @ko 입력 장치 사용 여부를 반환한다.
    * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
    */
   public isEnabled() {
     return this._enabled;
+  }
+
+  /**
+   * Releases current user input.
+   * @ko 사용자의 입력을 강제로 중단시킨다.
+   * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+  public release() {
+    const activeEvent = this._activeEvent;
+    const prevEvent = activeEvent.prevEvent;
+    activeEvent.onRelease();
+    this._observer.release(this, prevEvent, [0, 0]);
+    this._detachWindowEvent(activeEvent);
+    return this;
   }
 
   protected _onPanstart(event: InputEventType) {
@@ -210,7 +224,6 @@ export class PanInput implements InputType {
     if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
       return;
     }
-
     if (panEvent.srcEvent.cancelable !== false) {
       const edgeThreshold = this.options.iOSEdgeSwipeThreshold;
 
@@ -245,7 +258,7 @@ export class PanInput implements InputType {
 
       if (swipeLeftToRight) {
         // iOS swipe left => right
-        this._forceRelease();
+        this.release();
         return;
       } else if (this._atRightEdge) {
         clearTimeout(this._rightEdgeTimer);
@@ -257,10 +270,7 @@ export class PanInput implements InputType {
           this._atRightEdge = false;
         } else {
           // iOS swipe right => left
-          this._rightEdgeTimer = window.setTimeout(
-            () => this._forceRelease(),
-            100
-          );
+          this._rightEdgeTimer = window.setTimeout(() => this.release(), 100);
         }
       }
     }
@@ -363,14 +373,6 @@ export class PanInput implements InputType {
     this._enabled = false;
     this._observer = null;
   }
-
-  private _forceRelease = () => {
-    const activeEvent = this._activeEvent;
-    const prevEvent = activeEvent.prevEvent;
-    activeEvent.onRelease();
-    this._observer.release(this, prevEvent, [0, 0]);
-    this._detachWindowEvent(activeEvent);
-  };
 
   private _voidFunction = () => {};
 }
