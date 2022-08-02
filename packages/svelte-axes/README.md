@@ -51,10 +51,10 @@ $ npm install @egjs/svelte-axes
 
 ## 🏃 Quick Start
 
-### Using svelteive properties from useAxes
+### Using reactive properties from useAxes
 * You can change the value of the axis through touch screen, mouse or anything else.
-* You can use the names of each axis as svelteive properties.
-* Connect axis with various InputTypes inside useEffect.
+* You can use the names of each axis as reactive properties.
+* Connect axis with various InputTypes inside onMount.
 
 ```html
 <script>
