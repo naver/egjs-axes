@@ -2,12 +2,9 @@
  * Copyright (c) 2015 NAVER Corp.
  * egjs projects are licensed under the MIT license
  */
-import { getObserver } from "@cfcs/core";
-
 import { isOutside, getCirculatedPos } from "./Coordinate";
 import { map, filter, every } from "./utils";
 import { ObjectInterface } from "./types";
-import Axes from "./Axes";
 
 export interface Axis {
   [key: string]: number;
@@ -48,11 +45,7 @@ export class AxisManager {
     }
   }
 
-  public moveTo(
-    pos: Axis,
-    depaPos: Axis = this._pos,
-    axes?: Axes
-  ): { [key: string]: Axis } {
+  public moveTo(pos: Axis, depaPos: Axis = this._pos): { [key: string]: Axis } {
     const delta = map(this._pos, (v, key) => {
       return key in pos && key in depaPos ? pos[key] - depaPos[key] : 0;
     });
@@ -60,8 +53,7 @@ export class AxisManager {
     this.set(
       this.map(pos, (v, opt) =>
         opt ? getCirculatedPos(v, opt.range, opt.circular as boolean[]) : 0
-      ),
-      axes
+      )
     );
     return {
       pos: { ...this._pos },
@@ -69,17 +61,11 @@ export class AxisManager {
     };
   }
 
-  public set(pos: Axis, axes?: Axes) {
+  public set(pos: Axis) {
     for (const k in pos) {
       if (k && k in this._pos) {
         this._pos[k] = pos[k];
       }
-    }
-    if (axes) {
-      Object.keys(pos).forEach((axis) => {
-        const p = pos[axis];
-        getObserver(axes, axis, p).current = p;
-      });
     }
   }
 
