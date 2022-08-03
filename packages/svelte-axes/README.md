@@ -59,7 +59,7 @@ $ npm install @egjs/svelte-axes
 ```html
 <script>
   import { onMount } from "svelte";
-  import { useAxes, PanInput } from "./svelte-axes";
+  import { useAxes, PanInput } from "@egjs/svelte-axes";
 
   let area;
   const { connect, rotateX, rotateY } = useAxes(
@@ -84,7 +84,7 @@ $ npm install @egjs/svelte-axes
   });
 </script>
 <div class="App">
-  <div id="area" bind:this={area} style="transform: `rotateY(${rotateX}deg) rotateX(${rotateY}deg)`">
+  <div id="area" bind:this={area} style="transform: rotateY({rotateX}deg) rotateX({rotateY}deg)">
     <div id="item"></div>
   </div>
 </div>
