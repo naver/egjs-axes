@@ -84,7 +84,7 @@ $ npm install @egjs/svelte-axes
   });
 </script>
 <div class="App">
-  <div id="area" bind:this={area} style="transform: rotateY({rotateX}deg) rotateX({rotateY}deg)">
+  <div id="area" bind:this={area} style="transform: rotateY({$rotateX}deg) rotateX({$rotateY}deg)">
     <div id="item"></div>
   </div>
 </div>

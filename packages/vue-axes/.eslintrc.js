@@ -9,7 +9,6 @@ module.exports = {
     '@vue/typescript/recommended'
   ],
   parserOptions: {
-    project: "../axes/tsconfig.eslint.json",
     ecmaVersion: 2020
   },
   rules: {

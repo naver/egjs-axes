@@ -39,11 +39,6 @@
   "author": {
     "name": "NAVER Corp."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

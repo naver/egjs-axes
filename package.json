@@ -63,8 +63,12 @@
       "**/@types/karma-chai/**",
       "**/@types/mocha",
       "**/@types/mocha/**",
-      "**/@vue/cli-plugin-eslint",
-      "**/@vue/cli-plugin-eslint/**"
+      "**/vue-template-compiler",
+      "**/vue-template-compiler/**",
+      "**/@vue",
+      "**/@vue/**",
+      "**/svelte",
+      "**/svelte/**"
     ]
   }
 }
