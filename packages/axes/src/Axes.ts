@@ -3,8 +3,8 @@
  * egjs projects are licensed under the MIT license
  */
 import Component from "@egjs/component";
+import { ReactiveSubscribe } from "@cfcs/core";
 
-import { ReactiveSubscribe } from "./cfcs";
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
 import { AxisManager, AxisOption, Axis } from "./AxisManager";

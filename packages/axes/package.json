@@ -28,6 +28,7 @@
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-axes",
 	"dependencies": {
+    "@cfcs/core": "^0.0.4",
 		"@egjs/agent": "^2.2.1",
 		"@egjs/component": "^3.0.1"
 	},

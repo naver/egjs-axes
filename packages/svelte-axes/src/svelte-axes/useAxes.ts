@@ -1,12 +1,12 @@
 import { ObjectInterface, REACTIVE_AXES } from "@egjs/axes";
 import { AxesOption } from "@egjs/axes/declaration/Axes";
 import { AxisOption } from "@egjs/axes/declaration/AxisManager";
-import { useReactive, ReactReactiveAdapterResult } from "@cfcs/react";
+import { useReactive, SvelteReactiveAdapterResult } from "@cfcs/svelte";
 
-export function useAxes(
+function useAxes(
   axis: ObjectInterface<AxisOption>,
-  options: AxesOption = {},
-): ReactReactiveAdapterResult<typeof REACTIVE_AXES> {
+  options: AxesOption = {}
+): SvelteReactiveAdapterResult<typeof REACTIVE_AXES> {
   return useReactive({
     data() {
       return {
@@ -17,3 +17,6 @@ export function useAxes(
     ...REACTIVE_AXES,
   });
 }
+export {
+  useAxes,
+};

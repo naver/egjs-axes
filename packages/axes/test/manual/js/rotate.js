@@ -14,3 +14,7 @@ var axes = new eg.Axes({
 
 axes.connect("angle", input);
 axes.setTo({angle: 0});
+
+setTimeout(() => {
+	input.release();
+}, 3000)

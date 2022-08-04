@@ -3,15 +3,9 @@ import { useAxes, PanInput, MoveKeyInput } from "./react-axes";
 import "./App.css";
 
 function App() {
-  const box = useRef<HTMLElement>(null) as any as ((
-    e: HTMLElement | null
-  ) => void) & { current: HTMLElement | null };
-  const container = useRef<HTMLElement>(null) as any as ((
-    e: HTMLElement | null
-  ) => void) & { current: HTMLElement | null };
-  const area = useRef<HTMLElement>(null) as any as ((
-    e: HTMLElement | null
-  ) => void) & { current: HTMLElement | null };
+  const box = useRef<HTMLDivElement>(null);
+  const container = useRef<HTMLDivElement>(null);
+  const area = useRef<HTMLDivElement>(null);
 
   const { connect, rotateX, rotateY } = useAxes(
     {
