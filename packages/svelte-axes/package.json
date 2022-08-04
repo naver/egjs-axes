@@ -26,7 +26,7 @@
   "homepage": "https://github.com/naver/egjs-axes",
   "dependencies": {
     "@cfcs/svelte": "~0.0.4",
-    "@egjs/axes": "~3.5.0"
+    "@egjs/axes": "~3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
