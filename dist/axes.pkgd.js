@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.5.0
+version: 3.6.0
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -538,6 +538,24 @@ version: 3.5.0
 
     var ComponentEvent$1 = ComponentEvent;
 
+    /*
+    Copyright (c) NAVER Crop.
+    name: @cfcs/core
+    license: MIT
+    author: NAVER Crop.
+    repository: https://github.com/naver/cfcs
+    version: 0.0.4
+    */
+
+    /**
+     * cfcs
+     * Copyright (c) 2022-present NAVER Corp.
+     * MIT license
+     */
+    function keys(obj) {
+      return Object.keys(obj);
+    }
+
     var OBSERVERS_PATH = "__observers__";
 
     var Observer =
@@ -575,31 +593,8 @@ version: 3.5.0
 
       return Observer;
     }();
-
-    function keys(obj) {
-      return Object.keys(obj);
-    }
-    function camelize(str) {
-      return str.replace(/[\s-_]([a-z])/g, function (all, letter) {
-        return letter.toUpperCase();
-      });
-    }
-
-    function withReactiveMethods(ref, methods) {
-      var obj = {};
-      methods.forEach(function (name) {
-        obj[name] = function () {
-          var args = [];
-
-          for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-          }
-
-          var current = ref.current || ref.value;
-          return current[name].apply(current, args);
-        };
-      });
-      return obj;
+    function observe(defaultValue) {
+      return new Observer(defaultValue);
     }
     function getObservers(instance) {
       if (!instance[OBSERVERS_PATH]) {
@@ -612,19 +607,18 @@ version: 3.5.0
       var observers = getObservers(instance);
 
       if (!observers[name]) {
-        observers[name] = new Observer(defaultValue);
+        observers[name] = observe(defaultValue);
       }
 
       return observers[name];
     }
-    function ReactiveSubscribe(Constructor) {
-      var prototype = Constructor.prototype;
 
-      prototype["subscribe"] = function (name, callback) {
+    function injectReactiveSubscribe(object) {
+      object["subscribe"] = function (name, callback) {
         getObserver(this, name).subscribe(callback);
       };
 
-      prototype["unsubscribe"] = function (name, callback) {
+      object["unsubscribe"] = function (name, callback) {
         var _this = this;
 
         if (!name) {
@@ -641,34 +635,9 @@ version: 3.5.0
         getObserver(this, name).unsubscribe(callback);
       };
     }
-
-    function withClassMethods(methods) {
-      return function (prototype, memberName) {
-        methods.forEach(function (name) {
-          if (name in prototype) {
-            return;
-          }
-
-          prototype[name] = function () {
-            var _a;
-
-            var args = [];
-
-            for (var _i = 0; _i < arguments.length; _i++) {
-              args[_i] = arguments[_i];
-            }
-
-            var result = (_a = this[memberName])[name].apply(_a, args); // fix `this` type to return your own `class` instance to the instance using the decorator.
-
-
-            if (result === this[memberName]) {
-              return this;
-            } else {
-              return result;
-            }
-          };
-        });
-      };
+    function ReactiveSubscribe(Constructor) {
+      var prototype = Constructor.prototype;
+      injectReactiveSubscribe(prototype);
     }
 
     /*
@@ -696,7 +665,7 @@ version: 3.5.0
     license: MIT
     author: NAVER Corp.
     repository: git+https://github.com/naver/agent.git
-    version: 2.2.1
+    version: 2.4.2
     */
     function some(arr, callback) {
       var length = arr.length;
@@ -720,7 +689,7 @@ version: 3.5.0
 
       return null;
     }
-    function getUserAgent(agent) {
+    function getUserAgentString(agent) {
       var userAgent = agent;
 
       if (typeof userAgent === "undefined") {
@@ -750,7 +719,7 @@ version: 3.5.0
       return !!(brands && brands.length);
     }
     function findVersion(versionTest, userAgent) {
-      var result = execRegExp("(" + versionTest + ")((?:\\/|\\s|:)([0-9|\\.|_]+))?", userAgent);
+      var result = execRegExp("(" + versionTest + ")((?:\\/|\\s|:)([0-9|\\.|_]+))", userAgent);
       return result ? result[3] : "";
     }
     function convertVersion(text) {
@@ -782,6 +751,24 @@ version: 3.5.0
         preset: userPreset,
         version: version
       };
+    }
+    function findPresetBrand(presets, brands) {
+      var brandInfo = {
+        brand: "",
+        version: "-1"
+      };
+      some(presets, function (preset) {
+        var result = findBrand(brands, preset);
+
+        if (!result) {
+          return false;
+        }
+
+        brandInfo.brand = preset.id;
+        brandInfo.version = preset.versionAlias || result.version;
+        return brandInfo.version !== "-1";
+      });
+      return brandInfo;
     }
     function findBrand(brands, preset) {
       return find(brands, function (_a) {
@@ -831,18 +818,21 @@ version: 3.5.0
 
     var CHROMIUM_PRESETS = [{
       test: "(?=.*applewebkit/(53[0-7]|5[0-2]|[0-4]))(?=.*\\schrome)",
-      id: "chrome"
+      id: "chrome",
+      versionTest: "chrome"
     }, {
       test: "chromium",
       id: "chrome"
     }, {
       test: "whale",
       id: "chrome",
+      versionAlias: "-1",
       brand: true
     }];
     var WEBKIT_PRESETS = [{
       test: "applewebkit",
-      id: "webkit"
+      id: "webkit",
+      versionTest: "applewebkit|safari"
     }];
     var WEBVIEW_PRESETS = [{
       test: "(?=(iphone|ipad))(?!(.*version))",
@@ -866,14 +856,17 @@ version: 3.5.0
       test: "windows nt",
       id: "window"
     }, {
+      test: "win32|windows",
+      id: "window"
+    }, {
       test: "iphone|ipad|ipod",
       id: "ios",
       versionTest: "iphone os|cpu os"
     }, {
-      test: "mac os x",
+      test: "macos|macintel|mac os x",
       id: "mac"
     }, {
-      test: "android",
+      test: "android|linux armv81",
       id: "android"
     }, {
       test: "tizen",
@@ -883,22 +876,86 @@ version: 3.5.0
       id: "webos"
     }];
 
-    function parseUserAgentData(osData) {
+    function isWebView(userAgent) {
+      return !!findPreset(WEBVIEW_PRESETS, userAgent).preset;
+    }
+    function getLegacyAgent(userAgent) {
+      var nextAgent = getUserAgentString(userAgent);
+      var isMobile = !!/mobi/g.exec(nextAgent);
+      var browser = {
+        name: "unknown",
+        version: "-1",
+        majorVersion: -1,
+        webview: isWebView(nextAgent),
+        chromium: false,
+        chromiumVersion: "-1",
+        webkit: false,
+        webkitVersion: "-1"
+      };
+      var os = {
+        name: "unknown",
+        version: "-1",
+        majorVersion: -1
+      };
+
+      var _a = findPreset(BROWSER_PRESETS, nextAgent),
+          browserPreset = _a.preset,
+          browserVersion = _a.version;
+
+      var _b = findPreset(OS_PRESETS, nextAgent),
+          osPreset = _b.preset,
+          osVersion = _b.version;
+
+      var chromiumPreset = findPreset(CHROMIUM_PRESETS, nextAgent);
+      browser.chromium = !!chromiumPreset.preset;
+      browser.chromiumVersion = chromiumPreset.version;
+
+      if (!browser.chromium) {
+        var webkitPreset = findPreset(WEBKIT_PRESETS, nextAgent);
+        browser.webkit = !!webkitPreset.preset;
+        browser.webkitVersion = webkitPreset.version;
+      }
+
+      if (osPreset) {
+        os.name = osPreset.id;
+        os.version = osVersion;
+        os.majorVersion = parseInt(osVersion, 10);
+      }
+
+      if (browserPreset) {
+        browser.name = browserPreset.id;
+        browser.version = browserVersion; // Early whale bugs
+
+        if (browser.webview && os.name === "ios" && browser.name !== "safari") {
+          browser.webview = false;
+        }
+      }
+
+      browser.majorVersion = parseInt(browser.version, 10);
+      return {
+        browser: browser,
+        os: os,
+        isMobile: isMobile,
+        isHints: false
+      };
+    }
+
+    function getClientHintsAgent(osData) {
       var userAgentData = navigator.userAgentData;
       var brands = (userAgentData.uaList || userAgentData.brands).slice();
+      var fullVersionList = osData && osData.fullVersionList;
       var isMobile = userAgentData.mobile || false;
       var firstBrand = brands[0];
+      var platform = (osData && osData.platform || userAgentData.platform || navigator.platform).toLowerCase();
       var browser = {
         name: firstBrand.brand,
         version: firstBrand.version,
         majorVersion: -1,
         webkit: false,
-        webview: some(WEBVIEW_PRESETS, function (preset) {
-          return findBrand(brands, preset);
-        }),
-        chromium: some(CHROMIUM_PRESETS, function (preset) {
-          return findBrand(brands, preset);
-        })
+        webkitVersion: "-1",
+        chromium: false,
+        chromiumVersion: "-1",
+        webview: !!findPresetBrand(WEBVIEW_PRESETS, brands).brand || isWebView(getUserAgentString())
       };
       var os = {
         name: "unknown",
@@ -908,31 +965,36 @@ version: 3.5.0
       browser.webkit = !browser.chromium && some(WEBKIT_PRESETS, function (preset) {
         return findBrand(brands, preset);
       });
+      var chromiumBrand = findPresetBrand(CHROMIUM_PRESETS, brands);
+      browser.chromium = !!chromiumBrand.brand;
+      browser.chromiumVersion = chromiumBrand.version;
+
+      if (!browser.chromium) {
+        var webkitBrand = findPresetBrand(WEBKIT_PRESETS, brands);
+        browser.webkit = !!webkitBrand.brand;
+        browser.webkitVersion = webkitBrand.version;
+      }
+
+      var platfomResult = find(OS_PRESETS, function (preset) {
+        return new RegExp("" + preset.test, "g").exec(platform);
+      });
+      os.name = platfomResult ? platfomResult.id : "";
 
       if (osData) {
-        var platform_1 = osData.platform.toLowerCase();
-        var result = find(OS_PRESETS, function (preset) {
-          return new RegExp("" + preset.test, "g").exec(platform_1);
-        });
-        os.name = result ? result.id : platform_1;
         os.version = osData.platformVersion;
       }
 
-      some(BROWSER_PRESETS, function (preset) {
-        var result = findBrand(brands, preset);
+      if (fullVersionList && fullVersionList.length) {
+        var browserBrandByFullVersionList = findPresetBrand(BROWSER_PRESETS, fullVersionList);
+        browser.name = browserBrandByFullVersionList.brand || browser.name;
+        browser.version = browserBrandByFullVersionList.version || browser.version;
+      } else {
+        var browserBrand = findPresetBrand(BROWSER_PRESETS, brands);
+        browser.name = browserBrand.brand || browser.name;
+        browser.version = browserBrand.brand && osData ? osData.uaFullVersion : browserBrand.version;
+      }
 
-        if (!result) {
-          return false;
-        }
-
-        browser.name = preset.id;
-        browser.version = osData ? osData.uaFullVersion : result.version;
-        return true;
-      });
-
-      if (navigator.platform === "Linux armv8l") {
-        os.name = "android";
-      } else if (browser.webkit) {
+      if (browser.webkit) {
         os.name = isMobile ? "ios" : "mac";
       }
 
@@ -951,57 +1013,6 @@ version: 3.5.0
         isHints: true
       };
     }
-
-    function parseUserAgent(userAgent) {
-      var nextAgent = getUserAgent(userAgent);
-      var isMobile = !!/mobi/g.exec(nextAgent);
-      var browser = {
-        name: "unknown",
-        version: "-1",
-        majorVersion: -1,
-        webview: !!findPreset(WEBVIEW_PRESETS, nextAgent).preset,
-        chromium: !!findPreset(CHROMIUM_PRESETS, nextAgent).preset,
-        webkit: false
-      };
-      var os = {
-        name: "unknown",
-        version: "-1",
-        majorVersion: -1
-      };
-
-      var _a = findPreset(BROWSER_PRESETS, nextAgent),
-          browserPreset = _a.preset,
-          browserVersion = _a.version;
-
-      var _b = findPreset(OS_PRESETS, nextAgent),
-          osPreset = _b.preset,
-          osVersion = _b.version;
-
-      browser.webkit = !browser.chromium && !!findPreset(WEBKIT_PRESETS, nextAgent).preset;
-
-      if (osPreset) {
-        os.name = osPreset.id;
-        os.version = osVersion;
-        os.majorVersion = parseInt(osVersion, 10);
-      }
-
-      if (browserPreset) {
-        browser.name = browserPreset.id;
-        browser.version = browserVersion;
-
-        if (browser.webview && os.name === "ios" && browser.name !== "safari") {
-          browser.webview = false;
-        }
-      }
-
-      browser.majorVersion = parseInt(browser.version, 10);
-      return {
-        browser: browser,
-        os: os,
-        isMobile: isMobile,
-        isHints: false
-      };
-    }
     /**
      * Extracts browser and operating system information from the user agent string.
      * @ko 유저 에이전트 문자열에서 브라우저와 운영체제 정보를 추출한다.
@@ -1016,9 +1027,9 @@ version: 3.5.0
 
     function agent(userAgent) {
       if (typeof userAgent === "undefined" && hasUserAgentData()) {
-        return parseUserAgentData();
+        return getClientHintsAgent();
       } else {
-        return parseUserAgent(userAgent);
+        return getLegacyAgent(userAgent);
       }
     }
 
@@ -1709,7 +1720,7 @@ version: 3.5.0
       __proto._getRoundPos = function (pos, depaPos) {
         // round value if round exist
         var roundUnit = this._axes.options.round; // if (round == null) {
-        // 	return {pos, depaPos}; // undefined, undefined
+        //   return {pos, depaPos}; // undefined, undefined
         // }
 
         return {
@@ -1915,9 +1926,9 @@ version: 3.5.0
         Object.keys(this._axis).forEach(function (axis) {
           _this._axis[axis] = __assign({
             range: [0, 100],
+            startPos: _this._axis[axis].range[0],
             bounce: [0, 0],
-            circular: [false, false],
-            startPos: _this._axis[axis].range[0]
+            circular: [false, false]
           }, _this._axis[axis]);
           ["bounce", "circular"].forEach(function (v) {
             var axisOption = _this._axis;
@@ -3150,13 +3161,13 @@ version: 3.5.0
      * @param {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
      * @param {Number} [range[0]=0] The coordinate of the minimum <ko>최소 좌표</ko>
      * @param {Number} [range[1]=0] The coordinate of the maximum <ko>최대 좌표</ko>
+     * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
      * @param {Number[]} [bounce] The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
      * @param {Number} [bounce[0]=0] The size of coordinate of the minimum area <ko>최소 좌표 바운스 영역의 크기</ko>
      * @param {Number} [bounce[1]=0] The size of coordinate of the maximum area <ko>최대 좌표 바운스 영역의 크기</ko>
      * @param {Boolean[]} [circular] Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
      * @param {Boolean} [circular[0]=false] Indicates whether to circulate to the coordinate of the minimum <ko>최소 좌표 방향의 순환 여부</ko>
      * @param {Boolean} [circular[1]=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
-     * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
      **/
 
     /**
@@ -3613,7 +3624,7 @@ version: 3.5.0
        */
 
 
-      Axes.VERSION = "3.5.0";
+      Axes.VERSION = "3.6.0";
       /* eslint-enable */
 
       /**
@@ -3736,8 +3747,8 @@ version: 3.5.0
      * @example
      * ```js
      * const pan = new eg.Axes.PanInput("#area", {
-     * 		inputType: ["touch"],
-     * 		scale: [1, 1.3],
+     *     inputType: ["touch"],
+     *     scale: [1, 1.3],
      * });
      *
      * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
@@ -3761,24 +3772,12 @@ version: 3.5.0
        *
        */
       function PanInput(el, options) {
-        var _this = this;
-
         this.axes = [];
         this.element = null;
         this._enabled = false;
         this._activeEvent = null;
         this._atRightEdge = false;
         this._rightEdgeTimer = 0;
-
-        this._forceRelease = function () {
-          var activeEvent = _this._activeEvent;
-          var prevEvent = activeEvent.prevEvent;
-          activeEvent.onRelease();
-
-          _this._observer.release(_this, prevEvent, [0, 0]);
-
-          _this._detachWindowEvent(activeEvent);
-        };
 
         this._voidFunction = function () {};
 
@@ -3864,13 +3863,31 @@ version: 3.5.0
       };
       /**
        * Returns whether to use an input device
-       * @ko 입력 장치를 사용 여부를 반환한다.
+       * @ko 입력 장치 사용 여부를 반환한다.
        * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
        */
 
 
       __proto.isEnabled = function () {
         return this._enabled;
+      };
+      /**
+       * Releases current user input.
+       * @ko 사용자의 입력을 강제로 중단시킨다.
+       * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       */
+
+
+      __proto.release = function () {
+        var activeEvent = this._activeEvent;
+        var prevEvent = activeEvent.prevEvent;
+        activeEvent.onRelease();
+
+        this._observer.release(this, prevEvent, [0, 0]);
+
+        this._detachWindowEvent(activeEvent);
+
+        return this;
       };
 
       __proto._onPanstart = function (event) {
@@ -3920,8 +3937,7 @@ version: 3.5.0
 
           if (swipeLeftToRight) {
             // iOS swipe left => right
-            this._forceRelease();
-
+            this.release();
             return;
           } else if (this._atRightEdge) {
             clearTimeout(this._rightEdgeTimer); // - is right to left
@@ -3933,7 +3949,7 @@ version: 3.5.0
             } else {
               // iOS swipe right => left
               this._rightEdgeTimer = window.setTimeout(function () {
-                return _this._forceRelease();
+                return _this.release();
               }, 100);
             }
           }
@@ -4876,10 +4892,9 @@ version: 3.5.0
      * egjs projects are licensed under the MIT license
      */
     var REACTIVE_AXES = {
-      state: {},
       methods: AXES_METHODS,
       events: AXES_EVENTS,
-      instance: function (data) {
+      created: function (data) {
         return new Axes(data.axis, data.options);
       },
       on: function (instance, name, callback) {
@@ -4908,15 +4923,7 @@ version: 3.5.0
         AXES_METHODS: AXES_METHODS,
         AXES_EVENTS: AXES_EVENTS,
         getInitialPos: getInitialPos,
-        REACTIVE_AXES: REACTIVE_AXES,
-        withReactiveMethods: withReactiveMethods,
-        getObservers: getObservers,
-        getObserver: getObserver,
-        ReactiveSubscribe: ReactiveSubscribe,
-        Observer: Observer,
-        withClassMethods: withClassMethods,
-        keys: keys,
-        camelize: camelize
+        REACTIVE_AXES: REACTIVE_AXES
     });
 
     /*

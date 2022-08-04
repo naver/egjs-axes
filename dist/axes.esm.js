@@ -4,10 +4,11 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.5.0
+version: 3.6.0
 */
-import Component, { ComponentEvent } from '@egjs/component';
 import getAgent from '@egjs/agent';
+import Component, { ComponentEvent } from '@egjs/component';
+import { getObserver, ReactiveSubscribe } from '@cfcs/core';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -65,139 +66,6 @@ function __decorate(decorators, target, key, desc) {
       d;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-var OBSERVERS_PATH = "__observers__";
-
-var Observer =
-/*#__PURE__*/
-function () {
-  function Observer(value) {
-    this._emitter = new Component();
-    this._current = value;
-  }
-
-  var __proto = Observer.prototype;
-  Object.defineProperty(__proto, "current", {
-    get: function () {
-      return this._current;
-    },
-    set: function (value) {
-      var isUpdate = value !== this._current;
-      this._current = value;
-
-      if (isUpdate) {
-        this._emitter.trigger("update", value);
-      }
-    },
-    enumerable: false,
-    configurable: true
-  });
-
-  __proto.subscribe = function (callback) {
-    this._emitter.on("update", callback);
-  };
-
-  __proto.unsubscribe = function (callback) {
-    this._emitter.off("update", callback);
-  };
-
-  return Observer;
-}();
-
-function keys(obj) {
-  return Object.keys(obj);
-}
-function camelize(str) {
-  return str.replace(/[\s-_]([a-z])/g, function (all, letter) {
-    return letter.toUpperCase();
-  });
-}
-
-function withReactiveMethods(ref, methods) {
-  var obj = {};
-  methods.forEach(function (name) {
-    obj[name] = function () {
-      var args = [];
-
-      for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-      }
-
-      var current = ref.current || ref.value;
-      return current[name].apply(current, args);
-    };
-  });
-  return obj;
-}
-function getObservers(instance) {
-  if (!instance[OBSERVERS_PATH]) {
-    instance[OBSERVERS_PATH] = {};
-  }
-
-  return instance[OBSERVERS_PATH];
-}
-function getObserver(instance, name, defaultValue) {
-  var observers = getObservers(instance);
-
-  if (!observers[name]) {
-    observers[name] = new Observer(defaultValue);
-  }
-
-  return observers[name];
-}
-function ReactiveSubscribe(Constructor) {
-  var prototype = Constructor.prototype;
-
-  prototype["subscribe"] = function (name, callback) {
-    getObserver(this, name).subscribe(callback);
-  };
-
-  prototype["unsubscribe"] = function (name, callback) {
-    var _this = this;
-
-    if (!name) {
-      keys(getObservers(this)).forEach(function (observerName) {
-        _this.unsubscribe(observerName);
-      });
-      return;
-    }
-
-    if (!(name in this)) {
-      return;
-    }
-
-    getObserver(this, name).unsubscribe(callback);
-  };
-}
-
-function withClassMethods(methods) {
-  return function (prototype, memberName) {
-    methods.forEach(function (name) {
-      if (name in prototype) {
-        return;
-      }
-
-      prototype[name] = function () {
-        var _a;
-
-        var args = [];
-
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-
-        var result = (_a = this[memberName])[name].apply(_a, args); // fix `this` type to return your own `class` instance to the instance using the decorator.
-
-
-        if (result === this[memberName]) {
-          return this;
-        } else {
-          return result;
-        }
-      };
-    });
-  };
 }
 
 /*
@@ -906,7 +774,7 @@ function () {
   __proto._getRoundPos = function (pos, depaPos) {
     // round value if round exist
     var roundUnit = this._axes.options.round; // if (round == null) {
-    // 	return {pos, depaPos}; // undefined, undefined
+    //   return {pos, depaPos}; // undefined, undefined
     // }
 
     return {
@@ -1112,9 +980,9 @@ function () {
     Object.keys(this._axis).forEach(function (axis) {
       _this._axis[axis] = __assign({
         range: [0, 100],
+        startPos: _this._axis[axis].range[0],
         bounce: [0, 0],
-        circular: [false, false],
-        startPos: _this._axis[axis].range[0]
+        circular: [false, false]
       }, _this._axis[axis]);
       ["bounce", "circular"].forEach(function (v) {
         var axisOption = _this._axis;
@@ -2347,13 +2215,13 @@ function (_super) {
  * @param {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
  * @param {Number} [range[0]=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @param {Number} [range[1]=0] The coordinate of the maximum <ko>최대 좌표</ko>
+ * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
  * @param {Number[]} [bounce] The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
  * @param {Number} [bounce[0]=0] The size of coordinate of the minimum area <ko>최소 좌표 바운스 영역의 크기</ko>
  * @param {Number} [bounce[1]=0] The size of coordinate of the maximum area <ko>최대 좌표 바운스 영역의 크기</ko>
  * @param {Boolean[]} [circular] Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
  * @param {Boolean} [circular[0]=false] Indicates whether to circulate to the coordinate of the minimum <ko>최소 좌표 방향의 순환 여부</ko>
  * @param {Boolean} [circular[1]=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
- * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
  **/
 
 /**
@@ -2810,7 +2678,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.5.0";
+  Axes.VERSION = "3.6.0";
   /* eslint-enable */
 
   /**
@@ -2933,8 +2801,8 @@ var getDirectionByAngle = function (angle, thresholdAngle) {
  * @example
  * ```js
  * const pan = new eg.Axes.PanInput("#area", {
- * 		inputType: ["touch"],
- * 		scale: [1, 1.3],
+ *     inputType: ["touch"],
+ *     scale: [1, 1.3],
  * });
  *
  * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
@@ -2958,24 +2826,12 @@ function () {
    *
    */
   function PanInput(el, options) {
-    var _this = this;
-
     this.axes = [];
     this.element = null;
     this._enabled = false;
     this._activeEvent = null;
     this._atRightEdge = false;
     this._rightEdgeTimer = 0;
-
-    this._forceRelease = function () {
-      var activeEvent = _this._activeEvent;
-      var prevEvent = activeEvent.prevEvent;
-      activeEvent.onRelease();
-
-      _this._observer.release(_this, prevEvent, [0, 0]);
-
-      _this._detachWindowEvent(activeEvent);
-    };
 
     this._voidFunction = function () {};
 
@@ -3061,13 +2917,31 @@ function () {
   };
   /**
    * Returns whether to use an input device
-   * @ko 입력 장치를 사용 여부를 반환한다.
+   * @ko 입력 장치 사용 여부를 반환한다.
    * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
    */
 
 
   __proto.isEnabled = function () {
     return this._enabled;
+  };
+  /**
+   * Releases current user input.
+   * @ko 사용자의 입력을 강제로 중단시킨다.
+   * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   */
+
+
+  __proto.release = function () {
+    var activeEvent = this._activeEvent;
+    var prevEvent = activeEvent.prevEvent;
+    activeEvent.onRelease();
+
+    this._observer.release(this, prevEvent, [0, 0]);
+
+    this._detachWindowEvent(activeEvent);
+
+    return this;
   };
 
   __proto._onPanstart = function (event) {
@@ -3117,8 +2991,7 @@ function () {
 
       if (swipeLeftToRight) {
         // iOS swipe left => right
-        this._forceRelease();
-
+        this.release();
         return;
       } else if (this._atRightEdge) {
         clearTimeout(this._rightEdgeTimer); // - is right to left
@@ -3130,7 +3003,7 @@ function () {
         } else {
           // iOS swipe right => left
           this._rightEdgeTimer = window.setTimeout(function () {
-            return _this._forceRelease();
+            return _this.release();
           }, 100);
         }
       }
@@ -4073,10 +3946,9 @@ function () {
  * egjs projects are licensed under the MIT license
  */
 var REACTIVE_AXES = {
-  state: {},
   methods: AXES_METHODS,
   events: AXES_EVENTS,
-  instance: function (data) {
+  created: function (data) {
     return new Axes(data.axis, data.options);
   },
   on: function (instance, name, callback) {
@@ -4096,5 +3968,5 @@ var REACTIVE_AXES = {
  */
 
 export default Axes;
-export { PanInput, RotatePanInput, PinchInput, WheelInput, MoveKeyInput, AXES_METHODS, AXES_EVENTS, getInitialPos, REACTIVE_AXES, withReactiveMethods, getObservers, getObserver, ReactiveSubscribe, Observer, withClassMethods, keys, camelize };
+export { PanInput, RotatePanInput, PinchInput, WheelInput, MoveKeyInput, AXES_METHODS, AXES_EVENTS, getInitialPos, REACTIVE_AXES };
 //# sourceMappingURL=axes.esm.js.map
