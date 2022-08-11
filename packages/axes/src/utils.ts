@@ -269,22 +269,6 @@ export const getDirection = (
   }
 };
 
-export const getInitialPos = (
-  axis: ObjectInterface<AxisOption>,
-  startPos: Axis
-): Axis => {
-  return {
-    ...Object.keys(axis).reduce(
-      (result, key) =>
-        Object.assign(result, {
-          [key]: axis[key].startPos ?? axis[key].range[0] ?? 0,
-        }),
-      {}
-    ),
-    ...startPos,
-  };
-};
-
 export const useDirection = (
   checkType: number,
   direction: number,

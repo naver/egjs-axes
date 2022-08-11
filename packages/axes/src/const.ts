@@ -23,6 +23,8 @@ export const AXES_METHODS = [
   "get",
   "setTo",
   "setBy",
+  "setOptions",
+  "setAxis",
   "stopAnimation",
   "updateAnimation",
   "isBounceArea",

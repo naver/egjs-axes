@@ -241,6 +241,69 @@ describe("Axes", () => {
       // When
       inst.setBy({ x: -10 }, 200);
     });
+
+    it("should change Axes options via `setOptions` method", () => {
+      // Given
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 100],
+          },
+        },
+        {
+          round: 10,
+        }
+      );
+
+      // When
+      inst.setTo({ x: 48 });
+
+      // Then
+      expect(inst.get()).to.be.eql({ x: 50 });
+
+      // When
+      inst.setOptions({
+        round: 1,
+      });
+      inst.setTo({ x: 48 });
+
+      // Then
+      expect(inst.get()).to.be.eql({ x: 48 });
+    });
+
+    it("should change options of each Axis via `setAxis` method", () => {
+      // Given
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 100],
+          },
+          y: {
+            range: [0, 200],
+          },
+        },
+      );
+
+      // When
+      inst.setTo({ x: 150, y: 150 });
+
+      // Then
+      expect(inst.get()).to.be.eql({ x: 100, y: 150 });
+
+      // When
+      inst.setAxis({
+        x: {
+          range: [0, 200],
+        },
+        y: {
+          range: [0, 100],
+        },
+      });
+      inst.setTo({ x: 150, y: 150 });
+
+      // Then
+      expect(inst.get()).to.be.eql({ x: 150, y: 100 });
+    });
   });
 
   describe("Axes Test with InputType", () => {
