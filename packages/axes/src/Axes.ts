@@ -261,8 +261,8 @@ class Axes extends Component<AxesEvents> {
       ...options,
     };
     Object.keys(startPos).forEach((key) => {
-			this.axis[key].startPos = startPos[key];
-		});
+      this.axis[key].startPos = startPos[key];
+    });
 
     this.interruptManager = new InterruptManager(this.options);
     this.axisManager = new AxisManager(this.axis);
@@ -467,22 +467,22 @@ class Axes extends Component<AxesEvents> {
    *      range: [0, 100]
    *   },
    * }, {
-	 *   round: 10,
-	 * });
+   *   round: 10,
+   * });
    *
    * axes.setTo({"x": 48});
    * axes.get(); // {"x": 50}
-	 *
+   *
    * axes.setOptions({
-	 *   round: 1,
-	 * });
-	 *
+   *   round: 1,
+   * });
+   *
    * axes.setTo({"x": 48});
    * axes.get(); // {"x": 48}
-	 * ```
+   * ```
    */
   public setOptions(options: AxesOption) {
-		Object.assign(this.options, options);
+    Object.assign(this.options, options);
     return this;
   }
 
@@ -501,12 +501,12 @@ class Axes extends Component<AxesEvents> {
    *
    * axes.setTo({"x": 150});
    * axes.get(); // {"x": 100}
-	 *
+   *
    * axes.setAxis({
-	 *   "x": {
-	 *      range: [0, 200]
-	 *   },
-	 * });
+   *   "x": {
+   *      range: [0, 200]
+   *   },
+   * });
    *
    * axes.setTo({"x": 150});
    * axes.get(); // {"x": 150}
