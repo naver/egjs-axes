@@ -114,7 +114,10 @@ export class AxisManager {
       if (!this._axis[key]) {
         throw new Error(`Axis ${key} does not exist in Axes instance`);
       }
-      Object.assign(this._axis[key], axis[key]);
+      this._axis[key] = {
+        ...this._axis[key],
+        ...axis[key],
+      };
     });
     this._complementOptions();
   }

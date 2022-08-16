@@ -482,7 +482,10 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public setOptions(options: AxesOption) {
-    Object.assign(this.options, options);
+      this.options = {
+      ...this.options,
+      ...options,
+    };
     return this;
   }
 
