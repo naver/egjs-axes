@@ -111,10 +111,10 @@ export class AxisManager {
 
   public setAxis(axis: ObjectInterface<AxisOption>) {
     Object.keys(axis).forEach((key) => {
-			if (!this._axis[key]) {
-				throw new Error(`Axis ${key} does not exist in Axes instance`);
-			}
-			Object.assign(this._axis[key], axis[key]);
+      if (!this._axis[key]) {
+        throw new Error(`Axis ${key} does not exist in Axes instance`);
+      }
+      Object.assign(this._axis[key], axis[key]);
     });
     this._complementOptions();
   }
