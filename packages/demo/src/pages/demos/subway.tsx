@@ -3,7 +3,6 @@ import { useAxes, PanInput, PinchInput, WheelInput } from "@egjs/react-axes";
 import "../../css/demos/subway.css";
 
 export default function Subway() {
-  const SUPPORT_TOUCH = "ontouchstart" in window;
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
   const [range, setRange] = useState(0);
   const wrapper = useRef<HTMLDivElement>(null);
@@ -61,6 +60,7 @@ export default function Subway() {
   });
 
   useEffect(() => {
+    const SUPPORT_TOUCH = "ontouchstart" in window;
     const IMAGE_SIZE = 3000;
     const wrapperSize = wrapper.current.getBoundingClientRect().width;
     const baseScale = wrapperSize / IMAGE_SIZE;

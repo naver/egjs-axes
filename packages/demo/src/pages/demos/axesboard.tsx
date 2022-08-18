@@ -81,10 +81,6 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
       });
       setTo({ x: (innerBoardWidth - targetWidth) / 2, y: (innerBoardHeight - targetHeight) / 2 });
       nested.connect(["innerX", "innerY"], new PanInput(board, panInputOptions));
-      nested.connect(["innerY", "innerX"], new WheelInput(board, {
-        scale: 5,
-        ...wheelInputOptions,
-      }));
       nested.connect(["innerX", "innerY"], new MoveKeyInput(board, {
         scale: [5, -5],
         ...moveKeyInputOptions,
@@ -106,10 +102,12 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
       scale: 4,
       ...pinchInputOptions,
     }));
-    connect(["y", "x"], new WheelInput(isNested ? innerBoard : board, {
-      scale: 5,
-      ...wheelInputOptions,
-    }));
+    if (wheelInputOptions) {
+      connect(["y", "x"], new WheelInput(isNested ? innerBoard : board, {
+        scale: 5,
+        ...wheelInputOptions,
+      }));
+    }
     connect(["x", "y"], new MoveKeyInput(isNested ? innerBoard : board, {
       scale: [5, -5],
       ...moveKeyInputOptions,
