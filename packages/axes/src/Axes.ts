@@ -27,7 +27,6 @@ import {
   ObjectInterface,
   UpdateAnimationOption,
 } from "./types";
-import { getInitialPos } from "./utils";
 import { EasingManager } from "./animation/EasingManager";
 import { AnimationManager } from "./animation/AnimationManager";
 
@@ -82,7 +81,7 @@ export interface AxesOption {
  *
  * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
  * @param {AxesOption} [options={}] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
- * @param {Object.<string, number>} [startPos=null] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
+ * @param {Object.<string, number>} [startPos={}] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
  *
  * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
  * @example
@@ -244,7 +243,7 @@ class Axes extends Component<AxesEvents> {
   public constructor(
     public axis: ObjectInterface<AxisOption> = {},
     options: AxesOption = {},
-    startPos: Axis = null
+    startPos: Axis = {}
   ) {
     super();
     this.options = {
@@ -261,6 +260,9 @@ class Axes extends Component<AxesEvents> {
       },
       ...options,
     };
+    Object.keys(startPos).forEach((key) => {
+      this.axis[key].startPos = startPos[key];
+    });
 
     this.interruptManager = new InterruptManager(this.options);
     this.axisManager = new AxisManager(this.axis);
@@ -268,7 +270,7 @@ class Axes extends Component<AxesEvents> {
     this.animationManager = new EasingManager(this);
     this.inputObserver = new InputObserver(this);
     this.eventManager.setAnimationManager(this.animationManager);
-    this.eventManager.triggerChange(getInitialPos(axis, startPos));
+    this.eventManager.triggerChange(this.axisManager.get());
   }
 
   /**
@@ -450,6 +452,71 @@ class Axes extends Component<AxesEvents> {
    */
   public setBy(pos: Axis, duration = 0) {
     this.animationManager.setBy(pos, duration);
+    return this;
+  }
+
+  /**
+   * Change the options of Axes instance.
+   * @ko 인스턴스의 옵션을 변경한다.
+   * @param {AxesOption} options Axes options to change <ko>변경할 옵션 목록</ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * ```js
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   * }, {
+   *   round: 10,
+   * });
+   *
+   * axes.setTo({"x": 48});
+   * axes.get(); // {"x": 50}
+   *
+   * axes.setOptions({
+   *   round: 1,
+   * });
+   *
+   * axes.setTo({"x": 48});
+   * axes.get(); // {"x": 48}
+   * ```
+   */
+  public setOptions(options: AxesOption) {
+      this.options = {
+      ...this.options,
+      ...options,
+    };
+    return this;
+  }
+
+  /**
+   * Change the information of an existing axis.
+   * @ko 존재하는 축의 정보를 변경한다.
+   * @param {Object.<string, AxisOption>} axis Axis options to change <ko>변경할 축의 정보</ko>
+   * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+   * @example
+   * ```js
+   * const axes = new eg.Axes({
+   *   "x": {
+   *      range: [0, 100]
+   *   },
+   * });
+   *
+   * axes.setTo({"x": 150});
+   * axes.get(); // {"x": 100}
+   *
+   * axes.setAxis({
+   *   "x": {
+   *      range: [0, 200]
+   *   },
+   * });
+   *
+   * axes.setTo({"x": 150});
+   * axes.get(); // {"x": 150}
+   * ```
+   */
+  public setAxis(axis: ObjectInterface<AxisOption>) {
+    this.axisManager.setAxis(axis);
     return this;
   }
 

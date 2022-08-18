@@ -12,6 +12,5 @@ export { MoveKeyInput } from "./inputType/MoveKeyInput";
 export default Axes;
 
 export { AXES_METHODS, AXES_EVENTS } from "./const";
-export { getInitialPos } from "./utils";
 export * from "./types";
 export * from "./reactive";

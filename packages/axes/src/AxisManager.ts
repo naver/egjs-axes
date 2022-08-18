@@ -21,9 +21,9 @@ export class AxisManager {
   private _pos: Axis;
   public constructor(private _axis: ObjectInterface<AxisOption>) {
     this._complementOptions();
-    this._pos = Object.keys(this._axis).reduce((acc, v) => {
-      acc[v] = this._axis[v].range[0];
-      return acc;
+    this._pos = Object.keys(this._axis).reduce((pos, v) => {
+      pos[v] = this._axis[v].startPos;
+      return pos;
     }, {});
   }
 
@@ -107,6 +107,19 @@ export class AxisManager {
 
   public getAxisOptions(key: string) {
     return this._axis[key];
+  }
+
+  public setAxis(axis: ObjectInterface<AxisOption>) {
+    Object.keys(axis).forEach((key) => {
+      if (!this._axis[key]) {
+        throw new Error(`Axis ${key} does not exist in Axes instance`);
+      }
+      this._axis[key] = {
+        ...this._axis[key],
+        ...axis[key],
+      };
+    });
+    this._complementOptions();
   }
 
   /**
