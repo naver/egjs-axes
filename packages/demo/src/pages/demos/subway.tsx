@@ -1,108 +1,92 @@
-import React, { useEffect } from "react";
-
-import Axes, { PanInput, PinchInput, WheelInput } from "../../../../axes/src/index";
+import React, { useState, useEffect, useRef } from "react";
+import { useAxes, PanInput, PinchInput, WheelInput } from "@egjs/react-axes";
 import "../../css/demos/subway.css";
 
-const Cube = () => {
-  useEffect(() => {
-    // https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
-    const getZoomedOffset = (value, zoom, beforeZoom) => {
-      return -(value / zoom - value / beforeZoom);
-    };
-    const SUPPORT_TOUCH = "ontouchstart" in window;
-    const IMAGE_SIZE = 3000;
-    const wrapper = document.getElementById("zoomWrapper");
-    const wrapperSize = wrapper.getBoundingClientRect().width;
-    wrapper.style.height = wrapperSize + "px";
-    const imageView = document.getElementById("subway");
-    const baseScale = wrapperSize / IMAGE_SIZE;
+export default function Subway() {
+  const SUPPORT_TOUCH = "ontouchstart" in window;
+  const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
+  const [range, setRange] = useState(0);
+  const wrapper = useRef<HTMLDivElement>(null);
+  const { connect, setTo, setAxis, onChange, zoom } = useAxes(
+    {
+      x: {
+        range: [0, 0],
+        bounce: 100,
+      },
+      y: {
+        range: [0, 0],
+        bounce: 100,
+      },
+      zoom: {
+        range: [0, 1],
+      },
+    },
+    {
+      deceleration: 0.003,
+    },
+  );
 
-    // 1. Initialize eg.Axes
-    const axes = new Axes(
-      {
+  const getZoomedOffset = (value, zoom, beforeZoom) => {
+    return -(value / zoom - value / beforeZoom);
+  };
+
+  onChange(({ pos, delta, inputEvent, set }) => {
+    if (inputEvent && delta.zoom) {
+      const center = SUPPORT_TOUCH
+        ? inputEvent.center
+        : {
+            x: inputEvent.layerX,
+            y: inputEvent.layerY,
+          };
+
+      const beforeZoom = pos.zoom - delta.zoom;
+      const newX = pos.x + getZoomedOffset(center.x, pos.zoom, beforeZoom);
+      const newY = pos.y + getZoomedOffset(center.y, pos.zoom, beforeZoom);
+      const wrapperSize = wrapper.current.getBoundingClientRect().width;
+      const newRange = range + getZoomedOffset(wrapperSize, pos.zoom, beforeZoom);
+      setCurrentPos({ x: newX, y: newY });
+      set({ x: newX, y: newY });
+      setRange(newRange);
+      setAxis({
         x: {
-          range: [0, 0],
-          bounce: 100,
+          range: [0, newRange],
         },
         y: {
-          range: [0, 0],
-          bounce: 100,
+          range: [0, newRange],
         },
-        zoom: {
-          range: [baseScale, 1],
-        },
-      },
-      {
-        deceleration: 0.003,
-        interrutable: false,
-      },
-      {
-        zoom: 1,
-      }
-    );
-
-    // 2. attach event handler
-    axes.on(
-      "change",
-      ({ pos, delta, inputEvent, set }) => {
-        if (inputEvent && delta.zoom) {
-          const center = SUPPORT_TOUCH
-            ? inputEvent.center
-            : {
-                x: inputEvent.layerX,
-                y: inputEvent.layerY,
-              };
-
-          const beforeZoom = pos.zoom - delta.zoom;
-          const newX = pos.x + getZoomedOffset(center.x, pos.zoom, beforeZoom);
-          const newY = pos.y + getZoomedOffset(center.y, pos.zoom, beforeZoom);
-          set({ x: newX, y: newY });
-          imageView.style[Axes.TRANSFORM] = `scale(${
-            pos.zoom
-          }) translate3d(${-newX}px, ${-newY}px, 0)`;
-
-          // change view
-          axes.axis.y.range[1] = axes.axis.x.range[1] =
-            axes.axis.x.range[1] +
-            getZoomedOffset(wrapperSize, pos.zoom, beforeZoom);
-        } else {
-          imageView.style[Axes.TRANSFORM] = `scale(${
-            pos.zoom
-          }) translate3d(${-pos.x}px, ${-pos.y}px, 0)`;
-        }
-      },
-      []
-    );
-
-    // 3. Initialize inputTypes and connect it
-    axes
-      .connect(
-        "zoom",
-        SUPPORT_TOUCH
-          ? new PinchInput(wrapper)
-          : new WheelInput(wrapper, {
-              scale: Math.abs(baseScale),
-            })
-      )
-      .connect(
-        "x y",
-        new PanInput(wrapper, {
-          scale: [-1, -1],
-        })
-      );
+      });
+    } else {
+      setCurrentPos({ x: pos.x, y: pos.y });
+    }
   });
 
+  useEffect(() => {
+    const IMAGE_SIZE = 3000;
+    const wrapperSize = wrapper.current.getBoundingClientRect().width;
+    const baseScale = wrapperSize / IMAGE_SIZE;
+    wrapper.current.style.height = wrapperSize + "px";
+    setAxis({
+      zoom: {
+        range: [baseScale, 1],
+      },
+    });
+    setTo({
+      zoom: baseScale,
+    });
+    connect("zoom", SUPPORT_TOUCH ? new PinchInput(wrapper) : new WheelInput(wrapper, { scale: Math.abs(baseScale) }));
+    connect("x y", new PanInput(wrapper, { scale: [-1, -1] }));
+  }, []);
+
   return (
-    <div className="demobox">
+    <div>
       <p>You can create maps that can zoom using three axes.</p>
-      <div id="zoomWrapper">
+      <div id="zoomWrapper" ref={wrapper}>
         <img
           id="subway"
           src={require("@site/static/img/demos/subway/subway.png").default}
+          style={{ transform: `scale(${zoom}) translate3d(${-currentPos.x}px, ${-currentPos.y}px, 0)` }}
         />
       </div>
     </div>
   );
 };
-
-export default Cube;

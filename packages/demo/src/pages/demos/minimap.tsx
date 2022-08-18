@@ -1,95 +1,81 @@
-import React, { useEffect } from "react";
-
-import Axes, {
-  PanInput,
-  MoveKeyInput,
-  WheelInput,
-} from "../../../../axes/src/index";
+import React, { useState, useEffect } from "react";
+import { useAxes, PanInput, MoveKeyInput, WheelInput } from "@egjs/react-axes";
 import "../../css/demos/minimap.css";
 
-const Minimap = () => {
-  useEffect(() => {
-    // raw-image 1280 * 1677
-    const RAW_IMAGE_WIDTH = 1280;
-    const RAW_IMAGE_HEIGHT = 1677;
-    // mini-map 128 * 167.7
-    const MINIMAP_WIDTH = 128;
-    const IMAGE_RATE = RAW_IMAGE_HEIGHT / RAW_IMAGE_WIDTH;
+export default function Minimap() {
+  // raw-image 1280 * 1677
+  // mini-map 128 * 167.7
+  const [viewHeight, setViewHeight] = useState(0);
+  const [pointerWidth, setPointerWidth] = useState(0);
+  const [scale, setScale] = useState([0, 0]);
+  const RAW_IMAGE_WIDTH = 1280;
+  const RAW_IMAGE_HEIGHT = 1677;
+  const MINIMAP_WIDTH = 128;
+  const IMAGE_RATE = RAW_IMAGE_HEIGHT / RAW_IMAGE_WIDTH;
 
-    const painting = document.getElementById("rawImage");
-    const view = document.getElementById("imageView");
-    const viewWidth = view.getBoundingClientRect().width;
-    view.style.height = viewWidth * IMAGE_RATE + "px";
-    const viewRect = view.getBoundingClientRect();
-    const minimap = document.getElementById("minimap"); // 1/10
+  const { connect, setAxis, rawX, rawY } = useAxes(
+    {
+      rawX: {
+        range: [0, 0],
+        bounce: 100,
+      },
+      rawY: {
+        range: [0, 0],
+        bounce: 100,
+      },
+    },
+    {
+      deceleration: 0.0024,
+    }
+  );
+
+  useEffect(() => {
+    const viewarea = document.getElementById("imageView");
+    const viewRect = viewarea.getBoundingClientRect();
+    const viewWidth = viewarea.getBoundingClientRect().width;
+    const viewHeight = viewWidth * IMAGE_RATE;
+    const minimap = document.getElementById("minimap");
     const minimapRect = minimap.getBoundingClientRect();
     const pointer = document.getElementById("minimap-pointer");
-    const pointerWidth = (viewWidth / RAW_IMAGE_WIDTH) * MINIMAP_WIDTH;
-    pointer.style.width = pointerWidth + "px";
-    pointer.style.height = pointerWidth * IMAGE_RATE + "px";
     const pointerRect = pointer.getBoundingClientRect();
-    const scale = [
+
+    connect("rawX rawY", new PanInput(viewarea, { scale: [-1, -1] }));
+    connect("rawX rawY", new MoveKeyInput(viewarea, { scale: [10, -10] }));
+    connect("rawY rawX", new WheelInput(viewarea, { scale: -30, useNormalized: true }));
+    setViewHeight(viewHeight);
+    setPointerWidth((viewWidth / RAW_IMAGE_WIDTH) * MINIMAP_WIDTH);
+    setScale([
       (minimapRect.width - pointerRect.width) /
-        (RAW_IMAGE_WIDTH - viewRect.width),
+        (RAW_IMAGE_WIDTH),
       (minimapRect.height - pointerRect.height) /
-        (RAW_IMAGE_HEIGHT - viewRect.height),
-    ];
-
-    // 1. Initialize eg.Axes
-    const axes = new Axes(
-      {
-        rawX: {
-          range: [0, RAW_IMAGE_WIDTH - viewRect.width],
-          bounce: 100,
-        },
-        rawY: {
-          range: [0, RAW_IMAGE_HEIGHT - viewRect.height],
-          bounce: 100,
-        },
+        (RAW_IMAGE_HEIGHT),
+    ]);
+    setAxis({
+      rawX: {
+        range: [0, RAW_IMAGE_WIDTH - viewRect.width],
       },
-      {
-        deceleration: 0.0024,
-      }
-    );
-
-    // 2. attach event handler
-    axes.on("change", ({ pos }) => {
-      painting.style[
-        Axes.TRANSFORM
-      ] = `translate3d(${-pos.rawX}px, ${-pos.rawY}px, 0)`;
-      pointer.style[Axes.TRANSFORM] = `translate3d(${pos.rawX * scale[0]}px, ${
-        pos.rawY * scale[1]
-      }px, 0)`;
+      rawY: {
+        range: [0, RAW_IMAGE_HEIGHT - viewHeight],
+      },
     });
-
-    // 3. Initialize a inputType and connect it
-    axes
-      .connect(
-        "rawX rawY",
-        new PanInput(view, {
-          scale: [-1, -1],
-        })
-      )
-      .connect("rawX rawY", new MoveKeyInput(view, { scale: [10, -10] }))
-      .connect(
-        "rawY rawX",
-        new WheelInput(view, { scale: -30, useNormalized: true })
-      );
   }, []);
 
   return (
-    <div className="demobox">
+    <div>
       <p>You can create a scrollable minimap using two axes.</p>
       <div style={{ position: "relative" }}>
-        <div id="imageView">
-          <div id="rawImage"></div>
+        <div id="imageView" style={{ height: `${viewHeight}px` }}>
+          <div id="rawImage" style={{ transform: `translate3d(${-rawX}px, ${-rawY}px, 0)` }}></div>
         </div>
         <div id="minimap">
-          <div id="minimap-pointer"></div>
+          <div id="minimap-pointer"
+            style={{
+              width: `${pointerWidth}px`,
+              height: `${pointerWidth * IMAGE_RATE}px`,
+              transform: `translate3d(${rawX * scale[0]}px, ${ rawY * scale[1] }px, 0)`,
+            }}></div>
         </div>
       </div>
     </div>
   );
 };
-
-export default Minimap;

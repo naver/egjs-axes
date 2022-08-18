@@ -1,19 +1,33 @@
-import React, { useEffect } from "react";
-
-import Axes, { PanInput } from "../../../../axes/src/index";
+import React, { useState, useEffect, useRef } from "react";
+import { useAxes, PanInput } from "@egjs/react-axes";
 import Icon from "../../../static/img/demos/logo_mono.svg";
 import "../../css/demos/cardinhand.css";
 
-const CardInHand = () => {
+export default function CardInHand() {
+  const CARD_OFFSET = -300;
+  const [cards, setCards] = useState(new Array(7).fill({ tilt: 0, offset: 0 }));
+  const { connect, setAxis, hand, top } = useAxes(
+    {
+      hand: {
+        range: [0, 0],
+        bounce: 15,
+      },
+      top: {
+        range: [0, 0],
+        bounce: [100, 160],
+      },
+    },
+    {
+      deceleration: 0.00034,
+    },
+  );
+
   useEffect(() => {
-    const transform = Axes.TRANSFORM;
-    const dot = document.getElementById("dot");
     const hand = document.querySelector(".hand");
-    const cards = Array.prototype.slice.apply(
+    const handcards = Array.prototype.slice.apply(
       document.querySelectorAll(".handcard")
     );
     const HAND_RADIUS = parseInt(window.getComputedStyle(hand).width) / 2;
-    const CARD_OFFSET = -300;
     let handRotMin = null;
     let handRotMax = null;
 
@@ -34,7 +48,7 @@ const CardInHand = () => {
       };
     };
 
-    const setCardOnHand = (card) => {
+    const getCards = (card) => {
       const distance = getCardDistance(card, hand);
       const cardTilt = distance.tilt;
       const cardDistance = distance.distance;
@@ -50,54 +64,17 @@ const CardInHand = () => {
       } else if (cardTilt > handRotMax) {
         handRotMax = cardTilt;
       }
-      card.style[
-        Axes.TRANSFORM
-      ] = `rotateZ(${cardTilt}deg) translateY(${cardOffset}px)`;
-      card.setAttribute("data-cardOffset", cardOffset);
+      return { tilt: cardTilt, offset: cardOffset };
     };
 
-    cards.forEach((v) => {
-      setCardOnHand(v);
-    });
-
-    // 1. Initialize eg.Axes
-    const axes = new Axes(
-      {
-        hand: {
-          range: [handRotMin, handRotMax],
-          bounce: 15,
-        },
-        top: {
-          range: [0, 0],
-          bounce: [100, 160],
-        },
+    setCards(handcards.map(card => getCards(card)));
+    setAxis({
+      hand: {
+        range: [handRotMin, handRotMax],
       },
-      {
-        deceleration: 0.00034,
-      }
-    );
-
-    // 2. attach event handler
-    axes.on("change", ({ pos }) => {
-      dot.style["bottom"] = `${-1.4 * pos.top}px`;
-      dot.style[transform] = `translateX(${pos.hand * 2.3}px)`;
-      hand.style[transform] = `rotateZ(${pos.hand}deg)`;
-      cards.forEach((v) => {
-        v.style[transform] = `${
-          v.style[transform].split("translateY")[0]
-        } translateY(${
-          parseFloat(v.getAttribute("data-cardOffset")) + pos.top
-        }px)`;
-      });
     });
 
-    // 3. Initialize a inputType and connect it
-    axes.connect(
-      "hand top",
-      new PanInput(hand, {
-        scale: [0.3, 0.8],
-      })
-    );
+    connect("hand top", new PanInput(".hand", { scale: [0.3, 0.8] }));
   }, []);
 
   return (
@@ -107,37 +84,16 @@ const CardInHand = () => {
         <div className="showcase-item">
           <div className="showcase-content">
             <div id="movableCoordWrapper">
-              <div className="hand">
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
-                <div className="handcard">
-                  <Icon />
-                </div>
+              <div className="hand" style={{ transform: `rotateZ(${hand}deg)` }}>
+                {cards.map((card, i) => (
+                  <div className="handcard" key={i} style={{ transform: `rotateZ(${card.tilt}deg) translateY(${card.offset + top}px)` }}><Icon /></div>
+                ))}
               </div>
             </div>
-            <div id="dot" className="movableDot"></div>
+            <div id="dot" className="movableDot" style={{ bottom: `${-1.4 * top}px`, transform: `translateX(${hand * 2.3}px)` }}></div>
           </div>
         </div>
-        <div className="codepen"></div>
       </div>
     </div>
   );
 };
-
-export default CardInHand;

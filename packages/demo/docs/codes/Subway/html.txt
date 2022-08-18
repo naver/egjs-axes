@@ -1,0 +1,6 @@
+<div>
+  <p>You can create maps that can zoom using three axes.</p>
+  <div id="zoomWrapper">
+    <img id="subway" src="../image/subway/subway.png"/>
+  </div>
+</div>
