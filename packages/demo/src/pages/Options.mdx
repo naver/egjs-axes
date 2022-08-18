@@ -1,0 +1,726 @@
+---
+title: Options
+custom_edit_url: null
+---
+
+import AxesBoard from "@site/src/pages/demos/axesboard";
+
+# Options
+## Axis Options
+### range
+The range of coordinate.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    range: [0, width],
+  },
+  y: {
+    range: [0, height],
+  },
+  ```
+  </div>
+    <AxesBoard/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    range: [0, width / 2],
+  },
+  y: {
+    range: [0, height / 2],
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { range: [0, 0.5] }, y: { range: [0, 0.5] } }}/>
+  </div>
+</div>
+
+### bounce
+The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action.
+If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    bounce: 10,
+  },
+  y: {
+    bounce: 10,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { bounce: 10 }, y: { bounce: 10 } }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    bounce: 20,
+  },
+  y: {
+    bounce: 20,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { bounce: 20 }, y: { bounce: 20 } }}/>
+  </div>
+</div>
+
+### circular
+Indicates whether a circular element is available.
+If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    circular: false,
+  },
+  y: {
+    circular: false,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { circular: false }, y: { circular: false } }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    circular: true,
+  },
+  y: {
+    circular: true,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { circular: true }, y: { circular: true } }}/>
+  </div>
+</div>
+
+### startPos
+The coordinates to be moved when creating an instance.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    startPos: 0,
+  },
+  y: {
+    startPos: 60,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { startPos: 0.1 }, y: { startPos: 60 } }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  x: {
+    startPos: 100,
+  },
+  y: {
+    startPos: 60,
+  },
+  ```
+  </div>
+    <AxesBoard axis={{ x: { startPos: 100 }, y: { startPos: 60 } }}/>
+  </div>
+</div>
+
+## Axes Options
+### easing
+The easing function to apply to an animation.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  easing: x => 1 - Math.pow(1 - x, 3)
+  ```
+  </div>
+    <AxesBoard options={{ easing: x => 1 - Math.pow(1 - x, 3) }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  easing: x => x
+  ```
+  </div>
+    <AxesBoard options={{ easing: x => x }}/>
+  </div>
+</div>
+
+### maximumDuration
+Maximum duration of the animation. (milisecond)
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  maximumDuration: 5000
+  ```
+  </div>
+    <AxesBoard options={{ maximumDuration: 5000 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  maximumDuration: 500
+  ```
+  </div>
+    <AxesBoard options={{ maximumDuration: 500 }}/>
+  </div>
+</div>
+
+### minimumDuration
+Minimum duration of the animation. (milisecond)
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  minimumDuration: 0
+  ```
+  </div>
+    <AxesBoard options={{ minimumDuration: 0 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  minimumDuration: 2000
+  ```
+  </div>
+    <AxesBoard options={{ minimumDuration: 2000 }}/>
+  </div>
+</div>
+
+### deceleration
+Deceleration of the animation where acceleration is manually enabled by user.
+A higher value indicates shorter running time.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  deceleration: 0.0006
+  ```
+  </div>
+    <AxesBoard options={{ deceleration: 0.0006 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  deceleration: 0.0015
+  ```
+  </div>
+    <AxesBoard options={{ deceleration: 0.0015 }}/>
+  </div>
+</div>
+
+### interruptable
+Indicates whether an animation is interruptible.
+- true: It can be paused or stopped by user action or the API.
+- false: It cannot be paused or stopped by user action or the API while it is running.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  interruptable: true
+  ```
+  </div>
+    <AxesBoard options={{ interruptable: true }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  interruptable: false
+  ```
+  </div>
+    <AxesBoard options={{ interruptable: false }}/>
+  </div>
+</div>
+
+### round
+Rounding unit. For example, 0.1 rounds to 0.1 decimal point(6.1234 => 6.1), 5 rounds to 5 (93 => 95)
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  round: 1
+  ```
+  </div>
+    <AxesBoard options={{ round: 1 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  round: 20
+  ```
+  </div>
+    <AxesBoard options={{ round: 20 }}/>
+  </div>
+</div>
+
+### nested
+Whether the event propagates to other instances when the coordinates reach the end of the movable area.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  nested: false
+  ```
+  </div>
+    <AxesBoard options={{ nested: true }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  nested: true
+  ```
+  </div>
+    <AxesBoard options={{ nested: true }} setNested={true}/>
+  </div>
+</div>
+
+## PanInput Options
+### scale
+Coordinate scale that a user can move.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: [1, 1]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ scale: [1, 1] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: [3, 3]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ scale: [3, 3] }}/>
+  </div>
+</div>
+
+### inputType
+Types of input devices.
+- touch: Touch screen
+- mouse: Mouse
+- pointer: Mouse and touch
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputType: ["mouse"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputType: ["mouse"] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputType: ["touch"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputType: ["touch"] }}/>
+  </div>
+</div>
+
+### inputButton
+List of buttons to allow input.
+- left: Left mouse button and normal touch
+- middle: Mouse wheel press
+- right: Right mouse button
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputButton: ["left", "right"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputButton: ["left", "right"] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputButton: ["right"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputButton: ["right"] }}/>
+  </div>
+</div>
+
+### thresholdAngle
+The threshold value that determines whether user action is horizontal or vertical (0~90).
+:::info
+Hint: These examples only have a x-axis. Try using the input direction similar to y-axis.
+:::
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  thresholdAngle: 15
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ thresholdAngle: 15 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  thresholdAngle: 75
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ thresholdAngle: 75 }}/>
+  </div>
+</div>
+
+### threshold
+Minimal pan distance required before recognizing.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  threshold: 0
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ threshold: 0 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  threshold: 5
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ threshold: 5 }}/>
+  </div>
+</div>
+
+### iOSEdgeSwipeThreshold
+Area (px) that can go to the next page when swiping the right edge in iOS safari.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  iOSEdgeSwipeThreshold: 30
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ iOSEdgeSwipeThreshold: 30 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  iOSEdgeSwipeThreshold: 120
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ iOSEdgeSwipeThreshold: 120 }}/>
+  </div>
+</div>
+
+### releaseOnScroll
+Whether to release input when a native event with `cancelable: false` occurs while user input.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  releaseOnScroll: false
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ releaseOnScroll: false }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  releaseOnScroll: true
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ releaseOnScroll: true }}/>
+  </div>
+</div>
+
+### touchAction
+Value that overrides the element's "touch-action" css property.
+If set to null, it is automatically set to prevent scrolling in the direction of the connected axis.
+:::info
+Hint: These examples only have a x-axis. Try using the input direction similar to y-axis in mobile device.
+:::
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  touchAction: "none"
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ thresholdAngle: 45, touchAction: "none" }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  touchAction: "pan-y"
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ thresholdAngle: 45, touchAction: "pan-y" }}/>
+  </div>
+</div>
+
+## WheelInput Options
+### scale
+Coordinate scale that a user can move.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: 5
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ scale: 5 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: 20
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ scale: 20 }}/>
+  </div>
+</div>
+
+### releaseDelay
+Millisecond that trigger release event after last input.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  releaseDelay: 300
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ releaseDelay: 300 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  releaseDelay: 2000
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ releaseDelay: 2000 }}/>
+  </div>
+</div>
+
+### useAnimation
+Whether to process coordinate changes through the mouse wheel as a continuous animation.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  useAnimation: false
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ scale: 10, useAnimation: false }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  useAnimation: true
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ scale: 10, useAnimation: true }}/>
+  </div>
+</div>
+
+## MoveKeyInput Options
+### scale
+Coordinate scale that a user can move.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: [5, -5]
+  ```
+  </div>
+    <AxesBoard moveKeyInputOptions={{ scale: [5, -5] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: [20, -20]
+  ```
+  </div>
+    <AxesBoard moveKeyInputOptions={{ scale: [20, -20] }}/>
+  </div>
+</div>
+
+## PinchInput Options
+:::info
+Hint: You can compare the action of PinchInput on mobile device.
+:::
+
+### scale
+Coordinate scale that a user can move.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: 4
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ scale: 4 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  scale: 10
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ scale: 10 }}/>
+  </div>
+</div>
+
+### threshold
+Minimal scale before recognizing.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  threshold: 0
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ threshold: 0 }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  threshold: 5
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ threshold: 5 }}/>
+  </div>
+</div>
+
+### inputType
+Types of input devices
+- touch: Touch screen
+- pointer: Mouse and touch
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputType: ["touch"]
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ inputType: ["touch"] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputType: ["touch", "pointer"]
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ inputType: ["touch", "pointer"] }}/>
+  </div>
+</div>
+
+### touchAction
+Value that overrides the element's "touch-action" css property.
+It is set to "none" to prevent scrolling during touch.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  touchAction: "none"
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ touchAction: "none" }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  touchAction: "pan-y"
+  ```
+  </div>
+    <AxesBoard pinchInputOptions={{ touchAction: "pan-y" }}/>
+  </div>
+</div>

@@ -43,7 +43,7 @@ export interface AxesOption {
 /**
  * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
  * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.
- * @param {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
+ * @param {Number[]} [range] The range of coordinate <ko>좌표 범위</ko>
  * @param {Number} [range[0]=0] The coordinate of the minimum <ko>최소 좌표</ko>
  * @param {Number} [range[1]=0] The coordinate of the maximum <ko>최대 좌표</ko>
  * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>

@@ -1,0 +1,30 @@
+.board {
+  background-color: #F1F3F4;
+  box-shadow: rgb(0 0 0 / 10%) 0px 1px 5px 0px;
+  height: 30vh;
+}
+
+.nestedboard {
+  background-color: #FFFFFF;
+  box-shadow: rgb(0 0 0 / 10%) 0px 1px 5px 0px;
+  width: 50%;
+  height: 50%;
+}
+
+.target {
+  width: 100px;
+  height: 100px;
+  border-radius: 6px;
+}
+
+.info {
+  position: absolute;
+  padding-left: 5px;
+  color: red;
+  z-index: 5;
+}
+
+.egjsicon {
+  cursor: pointer;
+  margin-top: -15px;
+}
