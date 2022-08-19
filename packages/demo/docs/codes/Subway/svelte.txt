@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useAxes, PanInput, PinchInput, WheelInput } from "@egjs/react-axes";
-import "../../css/demos/subway.css";
+<script>
+  import { onMount } from "svelte";
+  import { useAxes, PanInput, PinchInput, WheelInput } from "@egjs/svelte-axes";
 
-export default function Subway() {
-  const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
-  const [range, setRange] = useState(0);
-  const wrapper = useRef<HTMLDivElement>(null);
+  const SUPPORT_TOUCH = "ontouchstart" in window;
+  let currentPos = { x: 0, y: 0 };
+  let range = 0;
+  let wrapper;
   const { connect, setTo, setAxis, onChange, zoom } = useAxes(
     {
       x: {
@@ -30,7 +30,6 @@ export default function Subway() {
   };
 
   onChange(({ pos, delta, inputEvent, set }) => {
-    const SUPPORT_TOUCH = "ontouchstart" in window;
     if (inputEvent && delta.zoom) {
       const center = SUPPORT_TOUCH
         ? inputEvent.center
@@ -42,11 +41,11 @@ export default function Subway() {
       const beforeZoom = pos.zoom - delta.zoom;
       const newX = pos.x + getZoomedOffset(center.x, pos.zoom, beforeZoom);
       const newY = pos.y + getZoomedOffset(center.y, pos.zoom, beforeZoom);
-      const wrapperSize = wrapper.current.getBoundingClientRect().width;
+      const wrapperSize = wrapper.getBoundingClientRect().width;
       const newRange = range + getZoomedOffset(wrapperSize, pos.zoom, beforeZoom);
-      setCurrentPos({ x: newX, y: newY });
+      currentPos = { x: newX, y: newY };
       set({ x: newX, y: newY });
-      setRange(newRange);
+      range = newRange;
       setAxis({
         x: {
           range: [0, newRange],
@@ -56,16 +55,15 @@ export default function Subway() {
         },
       });
     } else {
-      setCurrentPos({ x: pos.x, y: pos.y });
+      currentPos = { x: pos.x, y: pos.y };
     }
   });
 
-  useEffect(() => {
-    const SUPPORT_TOUCH = "ontouchstart" in window;
+  onMount(() => {
     const IMAGE_SIZE = 3000;
-    const wrapperSize = wrapper.current.getBoundingClientRect().width;
+    const wrapperSize = wrapper.getBoundingClientRect().width;
     const baseScale = wrapperSize / IMAGE_SIZE;
-    wrapper.current.style.height = wrapperSize + "px";
+    wrapper.style.height = wrapperSize + "px";
     setAxis({
       zoom: {
         range: [baseScale, 1],
@@ -76,18 +74,16 @@ export default function Subway() {
     });
     connect("zoom", SUPPORT_TOUCH ? new PinchInput(wrapper) : new WheelInput(wrapper, { scale: Math.abs(baseScale) }));
     connect("x y", new PanInput(wrapper, { scale: [-1, -1] }));
-  }, []);
+  });
+</script>
 
-  return (
-    <div>
-      <p>You can create maps that can zoom using three axes.</p>
-      <div id="zoomWrapper" ref={wrapper}>
-        <img
-          id="subway"
-          src={require("@site/static/img/demos/subway/subway.png").default}
-          style={{ transform: `scale(${zoom}) translate3d(${-currentPos.x}px, ${-currentPos.y}px, 0)` }}
-        />
-      </div>
-    </div>
-  );
-};
+<div>
+  <p>You can create maps that can zoom using three axes.</p>
+  <div id="zoomWrapper" bind:this={wrapper}>
+    <img
+      id="subway"
+      src="../image/subway/subway.png"
+      style="transform: scale({$zoom}) translate3d({-currentPos.x}px, {-currentPos.y}px, 0)"
+    />
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<script>
+  import { onMount } from "svelte";
+  import { useAxes, PanInput } from "@egjs/svelte-axes";
+
+  const images = Array.from({length: 36}, (_, i) => i + 1);
+  const { connect, angle } = useAxes(
+    {
+      angle: {
+        range: [0, 360],
+        circular: true,
+      }
+    },
+    {
+      deceleration: 0.01,
+    },
+  );
+
+  onMount(() => {
+    connect("angle", new PanInput(".car_rotate"));
+  });
+</script>
+
+<div>
+  <p>You can create a viewer that can rotate 360 ​​degrees using one axis.</p>
+  <div class="car_spot">
+    <div class="car_rotate">
+      <div class="img_cont" style="position: 'relative', zIndex: 10">
+        {#each images as i}
+          <img height="150" src="./../image/car360/beatle ({i}).png" style="display: {Math.floor(($angle % 360) / 10 + 1) === i ? 'inline-block' : 'none'}">
+        {/each}
+      </div>
+      <div class="ratate_bg"></div>
+    </div>
+  </div>
+</div>

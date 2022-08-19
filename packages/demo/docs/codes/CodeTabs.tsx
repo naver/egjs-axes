@@ -15,6 +15,7 @@ export default (props: {
   const htmlCode = require(`!!raw-loader!./${props.folder}/html.txt`).default;
   const jsCode = require(`!!raw-loader!./${props.folder}/js.txt`).default;
   const reactCode = props.reactCode ? props.reactCode : require(`!!raw-loader!./${props.folder}/react.txt`).default;
+  const svelteCode = require(`!!raw-loader!./${props.folder}/svelte.txt`).default;
 
   return <Tabs
     groupId="cfc"
@@ -22,6 +23,7 @@ export default (props: {
     values={[
       { label: "JavaScript", value: "js" },
       { label: "React", value: "react" },
+      { label: "Svelte", value: "svelte" },
     ]}>
     <TabItem value="js">
       <CodeBlock className="language-html">
@@ -34,6 +36,11 @@ export default (props: {
     <TabItem value="react">
       <CodeBlock className="language-jsx">
         {reactCode}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="svelte">
+      <CodeBlock className="language-html">
+        {svelteCode}
       </CodeBlock>
     </TabItem>
   </Tabs>;
