@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useAxes, PanInput } from "@egjs/react-axes";
 import Icon from "../../../static/img/demos/logo_mono.svg";
 import "../../css/demos/cardinhand.css";

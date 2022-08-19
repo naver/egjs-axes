@@ -6,7 +6,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
 export function convertVue2(text: string) {
-  return text.replace("vue-axes", "vue2-axes");
+  return text.replace("vue-axes", "vue2-axes").replace('from "vue"', 'from "@vue/composition-api"');
 }
 export default (props: {
   folder: string,
@@ -15,6 +15,8 @@ export default (props: {
   const htmlCode = require(`!!raw-loader!./${props.folder}/html.txt`).default;
   const jsCode = require(`!!raw-loader!./${props.folder}/js.txt`).default;
   const reactCode = props.reactCode ? props.reactCode : require(`!!raw-loader!./${props.folder}/react.txt`).default;
+  const vueCode = require(`!!raw-loader!./${props.folder}/vue.txt`).default;
+  const vue2Code = convertVue2(vueCode);
   const svelteCode = require(`!!raw-loader!./${props.folder}/svelte.txt`).default;
 
   return <Tabs
@@ -23,6 +25,8 @@ export default (props: {
     values={[
       { label: "JavaScript", value: "js" },
       { label: "React", value: "react" },
+      { label: "Vue@2", value: "vue2" },
+      { label: "Vue@3", value: "vue" },
       { label: "Svelte", value: "svelte" },
     ]}>
     <TabItem value="js">
@@ -36,6 +40,16 @@ export default (props: {
     <TabItem value="react">
       <CodeBlock className="language-jsx">
         {reactCode}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="vue2">
+      <CodeBlock className="language-html">
+        {vue2Code}
+      </CodeBlock>
+    </TabItem>
+    <TabItem value="vue">
+      <CodeBlock className="language-html">
+        {vueCode}
       </CodeBlock>
     </TabItem>
     <TabItem value="svelte">

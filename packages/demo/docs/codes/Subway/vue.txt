@@ -1,0 +1,103 @@
+<template>
+  <div class="App">
+    <p>You can create maps that can zoom using three axes.</p>
+    <div id="zoomWrapper" ref="wrapper">
+      <img
+        id="subway"
+        :src="`${require('../../../static/img/demos/subway/subway.png')}`"
+        :style="{ transform: `scale(${zoom}) translate3d(${-currentPos.x}px, ${-currentPos.y}px, 0)` }"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref, defineComponent, onMounted } from "vue";
+import { useAxes, PanInput, PinchInput, WheelInput } from "@egjs/vue-axes";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const currentPos = ref({ x: 0, y: 0 });
+    const range = ref(0);
+    const wrapper = ref(null);
+    const { connect, setTo, setAxis, onChange, zoom } = useAxes(
+      {
+        x: {
+          range: [0, 0],
+          bounce: 100,
+        },
+        y: {
+          range: [0, 0],
+          bounce: 100,
+        },
+        zoom: {
+          range: [0, 1],
+        },
+      },
+      {
+        deceleration: 0.003,
+      },
+    );
+
+    const getZoomedOffset = (value, zoom, beforeZoom) => {
+      return -(value / zoom - value / beforeZoom);
+    };
+
+    onChange(({ pos, delta, inputEvent, set }) => {
+      const SUPPORT_TOUCH = "ontouchstart" in window;
+      if (inputEvent && delta.zoom) {
+        const center = SUPPORT_TOUCH
+          ? inputEvent.center
+          : {
+              x: inputEvent.layerX,
+              y: inputEvent.layerY,
+            };
+
+        const beforeZoom = pos.zoom - delta.zoom;
+        const newX = pos.x + getZoomedOffset(center.x, pos.zoom, beforeZoom);
+        const newY = pos.y + getZoomedOffset(center.y, pos.zoom, beforeZoom);
+        const wrapperSize = wrapper.value.getBoundingClientRect().width;
+        const newRange = range.value + getZoomedOffset(wrapperSize, pos.zoom, beforeZoom);
+        currentPos.value = { x: newX, y: newY };
+        set({ x: newX, y: newY });
+        range.value = newRange;
+        setAxis({
+          x: {
+            range: [0, newRange],
+          },
+          y: {
+            range: [0, newRange],
+          },
+        });
+      } else {
+        currentPos.value = { x: pos.x, y: pos.y };
+      }
+    });
+
+    onMounted(() => {
+      const SUPPORT_TOUCH = "ontouchstart" in window;
+      const IMAGE_SIZE = 3000;
+      const wrapperSize = wrapper.value.getBoundingClientRect().width;
+      const baseScale = wrapperSize / IMAGE_SIZE;
+      wrapper.value.style.height = wrapperSize + "px";
+      setAxis({
+        zoom: {
+          range: [baseScale, 1],
+        },
+      });
+      setTo({
+        zoom: baseScale,
+      });
+      connect("zoom", SUPPORT_TOUCH ? new PinchInput(wrapper) : new WheelInput(wrapper, { scale: Math.abs(baseScale) }));
+      connect("x y", new PanInput(wrapper, { scale: [-1, -1] }));
+    });
+
+    return {
+      wrapper,
+      currentPos,
+      zoom,
+    };
+  },
+});
+</script>

@@ -1,0 +1,125 @@
+<template>
+  <div class="App">
+    <p>You can create a pull-to-refresh UI using one axis.</p>
+    <div id="pull-contentWrapper" ref="contentWrapper">
+      <div id="prepend">Pull to prepend</div>
+      <ul id="pull-content" :style="{ transform: `translate3d(0, ${-scroll}px, 0)` }" ref="content">
+        <li class="pull_drw" v-for="i in slides" height="150" v-bind:key="i">
+          <div class="pull_im">
+            <img :src="`${require('../../../static/img/demos//pulltorefresh/' + i + '.jpg')}`" width="110" />
+          </div>
+          <div class="pull_tx">
+            <span class="pull_tit">
+              egjs is Javascript components group that brings easiest and
+              fastest way to build a web application in your way
+            </span>
+          </div>
+        </li>
+      </ul>
+      <div id="append">Pull to append</div>
+    </div>
+    <div class="bottomWapper"></div>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref, defineComponent, onMounted } from "vue";
+import { useAxes, PanInput } from "@egjs/vue-axes";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const slides = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const range = ref(0);
+
+    const { connect, setAxis, setTo, onChange, onRelease, isBounceArea, scroll } = useAxes({
+      scroll: {
+        range: [0, 0],
+        bounce: 120,
+      },
+    });
+
+    const getMaxRange = (content: HTMLElement, contentWrapper: HTMLElement) => {
+      return (
+        content.getBoundingClientRect().height -
+        contentWrapper.getBoundingClientRect().height
+      );
+    };
+
+    const getInfo = (pos) => {
+      const state = pos > 0 ? (pos - range.value) / 120 : -pos / 120;
+      return {
+        isAdd: state > 0.8,
+        isTop: pos < 0,
+      };
+    };
+
+    onChange(({ pos }) => {
+      const prepend = document.getElementById("prepend");
+      const append = document.getElementById("append");
+      if (isBounceArea()) {
+        const info = getInfo(pos.scroll);
+        if (info.isAdd) {
+          if (info.isTop) {
+            prepend.innerText = "Release to prepend";
+          } else {
+            append.innerText = "Release to append";
+          }
+        } else {
+          if (info.isTop) {
+            prepend.innerText = "Pull to prepend";
+          } else {
+            append.innerText = "Pull to append";
+          }
+        }
+      }
+    });
+
+    onRelease(({ depaPos }) => {
+      if (isBounceArea()) {
+        const contentWrapper = document.getElementById("pull-contentWrapper");
+        const content = document.getElementById("pull-content");
+        const info = getInfo(depaPos.scroll);
+        if (info.isAdd) {
+          const newIndex = Math.floor(Math.random() * 50 + 1);
+          if (info.isTop) {
+            slides.value = [newIndex, ...slides.value];
+            setTo({ scroll: 0 });
+          } else {
+            slides.value = [...slides.value, newIndex];
+          }
+          setAxis({
+            scroll: {
+              range: [0, getMaxRange(content, contentWrapper)],
+            },
+          });
+        }
+      }
+    });
+
+    onMounted(() => {
+      const contentWrapper = document.getElementById("pull-contentWrapper");
+      const content = document.getElementById("pull-content");
+      const maxRange = getMaxRange(content, contentWrapper);
+
+      range.value = maxRange;
+      setAxis({
+        scroll: {
+          range: [0, maxRange],
+        },
+      });
+      connect(
+        ["", "scroll"],
+        new PanInput(contentWrapper, {
+          scale: [0, -1],
+        })
+      );
+    });
+
+    return {
+      slides,
+      scroll,
+    };
+  },
+});
+</script>
