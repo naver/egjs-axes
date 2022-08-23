@@ -1,0 +1,44 @@
+const SUPPORT_TOUCH = "ontouchstart" in window;
+const delegateTarget = document.getElementById("delegateTarget");
+const uiWrapper = document.getElementById("uiWrapper");
+const uiWidth = uiWrapper.getBoundingClientRect().width;
+const uiHeight = uiWrapper.getBoundingClientRect().height;
+const ui = uiWrapper.querySelector(".ui");
+
+// 1. Initialize eg.Axes
+const axes = new eg.Axes({
+  panX: {
+    range: [0, uiWidth],
+    bounce: 20
+  },
+  panY: {
+    range: [0, uiHeight],
+    bounce: 20
+  },
+  zoom: {
+    range: [1, 5],
+    bounce: 1
+  }
+}, {
+  minimumDuration: 300
+});
+
+// 2. attach event handler
+axes.on({
+  "change": function (e) {
+    var pos = e.pos;
+    ui.style[eg.Axes.TRANSFORM] =
+      `translate3d(${pos.panX}px, ${pos.panY}px, 0) scale(${pos.zoom})`;
+  },
+});
+
+// 3. Initialize inputTypes and connect it
+axes.connect("panX panY", new eg.Axes.PanInput(delegateTarget))
+axes.connect("panX panY", new eg.Axes.MoveKeyInput(delegateTarget, {
+  scale: [5, -5]
+})).connect("zoom", SUPPORT_TOUCH ?
+  new eg.Axes.PinchInput(delegateTarget) :
+  new eg.Axes.WheelInput(delegateTarget));
+
+// 4. move to position
+axes.setTo({panX: uiWidth/2 + 20, panY: uiHeight/2});

@@ -17,7 +17,7 @@ const config = {
   favicon: 'img/favicon.ico',
   organizationName: "naver",
   projectName: "naver.github.io",
-	trailingSlash: false,
+  trailingSlash: false,
   plugins: ["docusaurus-plugin-sass"],
   presets: [
     [
@@ -60,17 +60,22 @@ const config = {
             position: "left"
           },
           {
+            to: "Options",
+            label: "Options",
+            position: "left"
+          },
+          {
             type: "doc",
             docId: "api/Axes",
             label: "API",
             position: "left"
           },
-					{
+          {
             type: "doc",
             docId: "demos/axes",
             label: "Demos",
-						position: "left"
-					},
+            position: "left"
+          },
           {
             href: "https://www.npmjs.com/package/@egjs/axes",
             className: "header-npm-link",

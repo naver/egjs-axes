@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useAxes, PanInput } from "@egjs/react-axes";
-import Icon from "../../../static/img/demos/logo_mono.svg";
-import "../../css/demos/cardinhand.css";
+<script>
+  import { onMount } from "svelte";
+  import { useAxes, PanInput } from "@egjs/svelte-axes";
 
-export default function CardInHand() {
   const CARD_OFFSET = -300;
-  const [cards, setCards] = useState(new Array(7).fill({ tilt: 0, offset: 0 }));
+  let cards = new Array(7).fill({ tilt: 0, offset: 0 });
   const { connect, setAxis, hand, top } = useAxes(
     {
       hand: {
@@ -22,7 +20,7 @@ export default function CardInHand() {
     },
   );
 
-  useEffect(() => {
+  onMount(() => {
     const hand = document.querySelector(".hand");
     const handcards = Array.prototype.slice.apply(
       document.querySelectorAll(".handcard")
@@ -67,7 +65,7 @@ export default function CardInHand() {
       return { tilt: cardTilt, offset: cardOffset };
     };
 
-    setCards(handcards.map(card => getCards(card)));
+    cards = handcards.map(card => getCards(card));
     setAxis({
       hand: {
         range: [handRotMin, handRotMax],
@@ -75,25 +73,23 @@ export default function CardInHand() {
     });
 
     connect("hand top", new PanInput(".hand", { scale: [0.3, 0.8] }));
-  }, []);
+  });
+</script>
 
-  return (
-    <div>
-      <p>You can create a UI that responds to user input using two axes.</p>
-      <div id="showcase">
-        <div className="showcase-item">
-          <div className="showcase-content">
-            <div id="movableCoordWrapper">
-              <div className="hand" style={{ transform: `rotateZ(${hand}deg)` }}>
-                {cards.map((card, i) => (
-                  <div className="handcard" key={i} style={{ transform: `rotateZ(${card.tilt}deg) translateY(${card.offset + top}px)` }}><Icon /></div>
-                ))}
-              </div>
-            </div>
-            <div id="dot" className="movableDot" style={{ bottom: `${-1.4 * top}px`, transform: `translateX(${hand * 2.3}px)` }}></div>
+<div>
+  <p>You can create a UI that responds to user input using two axes.</p>
+  <div id="showcase">
+    <div class="showcase-item">
+      <div class="showcase-content">
+        <div id="movableCoordWrapper">
+          <div class="hand" style="transform: rotateZ({$hand}deg)">
+            {#each cards as card}
+              <div class="handcard" style="transform: rotateZ({card.tilt}deg) translateY({card.offset + $top}px)"><img class="logo_mono" src="../../common/image/logo_mono.svg"></div>
+            {/each}
           </div>
         </div>
+        <div id="dot" class="movableDot" style="bottom: {-1.4 * $top}px; transform: translateX({$hand * 2.3}px)"></div>
       </div>
     </div>
-  );
-};
+  </div>
+</div>

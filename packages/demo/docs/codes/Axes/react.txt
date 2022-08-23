@@ -1,0 +1,66 @@
+import React, { useEffect } from "react";
+
+import { useAxes, PanInput, PinchInput, MoveKeyInput, WheelInput } from "@egjs/react-axes";
+import Icon from "../../../static/img/demos/axes/logo.svg";
+import "../../css/demos/axes.css";
+
+export default function AxesDemo() {
+  const { connect, setAxis, setTo, panX, panY, zoom } = useAxes(
+    {
+      panX: {
+        range: [0, 0],
+        bounce: 20,
+      },
+      panY: {
+        range: [0, 0],
+        bounce: 20,
+      },
+      zoom: {
+        range: [1, 5],
+        bounce: 1,
+      },
+    },
+    {
+      minimumDuration: 300,
+    }
+  );
+
+  useEffect(() => {
+    const SUPPORT_TOUCH = "ontouchstart" in window;
+    const delegateTarget = document.getElementById("delegateTarget");
+    const uiWrapper = document.getElementById("uiWrapper");
+    const uiWidth = uiWrapper.getBoundingClientRect().width;
+    const uiHeight = uiWrapper.getBoundingClientRect().height;
+
+    setAxis({
+      panX: {
+        range: [0, uiWidth],
+      },
+      panY: {
+        range: [0, uiHeight],
+      },
+    });
+    connect("panX panY", new PanInput(delegateTarget));
+    connect("panX panY", new MoveKeyInput(delegateTarget, { scale: [5, -5] }));
+    connect("zoom", SUPPORT_TOUCH ? new PinchInput(delegateTarget) : new WheelInput(delegateTarget));
+
+    setTo({ panX: uiWidth / 2, panY: uiHeight / 2 });
+  }, []);
+
+  return (
+    <div>
+      <p>
+        You can change the value of the axis and apply it to the UI via the
+        touch screen, mouse, or various other inputs.
+      </p>
+      <div id="delegateTarget">
+        <div id="uiWrapper">
+          <div className="ui" style={{ transform: `translate3d(${panX}px, ${panY}px, 0) scale(${zoom})` }}>
+            <Icon style={{ height: "75px" }} />
+          </div>
+        </div>
+      </div>
+      <div style={{ clear: "both" }}></div>
+    </div>
+  );
+};

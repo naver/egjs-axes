@@ -1,0 +1,11 @@
+<div>
+  <p>You can create a scrollable minimap using two axes.</p>
+  <div style="position:relative">
+    <div id="imageView">
+      <div id="rawImage"></div>
+    </div>
+    <div id="minimap">
+      <div id="minimap-pointer"></div>
+    </div>
+  </div>
+</div>

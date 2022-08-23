@@ -1,0 +1,10 @@
+<div>
+  <p>You can change the value of the axis and apply it to the UI via the touch screen, mouse, or various other inputs.</p>
+  <div id="delegateTarget">
+    <div id="uiWrapper">
+      <div class="ui">
+        <img src="../image/axes/logo.svg"/>
+      </div>
+    </div>
+  </div>
+</div>

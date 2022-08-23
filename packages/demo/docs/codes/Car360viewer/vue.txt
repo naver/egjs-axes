@@ -1,0 +1,50 @@
+<template>
+  <div class="App">
+    <p>You can create a viewer that can rotate 360 degrees using one axis.</p>
+    <div class="car_spot">
+      <div class="car_rotate">
+        <div class="img_cont" :style="{position: 'relative', zIndex: 10}">
+          <img
+            v-for="i in images" height="150"
+            v-bind:key="i"
+            :src="`${require('../../../static/img/demos/car360/beatle (${i}).png')}`"
+            :style="{display: Math.floor((angle % 360) / 10 + 1) === i ? 'inline-block' : 'none'}"
+          >
+        </div>
+        <div class="ratate_bg"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, onMounted } from "vue";
+import { useAxes, PanInput } from "@egjs/vue-axes";
+
+export default defineComponent({
+  name: "App",
+  setup() {
+    const images = Array.from({length: 36}, (_, i) => i + 1);
+    const { connect, angle } = useAxes(
+      {
+        angle: {
+          range: [0, 360],
+          circular: true,
+        }
+      },
+      {
+        deceleration: 0.01,
+      },
+    );
+
+    onMounted(() => {
+      connect("angle", new PanInput(".car_rotate"));
+    });
+
+    return {
+      images,
+      angle,
+    };
+  },
+});
+</script>

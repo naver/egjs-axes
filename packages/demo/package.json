@@ -28,9 +28,11 @@
     "@babel/core": "^7.17.5",
     "@babel/plugin-proposal-decorators": "^7.18.6",
     "@docusaurus/module-type-aliases": "2.0.0-beta.17",
+    "@egjs/react-axes": "~3.0.1",
     "@tsconfig/docusaurus": "^1.0.4",
     "bulma": "^0.9.3",
     "docusaurus-plugin-sass": "^0.2.2",
+    "raw-loader": "^4.0.2",
     "sas": "^3.0.4",
     "sass": "^1.49.9",
     "typescript": "^4.6.2"

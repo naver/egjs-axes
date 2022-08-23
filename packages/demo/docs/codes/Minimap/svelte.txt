@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useAxes, PanInput, MoveKeyInput, WheelInput } from "@egjs/react-axes";
-import "../../css/demos/minimap.css";
+<script>
+  import { onMount } from "svelte";
+  import { useAxes, PanInput, MoveKeyInput, WheelInput } from "@egjs/svelte-axes";
 
-export default function Minimap() {
   // raw-image 1280 * 1677
   // mini-map 128 * 167.7
-  const [viewHeight, setViewHeight] = useState(0);
-  const [pointerWidth, setPointerWidth] = useState(0);
-  const [scale, setScale] = useState([0, 0]);
   const RAW_IMAGE_WIDTH = 1280;
   const RAW_IMAGE_HEIGHT = 1677;
   const MINIMAP_WIDTH = 128;
   const IMAGE_RATE = RAW_IMAGE_HEIGHT / RAW_IMAGE_WIDTH;
+  let viewHeight = 0;
+  let pointerWidth = 0;
+  let scale = [0, 0];
 
   const { connect, setAxis, rawX, rawY } = useAxes(
     {
@@ -29,11 +28,10 @@ export default function Minimap() {
     }
   );
 
-  useEffect(() => {
+  onMount(() => {
     const viewarea = document.getElementById("imageView");
     const viewRect = viewarea.getBoundingClientRect();
     const viewWidth = viewarea.getBoundingClientRect().width;
-    const viewHeight = viewWidth * IMAGE_RATE;
     const minimap = document.getElementById("minimap");
     const minimapRect = minimap.getBoundingClientRect();
     const pointer = document.getElementById("minimap-pointer");
@@ -42,14 +40,14 @@ export default function Minimap() {
     connect("rawX rawY", new PanInput(viewarea, { scale: [-1, -1] }));
     connect("rawX rawY", new MoveKeyInput(viewarea, { scale: [10, -10] }));
     connect("rawY rawX", new WheelInput(viewarea, { scale: -30, useNormalized: true }));
-    setViewHeight(viewHeight);
-    setPointerWidth((viewWidth / RAW_IMAGE_WIDTH) * MINIMAP_WIDTH);
-    setScale([
+    viewHeight = viewWidth * IMAGE_RATE;
+    pointerWidth = (viewWidth / RAW_IMAGE_WIDTH) * MINIMAP_WIDTH;
+    scale = [
       (minimapRect.width - pointerRect.width) /
         (RAW_IMAGE_WIDTH),
       (minimapRect.height - pointerRect.height) /
         (RAW_IMAGE_HEIGHT),
-    ]);
+    ];
     setAxis({
       rawX: {
         range: [0, RAW_IMAGE_WIDTH - viewRect.width],
@@ -58,24 +56,22 @@ export default function Minimap() {
         range: [0, RAW_IMAGE_HEIGHT - viewHeight],
       },
     });
-  }, []);
+  });
+</script>
 
-  return (
-    <div>
-      <p>You can create a scrollable minimap using two axes.</p>
-      <div style={{ position: "relative" }}>
-        <div id="imageView" style={{ height: `${viewHeight}px` }}>
-          <div id="rawImage" style={{ transform: `translate3d(${-rawX}px, ${-rawY}px, 0)` }}></div>
-        </div>
-        <div id="minimap">
-          <div id="minimap-pointer"
-            style={{
-              width: `${pointerWidth}px`,
-              height: `${pointerWidth * IMAGE_RATE}px`,
-              transform: `translate3d(${rawX * scale[0]}px, ${rawY * scale[1]}px, 0)`,
-            }}></div>
-        </div>
-      </div>
+<div>
+  <p>You can create a scrollable minimap using two axes.</p>
+  <div style="position: relative">
+    <div id="imageView" style="height: {viewHeight}px">
+      <div id="rawImage" style="transform: translate3d({-$rawX}px, {-$rawY}px, 0)"></div>
     </div>
-  );
-};
+    <div id="minimap">
+      <div id="minimap-pointer"
+        style="
+          width: {pointerWidth}px;
+          height: {pointerWidth * IMAGE_RATE}px;
+          transform: translate3d({$rawX * scale[0]}px, {$rawY * scale[1]}px, 0);
+        "></div>
+    </div>
+  </div>
+</div>
