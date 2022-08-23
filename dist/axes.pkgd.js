@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.6.0
+version: 3.7.0
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -1049,7 +1049,7 @@ version: 3.6.0
     var MOUSE_RIGHT = "right";
     var MOUSE_MIDDLE = "middle";
     var VELOCITY_INTERVAL = 16;
-    var AXES_METHODS = ["connect", "disconnect", "get", "setTo", "setBy", "stopAnimation", "updateAnimation", "isBounceArea"];
+    var AXES_METHODS = ["connect", "disconnect", "get", "setTo", "setBy", "setOptions", "setAxis", "stopAnimation", "updateAnimation", "isBounceArea"];
     var AXES_EVENTS = ["hold", "release", "change", "animationStart", "animationEnd", "finish"];
     var IOS_EDGE_THRESHOLD = 30;
     var IS_IOS_SAFARI = "ontouchstart" in win && agent().browser.name === "safari";
@@ -1300,15 +1300,6 @@ version: 3.6.0
       } else {
         return DIRECTION_NONE;
       }
-    };
-    var getInitialPos = function (axis, startPos) {
-      return __assign(__assign({}, Object.keys(axis).reduce(function (result, key) {
-        var _a;
-
-        var _b, _c;
-
-        return Object.assign(result, (_a = {}, _a[key] = (_c = (_b = axis[key].startPos) !== null && _b !== void 0 ? _b : axis[key].range[0]) !== null && _c !== void 0 ? _c : 0, _a));
-      }, {})), startPos);
     };
     var useDirection = function (checkType, direction, userDirection) {
       if (userDirection) {
@@ -1828,9 +1819,9 @@ version: 3.6.0
 
         this._complementOptions();
 
-        this._pos = Object.keys(this._axis).reduce(function (acc, v) {
-          acc[v] = _this._axis[v].range[0];
-          return acc;
+        this._pos = Object.keys(this._axis).reduce(function (pos, v) {
+          pos[v] = _this._axis[v].startPos;
+          return pos;
         }, {});
       }
 
@@ -1913,6 +1904,20 @@ version: 3.6.0
 
       __proto.getAxisOptions = function (key) {
         return this._axis[key];
+      };
+
+      __proto.setAxis = function (axis) {
+        var _this = this;
+
+        Object.keys(axis).forEach(function (key) {
+          if (!_this._axis[key]) {
+            throw new Error("Axis ".concat(key, " does not exist in Axes instance"));
+          }
+
+          _this._axis[key] = __assign(__assign({}, _this._axis[key]), axis[key]);
+        });
+
+        this._complementOptions();
       };
       /**
        * set up 'css' expression
@@ -3158,7 +3163,7 @@ version: 3.6.0
     /**
      * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
      * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.
-     * @param {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
+     * @param {Number[]} [range] The range of coordinate <ko>좌표 범위</ko>
      * @param {Number} [range[0]=0] The coordinate of the minimum <ko>최소 좌표</ko>
      * @param {Number} [range[1]=0] The coordinate of the maximum <ko>최대 좌표</ko>
      * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
@@ -3196,7 +3201,7 @@ version: 3.6.0
      *
      * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
      * @param {AxesOption} [options={}] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
-     * @param {Object.<string, number>} [startPos=null] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
+     * @param {Object.<string, number>} [startPos={}] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
      *
      * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
      * @example
@@ -3278,7 +3283,7 @@ version: 3.6.0
         }
 
         if (startPos === void 0) {
-          startPos = null;
+          startPos = {};
         }
 
         var _this = _super.call(this) || this;
@@ -3296,6 +3301,9 @@ version: 3.6.0
           round: null,
           nested: false
         }, options);
+        Object.keys(startPos).forEach(function (key) {
+          _this.axis[key].startPos = startPos[key];
+        });
         _this.interruptManager = new InterruptManager(_this.options);
         _this.axisManager = new AxisManager(_this.axis);
         _this.eventManager = new EventManager(_this);
@@ -3304,7 +3312,7 @@ version: 3.6.0
 
         _this.eventManager.setAnimationManager(_this.animationManager);
 
-        _this.eventManager.triggerChange(getInitialPos(axis, startPos));
+        _this.eventManager.triggerChange(_this.axisManager.get());
 
         return _this;
       }
@@ -3514,6 +3522,70 @@ version: 3.6.0
         return this;
       };
       /**
+       * Change the options of Axes instance.
+       * @ko 인스턴스의 옵션을 변경한다.
+       * @param {AxesOption} options Axes options to change <ko>변경할 옵션 목록</ko>
+       * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       * @example
+       * ```js
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       * }, {
+       *   round: 10,
+       * });
+       *
+       * axes.setTo({"x": 48});
+       * axes.get(); // {"x": 50}
+       *
+       * axes.setOptions({
+       *   round: 1,
+       * });
+       *
+       * axes.setTo({"x": 48});
+       * axes.get(); // {"x": 48}
+       * ```
+       */
+
+
+      __proto.setOptions = function (options) {
+        this.options = __assign(__assign({}, this.options), options);
+        return this;
+      };
+      /**
+       * Change the information of an existing axis.
+       * @ko 존재하는 축의 정보를 변경한다.
+       * @param {Object.<string, AxisOption>} axis Axis options to change <ko>변경할 축의 정보</ko>
+       * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       * @example
+       * ```js
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       * });
+       *
+       * axes.setTo({"x": 150});
+       * axes.get(); // {"x": 100}
+       *
+       * axes.setAxis({
+       *   "x": {
+       *      range: [0, 200]
+       *   },
+       * });
+       *
+       * axes.setTo({"x": 150});
+       * axes.get(); // {"x": 150}
+       * ```
+       */
+
+
+      __proto.setAxis = function (axis) {
+        this.axisManager.setAxis(axis);
+        return this;
+      };
+      /**
        * Stop an animation in progress.
        * @ko 재생 중인 애니메이션을 정지한다.
        * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
@@ -3624,7 +3696,7 @@ version: 3.6.0
        */
 
 
-      Axes.VERSION = "3.6.0";
+      Axes.VERSION = "3.7.0";
       /* eslint-enable */
 
       /**
@@ -4922,7 +4994,6 @@ version: 3.6.0
         MoveKeyInput: MoveKeyInput,
         AXES_METHODS: AXES_METHODS,
         AXES_EVENTS: AXES_EVENTS,
-        getInitialPos: getInitialPos,
         REACTIVE_AXES: REACTIVE_AXES
     });
 
