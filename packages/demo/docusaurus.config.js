@@ -60,14 +60,14 @@ const config = {
             position: "left"
           },
           {
-            to: "Options",
-            label: "Options",
-            position: "left"
-          },
-          {
             type: "doc",
             docId: "api/Axes",
             label: "API",
+            position: "left"
+          },
+          {
+            to: "Options",
+            label: "Options",
             position: "left"
           },
           {
