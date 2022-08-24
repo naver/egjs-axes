@@ -10,21 +10,102 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 
 ## 📦 Package managers (recommended)
-You can easily install Flicking with package managers like [npm](https://www.npmjs.com/) or [yarn](https://classic.yarnpkg.com/en/)
+You can easily install @egjs/axes with package managers like [npm](https://www.npmjs.com/) or [yarn](https://classic.yarnpkg.com/en/)
+
+### npm
 
 <Tabs
-  groupId="pm"
-  defaultValue="npm"
-  lazy={true}
+  groupId="cfc"
+  defaultValue="js"
   values={[
-    { label: "npm", value: "npm" },
-    { label: "yarn", value: "yarn" }
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@3", value: "vue" },
+    { label: "Vue@2", value: "vue2" },
+    { label: "Svelte", value: "svelte" }
   ]}>
-  <TabItem value="npm">
-    <CodeBlock className="language-shell">npm install @egjs/axes</CodeBlock>
+  <TabItem value="js">
+
+```shell
+npm install @egjs/axes
+```
+
   </TabItem>
-  <TabItem value="yarn">
-    <CodeBlock className="language-shell">yarn add @egjs/axes</CodeBlock>
+  <TabItem value="react">
+
+```shell
+npm install @egjs/react-axes
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+```shell
+npm install @egjs/vue-axes
+```
+
+  </TabItem>
+  <TabItem value="vue2">
+
+```shell
+npm install @egjs/vue2-axes
+```
+
+  </TabItem>
+  <TabItem value="svelte">
+
+```shell
+npm install @egjs/svelte-axes
+```
+
+  </TabItem>
+</Tabs>
+
+### yarn
+<Tabs
+  groupId="cfc"
+  defaultValue="js"
+  values={[
+    { label: "JavaScript", value: "js" },
+    { label: "React", value: "react" },
+    { label: "Vue@3", value: "vue" },
+    { label: "Vue@2", value: "vue2" },
+    { label: "Svelte", value: "svelte" }
+  ]}>
+  <TabItem value="js">
+
+```shell
+yarn add @egjs/axes
+```
+
+  </TabItem>
+  <TabItem value="react">
+
+```shell
+yarn add @egjs/react-axes
+```
+
+  </TabItem>
+  <TabItem value="vue">
+
+```shell
+yarn add @egjs/vue-axes
+```
+
+  </TabItem>
+  <TabItem value="vue2">
+
+```shell
+yarn add @egjs/vue2-axes
+```
+
+  </TabItem>
+  <TabItem value="svelte">
+
+```shell
+yarn add @egjs/svelte-axes
+```
+
   </TabItem>
 </Tabs>
 

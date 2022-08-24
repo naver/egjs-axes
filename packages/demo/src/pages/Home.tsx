@@ -5,7 +5,9 @@ import Link from "@docusaurus/Link";
 import CodeBlock from "@theme/CodeBlock";
 
 import AxesIcon from "../../static/img/axes.svg";
+import Frameworks from ".//main/Frameworks";
 
+import "@site/src/css/index.css";
 import styles from "./home.module.css";
 
 class Home extends React.Component {
@@ -59,6 +61,11 @@ class Home extends React.Component {
                 ✨ Demos
               </Link>
             </div>
+          </section>
+          <section className="py-6">
+            <p className="title">Framework Ready</p>
+            <p className="subtitle">Use Axes in your favorite framework!</p>
+            <Frameworks />
           </section>
           <section className="py-6">
             <div className="title mb-6 has-text-centered">Demos</div>
