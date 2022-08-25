@@ -299,7 +299,7 @@ describe("Axes", () => {
           range: [0, 100],
         },
       });
-      inst.setTo({ x: 150, y: 150 });
+      inst.setTo({ x: 150, y: 200 });
 
       // Then
       expect(inst.get()).to.be.eql({ x: 150, y: 100 });

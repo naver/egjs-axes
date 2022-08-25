@@ -45,8 +45,8 @@ export class MouseEventInput extends EventInput {
     return;
   }
 
-  public getTouches(): number {
-    return 0;
+  public getTouches(event: InputEventType): number {
+    return event.which !== 1 ? 0 : 1;
   }
 
   protected _getScale(): number {
