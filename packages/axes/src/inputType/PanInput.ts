@@ -219,9 +219,10 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
+    const inputButton = this.options.inputButton;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventStart(event, this.options.inputButton);
-    if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
+    const panEvent = activeEvent.onEventStart(event, inputButton);
+    if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
       return;
     }
     if (panEvent.srcEvent.cancelable !== false) {
@@ -244,7 +245,7 @@ export class PanInput implements InputType {
     } = this.options;
     const activeEvent = this._activeEvent;
     const panEvent = activeEvent.onEventMove(event, inputButton);
-    const touches = activeEvent.getTouches(event);
+    const touches = activeEvent.getTouches(event, inputButton);
 
     if (
       touches === 0 ||
@@ -304,9 +305,10 @@ export class PanInput implements InputType {
   }
 
   protected _onPanend(event: InputEventType) {
+    const inputButton = this.options.inputButton;
     const activeEvent = this._activeEvent;
     activeEvent.onEventEnd(event);
-    if (!this._enabled || activeEvent.getTouches(event) !== 0) {
+    if (!this._enabled || activeEvent.getTouches(event, inputButton) !== 0) {
       return;
     }
     this._detachWindowEvent(activeEvent);
