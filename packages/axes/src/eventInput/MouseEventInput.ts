@@ -49,7 +49,10 @@ export class MouseEventInput extends EventInput {
   public getTouches(event: InputEventType, inputButton?: string[]): number {
     if (inputButton) {
       const buttonCodeMap = { 1: MOUSE_LEFT, 2: MOUSE_MIDDLE, 3: MOUSE_RIGHT };
-      return this._isValidButton(buttonCodeMap[event.which], inputButton) ? 1 : 0;
+      return this._isValidButton(buttonCodeMap[event.which], inputButton) &&
+        this.end.indexOf(event.type) === -1
+        ? 1
+        : 0;
     }
     return 0;
   }
