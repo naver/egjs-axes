@@ -219,9 +219,10 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
+    const inputButton = this.options.inputButton;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventStart(event, this.options.inputButton);
-    if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
+    const panEvent = activeEvent.onEventStart(event, inputButton);
+    if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
       return;
     }
     if (panEvent.srcEvent.cancelable !== false) {
@@ -236,22 +237,29 @@ export class PanInput implements InputType {
   }
 
   protected _onPanmove(event: InputEventType) {
+    const {
+      iOSEdgeSwipeThreshold,
+      releaseOnScroll,
+      inputButton,
+      thresholdAngle,
+    } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventMove(event, this.options.inputButton);
-    if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
-      return;
-    }
+    const panEvent = activeEvent.onEventMove(event, inputButton);
+    const touches = activeEvent.getTouches(event, inputButton);
 
-    const { iOSEdgeSwipeThreshold, releaseOnScroll } = this.options;
-    const userDirection = getDirectionByAngle(
-      panEvent.angle,
-      this.options.thresholdAngle
-    );
-
-    if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
+    if (
+      touches === 0 ||
+      (releaseOnScroll && panEvent && !panEvent.srcEvent.cancelable)
+    ) {
       this._onPanend(event);
       return;
     }
+
+    if (!panEvent || !this._enabled || touches > 1) {
+      return;
+    }
+
+    const userDirection = getDirectionByAngle(panEvent.angle, thresholdAngle);
 
     if (activeEvent.prevEvent && IS_IOS_SAFARI) {
       const swipeLeftToRight = panEvent.center.x < 0;
@@ -297,9 +305,10 @@ export class PanInput implements InputType {
   }
 
   protected _onPanend(event: InputEventType) {
+    const inputButton = this.options.inputButton;
     const activeEvent = this._activeEvent;
     activeEvent.onEventEnd(event);
-    if (!this._enabled || activeEvent.getTouches(event) !== 0) {
+    if (!this._enabled || activeEvent.getTouches(event, inputButton) !== 0) {
       return;
     }
     this._detachWindowEvent(activeEvent);
