@@ -359,14 +359,14 @@ export class PanInput implements InputType {
     this._enabled = true;
     this._activeEvent = activeEvent;
     if (this.options.preventClickOnDrag) {
-      this.element?.addEventListener("click", this._preventClickWhenDragged);
+      this.element.addEventListener("click", this._preventClickWhenDragged);
     }
     activeEvent.start.forEach((event) => {
-      this.element?.addEventListener(event, this._onPanstart);
+      this.element.addEventListener(event, this._onPanstart);
     });
     // adding event listener to element prevents invalid behavior in iOS Safari
     activeEvent.move.forEach((event) => {
-      this.element?.addEventListener(event, this._voidFunction);
+      this.element.addEventListener(event, this._voidFunction);
     });
   }
 
