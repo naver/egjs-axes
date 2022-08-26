@@ -130,6 +130,7 @@ export class PanInput implements InputType {
       scale: [1, 1],
       thresholdAngle: 45,
       threshold: 0,
+      preventClickOnDrag: false,
       iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
       releaseOnScroll: false,
       touchAction: null,
@@ -352,6 +353,7 @@ export class PanInput implements InputType {
 
   private _attachElementEvent(observer: InputTypeObserver) {
     const activeEvent = convertInputType(this.options.inputType);
+    const element = this.element;
     if (!activeEvent) {
       return;
     }
@@ -359,27 +361,28 @@ export class PanInput implements InputType {
     this._enabled = true;
     this._activeEvent = activeEvent;
     if (this.options.preventClickOnDrag) {
-      this.element.addEventListener("click", this._preventClickWhenDragged);
+      element.addEventListener("click", this._preventClickWhenDragged);
     }
     activeEvent.start.forEach((event) => {
-      this.element.addEventListener(event, this._onPanstart);
+      element.addEventListener(event, this._onPanstart);
     });
     // adding event listener to element prevents invalid behavior in iOS Safari
     activeEvent.move.forEach((event) => {
-      this.element.addEventListener(event, this._voidFunction);
+      element.addEventListener(event, this._voidFunction);
     });
   }
 
   private _detachElementEvent() {
     const activeEvent = this._activeEvent;
+    const element = this.element;
     if (this.options.preventClickOnDrag) {
-      this.element?.removeEventListener("click", this._preventClickWhenDragged);
+      element?.removeEventListener("click", this._preventClickWhenDragged);
     }
     activeEvent?.start.forEach((event) => {
-      this.element?.removeEventListener(event, this._onPanstart);
+      element?.removeEventListener(event, this._onPanstart);
     });
     activeEvent?.move.forEach((event) => {
-      this.element?.removeEventListener(event, this._voidFunction);
+      element?.removeEventListener(event, this._voidFunction);
     });
     this._enabled = false;
     this._observer = null;
