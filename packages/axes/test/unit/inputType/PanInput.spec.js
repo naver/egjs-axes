@@ -305,6 +305,10 @@ describe("PanInput", () => {
         // Given
         const click = sinon.spy();
         el.addEventListener("click", click);
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventClickOnDrag: true,
+        });
         inst.connect(["x", "y"], input);
 
         // When
@@ -330,6 +334,10 @@ describe("PanInput", () => {
         // Given
         const click = sinon.spy();
         el.addEventListener("click", click);
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventClickOnDrag: true,
+        });
         inst.connect(["x", "y"], input);
         input.disable();
 
