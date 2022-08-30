@@ -39,7 +39,7 @@ export interface PinchInputOption {
  * @example
  * ```js
  * const pinch = new eg.Axes.PinchInput("#area", {
- * 		scale: 1
+ *   scale: 1
  * });
  *
  * // Connect 'something' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
@@ -191,33 +191,38 @@ export class PinchInput implements InputType {
 
   private _attachEvent(observer: InputTypeObserver) {
     const activeEvent = convertInputType(this.options.inputType);
+    const element = this.element;
     if (!activeEvent) {
       return;
+    }
+    if (!element) {
+      throw new Error("Element to connect input does not exist.");
     }
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
     activeEvent.start.forEach((event) => {
-      this.element.addEventListener(event, this._onPinchStart, false);
+      element.addEventListener(event, this._onPinchStart, false);
     });
     activeEvent.move.forEach((event) => {
-      this.element.addEventListener(event, this._onPinchMove, false);
+      element.addEventListener(event, this._onPinchMove, false);
     });
     activeEvent.end.forEach((event) => {
-      this.element.addEventListener(event, this._onPinchEnd, false);
+      element.addEventListener(event, this._onPinchEnd, false);
     });
   }
 
   private _detachEvent() {
     const activeEvent = this._activeEvent;
+    const element = this.element;
     activeEvent?.start.forEach((event) => {
-      this.element.removeEventListener(event, this._onPinchStart, false);
+      element?.removeEventListener(event, this._onPinchStart, false);
     });
     activeEvent?.move.forEach((event) => {
-      this.element.removeEventListener(event, this._onPinchMove, false);
+      element?.removeEventListener(event, this._onPinchMove, false);
     });
     activeEvent?.end.forEach((event) => {
-      this.element.removeEventListener(event, this._onPinchEnd, false);
+      element?.removeEventListener(event, this._onPinchEnd, false);
     });
     this._enabled = false;
     this._observer = null;

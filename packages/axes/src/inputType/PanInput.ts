@@ -357,6 +357,9 @@ export class PanInput implements InputType {
     if (!activeEvent) {
       return;
     }
+    if (!element) {
+      throw new Error("Element to connect input does not exist.");
+    }
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
