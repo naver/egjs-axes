@@ -215,15 +215,17 @@ export class PinchInput implements InputType {
   private _detachEvent() {
     const activeEvent = this._activeEvent;
     const element = this.element;
-    activeEvent?.start.forEach((event) => {
-      element?.removeEventListener(event, this._onPinchStart, false);
-    });
-    activeEvent?.move.forEach((event) => {
-      element?.removeEventListener(event, this._onPinchMove, false);
-    });
-    activeEvent?.end.forEach((event) => {
-      element?.removeEventListener(event, this._onPinchEnd, false);
-    });
+    if (element) {
+      activeEvent?.start.forEach((event) => {
+        element.removeEventListener(event, this._onPinchStart, false);
+      });
+      activeEvent?.move.forEach((event) => {
+        element.removeEventListener(event, this._onPinchMove, false);
+      });
+      activeEvent?.end.forEach((event) => {
+        element.removeEventListener(event, this._onPinchEnd, false);
+      });
+    }
     this._enabled = false;
     this._observer = null;
   }

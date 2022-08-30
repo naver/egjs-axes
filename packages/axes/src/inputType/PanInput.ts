@@ -378,15 +378,17 @@ export class PanInput implements InputType {
   private _detachElementEvent() {
     const activeEvent = this._activeEvent;
     const element = this.element;
-    if (this.options.preventClickOnDrag) {
-      element?.removeEventListener("click", this._preventClickWhenDragged, true);
+    if (element) {
+      if (this.options.preventClickOnDrag) {
+        element.removeEventListener("click", this._preventClickWhenDragged, true);
+      }
+      activeEvent?.start.forEach((event) => {
+        element.removeEventListener(event, this._onPanstart);
+      });
+      activeEvent?.move.forEach((event) => {
+        element.removeEventListener(event, this._voidFunction);
+      });
     }
-    activeEvent?.start.forEach((event) => {
-      element?.removeEventListener(event, this._onPanstart);
-    });
-    activeEvent?.move.forEach((event) => {
-      element?.removeEventListener(event, this._voidFunction);
-    });
     this._enabled = false;
     this._observer = null;
   }

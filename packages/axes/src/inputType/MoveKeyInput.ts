@@ -212,9 +212,11 @@ export class MoveKeyInput implements InputType {
 
   private _detachEvent() {
     const element = this.element;
-    element?.removeEventListener("keydown", this._onKeydown, false);
-    element?.removeEventListener("keypress", this._onKeydown, false);
-    element?.removeEventListener("keyup", this._onKeyup, false);
+    if (element) {
+      element.removeEventListener("keydown", this._onKeydown, false);
+      element.removeEventListener("keypress", this._onKeydown, false);
+      element.removeEventListener("keyup", this._onKeyup, false);
+    }
     this._enabled = false;
     this._observer = null;
   }
