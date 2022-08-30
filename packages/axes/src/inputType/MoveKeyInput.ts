@@ -43,7 +43,7 @@ export interface MoveKeyInputOption {
  * @example
  * ```js
  * const moveKey = new eg.Axes.MoveKeyInput("#area", {
- * 		scale: [1, 1]
+ *     scale: [1, 1]
  * });
  *
  * // Connect 'x', 'y' axes when the moveKey is pressed.
@@ -199,17 +199,24 @@ export class MoveKeyInput implements InputType {
   }
 
   private _attachEvent(observer: InputTypeObserver) {
+    const element = this.element;
+    if (!element) {
+      throw new Error("Element to connect input does not exist.");
+    }
     this._observer = observer;
-    this.element.addEventListener("keydown", this._onKeydown, false);
-    this.element.addEventListener("keypress", this._onKeydown, false);
-    this.element.addEventListener("keyup", this._onKeyup, false);
+    element.addEventListener("keydown", this._onKeydown, false);
+    element.addEventListener("keypress", this._onKeydown, false);
+    element.addEventListener("keyup", this._onKeyup, false);
     this._enabled = true;
   }
 
   private _detachEvent() {
-    this.element.removeEventListener("keydown", this._onKeydown, false);
-    this.element.removeEventListener("keypress", this._onKeydown, false);
-    this.element.removeEventListener("keyup", this._onKeyup, false);
+    const element = this.element;
+    if (element) {
+      element.removeEventListener("keydown", this._onKeydown, false);
+      element.removeEventListener("keypress", this._onKeydown, false);
+      element.removeEventListener("keyup", this._onKeyup, false);
+    }
     this._enabled = false;
     this._observer = null;
   }

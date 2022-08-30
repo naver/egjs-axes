@@ -300,6 +300,67 @@ describe("PanInput", () => {
       cleanup();
     });
 
+    describe("preventClickOnDrag", () => {
+      it("should prevent click event when preventClickOnDrag is true", (done) => {
+        // Given
+        const click = sinon.spy();
+        el.addEventListener("click", click);
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventClickOnDrag: true,
+        });
+        inst.connect(["x", "y"], input);
+
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 50,
+            deltaY: 50,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            el.click();
+            // Then
+            expect(click.called).to.be.false;
+            done();
+          }
+        );
+      });
+
+      it("shouldn't bother click event when input is disabled", (done) => {
+        // Given
+        const click = sinon.spy();
+        el.addEventListener("click", click);
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventClickOnDrag: true,
+        });
+        inst.connect(["x", "y"], input);
+        input.disable();
+
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 50,
+            deltaY: 50,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            el.click();
+            // Then
+            expect(click.called).to.be.true;
+            done();
+          }
+        );
+      });
+    });
+
     describe("inputButton", () => {
       ["left", "middle", "right"].forEach((button) => {
         it("should check only the button set in inputButton is available", (done) => {

@@ -31,7 +31,7 @@ export interface WheelInputOption {
  * @example
  * ```js
  * const wheel = new eg.Axes.WheelInput("#area", {
- * 		scale: 1
+ *     scale: 1
  * });
  *
  * // Connect only one 'something1' axis to the vertical mouse wheel.
@@ -186,13 +186,20 @@ export class WheelInput implements InputType {
   }
 
   private _attachEvent(observer: InputTypeObserver) {
+    const element = this.element;
+    if (!element) {
+      throw new Error("Element to connect input does not exist.");
+    }
     this._observer = observer;
-    this.element.addEventListener("wheel", this._onWheel);
+    element.addEventListener("wheel", this._onWheel);
     this._enabled = true;
   }
 
   private _detachEvent() {
-    this.element.removeEventListener("wheel", this._onWheel);
+    const element = this.element;
+    if (element) {
+      this.element.removeEventListener("wheel", this._onWheel);
+    }
     this._enabled = false;
     this._observer = null;
 
