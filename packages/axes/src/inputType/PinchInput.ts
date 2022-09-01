@@ -58,6 +58,7 @@ export class PinchInput implements InputType {
   private _originalCssProps: { [key: string]: string };
   private _activeEvent: ActiveEvent = null;
   private _baseValue: number;
+  private _isOverThreshold = false;
 
   /**
    *
@@ -149,10 +150,12 @@ export class PinchInput implements InputType {
     this._baseValue = this._observer.get(this)[this.axes[0]];
     this._observer.hold(this, event);
     this._pinchFlag = true;
+    this._isOverThreshold = false;
     activeEvent.prevEvent = pinchEvent;
   }
 
   private _onPinchMove(event: InputEventType) {
+    const threshold = this.options.threshold;
     const activeEvent = this._activeEvent;
     const pinchEvent = activeEvent.onEventMove(event);
     if (
@@ -164,11 +167,16 @@ export class PinchInput implements InputType {
       return;
     }
 
+    const distance = this._getDistance(pinchEvent.scale);
     const offset = this._getOffset(
       pinchEvent.scale,
       activeEvent.prevEvent.scale
     );
-    this._observer.change(this, event, toAxis(this.axes, [offset]));
+
+    if (this._isOverThreshold || distance >= threshold) {
+      this._isOverThreshold = true;
+      this._observer.change(this, event, toAxis(this.axes, [offset]));
+    }
     activeEvent.prevEvent = pinchEvent;
   }
 
@@ -232,5 +240,9 @@ export class PinchInput implements InputType {
 
   private _getOffset(pinchScale: number, prev: number = 1): number {
     return this._baseValue * (pinchScale - prev) * this.options.scale;
+  }
+
+  private _getDistance(pinchScale: number): number {
+    return Math.abs(pinchScale - 1);
   }
 }
