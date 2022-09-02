@@ -2,7 +2,7 @@ const buildHelper = require("@egjs/build-helper");
 
 const external = {
   "@egjs/agent": "eg.agent",
-  "@egjs/component": "eg.Component",
+  "@egjs/component": "Component",
 };
 const name = "eg.Axes";
 const fileName = "axes";
