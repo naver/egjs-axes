@@ -361,6 +361,64 @@ describe("PanInput", () => {
       });
     });
 
+    describe("threshold", () => {
+      it("should not trigger change event when moving below threshold", (done) => {
+        // Given
+        const change = sinon.spy();
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          threshold: 100,
+        });
+        inst.connect(["x", "y"], input);
+        inst.on("change", change);
+
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 50,
+            deltaY: 0,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            // Then
+            expect(change.called).to.be.false;
+            done();
+          }
+        );
+      });
+
+      it("should trigger change event when moving above threshold", (done) => {
+        // Given
+        const change = sinon.spy();
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          threshold: 100,
+        });
+        inst.connect(["x", "y"], input);
+        inst.on("change", change);
+
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 150,
+            deltaY: 0,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            // Then
+            expect(change.called).to.be.true;
+            done();
+          }
+        );
+      });
+    });
+
     describe("inputButton", () => {
       ["left", "middle", "right"].forEach((button) => {
         it("should check only the button set in inputButton is available", (done) => {

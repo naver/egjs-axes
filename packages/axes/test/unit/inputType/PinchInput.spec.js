@@ -7,7 +7,7 @@ describe("PinchInput", () => {
   let inst;
   let observer;
 
-  describe("instance method", () => {
+  describe("Methods", () => {
     beforeEach(() => {
       inst = new PinchInput(sandbox());
     });
@@ -18,7 +18,7 @@ describe("PinchInput", () => {
       }
       cleanup();
     });
-    it("should check status after disconnect", () => {
+    it("should check status is completely empty after disconnect", () => {
       // Given
       inst.connect({});
 
@@ -29,7 +29,7 @@ describe("PinchInput", () => {
       expect(observer).to.be.not.exist;
       expect(inst.element).to.be.exist;
     });
-    it("should check status after destroy", () => {
+    it("should check status is completely empty after destroy", () => {
       // Given
       inst.connect({});
 
@@ -222,7 +222,7 @@ describe("PinchInput", () => {
       el = sandbox();
       inst = new Axes({
         zoom: {
-          range: [0, 100],
+          range: [1, 100],
         },
       });
     });
@@ -238,9 +238,61 @@ describe("PinchInput", () => {
       cleanup();
     });
 
+    describe("threshold", () => {
+      it("should not trigger change event when moving below threshold", (done) => {
+        // Given
+        const change = sinon.spy();
+        input = new PinchInput(el, {
+          inputType: ["touch"],
+          threshold: 0.5,
+        });
+        inst.connect("zoom", input);
+        inst.on("change", change);
+
+        // When
+        Simulator.gestures.pinch(
+          el,
+          {
+            duration: 500,
+            scale: 1.3,
+          },
+          () => {
+            // Then
+            expect(change.called).to.be.false;
+            done();
+          }
+        );
+      });
+
+      it("should trigger change event when moving above threshold", (done) => {
+        // Given
+        const change = sinon.spy();
+        input = new PinchInput(el, {
+          inputType: ["touch"],
+          threshold: 0.5,
+        });
+        inst.connect("zoom", input);
+        inst.on("change", change);
+
+        // When
+        Simulator.gestures.pinch(
+          el,
+          {
+            duration: 500,
+            scale: 2,
+          },
+          () => {
+            // Then
+            expect(change.called).to.be.true;
+            done();
+          }
+        );
+      });
+    });
+
     ["auto", "none", "manipulation", "pan-x", "pan-y"].forEach(
       (touchAction) => {
-        it(`should check 'touchAction' option (${touchAction})`, () => {
+        it(`should check whether the style set in touchAction is applied correctly (touchAction: ${touchAction})`, () => {
           // Given
           input = new PinchInput(el, {
             touchAction,

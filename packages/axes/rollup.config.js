@@ -1,8 +1,8 @@
 const buildHelper = require("@egjs/build-helper");
 
 const external = {
-	"@egjs/agent": "eg.agent",
-	"@egjs/component": "eg.Component",
+  "@egjs/agent": "eg.agent",
+  "@egjs/component": "Component",
 };
 const name = "eg.Axes";
 const fileName = "axes";
@@ -37,6 +37,12 @@ export default buildHelper([
     format: "umd",
     resolve: true,
     uglify: true
+  },
+  {
+    input: "./src/index.cjs.ts",
+    output: `./dist/${fileName}.cjs.js`,
+    format: "cjs",
+    exports: "named",
   },
   {
     input: "./src/index.ts",
