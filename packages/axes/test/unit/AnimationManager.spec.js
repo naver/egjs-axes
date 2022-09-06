@@ -764,9 +764,11 @@ describe("AnimationManager", () => {
       // Given
       const startHandler = sinon.spy();
       const endHandler = sinon.spy();
+      const finishHandler = sinon.spy();
       axes.on({
         animationStart: startHandler,
         animationEnd: endHandler,
+        finish: finishHandler,
       });
 
       // When
@@ -782,6 +784,7 @@ describe("AnimationManager", () => {
       }, 100);
       setTimeout(() => {
         expect(endHandler.calledOnce).to.be.true;
+        expect(finishHandler.calledOnce).to.be.true;
       }, 200);
       setTimeout(() => {
         const result = inst.axisManager.get();
