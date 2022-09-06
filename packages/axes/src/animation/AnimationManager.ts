@@ -111,6 +111,7 @@ export abstract class AnimationManager {
       if (!every(pos, (v, k) => orgPos[k] === v)) {
         this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
+      this._animateParam = null;
       if (this._raf) {
         cancelAnimationFrame(this._raf);
       }
