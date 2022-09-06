@@ -116,7 +116,6 @@ export abstract class AnimationManager {
       }
       this._raf = null;
       this.eventManager.triggerAnimationEnd(!!option?.event);
-      this.finish(false);
     }
   }
 

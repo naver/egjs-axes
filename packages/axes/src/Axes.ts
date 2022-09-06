@@ -540,6 +540,7 @@ class Axes extends Component<AxesEvents> {
    */
   public stopAnimation() {
     this.animationManager.stopAnimation();
+    this.animationManager.finish(false);
     return this;
   }
 
