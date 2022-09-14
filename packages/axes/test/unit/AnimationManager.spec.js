@@ -128,7 +128,7 @@ describe("AnimationManager", () => {
     });
   });
 
-  describe.only("animation test", () => {
+  describe("animation test", () => {
     beforeEach(() => {
       axis = {
         x: {
