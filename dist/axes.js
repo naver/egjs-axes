@@ -4,12 +4,12 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.7.0
+version: 3.8.1
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@egjs/agent'), require('@egjs/component'), require('@cfcs/core')) :
     typeof define === 'function' && define.amd ? define(['@egjs/agent', '@egjs/component', '@cfcs/core'], factory) :
-    (global.eg = global.eg || {}, global.eg.Axes = factory(global.eg.agent,global.eg.Component,global.core));
+    (global.eg = global.eg || {}, global.eg.Axes = factory(global.eg.agent,global.Component,global.core));
 }(this, (function (getAgent,Component,core) { 'use strict';
 
     /*! *****************************************************************************
@@ -1154,7 +1154,16 @@ version: 3.7.0
         return;
       };
 
-      __proto.getTouches = function () {
+      __proto.getTouches = function (event, inputButton) {
+        if (inputButton) {
+          var buttonCodeMap = {
+            1: MOUSE_LEFT,
+            2: MOUSE_MIDDLE,
+            3: MOUSE_RIGHT
+          };
+          return this._isValidButton(buttonCodeMap[event.which], inputButton) && this.end.indexOf(event.type) === -1 ? 1 : 0;
+        }
+
         return 0;
       };
 
@@ -2124,6 +2133,8 @@ version: 3.7.0
       };
 
       __proto.updateAnimation = function (options) {
+        var _a;
+
         var animateParam = this._animateParam;
 
         if (!animateParam) {
@@ -2132,7 +2143,7 @@ version: 3.7.0
 
         var diffTime = new Date().getTime() - animateParam.startTime;
         var pos = (options === null || options === void 0 ? void 0 : options.destPos) || animateParam.destPos;
-        var duration = (options === null || options === void 0 ? void 0 : options.duration) || animateParam.duration;
+        var duration = (_a = options === null || options === void 0 ? void 0 : options.duration) !== null && _a !== void 0 ? _a : animateParam.duration;
 
         if ((options === null || options === void 0 ? void 0 : options.restart) || duration <= diffTime) {
           this.setTo(pos, duration - diffTime);
@@ -2663,6 +2674,7 @@ version: 3.7.0
 
       __proto.stopAnimation = function () {
         this.animationManager.stopAnimation();
+        this.animationManager.finish(false);
         return this;
       };
       /**
@@ -2752,7 +2764,7 @@ version: 3.7.0
        */
 
 
-      Axes.VERSION = "3.7.0";
+      Axes.VERSION = "3.8.1";
       /* eslint-enable */
 
       /**
@@ -2864,6 +2876,7 @@ version: 3.7.0
      * @param {Number} [scale[1]=1] vertical axis scale <ko>수직축 배율</ko>
      * @param {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
      * @param {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+     * @param {Boolean} [preventClickOnDrag=false] Whether to cancel the {@link https://developer.mozilla.org/en/docs/Web/API/Element/click_event click} event when the user finishes dragging more than 1 pixel <ko>사용자가 1픽셀 이상 드래그를 마쳤을 때 {@link https://developer.mozilla.org/ko/docs/Web/API/Element/click_event click} 이벤트 취소 여부</ko>
      * @param {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
      * @param {String} [touchAction=null] Value that overrides the element's "touch-action" css property. If set to null, it is automatically set to prevent scrolling in the direction of the connected axis. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 만약 null로 설정된 경우, 연결된 축 방향으로의 스크롤을 방지하게끔 자동으로 설정된다.</ko>
      **/
@@ -2900,12 +2913,25 @@ version: 3.7.0
        *
        */
       function PanInput(el, options) {
+        var _this = this;
+
         this.axes = [];
         this.element = null;
         this._enabled = false;
         this._activeEvent = null;
         this._atRightEdge = false;
         this._rightEdgeTimer = 0;
+        this._dragged = false;
+        this._isOverThreshold = false;
+
+        this._preventClickWhenDragged = function (e) {
+          if (_this._dragged) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+
+          _this._dragged = false;
+        };
 
         this._voidFunction = function () {};
 
@@ -2916,6 +2942,7 @@ version: 3.7.0
           scale: [1, 1],
           thresholdAngle: 45,
           threshold: 0,
+          preventClickOnDrag: false,
           iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
           releaseOnScroll: false,
           touchAction: null
@@ -3019,15 +3046,18 @@ version: 3.7.0
       };
 
       __proto._onPanstart = function (event) {
+        var inputButton = this.options.inputButton;
         var activeEvent = this._activeEvent;
-        var panEvent = activeEvent.onEventStart(event, this.options.inputButton);
+        var panEvent = activeEvent.onEventStart(event, inputButton);
 
-        if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
+        if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
           return;
         }
 
         if (panEvent.srcEvent.cancelable !== false) {
           var edgeThreshold = this.options.iOSEdgeSwipeThreshold;
+          this._dragged = false;
+          this._isOverThreshold = false;
 
           this._observer.hold(this, panEvent);
 
@@ -3042,23 +3072,29 @@ version: 3.7.0
       __proto._onPanmove = function (event) {
         var _this = this;
 
-        var activeEvent = this._activeEvent;
-        var panEvent = activeEvent.onEventMove(event, this.options.inputButton);
-
-        if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
-          return;
-        }
-
         var _a = this.options,
             iOSEdgeSwipeThreshold = _a.iOSEdgeSwipeThreshold,
-            releaseOnScroll = _a.releaseOnScroll;
-        var userDirection = getDirectionByAngle(panEvent.angle, this.options.thresholdAngle);
+            releaseOnScroll = _a.releaseOnScroll,
+            inputButton = _a.inputButton,
+            threshold = _a.threshold,
+            thresholdAngle = _a.thresholdAngle;
+        var activeEvent = this._activeEvent;
+        var panEvent = activeEvent.onEventMove(event, inputButton);
+        var touches = activeEvent.getTouches(event, inputButton);
 
-        if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
+        if (touches === 0 || releaseOnScroll && panEvent && !panEvent.srcEvent.cancelable) {
           this._onPanend(event);
 
           return;
         }
+
+        if (!panEvent || !this._enabled || touches > 1) {
+          return;
+        }
+
+        var userDirection = getDirectionByAngle(panEvent.angle, thresholdAngle);
+        var useHorizontal = useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection);
+        var useVertical = useDirection(DIRECTION_VERTICAL, this._direction, userDirection);
 
         if (activeEvent.prevEvent && IS_IOS_SAFARI) {
           var swipeLeftToRight = panEvent.center.x < 0;
@@ -3083,7 +3119,9 @@ version: 3.7.0
           }
         }
 
-        var offset = this._getOffset([panEvent.offsetX, panEvent.offsetY], [useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection), useDirection(DIRECTION_VERTICAL, this._direction, userDirection)]);
+        var distance = this._getDistance([panEvent.deltaX, panEvent.deltaY], [useHorizontal, useVertical]);
+
+        var offset = this._getOffset([panEvent.offsetX, panEvent.offsetY], [useHorizontal, useVertical]);
 
         var prevent = offset.some(function (v) {
           return v !== 0;
@@ -3099,7 +3137,10 @@ version: 3.7.0
 
         panEvent.preventSystemEvent = prevent;
 
-        if (prevent) {
+        if (prevent && (this._isOverThreshold || distance >= threshold)) {
+          this._dragged = true;
+          this._isOverThreshold = true;
+
           this._observer.change(this, panEvent, toAxis(this.axes, offset));
         }
 
@@ -3107,10 +3148,11 @@ version: 3.7.0
       };
 
       __proto._onPanend = function (event) {
+        var inputButton = this.options.inputButton;
         var activeEvent = this._activeEvent;
         activeEvent.onEventEnd(event);
 
-        if (!this._enabled || activeEvent.getTouches(event) !== 0) {
+        if (!this._enabled || activeEvent.getTouches(event, inputButton) !== 0) {
           return;
         }
 
@@ -3118,9 +3160,7 @@ version: 3.7.0
 
         clearTimeout(this._rightEdgeTimer);
         var prevEvent = activeEvent.prevEvent;
-
-        var velocity = this._getOffset([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]);
-
+        var velocity = this._isOverThreshold ? this._getOffset([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]) : [0, 0];
         activeEvent.onRelease();
 
         this._observer.release(this, prevEvent, velocity);
@@ -3157,28 +3197,38 @@ version: 3.7.0
         return [direction[0] ? properties[0] * scale[0] : 0, direction[1] ? properties[1] * scale[1] : 0];
       };
 
+      __proto._getDistance = function (delta, direction) {
+        return Math.sqrt(Number(direction[0]) * Math.pow(delta[0], 2) + Number(direction[1]) * Math.pow(delta[1], 2));
+      };
+
       __proto._attachElementEvent = function (observer) {
         var _this = this;
 
         var activeEvent = convertInputType(this.options.inputType);
+        var element = this.element;
 
         if (!activeEvent) {
           return;
         }
 
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
-        activeEvent.start.forEach(function (event) {
-          var _a;
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._onPanstart);
+        if (this.options.preventClickOnDrag) {
+          element.addEventListener("click", this._preventClickWhenDragged, true);
+        }
+
+        activeEvent.start.forEach(function (event) {
+          element.addEventListener(event, _this._onPanstart);
         }); // adding event listener to element prevents invalid behavior in iOS Safari
 
         activeEvent.move.forEach(function (event) {
-          var _a;
-
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._voidFunction);
+          element.addEventListener(event, _this._voidFunction);
         });
       };
 
@@ -3186,16 +3236,21 @@ version: 3.7.0
         var _this = this;
 
         var activeEvent = this._activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
-          var _a;
+        var element = this.element;
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._onPanstart);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-          var _a;
+        if (element) {
+          if (this.options.preventClickOnDrag) {
+            element.removeEventListener("click", this._preventClickWhenDragged, true);
+          }
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._voidFunction);
-        });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+            element.removeEventListener(event, _this._onPanstart);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+            element.removeEventListener(event, _this._voidFunction);
+          });
+        }
+
         this._enabled = false;
         this._observer = null;
       };
@@ -3419,7 +3474,7 @@ version: 3.7.0
      * @example
      * ```js
      * const pinch = new eg.Axes.PinchInput("#area", {
-     * 		scale: 1
+     *   scale: 1
      * });
      *
      * // Connect 'something' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
@@ -3441,6 +3496,7 @@ version: 3.7.0
         this._pinchFlag = false;
         this._enabled = false;
         this._activeEvent = null;
+        this._isOverThreshold = false;
         this.element = $(el);
         this.options = __assign({
           scale: 1,
@@ -3535,10 +3591,12 @@ version: 3.7.0
         this._observer.hold(this, event);
 
         this._pinchFlag = true;
+        this._isOverThreshold = false;
         activeEvent.prevEvent = pinchEvent;
       };
 
       __proto._onPinchMove = function (event) {
+        var threshold = this.options.threshold;
         var activeEvent = this._activeEvent;
         var pinchEvent = activeEvent.onEventMove(event);
 
@@ -3546,9 +3604,15 @@ version: 3.7.0
           return;
         }
 
+        var distance = this._getDistance(pinchEvent.scale);
+
         var offset = this._getOffset(pinchEvent.scale, activeEvent.prevEvent.scale);
 
-        this._observer.change(this, event, toAxis(this.axes, [offset]));
+        if (this._isOverThreshold || distance >= threshold) {
+          this._isOverThreshold = true;
+
+          this._observer.change(this, event, toAxis(this.axes, [offset]));
+        }
 
         activeEvent.prevEvent = pinchEvent;
       };
@@ -3573,22 +3637,27 @@ version: 3.7.0
         var _this = this;
 
         var activeEvent = convertInputType(this.options.inputType);
+        var element = this.element;
 
         if (!activeEvent) {
           return;
+        }
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
         }
 
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
         activeEvent.start.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchStart, false);
+          element.addEventListener(event, _this._onPinchStart, false);
         });
         activeEvent.move.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchMove, false);
+          element.addEventListener(event, _this._onPinchMove, false);
         });
         activeEvent.end.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchEnd, false);
+          element.addEventListener(event, _this._onPinchEnd, false);
         });
       };
 
@@ -3596,15 +3665,20 @@ version: 3.7.0
         var _this = this;
 
         var activeEvent = this._activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchStart, false);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchMove, false);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchEnd, false);
-        });
+        var element = this.element;
+
+        if (element) {
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchStart, false);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchMove, false);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchEnd, false);
+          });
+        }
+
         this._enabled = false;
         this._observer = null;
       };
@@ -3615,6 +3689,10 @@ version: 3.7.0
         }
 
         return this._baseValue * (pinchScale - prev) * this.options.scale;
+      };
+
+      __proto._getDistance = function (pinchScale) {
+        return Math.abs(pinchScale - 1);
       };
 
       return PinchInput;
@@ -3636,7 +3714,7 @@ version: 3.7.0
      * @example
      * ```js
      * const wheel = new eg.Axes.WheelInput("#area", {
-     * 		scale: 1
+     *     scale: 1
      * });
      *
      * // Connect only one 'something1' axis to the vertical mouse wheel.
@@ -3779,13 +3857,24 @@ version: 3.7.0
       };
 
       __proto._attachEvent = function (observer) {
+        var element = this.element;
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
-        this.element.addEventListener("wheel", this._onWheel);
+        element.addEventListener("wheel", this._onWheel);
         this._enabled = true;
       };
 
       __proto._detachEvent = function () {
-        this.element.removeEventListener("wheel", this._onWheel);
+        var element = this.element;
+
+        if (element) {
+          this.element.removeEventListener("wheel", this._onWheel);
+        }
+
         this._enabled = false;
         this._observer = null;
 
@@ -3828,7 +3917,7 @@ version: 3.7.0
      * @example
      * ```js
      * const moveKey = new eg.Axes.MoveKeyInput("#area", {
-     * 		scale: [1, 1]
+     *     scale: [1, 1]
      * });
      *
      * // Connect 'x', 'y' axes when the moveKey is pressed.
@@ -3997,17 +4086,28 @@ version: 3.7.0
       };
 
       __proto._attachEvent = function (observer) {
+        var element = this.element;
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
-        this.element.addEventListener("keydown", this._onKeydown, false);
-        this.element.addEventListener("keypress", this._onKeydown, false);
-        this.element.addEventListener("keyup", this._onKeyup, false);
+        element.addEventListener("keydown", this._onKeydown, false);
+        element.addEventListener("keypress", this._onKeydown, false);
+        element.addEventListener("keyup", this._onKeyup, false);
         this._enabled = true;
       };
 
       __proto._detachEvent = function () {
-        this.element.removeEventListener("keydown", this._onKeydown, false);
-        this.element.removeEventListener("keypress", this._onKeydown, false);
-        this.element.removeEventListener("keyup", this._onKeyup, false);
+        var element = this.element;
+
+        if (element) {
+          element.removeEventListener("keydown", this._onKeydown, false);
+          element.removeEventListener("keypress", this._onKeydown, false);
+          element.removeEventListener("keyup", this._onKeyup, false);
+        }
+
         this._enabled = false;
         this._observer = null;
       };

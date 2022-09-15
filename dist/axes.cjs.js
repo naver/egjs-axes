@@ -6,9 +6,11 @@ author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
 version: 3.8.1
 */
-import getAgent from '@egjs/agent';
-import Component, { ComponentEvent } from '@egjs/component';
-import { getObserver, ReactiveSubscribe } from '@cfcs/core';
+'use strict';
+
+var getAgent = require('@egjs/agent');
+var Component = require('@egjs/component');
+var core = require('@cfcs/core');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -433,7 +435,7 @@ function () {
   __proto.hold = function (pos, option) {
     var roundPos = this._getRoundPos(pos).roundPos;
 
-    this._axes.trigger(new ComponentEvent("hold", {
+    this._axes.trigger(new Component.ComponentEvent("hold", {
       pos: roundPos,
       input: option.input || null,
       inputEvent: option.event || null,
@@ -526,7 +528,7 @@ function () {
     param.depaPos = roundDepa;
     param.setTo = this._createUserControll(param.destPos, param.duration);
 
-    this._axes.trigger(new ComponentEvent("release", __assign(__assign({}, param), {
+    this._axes.trigger(new Component.ComponentEvent("release", __assign(__assign({}, param), {
       bounceRatio: this._getBounceRatio(roundPos)
     })));
   };
@@ -598,13 +600,13 @@ function () {
       set: inputEvent ? this._createUserControll(moveTo.pos) : function () {} // eslint-disable-line @typescript-eslint/no-empty-function
 
     };
-    var event = new ComponentEvent("change", param);
+    var event = new Component.ComponentEvent("change", param);
 
     this._axes.trigger(event);
 
     Object.keys(moveTo.pos).forEach(function (axis) {
       var p = moveTo.pos[axis];
-      getObserver(_this._axes, axis, p).current = p;
+      core.getObserver(_this._axes, axis, p).current = p;
     });
 
     if (inputEvent) {
@@ -660,7 +662,7 @@ function () {
     param.destPos = roundPos;
     param.depaPos = roundDepa;
     param.setTo = this._createUserControll(param.destPos, param.duration);
-    var event = new ComponentEvent("animationStart", param);
+    var event = new Component.ComponentEvent("animationStart", param);
 
     this._axes.trigger(event);
 
@@ -694,7 +696,7 @@ function () {
       isTrusted = false;
     }
 
-    this._axes.trigger(new ComponentEvent("animationEnd", {
+    this._axes.trigger(new Component.ComponentEvent("animationEnd", {
       isTrusted: isTrusted
     }));
   };
@@ -726,7 +728,7 @@ function () {
       isTrusted = false;
     }
 
-    this._axes.trigger(new ComponentEvent("finish", {
+    this._axes.trigger(new Component.ComponentEvent("finish", {
       isTrusted: isTrusted
     }));
   };
@@ -2835,7 +2837,7 @@ function (_super) {
    */
 
   Axes.DIRECTION_ALL = DIRECTION_ALL;
-  Axes = __decorate([ReactiveSubscribe], Axes);
+  Axes = __decorate([core.ReactiveSubscribe], Axes);
   return Axes;
 }(Component);
 
@@ -4139,6 +4141,36 @@ var REACTIVE_AXES = {
  * egjs projects are licensed under the MIT license
  */
 
-export default Axes;
-export { PanInput, RotatePanInput, PinchInput, WheelInput, MoveKeyInput, AXES_METHODS, AXES_EVENTS, REACTIVE_AXES };
-//# sourceMappingURL=axes.esm.js.map
+var modules = ({
+    default: Axes,
+    PanInput: PanInput,
+    RotatePanInput: RotatePanInput,
+    PinchInput: PinchInput,
+    WheelInput: WheelInput,
+    MoveKeyInput: MoveKeyInput,
+    AXES_METHODS: AXES_METHODS,
+    AXES_EVENTS: AXES_EVENTS,
+    REACTIVE_AXES: REACTIVE_AXES
+});
+
+/*
+ * Copyright (c) 2015 NAVER Corp.
+ * egjs projects are licensed under the MIT license
+ */
+
+for (var name in modules) {
+  Axes[name] = modules[name];
+}
+
+module.exports = Axes;
+
+exports.default = Axes;
+exports.PanInput = PanInput;
+exports.RotatePanInput = RotatePanInput;
+exports.PinchInput = PinchInput;
+exports.WheelInput = WheelInput;
+exports.MoveKeyInput = MoveKeyInput;
+exports.AXES_METHODS = AXES_METHODS;
+exports.AXES_EVENTS = AXES_EVENTS;
+exports.REACTIVE_AXES = REACTIVE_AXES;
+//# sourceMappingURL=axes.cjs.js.map
