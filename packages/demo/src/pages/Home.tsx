@@ -4,8 +4,8 @@ import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import CodeBlock from "@theme/CodeBlock";
 
-import AxesIcon from "../../static/img/axes.svg";
 import Frameworks from ".//main/Frameworks";
+import Logo from "@site/src/pages/demos/logo";
 
 import "@site/src/css/index.css";
 import styles from "./home.module.css";
@@ -16,7 +16,7 @@ class Home extends React.Component {
       <Layout>
         <div className="container pb-6">
           <div className={styles.max400}>
-            <AxesIcon className={styles.mainImg} />
+            <Logo />
           </div>
           <section className="py-4">
             <div

@@ -26,7 +26,7 @@ export class EasingManager extends AnimationManager {
 
     const diffTime = new Date().getTime() - animateParam.startTime;
     const pos = options?.destPos || animateParam.destPos;
-    const duration = options?.duration || animateParam.duration;
+    const duration = options?.duration ?? animateParam.duration;
     if (options?.restart || duration <= diffTime) {
       this.setTo(pos, duration - diffTime);
       return;
