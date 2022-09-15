@@ -1792,6 +1792,41 @@
   resolved "https://registry.yarnpkg.com/@egjs/component/-/component-3.0.2.tgz#c56794fcf1b2cb2768d09b021444779e54d0de1b"
   integrity sha512-Mze3mwEE19+dERrimg0JVLtpOHG4AC+LOuKqvF4qGZjn0k23ZbNI7b/gy1LFR63LigC2b8k70aDjy8xoT+WNPA==
 
+"@egjs/flicking-plugins@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@egjs/flicking-plugins/-/flicking-plugins-4.4.0.tgz#05405b6536efefaa1dd09de5cb12ecc9c69e96d2"
+  integrity sha512-PhhA9XB8145QxLAhIPDfzSszMvW02Be5ZbJFUkwgfkzt/A1QvJ56W02Nv4yAwjLIl48hI8MF0enG0RL3AuP3Uw==
+
+"@egjs/flicking@~4.9.3":
+  version "4.9.3"
+  resolved "https://registry.yarnpkg.com/@egjs/flicking/-/flicking-4.9.3.tgz#1562370efd8c7e886197c430cb0e6ac6d0bdc572"
+  integrity sha512-QRe/6iN7TgE3yu0vMLmDWgjpwacjSqhAwmCG+8qLN3qJ31BaHgvieRSJnq49LQX2OZtREWrS39HCECvfXc6Qmg==
+  dependencies:
+    "@egjs/axes" "^3.8.0"
+    "@egjs/component" "^3.0.1"
+    "@egjs/imready" "^1.1.3"
+    "@egjs/list-differ" "^1.0.0"
+
+"@egjs/imready@^1.1.3":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@egjs/imready/-/imready-1.3.0.tgz#76a7df9d1a77c008bcd33942d207d39d0ce2f6fa"
+  integrity sha512-h6qxQup/ZJxEJkDMuyR6yuJ9jsuVan7EyQ8Xa0WkTWAr3HtUYjtDHOCjJvhFg50Xv3C+TkfYj4Mxmkz7zNePSA==
+  dependencies:
+    "@egjs/component" "^3.0.1"
+
+"@egjs/list-differ@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@egjs/list-differ/-/list-differ-1.0.0.tgz#2277aff52e3e4bd9318d5c30ffc3ba3b6216f05e"
+  integrity sha512-HsbMKc0ZAQH+EUeCmI/2PvTYSybmkaWwakU8QGDYYgMVIg9BQ5sM0A0Nnombjxo2+JzXHxmH+jw//yGX+y6GYw==
+
+"@egjs/react-flicking@^4.9.3":
+  version "4.9.4"
+  resolved "https://registry.yarnpkg.com/@egjs/react-flicking/-/react-flicking-4.9.4.tgz#8c44f3d6bec994d66e145cc3b95288e5388b852b"
+  integrity sha512-5q2jqzpIfs1SOx+3ScMoR/DhcylQn8Vs4wujuYFA6grFRzvYoTvjinMzwCJnyA0VGHBg4hDJAAu0AdO5Aovt4g==
+  dependencies:
+    "@egjs/flicking" "~4.9.3"
+    "@egjs/list-differ" "^1.0.0"
+
 "@egjs/release-helper@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@egjs/release-helper/-/release-helper-0.0.3.tgz#3231fe8a58597d8c1e708a125b82d2d18de75e09"
@@ -19793,6 +19828,14 @@ raw-body@2.5.1, raw-body@^2.2.0:
     http-errors "2.0.0"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+raw-loader@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-4.0.2.tgz#1aac6b7d1ad1501e66efdac1522c73e59a584eb6"
+  integrity sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA==
+  dependencies:
+    loader-utils "^2.0.0"
+    schema-utils "^3.0.0"
 
 rc@1.2.8, rc@^1.2.8:
   version "1.2.8"
