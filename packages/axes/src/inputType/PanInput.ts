@@ -31,6 +31,7 @@ import {
 
 export interface PanInputOption {
   inputType?: string[];
+  inputKey?: string[];
   inputButton?: string[];
   scale?: number[];
   thresholdAngle?: number;
@@ -66,6 +67,15 @@ export const getDirectionByAngle = (
  * - touch: 터치 입력 장치
  * - mouse: 마우스
  * - pointer: 마우스 및 터치</ko>
+ * @param {String[]} [inputKey=[]] Allow input only when one of these keys is pressed. If the array is empty, it accepts all keys with case of no key is pressed.
+ * - shift: shift key
+ * - ctrl: ctrl key
+ * - alt: alt key
+ * - meta: meta key <ko>이 중 하나의 키가 눌린 상태에서만 입력이 허용된다. 배열이 비었다면 아무 키도 눌리지 않은 상태와 모든 키가 눌린 상태 모두 허용한다.
+ * - shift: shift 키
+ * - ctrl: ctrl 키
+ * - alt: alt 키
+ * - meta: meta 키 </ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -127,6 +137,7 @@ export class PanInput implements InputType {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],
+      inputKey: [],
       inputButton: [MOUSE_LEFT],
       scale: [1, 1],
       thresholdAngle: 45,
@@ -224,10 +235,14 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
-    const inputButton = this.options.inputButton;
+    const { inputKey, inputButton } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventStart(event, inputButton);
-    if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
+    const panEvent = activeEvent.onEventStart(event, inputKey, inputButton);
+    if (
+      !panEvent ||
+      !this._enabled ||
+      activeEvent.getTouches(event, inputButton) > 1
+    ) {
       return;
     }
     if (panEvent.srcEvent.cancelable !== false) {
@@ -247,12 +262,13 @@ export class PanInput implements InputType {
     const {
       iOSEdgeSwipeThreshold,
       releaseOnScroll,
+      inputKey,
       inputButton,
       threshold,
       thresholdAngle,
     } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventMove(event, inputButton);
+    const panEvent = activeEvent.onEventMove(event, inputKey, inputButton);
     const touches = activeEvent.getTouches(event, inputButton);
 
     if (

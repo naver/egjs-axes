@@ -6,9 +6,13 @@ import { ExtendedEvent, InputEventType, LatestInterval } from "../types";
 import { getAngle } from "../utils";
 import { window } from "../browser";
 import {
+  ALT,
+  CTRL,
+  META,
   MOUSE_LEFT,
   MOUSE_MIDDLE,
   MOUSE_RIGHT,
+  SHIFT,
   VELOCITY_INTERVAL,
 } from "../const";
 
@@ -16,6 +20,23 @@ export const SUPPORT_TOUCH = "ontouchstart" in window;
 export const SUPPORT_POINTER = "PointerEvent" in window;
 export const SUPPORT_MSPOINTER = "MSPointerEvent" in window;
 export const SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
+
+export const isValidKey = (
+  event: InputEventType | WheelEvent,
+  inputKey?: string[]
+): boolean => {
+  if (
+    !inputKey ||
+    !inputKey.length ||
+    (inputKey.indexOf(SHIFT) > -1 && event.shiftKey === true) ||
+    (inputKey.indexOf(CTRL) > -1 && event.ctrlKey === true) ||
+    (inputKey.indexOf(ALT) > -1 && event.altKey === true) ||
+    (inputKey.indexOf(META) > -1 && event.metaKey === true)
+  ) {
+    return true;
+  }
+  return false;
+};
 
 export abstract class EventInput {
   public prevEvent: ExtendedEvent;
@@ -35,7 +56,11 @@ export abstract class EventInput {
 
   public abstract onRelease(event: InputEventType): void;
 
-  public abstract getTouches(event: InputEventType, inputButton?: string[]): number;
+  public abstract getTouches(
+    event: InputEventType,
+    inputKey?: string[],
+    inputButton?: string[]
+  ): number;
 
   protected abstract _getScale(event: InputEventType): number;
 
@@ -112,11 +137,22 @@ export abstract class EventInput {
   }
 
   protected _isTouchEvent(event: InputEventType): event is TouchEvent {
-    return event.type.indexOf("touch") > -1;
+    return event.type && event.type.indexOf("touch") > -1;
   }
 
   protected _isValidButton(button: string, inputButton: string[]): boolean {
     return inputButton.indexOf(button) > -1;
+  }
+
+  protected _isValidEvent(
+    event: InputEventType,
+    inputKey?: string[],
+    inputButton?: string[]
+  ): boolean {
+    return (
+      (!inputKey || isValidKey(event, inputKey)) &&
+      (!inputButton || this._isValidButton(this._getButton(event), inputButton))
+    );
   }
 
   protected _preventMouseButton(event: InputEventType, button: string): void {

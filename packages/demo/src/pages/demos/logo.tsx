@@ -75,7 +75,7 @@ export default function Logo() {
   });
 
   useEffect(() => {
-    const container = document.getElementById("container");
+    const container = document.getElementById("logo-container");
     const containerWidth = container.getBoundingClientRect().width;
     setOffsetX1(60 + containerWidth / 2);
     setOffsetX2(containerWidth / 2);
@@ -96,7 +96,7 @@ export default function Logo() {
 
   return (
     <div>
-      <div id="container" style={{ opacity: `${offsetX1 ? "1" : "0"}` }}>
+      <div id="logo-container" style={{ opacity: `${offsetX1 ? "1" : "0"}` }}>
         <div id="square" className="item" style={{ transform: `translateX(${square.x}px) translateY(${square.y}px)` }}><SquareIcon /></div>
         <div id="triangle" className="item light" style={{ transform: `translateX(${triangle.x}px) translateY(${triangle.y}px)` }}><TriangleIcon /></div>
         <div id="circle" className="item" style={{ transform: `translateX(${circle.x}px) translateY(${circle.y}px)` }}><CircleIcon /></div>
