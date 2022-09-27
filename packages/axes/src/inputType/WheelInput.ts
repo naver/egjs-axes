@@ -203,9 +203,7 @@ export class WheelInput implements InputType {
       throw new Error("Element to connect input does not exist.");
     }
     this._observer = observer;
-    element.addEventListener("wheel", this._onWheel, {
-      passive: true,
-    });
+    element.addEventListener("wheel", this._onWheel);
     this._enabled = true;
   }
 
