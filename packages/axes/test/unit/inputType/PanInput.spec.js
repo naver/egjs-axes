@@ -457,7 +457,7 @@ describe("PanInput", () => {
 
     describe("inputButton", () => {
       ["left", "middle", "right"].forEach((button) => {
-        it("should check only the button set in inputButton is available", (done) => {
+        it("should trigger event when the button set in inputButton matches", (done) => {
           // Given
           const hold = sinon.spy();
           const change = sinon.spy();
@@ -491,6 +491,40 @@ describe("PanInput", () => {
           );
         });
       });
+
+			it("should not trigger event when the inputButton is empty", (done) => {
+				// Given
+				const hold = sinon.spy();
+				const change = sinon.spy();
+				const release = sinon.spy();
+				input = new PanInput(el, {
+					inputType: ["touch", "mouse"],
+					inputButton: [],
+				});
+				inst.connect(["x", "y"], input);
+				inst.on("hold", hold);
+				inst.on("change", change);
+				inst.on("release", release);
+
+				// When
+				Simulator.gestures.pan(
+					el,
+					{
+						pos: [0, 0],
+						deltaX: 50,
+						deltaY: 50,
+						duration: 200,
+						easing: "linear",
+					},
+					() => {
+						// Then
+						expect(hold.called).to.be.equals(false);
+						expect(change.called).to.be.equals(false);
+						expect(release.called).to.be.equals(false);
+						done();
+					}
+				);
+			});
     });
 
     describe("touchAction", () => {
