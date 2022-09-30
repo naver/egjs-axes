@@ -19,6 +19,7 @@ import {
   DIRECTION_VERTICAL,
   DIRECTION_HORIZONTAL,
   MOUSE_LEFT,
+  ANY,
 } from "../const";
 import { ActiveEvent, ElementType, InputEventType } from "../types";
 
@@ -67,15 +68,19 @@ export const getDirectionByAngle = (
  * - touch: 터치 입력 장치
  * - mouse: 마우스
  * - pointer: 마우스 및 터치</ko>
- * @param {String[]} [inputKey=[]] Allow input only when one of these keys is pressed. If the array is empty, it accepts all keys with case of no key is pressed.
+ * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
+ * - any: any key
  * - shift: shift key
  * - ctrl: ctrl key
  * - alt: alt key
- * - meta: meta key <ko>이 중 하나의 키가 눌린 상태에서만 입력이 허용된다. 배열이 비었다면 아무 키도 눌리지 않은 상태와 모든 키가 눌린 상태 모두 허용한다.
+ * - meta: meta key
+ * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
+ * - any: 아무 키
  * - shift: shift 키
  * - ctrl: ctrl 키
  * - alt: alt 키
- * - meta: meta 키 </ko>
+ * - meta: meta 키
+ * - none: 아무 키도 눌리지 않은 상태 </ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -137,7 +142,7 @@ export class PanInput implements InputType {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],
-      inputKey: [],
+      inputKey: [ANY],
       inputButton: [MOUSE_LEFT],
       scale: [1, 1],
       thresholdAngle: 45,

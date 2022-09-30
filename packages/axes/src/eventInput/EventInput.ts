@@ -7,11 +7,13 @@ import { getAngle } from "../utils";
 import { window } from "../browser";
 import {
   ALT,
+  ANY,
   CTRL,
   META,
   MOUSE_LEFT,
   MOUSE_MIDDLE,
   MOUSE_RIGHT,
+  NONE,
   SHIFT,
   VELOCITY_INTERVAL,
 } from "../const";
@@ -27,11 +29,16 @@ export const isValidKey = (
 ): boolean => {
   if (
     !inputKey ||
-    !inputKey.length ||
-    (inputKey.indexOf(SHIFT) > -1 && event.shiftKey === true) ||
-    (inputKey.indexOf(CTRL) > -1 && event.ctrlKey === true) ||
-    (inputKey.indexOf(ALT) > -1 && event.altKey === true) ||
-    (inputKey.indexOf(META) > -1 && event.metaKey === true)
+    inputKey.indexOf(ANY) > -1 ||
+    (inputKey.indexOf(NONE) > -1 &&
+      !event.shiftKey &&
+      !event.ctrlKey &&
+      !event.altKey &&
+      !event.metaKey) ||
+    (inputKey.indexOf(SHIFT) > -1 && event.shiftKey) ||
+    (inputKey.indexOf(CTRL) > -1 && event.ctrlKey) ||
+    (inputKey.indexOf(ALT) > -1 && event.altKey) ||
+    (inputKey.indexOf(META) > -1 && event.metaKey)
   ) {
     return true;
   }
