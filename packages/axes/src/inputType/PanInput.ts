@@ -71,13 +71,13 @@ export const getDirectionByAngle = (
  * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
  * - any: any key
  * - shift: shift key
- * - ctrl: ctrl key
+ * - ctrl: ctrl key and pinch gesture on the trackpad
  * - alt: alt key
  * - meta: meta key
  * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
  * - any: 아무 키
  * - shift: shift 키
- * - ctrl: ctrl 키
+ * - ctrl: ctrl 키 및 트랙패드의 pinch 제스쳐
  * - alt: alt 키
  * - meta: meta 키
  * - none: 아무 키도 눌리지 않은 상태 </ko>
