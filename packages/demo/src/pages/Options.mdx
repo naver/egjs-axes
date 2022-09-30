@@ -313,7 +313,7 @@ Whether the event propagates to other instances when the coordinates reach the e
   nested: true
   ```
   </div>
-    <AxesBoard options={{ nested: true }} setNested={true}/>
+    <AxesBoard options={{ nested: true }} demoType={"nested"}/>
   </div>
 </div>
 
@@ -366,6 +366,34 @@ Types of input devices.
   ```
   </div>
     <AxesBoard panInputOptions={{ inputType: ["touch"] }}/>
+  </div>
+</div>
+
+### inputKey
+Allow input only when one of these keys is pressed. If the array is empty, it accepts all keys with case of no key is pressed.
+ - shift: shift key
+ - ctrl: ctrl key
+ - alt: alt key
+ - meta: meta key
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: []
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputKey: [] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["ctrl"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputKey: ["ctrl"] }}/>
   </div>
 </div>
 
@@ -440,10 +468,34 @@ Minimal pan distance required before recognizing.
   <div>
 
   ```js
-  threshold: 5
+  threshold: 30
   ```
   </div>
-    <AxesBoard panInputOptions={{ threshold: 5 }}/>
+    <AxesBoard panInputOptions={{ threshold: 30 }}/>
+  </div>
+</div>
+
+### preventClickOnDrag
+Whether to cancel the click event when the user finishes dragging more than 1 pixel.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventClickOnDrag: false
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventClickOnDrag: false }} demoType={"preventClickOnDrag"}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventClickOnDrag: true
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventClickOnDrag: true }} demoType={"preventClickOnDrag"}/>
   </div>
 </div>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useAxes, PanInput, MoveKeyInput, PinchInput, WheelInput } from "@egjs/react-axes";
 import "../../css/demos/axesboard.css";
 
-export default function AxesBoard({ axis, setNested, options, panInputOptions, pinchInputOptions, moveKeyInputOptions, wheelInputOptions }) {
+export default function AxesBoard({ axis, demoType, options, panInputOptions, pinchInputOptions, moveKeyInputOptions, wheelInputOptions }) {
   const board = useRef<HTMLDivElement>(null);
   const innerBoard = useRef<HTMLDivElement>(null);
   const target = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
     {
       round: 0.1,
       ...options,
-      nested: !!setNested,
+      nested: !!(demoType === "nested"),
     },
   );
 
@@ -46,6 +46,12 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
       round: 0.1,
     },
   );
+
+  const onClick = () => {
+    if (demoType === "preventClickOnDrag") {
+      window.open("https://www.naver.com/");
+    }
+  };
 
   useEffect(() => {
     const isNested = options?.nested;
@@ -121,6 +127,7 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
       <div className="nestedboard" ref={innerBoard} style={{ transform: `translate3d(${nested.innerX}px, ${nested.innerY}px, 0)`}}>
         <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})`}}>
           <img
+            draggable="false"
             className="egjsicon"
             src={
               require(`@site/static/img/favicon.ico`)
@@ -133,8 +140,9 @@ export default function AxesBoard({ axis, setNested, options, panInputOptions, p
     </div>) : (
     <div className="board" ref={board}>
       <div className="info">x: {x} y: {y}</div>
-      <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})` }}>
+      <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})` }} onClick={() => { onClick(); }}>
         <img
+          draggable="false"
           className="egjsicon"
           src={
             require(`@site/static/img/favicon.ico`)
