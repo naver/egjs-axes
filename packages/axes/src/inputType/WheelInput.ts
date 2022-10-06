@@ -3,7 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import { $, getDirection, useDirection } from "../utils";
-import { DIRECTION_HORIZONTAL, DIRECTION_VERTICAL } from "../const";
+import { ANY, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL } from "../const";
 import { ElementType } from "../types";
 
 import { toAxis, InputType, InputTypeObserver } from "./InputType";
@@ -20,15 +20,19 @@ export interface WheelInputOption {
 /**
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
- * @param {String[]} [inputKey=[]] Allow input only when one of these keys is pressed. If the array is empty, it accepts all keys with case of no key is pressed.
+ * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
+ * - any: any key
  * - shift: shift key
- * - ctrl: ctrl key
+ * - ctrl: ctrl key and pinch gesture on the trackpad
  * - alt: alt key
- * - meta: meta key <ko>이 중 하나의 키가 눌린 상태에서만 입력이 허용된다. 배열이 비었다면 아무 키도 눌리지 않은 상태와 모든 키가 눌린 상태 모두 허용한다.
+ * - meta: meta key
+ * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
+ * - any: 아무 키
  * - shift: shift 키
- * - ctrl: ctrl 키
+ * - ctrl: ctrl 키 및 트랙패드의 pinch 제스쳐
  * - alt: alt 키
- * - meta: meta 키 </ko>
+ * - meta: meta 키
+ * - none: 아무 키도 눌리지 않은 상태 </ko>
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
  * @param {Boolean} [useNormalized=true] Whether to calculate scroll speed the same in all browsers<ko>모든 브라우저에서 스크롤 속도를 동일하게 처리할지 여부</ko>
@@ -74,13 +78,11 @@ export class WheelInput implements InputType {
   public constructor(el: ElementType, options?: WheelInputOption) {
     this.element = $(el);
     this.options = {
-      ...{
-        inputKey: [],
-        scale: 1,
-        releaseDelay: 300,
-        useNormalized: true,
-        useAnimation: false,
-      },
+      inputKey: [ANY],
+      scale: 1,
+      releaseDelay: 300,
+      useNormalized: true,
+      useAnimation: false,
       ...options,
     };
     this._onWheel = this._onWheel.bind(this);

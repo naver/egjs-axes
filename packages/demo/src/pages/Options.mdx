@@ -370,18 +370,20 @@ Types of input devices.
 </div>
 
 ### inputKey
-Allow input only when one of these keys is pressed. If the array is empty, it accepts all keys with case of no key is pressed.
- - shift: shift key
- - ctrl: ctrl key
- - alt: alt key
- - meta: meta key
+List of key combinations to allow input
+- any: any key
+- shift: shift key
+- ctrl: ctrl key and pinch gesture on the trackpad
+- alt: alt key
+- meta: meta key
+- none: none of these keys are pressed
 
 <div className="columns">
   <div className="column is-6">
   <div>
 
   ```js
-  inputKey: []
+  inputKey: ["any"]
   ```
   </div>
     <AxesBoard panInputOptions={{ inputKey: [] }}/>
@@ -576,6 +578,37 @@ Hint: These examples only have a x-axis. Try using the input direction similar t
 </div>
 
 ## WheelInput Options
+
+### inputKey
+List of key combinations to allow input
+- any: any key
+- shift: shift key
+- ctrl: ctrl key and pinch gesture on the trackpad
+- alt: alt key
+- meta: meta key
+- none: none of these keys are pressed
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["any"]
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ inputKey: ["any"] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["ctrl"]
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ inputKey: ["ctrl"] }}/>
+  </div>
+</div>
+
 ### scale
 Coordinate scale that a user can move.
 
