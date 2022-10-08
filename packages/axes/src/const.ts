@@ -15,6 +15,13 @@ export const MOUSE_LEFT = "left";
 export const MOUSE_RIGHT = "right";
 export const MOUSE_MIDDLE = "middle";
 
+export const ANY = "any";
+export const NONE = "none";
+export const SHIFT = "shift";
+export const CTRL = "ctrl";
+export const ALT = "alt";
+export const META = "meta";
+
 export const VELOCITY_INTERVAL = 16;
 
 export const AXES_METHODS = [

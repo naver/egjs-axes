@@ -19,6 +19,7 @@ import {
   DIRECTION_VERTICAL,
   DIRECTION_HORIZONTAL,
   MOUSE_LEFT,
+  ANY,
 } from "../const";
 import { ActiveEvent, ElementType, InputEventType } from "../types";
 
@@ -31,6 +32,7 @@ import {
 
 export interface PanInputOption {
   inputType?: string[];
+  inputKey?: string[];
   inputButton?: string[];
   scale?: number[];
   thresholdAngle?: number;
@@ -66,6 +68,19 @@ export const getDirectionByAngle = (
  * - touch: 터치 입력 장치
  * - mouse: 마우스
  * - pointer: 마우스 및 터치</ko>
+ * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
+ * - any: any key
+ * - shift: shift key
+ * - ctrl: ctrl key and pinch gesture on the trackpad
+ * - alt: alt key
+ * - meta: meta key
+ * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
+ * - any: 아무 키
+ * - shift: shift 키
+ * - ctrl: ctrl 키 및 트랙패드의 pinch 제스쳐
+ * - alt: alt 키
+ * - meta: meta 키
+ * - none: 아무 키도 눌리지 않은 상태 </ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -127,6 +142,7 @@ export class PanInput implements InputType {
     this.element = $(el);
     this.options = {
       inputType: ["touch", "mouse", "pointer"],
+      inputKey: [ANY],
       inputButton: [MOUSE_LEFT],
       scale: [1, 1],
       thresholdAngle: 45,
@@ -224,10 +240,14 @@ export class PanInput implements InputType {
   }
 
   protected _onPanstart(event: InputEventType) {
-    const inputButton = this.options.inputButton;
+    const { inputKey, inputButton } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventStart(event, inputButton);
-    if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
+    const panEvent = activeEvent.onEventStart(event, inputKey, inputButton);
+    if (
+      !panEvent ||
+      !this._enabled ||
+      activeEvent.getTouches(event, inputButton) > 1
+    ) {
       return;
     }
     if (panEvent.srcEvent.cancelable !== false) {
@@ -247,12 +267,13 @@ export class PanInput implements InputType {
     const {
       iOSEdgeSwipeThreshold,
       releaseOnScroll,
+      inputKey,
       inputButton,
       threshold,
       thresholdAngle,
     } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventMove(event, inputButton);
+    const panEvent = activeEvent.onEventMove(event, inputKey, inputButton);
     const touches = activeEvent.getTouches(event, inputButton);
 
     if (

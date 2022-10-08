@@ -313,7 +313,7 @@ Whether the event propagates to other instances when the coordinates reach the e
   nested: true
   ```
   </div>
-    <AxesBoard options={{ nested: true }} setNested={true}/>
+    <AxesBoard options={{ nested: true }} demoType={"nested"}/>
   </div>
 </div>
 
@@ -366,6 +366,36 @@ Types of input devices.
   ```
   </div>
     <AxesBoard panInputOptions={{ inputType: ["touch"] }}/>
+  </div>
+</div>
+
+### inputKey
+List of key combinations to allow input
+- any: any key
+- shift: shift key
+- ctrl: ctrl key and pinch gesture on the trackpad
+- alt: alt key
+- meta: meta key
+- none: none of these keys are pressed
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["any"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputKey: [] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["ctrl"]
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ inputKey: ["ctrl"] }}/>
   </div>
 </div>
 
@@ -440,10 +470,34 @@ Minimal pan distance required before recognizing.
   <div>
 
   ```js
-  threshold: 5
+  threshold: 30
   ```
   </div>
-    <AxesBoard panInputOptions={{ threshold: 5 }}/>
+    <AxesBoard panInputOptions={{ threshold: 30 }}/>
+  </div>
+</div>
+
+### preventClickOnDrag
+Whether to cancel the click event when the user finishes dragging more than 1 pixel.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventClickOnDrag: false
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventClickOnDrag: false }} demoType={"preventClickOnDrag"}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventClickOnDrag: true
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventClickOnDrag: true }} demoType={"preventClickOnDrag"}/>
   </div>
 </div>
 
@@ -524,6 +578,37 @@ Hint: These examples only have a x-axis. Try using the input direction similar t
 </div>
 
 ## WheelInput Options
+
+### inputKey
+List of key combinations to allow input
+- any: any key
+- shift: shift key
+- ctrl: ctrl key and pinch gesture on the trackpad
+- alt: alt key
+- meta: meta key
+- none: none of these keys are pressed
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["any"]
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ inputKey: ["any"] }}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  inputKey: ["ctrl"]
+  ```
+  </div>
+    <AxesBoard wheelInputOptions={{ inputKey: ["ctrl"] }}/>
+  </div>
+</div>
+
 ### scale
 Coordinate scale that a user can move.
 

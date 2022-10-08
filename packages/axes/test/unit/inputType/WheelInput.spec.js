@@ -159,7 +159,7 @@ describe("WheelInput", () => {
       const deltaY = 300;
       // When
       // 1. Scroll
-      TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+      TestHelper.dispatchWheel(el, { deltaY }, () => {
         // 2. detach & destroy wheel input
         inst.disconnect(input);
         input.destroy();
@@ -227,7 +227,11 @@ describe("WheelInput", () => {
               inst.on("release", (e) => {
                 done();
               });
-              TestHelper.dispatchWheel(el, direction, d, () => {});
+              TestHelper.dispatchWheel(
+                el,
+                direction === "vertical" ? { deltaY: d } : { deltaX: d },
+                () => {}
+              );
             });
           });
         });
@@ -242,7 +246,7 @@ describe("WheelInput", () => {
           inst.disconnect();
 
           // When
-          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+          TestHelper.dispatchWheel(el, { deltaY }, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -259,7 +263,7 @@ describe("WheelInput", () => {
           });
 
           // When
-          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+          TestHelper.dispatchWheel(el, { deltaY }, () => {
             // Then
             expect(changeTriggered).to.be.false;
             done();
@@ -283,9 +287,9 @@ describe("WheelInput", () => {
             });
 
           // When
-          TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+          TestHelper.dispatchWheel(el, { deltaY }, () => {
             setTimeout(() => {
-              TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+              TestHelper.dispatchWheel(el, { deltaY }, () => {
                 setTimeout(() => {
                   // Then
                   eventLog.forEach((log, index) => {
@@ -327,6 +331,37 @@ describe("WheelInput", () => {
       }
       cleanup();
     });
+
+    describe("inputKey", () => {
+      it("should trigger events when the key set in inputKey is pressed", (done) => {
+        // Given
+        const deltaY = 1;
+        input = new WheelInput(el, { inputKey: ["shift"], scale: -10 });
+        inst.connect(["x"], input);
+
+        // When
+        TestHelper.dispatchWheel(el, { deltaY, shiftKey: true }, () => {
+          // Then
+          expect(inst.axisManager.get().x).to.be.equal(10);
+					done();
+        });
+      });
+
+      it("should not trigger events when the key set in inputKey is not pressed", (done) => {
+        // Given
+        const deltaY = 1;
+        input = new WheelInput(el, { inputKey: ["alt"], scale: -10 });
+        inst.connect(["x"], input);
+
+        // When
+        TestHelper.dispatchWheel(el, { deltaY }, () => {
+          // Then
+          expect(inst.axisManager.get().x).to.be.equal(0);
+					done();
+        });
+      });
+    });
+
     describe("useAnimation", () => {
       let animationStartHandler;
       let animationEndHandler;
@@ -346,7 +381,7 @@ describe("WheelInput", () => {
         inst.connect(["x"], input);
 
         // When
-        TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+        TestHelper.dispatchWheel(el, { deltaY }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.not.equal(10);
           setTimeout(() => {
@@ -365,7 +400,7 @@ describe("WheelInput", () => {
         inst.connect(["x"], input);
 
         // When
-        TestHelper.dispatchWheel(el, "vertical", deltaY, () => {
+        TestHelper.dispatchWheel(el, { deltaY }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(10);
           setTimeout(() => {

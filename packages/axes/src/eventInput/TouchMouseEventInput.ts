@@ -15,13 +15,14 @@ export class TouchMouseEventInput extends EventInput {
 
   public onEventStart(
     event: InputEventType,
+    inputKey?: string[],
     inputButton?: string[]
   ): ExtendedEvent {
     const button = this._getButton(event);
     if (this._isTouchEvent(event)) {
       this._baseTouches = event.touches;
     }
-    if (inputButton && !this._isValidButton(button, inputButton)) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
     this._preventMouseButton(event, button);
@@ -30,12 +31,10 @@ export class TouchMouseEventInput extends EventInput {
 
   public onEventMove(
     event: InputEventType,
+    inputKey?: string[],
     inputButton?: string[]
   ): ExtendedEvent {
-    if (
-      inputButton &&
-      !this._isValidButton(this._getButton(event), inputButton)
-    ) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
     return this.extendEvent(event);

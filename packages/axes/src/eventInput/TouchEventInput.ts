@@ -13,12 +13,24 @@ export class TouchEventInput extends EventInput {
 
   private _baseTouches: TouchList;
 
-  public onEventStart(event: InputEventType): ExtendedEvent {
+  public onEventStart(
+    event: InputEventType,
+    inputKey?: string[]
+  ): ExtendedEvent {
     this._baseTouches = (event as TouchEvent).touches;
+    if (!this._isValidEvent(event, inputKey)) {
+      return null;
+    }
     return this.extendEvent(event);
   }
 
-  public onEventMove(event: InputEventType): ExtendedEvent {
+  public onEventMove(
+    event: InputEventType,
+    inputKey?: string[]
+  ): ExtendedEvent {
+    if (!this._isValidEvent(event, inputKey)) {
+      return null;
+    }
     return this.extendEvent(event);
   }
 

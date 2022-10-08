@@ -52,8 +52,9 @@ export class RotatePanInput extends PanInput {
   }
 
   protected _onPanstart(event: MouseEvent) {
+    const { inputKey, inputButton } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventStart(event, this.options.inputButton);
+    const panEvent = activeEvent.onEventStart(event, inputKey, inputButton);
     if (!panEvent || !this.isEnabled()) {
       return;
     }
@@ -78,8 +79,9 @@ export class RotatePanInput extends PanInput {
   }
 
   protected _onPanmove(event: MouseEvent) {
+    const { inputKey, inputButton } = this.options;
     const activeEvent = this._activeEvent;
-    const panEvent = activeEvent.onEventMove(event, this.options.inputButton);
+    const panEvent = activeEvent.onEventMove(event, inputKey, inputButton);
     if (!panEvent || !this.isEnabled()) {
       return;
     }
