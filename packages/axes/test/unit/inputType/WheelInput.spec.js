@@ -363,17 +363,6 @@ describe("WheelInput", () => {
     });
 
     describe("useAnimation", () => {
-      let animationStartHandler;
-      let animationEndHandler;
-      beforeEach(() => {
-        animationStartHandler = sinon.spy();
-        animationEndHandler = sinon.spy();
-        inst.on({
-          animationStart: animationStartHandler,
-          animationEnd: animationEndHandler,
-        });
-      });
-
       it("should change coordinate smoothly by animation when useAnimation is true", (done) => {
         // Given
         const deltaY = 1;
@@ -385,8 +374,6 @@ describe("WheelInput", () => {
           // Then
           expect(inst.axisManager.get().x).to.be.not.equal(10);
           setTimeout(() => {
-            expect(animationStartHandler.calledOnce).to.be.true;
-            expect(animationEndHandler.calledOnce).to.be.true;
             expect(inst.axisManager.get().x).to.be.equal(10);
             done();
           }, 200);
@@ -403,11 +390,6 @@ describe("WheelInput", () => {
         TestHelper.dispatchWheel(el, { deltaY }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(10);
-          setTimeout(() => {
-            expect(animationStartHandler.called).to.be.false;
-            expect(animationEndHandler.called).to.be.false;
-            done();
-          }, 200);
         });
       });
     });

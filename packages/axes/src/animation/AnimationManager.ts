@@ -111,11 +111,7 @@ export abstract class AnimationManager {
       if (!every(pos, (v, k) => orgPos[k] === v)) {
         this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
-      this._animateParam = null;
-      if (this._raf) {
-        cancelAnimationFrame(this._raf);
-      }
-      this._raf = null;
+      this._removeAnimationParam();
       this.eventManager.triggerAnimationEnd(!!option?.event);
     }
   }
@@ -187,6 +183,38 @@ export abstract class AnimationManager {
       this._options.maximumDuration
     );
     return userWish;
+  }
+
+  public changeTo(
+    destPos: Axis,
+    offset: Axis,
+    option: ChangeEventOption
+  ): void {
+    const depaPos = this.axisManager.get(option.input.axes);
+    const nextPos = this._animateParam
+      ? this.axisManager.map(this._animateParam.destPos, (v, opt, k) => {
+          const pos = v + (offset[k] || 0);
+          return isCircularable(pos, opt.range, opt.circular as boolean[])
+            ? pos
+            : destPos[k];
+        })
+      : destPos;
+    const duration = this.getDuration(nextPos, depaPos);
+
+    if (this._raf) {
+      cancelAnimationFrame(this._raf);
+    }
+    if (!equal(nextPos, depaPos)) {
+      this._animateLoop(
+        {
+          depaPos,
+          destPos: nextPos,
+          duration: duration,
+          delta: this.axisManager.getDelta(depaPos, nextPos),
+        },
+        () => this._removeAnimationParam()
+      );
+    }
   }
 
   public animateTo(
@@ -302,6 +330,14 @@ export abstract class AnimationManager {
       isTrusted: !!inputEvent,
       done: this.animationEnd,
     };
+  }
+
+  private _removeAnimationParam() {
+    this._animateParam = null;
+    if (this._raf) {
+      cancelAnimationFrame(this._raf);
+    }
+    this._raf = null;
   }
 
   private _animateLoop(param: AnimationParam, complete: () => void): void {
