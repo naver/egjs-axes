@@ -199,12 +199,12 @@ export abstract class AnimationManager {
             : destPos[k];
         })
       : destPos;
-    const duration = this.getDuration(nextPos, depaPos);
 
-    if (this._raf) {
-      cancelAnimationFrame(this._raf);
-    }
     if (!equal(nextPos, depaPos)) {
+      const duration = this.getDuration(nextPos, depaPos);
+      if (this._raf) {
+        cancelAnimationFrame(this._raf);
+      }
       this._animateLoop(
         {
           depaPos,
