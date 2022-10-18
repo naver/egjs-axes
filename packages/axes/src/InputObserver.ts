@@ -234,7 +234,7 @@ export class InputObserver implements InputTypeObserver {
         const out = opt.bounce;
         const circular = opt.circular;
 
-        if (circular && (circular[0] || circular[1])) {
+        if ((circular[0] && v < min) || (circular[1] && v > max)) {
           return v;
         } else if (v < min) {
           // left
