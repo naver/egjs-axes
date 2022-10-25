@@ -44,6 +44,10 @@ const config = {
       })
     ]
   ],
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "ko"]
+  },
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -77,6 +81,10 @@ const config = {
             docId: "demos/axes",
             label: "Demos",
             position: "left"
+          },
+          {
+            type: "localeDropdown",
+            position: "right"
           },
           {
             href: "https://www.npmjs.com/package/@egjs/axes",
