@@ -343,7 +343,7 @@ describe("WheelInput", () => {
         TestHelper.dispatchWheel(el, { deltaY, shiftKey: true }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(10);
-					done();
+          done();
         });
       });
 
@@ -357,7 +357,7 @@ describe("WheelInput", () => {
         TestHelper.dispatchWheel(el, { deltaY }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(0);
-					done();
+          done();
         });
       });
     });
@@ -390,6 +390,7 @@ describe("WheelInput", () => {
         TestHelper.dispatchWheel(el, { deltaY }, () => {
           // Then
           expect(inst.axisManager.get().x).to.be.equal(10);
+          done();
         });
       });
     });

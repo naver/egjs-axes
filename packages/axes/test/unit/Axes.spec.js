@@ -691,6 +691,7 @@ describe("Axes", () => {
         });
         input = new MockPanInputInjector.PanInput(el, {
           iOSEdgeSwipeThreshold,
+          inputKey: ["any"],
           inputType: ["touch"],
         });
         inst
