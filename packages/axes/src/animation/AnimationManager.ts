@@ -191,8 +191,9 @@ export abstract class AnimationManager {
     option: ChangeEventOption
   ): void {
     const depaPos = this.axisManager.get(option.input.axes);
-    const nextPos = this._animateParam
-      ? this.axisManager.map(this._animateParam.destPos, (v, opt, k) => {
+    const animateParam = this._animateParam;
+    const nextPos = animateParam
+      ? this.axisManager.map(animateParam.destPos, (v, opt, k) => {
           const pos = v + (offset[k] || 0);
           return isCircularable(pos, opt.range, opt.circular as boolean[])
             ? pos
@@ -201,19 +202,24 @@ export abstract class AnimationManager {
       : destPos;
 
     if (!equal(nextPos, depaPos)) {
-      const duration = this.getDuration(nextPos, depaPos);
-      if (this._raf) {
-        cancelAnimationFrame(this._raf);
+      const newParam = {
+        depaPos,
+        destPos: nextPos,
+        duration: this.getDuration(nextPos, depaPos),
+        delta: this.axisManager.getDelta(depaPos, nextPos),
+      };
+      if (animateParam) {
+        this._initState(newParam);
+        this._animateParam = {
+          ...newParam,
+          startTime: new Date().getTime(),
+        };
+      } else {
+        this._animateLoop(
+          newParam,
+          () => this._removeAnimationParam()
+        );
       }
-      this._animateLoop(
-        {
-          depaPos,
-          destPos: nextPos,
-          duration: duration,
-          delta: this.axisManager.getDelta(depaPos, nextPos),
-        },
-        () => this._removeAnimationParam()
-      );
     }
   }
 
