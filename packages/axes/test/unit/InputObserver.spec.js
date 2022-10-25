@@ -23,8 +23,8 @@ describe("InputObserver", () => {
         },
         z: {
           range: [-100, 200],
-          bounce: [50, 0],
-          circular: true,
+          bounce: [0, 0],
+          circular: [false, true],
         },
       };
       options = {
@@ -226,6 +226,30 @@ describe("InputObserver", () => {
       // 40 * 25
       for (let i = 0; i < 25; ++i) {
         inst.change(inputType, {}, { z: 40 });
+      }
+      inst.release(inputType, {}, [0, 0, 0]);
+    });
+    it("should check bounce not occur to direction where the circular is false", (done) => {
+      // Given
+      // start pos
+      let z = 0;
+      axes.setTo({ z: 0 }, 0);
+      axes.on("change", ({ delta }) => {
+        z += delta.z;
+        expect(z).to.be.not.lt(-100);
+      });
+      axes.on("finish", () => {
+        done();
+      });
+
+      // When
+      const inputType = {
+        axes: ["z"],
+      };
+      inst.hold(inputType);
+      // 40 * 25
+      for (let i = 0; i < 25; ++i) {
+        inst.change(inputType, {}, { z: -40 });
       }
       inst.release(inputType, {}, [0, 0, 0]);
     });
