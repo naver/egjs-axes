@@ -359,6 +359,36 @@ describe("PanInput", () => {
           }
         );
       });
+
+      it("should apply changes in preventClickOnDrag option after connected", (done) => {
+        // Given
+        const click = sinon.spy();
+        el.addEventListener("click", click);
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventClickOnDrag: true,
+        });
+        inst.connect(["x", "y"], input);
+        input.options.preventClickOnDrag = false;
+
+        // When
+        Simulator.gestures.pan(
+          el,
+          {
+            pos: [0, 0],
+            deltaX: 50,
+            deltaY: 50,
+            duration: 200,
+            easing: "linear",
+          },
+          () => {
+            el.click();
+            // Then
+            expect(click.called).to.be.true;
+            done();
+          }
+        );
+      });
     });
 
     describe("threshold", () => {

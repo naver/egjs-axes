@@ -266,6 +266,7 @@ export class PanInput implements InputType {
   protected _onPanmove(event: InputEventType) {
     const {
       iOSEdgeSwipeThreshold,
+      preventClickOnDrag,
       releaseOnScroll,
       inputKey,
       inputButton,
@@ -339,7 +340,7 @@ export class PanInput implements InputType {
     }
     panEvent.preventSystemEvent = prevent;
     if (prevent && (this._isOverThreshold || distance >= threshold)) {
-      this._dragged = true;
+      this._dragged = preventClickOnDrag;
       this._isOverThreshold = true;
       this._observer.change(this, panEvent, toAxis(this.axes, offset));
     }
@@ -415,9 +416,7 @@ export class PanInput implements InputType {
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
-    if (this.options.preventClickOnDrag) {
-      element.addEventListener("click", this._preventClickWhenDragged, true);
-    }
+    element.addEventListener("click", this._preventClickWhenDragged, true);
     activeEvent.start.forEach((event) => {
       element.addEventListener(event, this._onPanstart);
     });
@@ -431,9 +430,7 @@ export class PanInput implements InputType {
     const activeEvent = this._activeEvent;
     const element = this.element;
     if (element) {
-      if (this.options.preventClickOnDrag) {
-        element.removeEventListener("click", this._preventClickWhenDragged, true);
-      }
+      element.removeEventListener("click", this._preventClickWhenDragged, true);
       activeEvent?.start.forEach((event) => {
         element.removeEventListener(event, this._onPanstart);
       });
