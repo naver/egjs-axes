@@ -68,7 +68,6 @@ export default function AxesBoard({ axis, demoType, options, panInputOptions, pi
       const board = document.getElementById("board");
       const newWidth = board.getBoundingClientRect().width;
       const newHeight = board.getBoundingClientRect().height;
-      console.log(newWidth, newHeight)
       setTo({ x: (newWidth - targetWidth) / 2, y: (newHeight - targetHeight) / 2 });
     });
 
