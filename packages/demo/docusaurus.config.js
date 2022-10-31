@@ -140,7 +140,12 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme
-      }
+      },
+      algolia: {
+        appId: 'XFF4246J3M',
+        apiKey: '637cea2eb4f4992a666d77239ba5cfc2',
+        indexName: 'egjs-axes',
+      },
     })
 };
 
