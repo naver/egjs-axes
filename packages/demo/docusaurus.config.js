@@ -44,6 +44,10 @@ const config = {
       })
     ]
   ],
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "ko"]
+  },
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -77,6 +81,10 @@ const config = {
             docId: "demos/axes",
             label: "Demos",
             position: "left"
+          },
+          {
+            type: "localeDropdown",
+            position: "right"
           },
           {
             href: "https://www.npmjs.com/package/@egjs/axes",
@@ -132,7 +140,12 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme
-      }
+      },
+      algolia: {
+        appId: 'XFF4246J3M',
+        apiKey: '637cea2eb4f4992a666d77239ba5cfc2',
+        indexName: 'egjs-axes',
+      },
     })
 };
 

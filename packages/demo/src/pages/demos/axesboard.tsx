@@ -63,6 +63,14 @@ export default function AxesBoard({ axis, demoType, options, panInputOptions, pi
     const maxHeight = boardHeight - targetHeight;
     const xRange = axis && axis.x && axis.x.range && axis.x.range[1];
     const yRange = axis && axis.y && axis.y.range && axis.y.range[1];
+
+    window.addEventListener("resize", () => {
+      const board = document.getElementById("board");
+      const newWidth = board.getBoundingClientRect().width;
+      const newHeight = board.getBoundingClientRect().height;
+      setTo({ x: (newWidth - targetWidth) / 2, y: (newHeight - targetHeight) / 2 });
+    });
+
     if (isNested) {
       const innerBoardWidth = innerBoard.current.getBoundingClientRect().width;
       const innerBoardHeight = innerBoard.current.getBoundingClientRect().height;
@@ -122,7 +130,7 @@ export default function AxesBoard({ axis, demoType, options, panInputOptions, pi
   }, []);
 
   return options?.nested ? (
-    <div className="board" ref={board}>
+    <div id="board" className="board" ref={board}>
       <div className="info">x: {x} y: {y}</div>
       <div className="nestedboard" ref={innerBoard} style={{ transform: `translate3d(${nested.innerX}px, ${nested.innerY}px, 0)`}}>
         <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})`}}>
@@ -138,7 +146,7 @@ export default function AxesBoard({ axis, demoType, options, panInputOptions, pi
         </div>
       </div>
     </div>) : (
-    <div className="board" ref={board}>
+    <div id="board" className="board" ref={board}>
       <div className="info">x: {x} y: {y}</div>
       <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})` }} onClick={() => { onClick(); }}>
         <img

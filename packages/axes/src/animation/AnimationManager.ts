@@ -111,11 +111,7 @@ export abstract class AnimationManager {
       if (!every(pos, (v, k) => orgPos[k] === v)) {
         this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
-      this._animateParam = null;
-      if (this._raf) {
-        cancelAnimationFrame(this._raf);
-      }
-      this._raf = null;
+      this._removeAnimationParam();
       this.eventManager.triggerAnimationEnd(!!option?.event);
     }
   }
@@ -187,6 +183,44 @@ export abstract class AnimationManager {
       this._options.maximumDuration
     );
     return userWish;
+  }
+
+  public changeTo(
+    destPos: Axis,
+    offset: Axis,
+    option: ChangeEventOption
+  ): void {
+    const depaPos = this.axisManager.get(option.input.axes);
+    const animateParam = this._animateParam;
+    const nextPos = animateParam
+      ? this.axisManager.map(animateParam.destPos, (v, opt, k) => {
+          const pos = v + (offset[k] || 0);
+          return isCircularable(pos, opt.range, opt.circular as boolean[])
+            ? pos
+            : destPos[k];
+        })
+      : destPos;
+
+    if (!equal(nextPos, depaPos)) {
+      const newParam = {
+        depaPos,
+        destPos: nextPos,
+        duration: this.getDuration(nextPos, depaPos),
+        delta: this.axisManager.getDelta(depaPos, nextPos),
+      };
+      if (animateParam) {
+        this._initState(newParam);
+        this._animateParam = {
+          ...newParam,
+          startTime: new Date().getTime(),
+        };
+      } else {
+        this._animateLoop(
+          newParam,
+          () => this._removeAnimationParam()
+        );
+      }
+    }
   }
 
   public animateTo(
@@ -302,6 +336,14 @@ export abstract class AnimationManager {
       isTrusted: !!inputEvent,
       done: this.animationEnd,
     };
+  }
+
+  private _removeAnimationParam() {
+    this._animateParam = null;
+    if (this._raf) {
+      cancelAnimationFrame(this._raf);
+    }
+    this._raf = null;
   }
 
   private _animateLoop(param: AnimationParam, complete: () => void): void {

@@ -456,7 +456,7 @@ describe("Axes", () => {
     });
   });
 
-  describe("Nested Axes Test", () => {
+  describe("nested", () => {
     beforeEach(() => {
       inst = new Axes({
         x: {
@@ -568,6 +568,97 @@ describe("Axes", () => {
     });
   });
 
+  describe("animateOn", () => {
+    beforeEach(() => {
+      el = sandbox();
+    });
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      cleanup();
+    });
+
+    it(`should change value of coordinates immediately without animation if animateOn is "release"`, (done) => {
+      // Given
+      const target = document.querySelector("#sandbox");
+      const panInput = new PanInput(target, { inputType: ["touch"], scale: [10, 0] });
+      const result = [];
+      inst = new Axes({
+        x: {
+          range: [0, 300],
+        },
+      }, {
+        animateOn: "release",
+      });
+
+      inst.connect(["x"], panInput);
+
+      // When
+      Simulator.gestures.pan(
+        target,
+        {
+          pos: [0, 0],
+          deltaX: 300,
+          deltaY: 0,
+          duration: 200,
+          easing: "linear",
+        },
+      );
+
+      inst.on({
+        change: (e) => {
+          result.push(e.pos.x);
+        },
+        finish: () => {
+          // Then
+          expect(result.every(x => x % 10 === 0)).to.be.equal(true);
+          done();
+        },
+      });
+    });
+
+    it(`should change value of coordinates continuously with animation for change event if animateOn is "change"`, (done) => {
+      // Given
+      const target = document.querySelector("#sandbox");
+      const panInput = new PanInput(target, { inputType: ["touch"], scale: [10, 0] });
+      const result = [];
+      inst = new Axes({
+        x: {
+          range: [0, 300],
+        },
+      }, {
+        animateOn: "change",
+      });
+
+      inst.connect(["x"], panInput);
+
+      // When
+      Simulator.gestures.pan(
+        target,
+        {
+          pos: [0, 0],
+          deltaX: 300,
+          deltaY: 0,
+          duration: 200,
+          easing: "linear",
+        },
+      );
+
+      inst.on({
+        change: (e) => {
+          result.push(e.pos.x);
+        },
+        finish: () => {
+          // Then
+          expect(result.every(x => x % 10 === 0)).to.be.equal(false);
+          done();
+        },
+      });
+    });
+  });
+
   [20, 30, 40, 50].forEach((iOSEdgeSwipeThreshold) => {
     describe(`Axes iOS Edge Test (iOSEdgeSwipeThreshold: ${iOSEdgeSwipeThreshold})`, () => {
       beforeEach(() => {
@@ -600,6 +691,7 @@ describe("Axes", () => {
         });
         input = new MockPanInputInjector.PanInput(el, {
           iOSEdgeSwipeThreshold,
+          inputKey: ["any"],
           inputType: ["touch"],
         });
         inst
@@ -649,8 +741,8 @@ describe("Axes", () => {
             // Then
             // for test animation event
             setTimeout(() => {
-              const releaseEvent = releaseHandler.getCall(0).args[0];
               expect(releaseHandler.calledOnce).to.be.true;
+              const releaseEvent = releaseHandler.getCall(0).args[0];
               // expect(releaseEvent.inputEvent.isFinal).to.be.false;
               expect(releaseEvent.isTrusted).to.be.true;
 
@@ -678,8 +770,8 @@ describe("Axes", () => {
             // Then
             // for test animation event
             setTimeout(() => {
-              const releaseEvent = releaseHandler.getCall(0).args[0];
               expect(releaseHandler.calledOnce).to.be.true;
+              const releaseEvent = releaseHandler.getCall(0).args[0];
               // expect(releaseEvent.inputEvent.isFinal).to.be.false;
               expect(releaseEvent.isTrusted).to.be.true;
 

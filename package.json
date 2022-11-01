@@ -3,7 +3,7 @@
   "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
   "private": true,
   "scripts": {
-		"lint": "eslint ./packages/axes/src/**/*.ts",
+    "lint": "eslint ./packages/axes/src/**/*.ts",
     "packages": "npm run packages:update && npm run packages:build && npm run packages:publish",
     "packages:update": "lerna-helper version",
     "packages:build": "lerna run build --ignore demo",
@@ -11,8 +11,8 @@
     "docs:build": "rm -rf ./packages/demo/docs/api && jsdoc-to-mdx -c ./jsdoc-to-mdx.json",
     "demo:build": "npm run docs:build && npm run build --prefix packages/demo",
     "demo:build-docusaurus": "npm run build --prefix demo",
-    "demo:deploy": "lerna-helper deploy --base @egjs/axes --remote upstream",
-    "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --remote origin",
+    "demo:deploy": "lerna-helper deploy --base @egjs/axes --src packages/demo/build/ --remote upstream",
+    "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --src packages/demo/build/ --remote origin",
     "release": "lerna-helper release --base @egjs/axes --remote upstream --branch master",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"
@@ -33,16 +33,16 @@
     "jsdoc-to-mdx": "^1.1.2",
     "lerna": "^5.1.4",
     "typescript": "^4.6.2",
-		"eslint": "^7.32.0",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-import": "^2.25.4",
-		"eslint-plugin-jsdoc": "^37.8.0",
-		"eslint-plugin-prefer-arrow": "^1.2.3",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-react": "^7.22.0",
-		"@typescript-eslint/eslint-plugin": "^5.11.0",
-		"@typescript-eslint/eslint-plugin-tslint": "^5.11.0",
-		"@typescript-eslint/parser": "^5.11.0"
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsdoc": "^37.8.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.22.0",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0"
   },
   "workspaces": {
     "packages": [
