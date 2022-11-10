@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.5.0
+version: 3.8.1
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -538,6 +538,24 @@ version: 3.5.0
 
     var ComponentEvent$1 = ComponentEvent;
 
+    /*
+    Copyright (c) NAVER Crop.
+    name: @cfcs/core
+    license: MIT
+    author: NAVER Crop.
+    repository: https://github.com/naver/cfcs
+    version: 0.0.4
+    */
+
+    /**
+     * cfcs
+     * Copyright (c) 2022-present NAVER Corp.
+     * MIT license
+     */
+    function keys(obj) {
+      return Object.keys(obj);
+    }
+
     var OBSERVERS_PATH = "__observers__";
 
     var Observer =
@@ -575,31 +593,8 @@ version: 3.5.0
 
       return Observer;
     }();
-
-    function keys(obj) {
-      return Object.keys(obj);
-    }
-    function camelize(str) {
-      return str.replace(/[\s-_]([a-z])/g, function (all, letter) {
-        return letter.toUpperCase();
-      });
-    }
-
-    function withReactiveMethods(ref, methods) {
-      var obj = {};
-      methods.forEach(function (name) {
-        obj[name] = function () {
-          var args = [];
-
-          for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-          }
-
-          var current = ref.current || ref.value;
-          return current[name].apply(current, args);
-        };
-      });
-      return obj;
+    function observe(defaultValue) {
+      return new Observer(defaultValue);
     }
     function getObservers(instance) {
       if (!instance[OBSERVERS_PATH]) {
@@ -612,19 +607,18 @@ version: 3.5.0
       var observers = getObservers(instance);
 
       if (!observers[name]) {
-        observers[name] = new Observer(defaultValue);
+        observers[name] = observe(defaultValue);
       }
 
       return observers[name];
     }
-    function ReactiveSubscribe(Constructor) {
-      var prototype = Constructor.prototype;
 
-      prototype["subscribe"] = function (name, callback) {
+    function injectReactiveSubscribe(object) {
+      object["subscribe"] = function (name, callback) {
         getObserver(this, name).subscribe(callback);
       };
 
-      prototype["unsubscribe"] = function (name, callback) {
+      object["unsubscribe"] = function (name, callback) {
         var _this = this;
 
         if (!name) {
@@ -641,34 +635,9 @@ version: 3.5.0
         getObserver(this, name).unsubscribe(callback);
       };
     }
-
-    function withClassMethods(methods) {
-      return function (prototype, memberName) {
-        methods.forEach(function (name) {
-          if (name in prototype) {
-            return;
-          }
-
-          prototype[name] = function () {
-            var _a;
-
-            var args = [];
-
-            for (var _i = 0; _i < arguments.length; _i++) {
-              args[_i] = arguments[_i];
-            }
-
-            var result = (_a = this[memberName])[name].apply(_a, args); // fix `this` type to return your own `class` instance to the instance using the decorator.
-
-
-            if (result === this[memberName]) {
-              return this;
-            } else {
-              return result;
-            }
-          };
-        });
-      };
+    function ReactiveSubscribe(Constructor) {
+      var prototype = Constructor.prototype;
+      injectReactiveSubscribe(prototype);
     }
 
     /*
@@ -696,7 +665,7 @@ version: 3.5.0
     license: MIT
     author: NAVER Corp.
     repository: git+https://github.com/naver/agent.git
-    version: 2.2.1
+    version: 2.4.2
     */
     function some(arr, callback) {
       var length = arr.length;
@@ -720,7 +689,7 @@ version: 3.5.0
 
       return null;
     }
-    function getUserAgent(agent) {
+    function getUserAgentString(agent) {
       var userAgent = agent;
 
       if (typeof userAgent === "undefined") {
@@ -750,7 +719,7 @@ version: 3.5.0
       return !!(brands && brands.length);
     }
     function findVersion(versionTest, userAgent) {
-      var result = execRegExp("(" + versionTest + ")((?:\\/|\\s|:)([0-9|\\.|_]+))?", userAgent);
+      var result = execRegExp("(" + versionTest + ")((?:\\/|\\s|:)([0-9|\\.|_]+))", userAgent);
       return result ? result[3] : "";
     }
     function convertVersion(text) {
@@ -782,6 +751,24 @@ version: 3.5.0
         preset: userPreset,
         version: version
       };
+    }
+    function findPresetBrand(presets, brands) {
+      var brandInfo = {
+        brand: "",
+        version: "-1"
+      };
+      some(presets, function (preset) {
+        var result = findBrand(brands, preset);
+
+        if (!result) {
+          return false;
+        }
+
+        brandInfo.brand = preset.id;
+        brandInfo.version = preset.versionAlias || result.version;
+        return brandInfo.version !== "-1";
+      });
+      return brandInfo;
     }
     function findBrand(brands, preset) {
       return find(brands, function (_a) {
@@ -831,18 +818,21 @@ version: 3.5.0
 
     var CHROMIUM_PRESETS = [{
       test: "(?=.*applewebkit/(53[0-7]|5[0-2]|[0-4]))(?=.*\\schrome)",
-      id: "chrome"
+      id: "chrome",
+      versionTest: "chrome"
     }, {
       test: "chromium",
       id: "chrome"
     }, {
       test: "whale",
       id: "chrome",
+      versionAlias: "-1",
       brand: true
     }];
     var WEBKIT_PRESETS = [{
       test: "applewebkit",
-      id: "webkit"
+      id: "webkit",
+      versionTest: "applewebkit|safari"
     }];
     var WEBVIEW_PRESETS = [{
       test: "(?=(iphone|ipad))(?!(.*version))",
@@ -866,14 +856,17 @@ version: 3.5.0
       test: "windows nt",
       id: "window"
     }, {
+      test: "win32|windows",
+      id: "window"
+    }, {
       test: "iphone|ipad|ipod",
       id: "ios",
       versionTest: "iphone os|cpu os"
     }, {
-      test: "mac os x",
+      test: "macos|macintel|mac os x",
       id: "mac"
     }, {
-      test: "android",
+      test: "android|linux armv81",
       id: "android"
     }, {
       test: "tizen",
@@ -883,22 +876,86 @@ version: 3.5.0
       id: "webos"
     }];
 
-    function parseUserAgentData(osData) {
+    function isWebView(userAgent) {
+      return !!findPreset(WEBVIEW_PRESETS, userAgent).preset;
+    }
+    function getLegacyAgent(userAgent) {
+      var nextAgent = getUserAgentString(userAgent);
+      var isMobile = !!/mobi/g.exec(nextAgent);
+      var browser = {
+        name: "unknown",
+        version: "-1",
+        majorVersion: -1,
+        webview: isWebView(nextAgent),
+        chromium: false,
+        chromiumVersion: "-1",
+        webkit: false,
+        webkitVersion: "-1"
+      };
+      var os = {
+        name: "unknown",
+        version: "-1",
+        majorVersion: -1
+      };
+
+      var _a = findPreset(BROWSER_PRESETS, nextAgent),
+          browserPreset = _a.preset,
+          browserVersion = _a.version;
+
+      var _b = findPreset(OS_PRESETS, nextAgent),
+          osPreset = _b.preset,
+          osVersion = _b.version;
+
+      var chromiumPreset = findPreset(CHROMIUM_PRESETS, nextAgent);
+      browser.chromium = !!chromiumPreset.preset;
+      browser.chromiumVersion = chromiumPreset.version;
+
+      if (!browser.chromium) {
+        var webkitPreset = findPreset(WEBKIT_PRESETS, nextAgent);
+        browser.webkit = !!webkitPreset.preset;
+        browser.webkitVersion = webkitPreset.version;
+      }
+
+      if (osPreset) {
+        os.name = osPreset.id;
+        os.version = osVersion;
+        os.majorVersion = parseInt(osVersion, 10);
+      }
+
+      if (browserPreset) {
+        browser.name = browserPreset.id;
+        browser.version = browserVersion; // Early whale bugs
+
+        if (browser.webview && os.name === "ios" && browser.name !== "safari") {
+          browser.webview = false;
+        }
+      }
+
+      browser.majorVersion = parseInt(browser.version, 10);
+      return {
+        browser: browser,
+        os: os,
+        isMobile: isMobile,
+        isHints: false
+      };
+    }
+
+    function getClientHintsAgent(osData) {
       var userAgentData = navigator.userAgentData;
       var brands = (userAgentData.uaList || userAgentData.brands).slice();
+      var fullVersionList = osData && osData.fullVersionList;
       var isMobile = userAgentData.mobile || false;
       var firstBrand = brands[0];
+      var platform = (osData && osData.platform || userAgentData.platform || navigator.platform).toLowerCase();
       var browser = {
         name: firstBrand.brand,
         version: firstBrand.version,
         majorVersion: -1,
         webkit: false,
-        webview: some(WEBVIEW_PRESETS, function (preset) {
-          return findBrand(brands, preset);
-        }),
-        chromium: some(CHROMIUM_PRESETS, function (preset) {
-          return findBrand(brands, preset);
-        })
+        webkitVersion: "-1",
+        chromium: false,
+        chromiumVersion: "-1",
+        webview: !!findPresetBrand(WEBVIEW_PRESETS, brands).brand || isWebView(getUserAgentString())
       };
       var os = {
         name: "unknown",
@@ -908,31 +965,36 @@ version: 3.5.0
       browser.webkit = !browser.chromium && some(WEBKIT_PRESETS, function (preset) {
         return findBrand(brands, preset);
       });
+      var chromiumBrand = findPresetBrand(CHROMIUM_PRESETS, brands);
+      browser.chromium = !!chromiumBrand.brand;
+      browser.chromiumVersion = chromiumBrand.version;
+
+      if (!browser.chromium) {
+        var webkitBrand = findPresetBrand(WEBKIT_PRESETS, brands);
+        browser.webkit = !!webkitBrand.brand;
+        browser.webkitVersion = webkitBrand.version;
+      }
+
+      var platfomResult = find(OS_PRESETS, function (preset) {
+        return new RegExp("" + preset.test, "g").exec(platform);
+      });
+      os.name = platfomResult ? platfomResult.id : "";
 
       if (osData) {
-        var platform_1 = osData.platform.toLowerCase();
-        var result = find(OS_PRESETS, function (preset) {
-          return new RegExp("" + preset.test, "g").exec(platform_1);
-        });
-        os.name = result ? result.id : platform_1;
         os.version = osData.platformVersion;
       }
 
-      some(BROWSER_PRESETS, function (preset) {
-        var result = findBrand(brands, preset);
+      if (fullVersionList && fullVersionList.length) {
+        var browserBrandByFullVersionList = findPresetBrand(BROWSER_PRESETS, fullVersionList);
+        browser.name = browserBrandByFullVersionList.brand || browser.name;
+        browser.version = browserBrandByFullVersionList.version || browser.version;
+      } else {
+        var browserBrand = findPresetBrand(BROWSER_PRESETS, brands);
+        browser.name = browserBrand.brand || browser.name;
+        browser.version = browserBrand.brand && osData ? osData.uaFullVersion : browserBrand.version;
+      }
 
-        if (!result) {
-          return false;
-        }
-
-        browser.name = preset.id;
-        browser.version = osData ? osData.uaFullVersion : result.version;
-        return true;
-      });
-
-      if (navigator.platform === "Linux armv8l") {
-        os.name = "android";
-      } else if (browser.webkit) {
+      if (browser.webkit) {
         os.name = isMobile ? "ios" : "mac";
       }
 
@@ -951,57 +1013,6 @@ version: 3.5.0
         isHints: true
       };
     }
-
-    function parseUserAgent(userAgent) {
-      var nextAgent = getUserAgent(userAgent);
-      var isMobile = !!/mobi/g.exec(nextAgent);
-      var browser = {
-        name: "unknown",
-        version: "-1",
-        majorVersion: -1,
-        webview: !!findPreset(WEBVIEW_PRESETS, nextAgent).preset,
-        chromium: !!findPreset(CHROMIUM_PRESETS, nextAgent).preset,
-        webkit: false
-      };
-      var os = {
-        name: "unknown",
-        version: "-1",
-        majorVersion: -1
-      };
-
-      var _a = findPreset(BROWSER_PRESETS, nextAgent),
-          browserPreset = _a.preset,
-          browserVersion = _a.version;
-
-      var _b = findPreset(OS_PRESETS, nextAgent),
-          osPreset = _b.preset,
-          osVersion = _b.version;
-
-      browser.webkit = !browser.chromium && !!findPreset(WEBKIT_PRESETS, nextAgent).preset;
-
-      if (osPreset) {
-        os.name = osPreset.id;
-        os.version = osVersion;
-        os.majorVersion = parseInt(osVersion, 10);
-      }
-
-      if (browserPreset) {
-        browser.name = browserPreset.id;
-        browser.version = browserVersion;
-
-        if (browser.webview && os.name === "ios" && browser.name !== "safari") {
-          browser.webview = false;
-        }
-      }
-
-      browser.majorVersion = parseInt(browser.version, 10);
-      return {
-        browser: browser,
-        os: os,
-        isMobile: isMobile,
-        isHints: false
-      };
-    }
     /**
      * Extracts browser and operating system information from the user agent string.
      * @ko 유저 에이전트 문자열에서 브라우저와 운영체제 정보를 추출한다.
@@ -1016,9 +1027,9 @@ version: 3.5.0
 
     function agent(userAgent) {
       if (typeof userAgent === "undefined" && hasUserAgentData()) {
-        return parseUserAgentData();
+        return getClientHintsAgent();
       } else {
-        return parseUserAgent(userAgent);
+        return getLegacyAgent(userAgent);
       }
     }
 
@@ -1038,7 +1049,7 @@ version: 3.5.0
     var MOUSE_RIGHT = "right";
     var MOUSE_MIDDLE = "middle";
     var VELOCITY_INTERVAL = 16;
-    var AXES_METHODS = ["connect", "disconnect", "get", "setTo", "setBy", "stopAnimation", "updateAnimation", "isBounceArea"];
+    var AXES_METHODS = ["connect", "disconnect", "get", "setTo", "setBy", "setOptions", "setAxis", "stopAnimation", "updateAnimation", "isBounceArea"];
     var AXES_EVENTS = ["hold", "release", "change", "animationStart", "animationEnd", "finish"];
     var IOS_EDGE_THRESHOLD = 30;
     var IS_IOS_SAFARI = "ontouchstart" in win && agent().browser.name === "safari";
@@ -1289,15 +1300,6 @@ version: 3.5.0
       } else {
         return DIRECTION_NONE;
       }
-    };
-    var getInitialPos = function (axis, startPos) {
-      return __assign(__assign({}, Object.keys(axis).reduce(function (result, key) {
-        var _a;
-
-        var _b, _c;
-
-        return Object.assign(result, (_a = {}, _a[key] = (_c = (_b = axis[key].startPos) !== null && _b !== void 0 ? _b : axis[key].range[0]) !== null && _c !== void 0 ? _c : 0, _a));
-      }, {})), startPos);
     };
     var useDirection = function (checkType, direction, userDirection) {
       if (userDirection) {
@@ -1709,7 +1711,7 @@ version: 3.5.0
       __proto._getRoundPos = function (pos, depaPos) {
         // round value if round exist
         var roundUnit = this._axes.options.round; // if (round == null) {
-        // 	return {pos, depaPos}; // undefined, undefined
+        //   return {pos, depaPos}; // undefined, undefined
         // }
 
         return {
@@ -1817,9 +1819,9 @@ version: 3.5.0
 
         this._complementOptions();
 
-        this._pos = Object.keys(this._axis).reduce(function (acc, v) {
-          acc[v] = _this._axis[v].range[0];
-          return acc;
+        this._pos = Object.keys(this._axis).reduce(function (pos, v) {
+          pos[v] = _this._axis[v].startPos;
+          return pos;
         }, {});
       }
 
@@ -1903,6 +1905,20 @@ version: 3.5.0
       __proto.getAxisOptions = function (key) {
         return this._axis[key];
       };
+
+      __proto.setAxis = function (axis) {
+        var _this = this;
+
+        Object.keys(axis).forEach(function (key) {
+          if (!_this._axis[key]) {
+            throw new Error("Axis ".concat(key, " does not exist in Axes instance"));
+          }
+
+          _this._axis[key] = __assign(__assign({}, _this._axis[key]), axis[key]);
+        });
+
+        this._complementOptions();
+      };
       /**
        * set up 'css' expression
        * @private
@@ -1915,9 +1931,9 @@ version: 3.5.0
         Object.keys(this._axis).forEach(function (axis) {
           _this._axis[axis] = __assign({
             range: [0, 100],
+            startPos: _this._axis[axis].range[0],
             bounce: [0, 0],
-            circular: [false, false],
-            startPos: _this._axis[axis].range[0]
+            circular: [false, false]
           }, _this._axis[axis]);
           ["bounce", "circular"].forEach(function (v) {
             var axisOption = _this._axis;
@@ -2082,7 +2098,16 @@ version: 3.5.0
         return;
       };
 
-      __proto.getTouches = function () {
+      __proto.getTouches = function (event, inputButton) {
+        if (inputButton) {
+          var buttonCodeMap = {
+            1: MOUSE_LEFT,
+            2: MOUSE_MIDDLE,
+            3: MOUSE_RIGHT
+          };
+          return this._isValidButton(buttonCodeMap[event.which], inputButton) && this.end.indexOf(event.type) === -1 ? 1 : 0;
+        }
+
         return 0;
       };
 
@@ -3052,6 +3077,8 @@ version: 3.5.0
       };
 
       __proto.updateAnimation = function (options) {
+        var _a;
+
         var animateParam = this._animateParam;
 
         if (!animateParam) {
@@ -3060,7 +3087,7 @@ version: 3.5.0
 
         var diffTime = new Date().getTime() - animateParam.startTime;
         var pos = (options === null || options === void 0 ? void 0 : options.destPos) || animateParam.destPos;
-        var duration = (options === null || options === void 0 ? void 0 : options.duration) || animateParam.duration;
+        var duration = (_a = options === null || options === void 0 ? void 0 : options.duration) !== null && _a !== void 0 ? _a : animateParam.duration;
 
         if ((options === null || options === void 0 ? void 0 : options.restart) || duration <= diffTime) {
           this.setTo(pos, duration - diffTime);
@@ -3147,16 +3174,16 @@ version: 3.5.0
     /**
      * @typedef {Object} AxisOption The Axis information. The key of the axis specifies the name to use as the logical virtual coordinate system.
      * @ko 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.
-     * @param {Number[]} [range] The coordinate of range <ko>좌표 범위</ko>
+     * @param {Number[]} [range] The range of coordinate <ko>좌표 범위</ko>
      * @param {Number} [range[0]=0] The coordinate of the minimum <ko>최소 좌표</ko>
      * @param {Number} [range[1]=0] The coordinate of the maximum <ko>최대 좌표</ko>
+     * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
      * @param {Number[]} [bounce] The size of bouncing area. The coordinates can exceed the coordinate area as much as the bouncing area based on user action. If the coordinates does not exceed the bouncing area when an element is dragged, the coordinates where bouncing effects are applied are retuned back into the coordinate area<ko>바운스 영역의 크기. 사용자의 동작에 따라 좌표가 좌표 영역을 넘어 바운스 영역의 크기만큼 더 이동할 수 있다. 사용자가 끌어다 놓는 동작을 했을 때 좌표가 바운스 영역에 있으면, 바운스 효과가 적용된 좌표가 다시 좌표 영역 안으로 들어온다</ko>
      * @param {Number} [bounce[0]=0] The size of coordinate of the minimum area <ko>최소 좌표 바운스 영역의 크기</ko>
      * @param {Number} [bounce[1]=0] The size of coordinate of the maximum area <ko>최대 좌표 바운스 영역의 크기</ko>
      * @param {Boolean[]} [circular] Indicates whether a circular element is available. If it is set to "true" and an element is dragged outside the coordinate area, the element will appear on the other side.<ko>순환 여부. 'true'로 설정한 방향의 좌표 영역 밖으로 엘리먼트가 이동하면 반대 방향에서 엘리먼트가 나타난다</ko>
      * @param {Boolean} [circular[0]=false] Indicates whether to circulate to the coordinate of the minimum <ko>최소 좌표 방향의 순환 여부</ko>
      * @param {Boolean} [circular[1]=false] Indicates whether to circulate to the coordinate of the maximum <ko>최대 좌표 방향의 순환 여부</ko>
-     * @param {Number} [startPos=range[0]] The coordinates to be moved when creating an instance <ko>인스턴스 생성시 이동할 좌표</ko>
      **/
 
     /**
@@ -3185,7 +3212,7 @@ version: 3.5.0
      *
      * @param {Object.<string, AxisOption>} axis Axis information managed by eg.Axes. The key of the axis specifies the name to use as the logical virtual coordinate system.  <ko>eg.Axes가 관리하는 축 정보. 축의 키는 논리적인 가상 좌표계로 사용할 이름을 지정한다.</ko>
      * @param {AxesOption} [options={}] The option object of the eg.Axes module<ko>eg.Axes 모듈의 옵션 객체</ko>
-     * @param {Object.<string, number>} [startPos=null] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
+     * @param {Object.<string, number>} [startPos={}] The coordinates to be moved when creating an instance. It is applied with higher priority than startPos of axisOption.<ko>인스턴스 생성시 이동할 좌표, axisOption의 startPos보다 높은 우선순위로 적용된다.</ko>
      *
      * @support {"ie": "10+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.3+ (except 3.x)"}
      * @example
@@ -3267,7 +3294,7 @@ version: 3.5.0
         }
 
         if (startPos === void 0) {
-          startPos = null;
+          startPos = {};
         }
 
         var _this = _super.call(this) || this;
@@ -3285,6 +3312,9 @@ version: 3.5.0
           round: null,
           nested: false
         }, options);
+        Object.keys(startPos).forEach(function (key) {
+          _this.axis[key].startPos = startPos[key];
+        });
         _this.interruptManager = new InterruptManager(_this.options);
         _this.axisManager = new AxisManager(_this.axis);
         _this.eventManager = new EventManager(_this);
@@ -3293,7 +3323,7 @@ version: 3.5.0
 
         _this.eventManager.setAnimationManager(_this.animationManager);
 
-        _this.eventManager.triggerChange(getInitialPos(axis, startPos));
+        _this.eventManager.triggerChange(_this.axisManager.get());
 
         return _this;
       }
@@ -3503,6 +3533,70 @@ version: 3.5.0
         return this;
       };
       /**
+       * Change the options of Axes instance.
+       * @ko 인스턴스의 옵션을 변경한다.
+       * @param {AxesOption} options Axes options to change <ko>변경할 옵션 목록</ko>
+       * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       * @example
+       * ```js
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       * }, {
+       *   round: 10,
+       * });
+       *
+       * axes.setTo({"x": 48});
+       * axes.get(); // {"x": 50}
+       *
+       * axes.setOptions({
+       *   round: 1,
+       * });
+       *
+       * axes.setTo({"x": 48});
+       * axes.get(); // {"x": 48}
+       * ```
+       */
+
+
+      __proto.setOptions = function (options) {
+        this.options = __assign(__assign({}, this.options), options);
+        return this;
+      };
+      /**
+       * Change the information of an existing axis.
+       * @ko 존재하는 축의 정보를 변경한다.
+       * @param {Object.<string, AxisOption>} axis Axis options to change <ko>변경할 축의 정보</ko>
+       * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       * @example
+       * ```js
+       * const axes = new eg.Axes({
+       *   "x": {
+       *      range: [0, 100]
+       *   },
+       * });
+       *
+       * axes.setTo({"x": 150});
+       * axes.get(); // {"x": 100}
+       *
+       * axes.setAxis({
+       *   "x": {
+       *      range: [0, 200]
+       *   },
+       * });
+       *
+       * axes.setTo({"x": 150});
+       * axes.get(); // {"x": 150}
+       * ```
+       */
+
+
+      __proto.setAxis = function (axis) {
+        this.axisManager.setAxis(axis);
+        return this;
+      };
+      /**
        * Stop an animation in progress.
        * @ko 재생 중인 애니메이션을 정지한다.
        * @return {eg.Axes} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
@@ -3524,6 +3618,7 @@ version: 3.5.0
 
       __proto.stopAnimation = function () {
         this.animationManager.stopAnimation();
+        this.animationManager.finish(false);
         return this;
       };
       /**
@@ -3613,7 +3708,7 @@ version: 3.5.0
        */
 
 
-      Axes.VERSION = "3.5.0";
+      Axes.VERSION = "3.8.1";
       /* eslint-enable */
 
       /**
@@ -3725,6 +3820,7 @@ version: 3.5.0
      * @param {Number} [scale[1]=1] vertical axis scale <ko>수직축 배율</ko>
      * @param {Number} [thresholdAngle=45] The threshold value that determines whether user action is horizontal or vertical (0~90) <ko>사용자의 동작이 가로 방향인지 세로 방향인지 판단하는 기준 각도(0~90)</ko>
      * @param {Number} [threshold=0] Minimal pan distance required before recognizing <ko>사용자의 Pan 동작을 인식하기 위해산 최소한의 거리</ko>
+     * @param {Boolean} [preventClickOnDrag=false] Whether to cancel the {@link https://developer.mozilla.org/en/docs/Web/API/Element/click_event click} event when the user finishes dragging more than 1 pixel <ko>사용자가 1픽셀 이상 드래그를 마쳤을 때 {@link https://developer.mozilla.org/ko/docs/Web/API/Element/click_event click} 이벤트 취소 여부</ko>
      * @param {Number} [iOSEdgeSwipeThreshold=30] Area (px) that can go to the next page when swiping the right edge in iOS safari <ko>iOS Safari에서 오른쪽 엣지를 스와이프 하는 경우 다음 페이지로 넘어갈 수 있는 영역(px)</ko>
      * @param {String} [touchAction=null] Value that overrides the element's "touch-action" css property. If set to null, it is automatically set to prevent scrolling in the direction of the connected axis. <ko>엘리먼트의 "touch-action" CSS 속성을 덮어쓰는 값. 만약 null로 설정된 경우, 연결된 축 방향으로의 스크롤을 방지하게끔 자동으로 설정된다.</ko>
      **/
@@ -3736,8 +3832,8 @@ version: 3.5.0
      * @example
      * ```js
      * const pan = new eg.Axes.PanInput("#area", {
-     * 		inputType: ["touch"],
-     * 		scale: [1, 1.3],
+     *     inputType: ["touch"],
+     *     scale: [1, 1.3],
      * });
      *
      * // Connect the 'something2' axis to the mouse or touchscreen x position when the mouse or touchscreen is down and moved.
@@ -3769,15 +3865,16 @@ version: 3.5.0
         this._activeEvent = null;
         this._atRightEdge = false;
         this._rightEdgeTimer = 0;
+        this._dragged = false;
+        this._isOverThreshold = false;
 
-        this._forceRelease = function () {
-          var activeEvent = _this._activeEvent;
-          var prevEvent = activeEvent.prevEvent;
-          activeEvent.onRelease();
+        this._preventClickWhenDragged = function (e) {
+          if (_this._dragged) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
 
-          _this._observer.release(_this, prevEvent, [0, 0]);
-
-          _this._detachWindowEvent(activeEvent);
+          _this._dragged = false;
         };
 
         this._voidFunction = function () {};
@@ -3789,6 +3886,7 @@ version: 3.5.0
           scale: [1, 1],
           thresholdAngle: 45,
           threshold: 0,
+          preventClickOnDrag: false,
           iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
           releaseOnScroll: false,
           touchAction: null
@@ -3864,7 +3962,7 @@ version: 3.5.0
       };
       /**
        * Returns whether to use an input device
-       * @ko 입력 장치를 사용 여부를 반환한다.
+       * @ko 입력 장치 사용 여부를 반환한다.
        * @return {Boolean} Whether to use an input device <ko>입력장치 사용여부</ko>
        */
 
@@ -3872,17 +3970,38 @@ version: 3.5.0
       __proto.isEnabled = function () {
         return this._enabled;
       };
+      /**
+       * Releases current user input.
+       * @ko 사용자의 입력을 강제로 중단시킨다.
+       * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
+       */
+
+
+      __proto.release = function () {
+        var activeEvent = this._activeEvent;
+        var prevEvent = activeEvent.prevEvent;
+        activeEvent.onRelease();
+
+        this._observer.release(this, prevEvent, [0, 0]);
+
+        this._detachWindowEvent(activeEvent);
+
+        return this;
+      };
 
       __proto._onPanstart = function (event) {
+        var inputButton = this.options.inputButton;
         var activeEvent = this._activeEvent;
-        var panEvent = activeEvent.onEventStart(event, this.options.inputButton);
+        var panEvent = activeEvent.onEventStart(event, inputButton);
 
-        if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
+        if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
           return;
         }
 
         if (panEvent.srcEvent.cancelable !== false) {
           var edgeThreshold = this.options.iOSEdgeSwipeThreshold;
+          this._dragged = false;
+          this._isOverThreshold = false;
 
           this._observer.hold(this, panEvent);
 
@@ -3897,31 +4016,36 @@ version: 3.5.0
       __proto._onPanmove = function (event) {
         var _this = this;
 
-        var activeEvent = this._activeEvent;
-        var panEvent = activeEvent.onEventMove(event, this.options.inputButton);
-
-        if (!panEvent || !this._enabled || activeEvent.getTouches(event) > 1) {
-          return;
-        }
-
         var _a = this.options,
             iOSEdgeSwipeThreshold = _a.iOSEdgeSwipeThreshold,
-            releaseOnScroll = _a.releaseOnScroll;
-        var userDirection = getDirectionByAngle(panEvent.angle, this.options.thresholdAngle);
+            releaseOnScroll = _a.releaseOnScroll,
+            inputButton = _a.inputButton,
+            threshold = _a.threshold,
+            thresholdAngle = _a.thresholdAngle;
+        var activeEvent = this._activeEvent;
+        var panEvent = activeEvent.onEventMove(event, inputButton);
+        var touches = activeEvent.getTouches(event, inputButton);
 
-        if (releaseOnScroll && !panEvent.srcEvent.cancelable) {
+        if (touches === 0 || releaseOnScroll && panEvent && !panEvent.srcEvent.cancelable) {
           this._onPanend(event);
 
           return;
         }
+
+        if (!panEvent || !this._enabled || touches > 1) {
+          return;
+        }
+
+        var userDirection = getDirectionByAngle(panEvent.angle, thresholdAngle);
+        var useHorizontal = useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection);
+        var useVertical = useDirection(DIRECTION_VERTICAL, this._direction, userDirection);
 
         if (activeEvent.prevEvent && IS_IOS_SAFARI) {
           var swipeLeftToRight = panEvent.center.x < 0;
 
           if (swipeLeftToRight) {
             // iOS swipe left => right
-            this._forceRelease();
-
+            this.release();
             return;
           } else if (this._atRightEdge) {
             clearTimeout(this._rightEdgeTimer); // - is right to left
@@ -3933,13 +4057,15 @@ version: 3.5.0
             } else {
               // iOS swipe right => left
               this._rightEdgeTimer = window.setTimeout(function () {
-                return _this._forceRelease();
+                return _this.release();
               }, 100);
             }
           }
         }
 
-        var offset = this._getOffset([panEvent.offsetX, panEvent.offsetY], [useDirection(DIRECTION_HORIZONTAL, this._direction, userDirection), useDirection(DIRECTION_VERTICAL, this._direction, userDirection)]);
+        var distance = this._getDistance([panEvent.deltaX, panEvent.deltaY], [useHorizontal, useVertical]);
+
+        var offset = this._getOffset([panEvent.offsetX, panEvent.offsetY], [useHorizontal, useVertical]);
 
         var prevent = offset.some(function (v) {
           return v !== 0;
@@ -3955,7 +4081,10 @@ version: 3.5.0
 
         panEvent.preventSystemEvent = prevent;
 
-        if (prevent) {
+        if (prevent && (this._isOverThreshold || distance >= threshold)) {
+          this._dragged = true;
+          this._isOverThreshold = true;
+
           this._observer.change(this, panEvent, toAxis(this.axes, offset));
         }
 
@@ -3963,10 +4092,11 @@ version: 3.5.0
       };
 
       __proto._onPanend = function (event) {
+        var inputButton = this.options.inputButton;
         var activeEvent = this._activeEvent;
         activeEvent.onEventEnd(event);
 
-        if (!this._enabled || activeEvent.getTouches(event) !== 0) {
+        if (!this._enabled || activeEvent.getTouches(event, inputButton) !== 0) {
           return;
         }
 
@@ -3974,9 +4104,7 @@ version: 3.5.0
 
         clearTimeout(this._rightEdgeTimer);
         var prevEvent = activeEvent.prevEvent;
-
-        var velocity = this._getOffset([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]);
-
+        var velocity = this._isOverThreshold ? this._getOffset([Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1), Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1)], [useDirection(DIRECTION_HORIZONTAL, this._direction), useDirection(DIRECTION_VERTICAL, this._direction)]) : [0, 0];
         activeEvent.onRelease();
 
         this._observer.release(this, prevEvent, velocity);
@@ -4013,28 +4141,38 @@ version: 3.5.0
         return [direction[0] ? properties[0] * scale[0] : 0, direction[1] ? properties[1] * scale[1] : 0];
       };
 
+      __proto._getDistance = function (delta, direction) {
+        return Math.sqrt(Number(direction[0]) * Math.pow(delta[0], 2) + Number(direction[1]) * Math.pow(delta[1], 2));
+      };
+
       __proto._attachElementEvent = function (observer) {
         var _this = this;
 
         var activeEvent = convertInputType(this.options.inputType);
+        var element = this.element;
 
         if (!activeEvent) {
           return;
         }
 
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
-        activeEvent.start.forEach(function (event) {
-          var _a;
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._onPanstart);
+        if (this.options.preventClickOnDrag) {
+          element.addEventListener("click", this._preventClickWhenDragged, true);
+        }
+
+        activeEvent.start.forEach(function (event) {
+          element.addEventListener(event, _this._onPanstart);
         }); // adding event listener to element prevents invalid behavior in iOS Safari
 
         activeEvent.move.forEach(function (event) {
-          var _a;
-
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.addEventListener(event, _this._voidFunction);
+          element.addEventListener(event, _this._voidFunction);
         });
       };
 
@@ -4042,16 +4180,21 @@ version: 3.5.0
         var _this = this;
 
         var activeEvent = this._activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
-          var _a;
+        var element = this.element;
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._onPanstart);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-          var _a;
+        if (element) {
+          if (this.options.preventClickOnDrag) {
+            element.removeEventListener("click", this._preventClickWhenDragged, true);
+          }
 
-          (_a = _this.element) === null || _a === void 0 ? void 0 : _a.removeEventListener(event, _this._voidFunction);
-        });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+            element.removeEventListener(event, _this._onPanstart);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+            element.removeEventListener(event, _this._voidFunction);
+          });
+        }
+
         this._enabled = false;
         this._observer = null;
       };
@@ -4275,7 +4418,7 @@ version: 3.5.0
      * @example
      * ```js
      * const pinch = new eg.Axes.PinchInput("#area", {
-     * 		scale: 1
+     *   scale: 1
      * });
      *
      * // Connect 'something' axis when two pointers are moving toward (zoom-in) or away from each other (zoom-out).
@@ -4297,6 +4440,7 @@ version: 3.5.0
         this._pinchFlag = false;
         this._enabled = false;
         this._activeEvent = null;
+        this._isOverThreshold = false;
         this.element = $(el);
         this.options = __assign({
           scale: 1,
@@ -4391,10 +4535,12 @@ version: 3.5.0
         this._observer.hold(this, event);
 
         this._pinchFlag = true;
+        this._isOverThreshold = false;
         activeEvent.prevEvent = pinchEvent;
       };
 
       __proto._onPinchMove = function (event) {
+        var threshold = this.options.threshold;
         var activeEvent = this._activeEvent;
         var pinchEvent = activeEvent.onEventMove(event);
 
@@ -4402,9 +4548,15 @@ version: 3.5.0
           return;
         }
 
+        var distance = this._getDistance(pinchEvent.scale);
+
         var offset = this._getOffset(pinchEvent.scale, activeEvent.prevEvent.scale);
 
-        this._observer.change(this, event, toAxis(this.axes, [offset]));
+        if (this._isOverThreshold || distance >= threshold) {
+          this._isOverThreshold = true;
+
+          this._observer.change(this, event, toAxis(this.axes, [offset]));
+        }
 
         activeEvent.prevEvent = pinchEvent;
       };
@@ -4429,22 +4581,27 @@ version: 3.5.0
         var _this = this;
 
         var activeEvent = convertInputType(this.options.inputType);
+        var element = this.element;
 
         if (!activeEvent) {
           return;
+        }
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
         }
 
         this._observer = observer;
         this._enabled = true;
         this._activeEvent = activeEvent;
         activeEvent.start.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchStart, false);
+          element.addEventListener(event, _this._onPinchStart, false);
         });
         activeEvent.move.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchMove, false);
+          element.addEventListener(event, _this._onPinchMove, false);
         });
         activeEvent.end.forEach(function (event) {
-          _this.element.addEventListener(event, _this._onPinchEnd, false);
+          element.addEventListener(event, _this._onPinchEnd, false);
         });
       };
 
@@ -4452,15 +4609,20 @@ version: 3.5.0
         var _this = this;
 
         var activeEvent = this._activeEvent;
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchStart, false);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchMove, false);
-        });
-        activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
-          _this.element.removeEventListener(event, _this._onPinchEnd, false);
-        });
+        var element = this.element;
+
+        if (element) {
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchStart, false);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchMove, false);
+          });
+          activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
+            element.removeEventListener(event, _this._onPinchEnd, false);
+          });
+        }
+
         this._enabled = false;
         this._observer = null;
       };
@@ -4471,6 +4633,10 @@ version: 3.5.0
         }
 
         return this._baseValue * (pinchScale - prev) * this.options.scale;
+      };
+
+      __proto._getDistance = function (pinchScale) {
+        return Math.abs(pinchScale - 1);
       };
 
       return PinchInput;
@@ -4492,7 +4658,7 @@ version: 3.5.0
      * @example
      * ```js
      * const wheel = new eg.Axes.WheelInput("#area", {
-     * 		scale: 1
+     *     scale: 1
      * });
      *
      * // Connect only one 'something1' axis to the vertical mouse wheel.
@@ -4635,13 +4801,24 @@ version: 3.5.0
       };
 
       __proto._attachEvent = function (observer) {
+        var element = this.element;
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
-        this.element.addEventListener("wheel", this._onWheel);
+        element.addEventListener("wheel", this._onWheel);
         this._enabled = true;
       };
 
       __proto._detachEvent = function () {
-        this.element.removeEventListener("wheel", this._onWheel);
+        var element = this.element;
+
+        if (element) {
+          this.element.removeEventListener("wheel", this._onWheel);
+        }
+
         this._enabled = false;
         this._observer = null;
 
@@ -4684,7 +4861,7 @@ version: 3.5.0
      * @example
      * ```js
      * const moveKey = new eg.Axes.MoveKeyInput("#area", {
-     * 		scale: [1, 1]
+     *     scale: [1, 1]
      * });
      *
      * // Connect 'x', 'y' axes when the moveKey is pressed.
@@ -4853,17 +5030,28 @@ version: 3.5.0
       };
 
       __proto._attachEvent = function (observer) {
+        var element = this.element;
+
+        if (!element) {
+          throw new Error("Element to connect input does not exist.");
+        }
+
         this._observer = observer;
-        this.element.addEventListener("keydown", this._onKeydown, false);
-        this.element.addEventListener("keypress", this._onKeydown, false);
-        this.element.addEventListener("keyup", this._onKeyup, false);
+        element.addEventListener("keydown", this._onKeydown, false);
+        element.addEventListener("keypress", this._onKeydown, false);
+        element.addEventListener("keyup", this._onKeyup, false);
         this._enabled = true;
       };
 
       __proto._detachEvent = function () {
-        this.element.removeEventListener("keydown", this._onKeydown, false);
-        this.element.removeEventListener("keypress", this._onKeydown, false);
-        this.element.removeEventListener("keyup", this._onKeyup, false);
+        var element = this.element;
+
+        if (element) {
+          element.removeEventListener("keydown", this._onKeydown, false);
+          element.removeEventListener("keypress", this._onKeydown, false);
+          element.removeEventListener("keyup", this._onKeyup, false);
+        }
+
         this._enabled = false;
         this._observer = null;
       };
@@ -4876,10 +5064,9 @@ version: 3.5.0
      * egjs projects are licensed under the MIT license
      */
     var REACTIVE_AXES = {
-      state: {},
       methods: AXES_METHODS,
       events: AXES_EVENTS,
-      instance: function (data) {
+      created: function (data) {
         return new Axes(data.axis, data.options);
       },
       on: function (instance, name, callback) {
@@ -4907,16 +5094,7 @@ version: 3.5.0
         MoveKeyInput: MoveKeyInput,
         AXES_METHODS: AXES_METHODS,
         AXES_EVENTS: AXES_EVENTS,
-        getInitialPos: getInitialPos,
-        REACTIVE_AXES: REACTIVE_AXES,
-        withReactiveMethods: withReactiveMethods,
-        getObservers: getObservers,
-        getObserver: getObserver,
-        ReactiveSubscribe: ReactiveSubscribe,
-        Observer: Observer,
-        withClassMethods: withClassMethods,
-        keys: keys,
-        camelize: camelize
+        REACTIVE_AXES: REACTIVE_AXES
     });
 
     /*
