@@ -21,7 +21,12 @@ import {
   MOUSE_LEFT,
   ANY,
 } from "../const";
-import { ActiveEvent, ElementType, InputEventType } from "../types";
+import {
+  ActiveEvent,
+  ElementType,
+  ExtendedEvent,
+  InputEventType,
+} from "../types";
 
 import {
   convertInputType,
@@ -40,6 +45,7 @@ export interface PanInputOption {
   preventClickOnDrag?: boolean;
   iOSEdgeSwipeThreshold?: number;
   releaseOnScroll?: boolean;
+  useAcceleration?: boolean;
   touchAction?: string;
 }
 
@@ -150,6 +156,7 @@ export class PanInput implements InputType {
       preventClickOnDrag: false,
       iOSEdgeSwipeThreshold: IOS_EDGE_THRESHOLD,
       releaseOnScroll: false,
+      useAcceleration: false,
       touchAction: null,
       ...options,
     };
@@ -267,6 +274,7 @@ export class PanInput implements InputType {
     const {
       iOSEdgeSwipeThreshold,
       releaseOnScroll,
+      useAcceleration,
       inputKey,
       inputButton,
       threshold,
@@ -339,9 +347,18 @@ export class PanInput implements InputType {
     }
     panEvent.preventSystemEvent = prevent;
     if (prevent && (this._isOverThreshold || distance >= threshold)) {
+      const velocity = useAcceleration
+        ? this._getVelocity(panEvent)
+        : undefined;
       this._dragged = true;
       this._isOverThreshold = true;
-      this._observer.change(this, panEvent, toAxis(this.axes, offset));
+      this._observer.change(
+        this,
+        panEvent,
+        toAxis(this.axes, offset),
+        false,
+        velocity
+      );
     }
     activeEvent.prevEvent = panEvent;
   }
@@ -356,16 +373,7 @@ export class PanInput implements InputType {
     this._detachWindowEvent(activeEvent);
     clearTimeout(this._rightEdgeTimer);
     const prevEvent = activeEvent.prevEvent;
-    const velocity = this._isOverThreshold ? this._getOffset(
-      [
-        Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
-        Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
-      ],
-      [
-        useDirection(DIRECTION_HORIZONTAL, this._direction),
-        useDirection(DIRECTION_VERTICAL, this._direction),
-      ]
-    ) : [0, 0];
+    const velocity = this._getVelocity(prevEvent);
     activeEvent.onRelease();
     this._observer.release(this, prevEvent, velocity);
   }
@@ -394,6 +402,21 @@ export class PanInput implements InputType {
       direction[0] ? properties[0] * scale[0] : 0,
       direction[1] ? properties[1] * scale[1] : 0,
     ];
+  }
+
+  private _getVelocity(event: ExtendedEvent): number[] {
+    return this._isOverThreshold
+      ? this._getOffset(
+          [
+            Math.abs(event.velocityX) * (event.offsetX < 0 ? -1 : 1),
+            Math.abs(event.velocityY) * (event.offsetY < 0 ? -1 : 1),
+          ],
+          [
+            useDirection(DIRECTION_HORIZONTAL, this._direction),
+            useDirection(DIRECTION_VERTICAL, this._direction),
+          ]
+        )
+      : [0, 0];
   }
 
   private _getDistance(delta: number[], direction: boolean[]): number {
@@ -432,7 +455,11 @@ export class PanInput implements InputType {
     const element = this.element;
     if (element) {
       if (this.options.preventClickOnDrag) {
-        element.removeEventListener("click", this._preventClickWhenDragged, true);
+        element.removeEventListener(
+          "click",
+          this._preventClickWhenDragged,
+          true
+        );
       }
       activeEvent?.start.forEach((event) => {
         element.removeEventListener(event, this._onPanstart);
