@@ -77,3 +77,9 @@ export const convertInputType = (inputType: string[] = []): ActiveEvent => {
   }
   return null;
 };
+
+export function getAddEventOptions(eventName: string) {
+	// The passive default value of the touch event is true.
+	// If not a touch event, return false to support ie11
+	return eventName.indexOf("touch") > -1 ? { passive: false } : false;
+}
