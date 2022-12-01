@@ -68,7 +68,13 @@ export class InputObserver implements InputTypeObserver {
     this._moveDistance = this._axisManager.get(input.axes);
   }
 
-  public change(input: InputType, event, offset: Axis, useAnimation?: boolean, velocity?: number[]) {
+  public change(
+    input: InputType,
+    event,
+    offset: Axis,
+    useAnimation?: boolean,
+    velocity?: number[]
+  ) {
     if (
       this._isStopped ||
       !this._interruptManager.isInterrupting() ||
@@ -126,12 +132,14 @@ export class InputObserver implements InputTypeObserver {
         this._moveDistance = null;
         this._animationManager.finish(false);
       } else if (velocity) {
-				const displacement = this._animationManager.getDisplacement(velocity);
-				const nextOffset = toAxis(input.axes, displacement);
-				destPos = map(destPos, (v, k) => v + (nextOffset[k] || 0));
-				destPos = this._atOutside(destPos);
-				this._animationManager.changeTo(destPos, nextOffset, changeOption);
-			}
+        const displacement = this._animationManager.getDisplacement(velocity);
+        const nextOffset = toAxis(input.axes, displacement);
+        destPos = this._atOutside(
+          map(destPos, (v, k) => v + (nextOffset[k] || 0))
+        );
+        this._animationManager.changeTo(destPos, nextOffset, changeOption);
+        this._moveDistance = null;
+      }
     }
   }
 

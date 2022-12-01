@@ -201,6 +201,10 @@ export abstract class AnimationManager {
         })
       : destPos;
 
+    if (this._raf) {
+      cancelAnimationFrame(this._raf);
+    }
+
     if (!equal(nextPos, depaPos)) {
       const newParam = {
         depaPos,
@@ -208,18 +212,7 @@ export abstract class AnimationManager {
         duration: this.getDuration(nextPos, depaPos),
         delta: this.axisManager.getDelta(depaPos, nextPos),
       };
-      if (animateParam) {
-        this._initState(newParam);
-        this._animateParam = {
-          ...newParam,
-          startTime: new Date().getTime(),
-        };
-      } else {
-        this._animateLoop(
-          newParam,
-          () => this._removeAnimationParam()
-        );
-      }
+      this._animateLoop(newParam, () => this._removeAnimationParam());
     }
   }
 
