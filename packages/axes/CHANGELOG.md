@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.3](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.8.1...@egjs/axes@3.8.3) (2022-12-02)
+
+
+### :rocket: New Features
+
+* add inputKey option to PanInput and WheelInput (#204) ([1169aca](https://github.com/naver/egjs-axes/commit/1169acac0259f083525da5969a8fad8db9cf04ae))
+
+
+### :bug: Bug Fix
+
+* add declaration files to package ([3a68971](https://github.com/naver/egjs-axes/commit/3a6897103594eade43d00f242fc0909bd0148a27))
+* fix addEventListener (#209) ([5805c9d](https://github.com/naver/egjs-axes/commit/5805c9da599b2b8b9a6a5c243ea8eaf5743832cd))
+* fix bounce when circular set in only one direction (#207) ([4806cfa](https://github.com/naver/egjs-axes/commit/4806cfa674b2291e5d60e611287ffd58813e23d0))
+* fix preventClickOnDrag option not working when changed (#206) ([c49817d](https://github.com/naver/egjs-axes/commit/c49817d90d9a2677c13f49a901614896a281ca15))
+
+
+### :mega: Other
+
+* Release 3.8.2 ([3826ac2](https://github.com/naver/egjs-axes/commit/3826ac2e287a6edf4b4a1d136782114eb2a78bfd))
+* update packages versions ([578c4f2](https://github.com/naver/egjs-axes/commit/578c4f205ba40c2c84883d5144fddb9b1c2dff99))
+* update packages versions ([4b41de4](https://github.com/naver/egjs-axes/commit/4b41de44af6d5b7a6d7b856ad47864c43222da11))
+
+
+
 ## [3.8.2](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.8.1...@egjs/axes@3.8.2) (2022-12-02)
 
 
