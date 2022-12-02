@@ -24,6 +24,11 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/naver/egjs-axes",
+  "files": [
+    "./*",
+    "declaration/*",
+    "dist/*"
+  ],
   "dependencies": {
     "@cfcs/svelte": "~0.0.4",
     "@egjs/axes": "~3.8.2"

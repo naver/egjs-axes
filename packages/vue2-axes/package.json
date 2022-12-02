@@ -13,6 +13,11 @@
     "build": "rollup -c && npm run declaration && print-sizes ./dist ",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
   },
+  "files": [
+    "./*",
+    "declaration/*",
+    "dist/*"
+  ],
   "dependencies": {
     "@cfcs/vue2": "~0.0.4",
     "@egjs/axes": "~3.8.2"

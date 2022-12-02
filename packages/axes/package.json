@@ -27,6 +27,12 @@
 	},
 	"license": "MIT",
 	"homepage": "https://github.com/naver/egjs-axes",
+	"files": [
+		"./*",
+		"declaration/*",
+		"outjs/*",
+		"dist/*"
+	],
 	"dependencies": {
     "@cfcs/core": "^0.0.4",
 		"@egjs/agent": "^2.2.1",
