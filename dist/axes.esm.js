@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.8.2
+version: 3.8.3
 */
 import getAgent from '@egjs/agent';
 import Component, { ComponentEvent } from '@egjs/component';
@@ -2795,7 +2795,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.8.2";
+  Axes.VERSION = "3.8.3";
   /* eslint-enable */
 
   /**

@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.8.2
+version: 3.8.3
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@egjs/agent'), require('@egjs/component'), require('@cfcs/core')) :
@@ -2797,7 +2797,7 @@ version: 3.8.2
        */
 
 
-      Axes.VERSION = "3.8.2";
+      Axes.VERSION = "3.8.3";
       /* eslint-enable */
 
       /**
