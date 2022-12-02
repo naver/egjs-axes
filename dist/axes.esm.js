@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.8.1
+version: 3.8.2
 */
 import getAgent from '@egjs/agent';
 import Component, { ComponentEvent } from '@egjs/component';
@@ -102,6 +102,12 @@ var DIRECTION_ALL = 2 | 4 | 8 | 16;
 var MOUSE_LEFT = "left";
 var MOUSE_RIGHT = "right";
 var MOUSE_MIDDLE = "middle";
+var ANY = "any";
+var NONE = "none";
+var SHIFT = "shift";
+var CTRL = "ctrl";
+var ALT = "alt";
+var META = "meta";
 var VELOCITY_INTERVAL = 16;
 var AXES_METHODS = ["connect", "disconnect", "get", "setTo", "setBy", "setOptions", "setAxis", "stopAnimation", "updateAnimation", "isBounceArea"];
 var AXES_EVENTS = ["hold", "release", "change", "animationStart", "animationEnd", "finish"];
@@ -1007,6 +1013,13 @@ var SUPPORT_TOUCH = ("ontouchstart" in win);
 var SUPPORT_POINTER = ("PointerEvent" in win);
 var SUPPORT_MSPOINTER = ("MSPointerEvent" in win);
 var SUPPORT_POINTER_EVENTS = SUPPORT_POINTER || SUPPORT_MSPOINTER;
+var isValidKey = function (event, inputKey) {
+  if (!inputKey || inputKey.indexOf(ANY) > -1 || inputKey.indexOf(NONE) > -1 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey || inputKey.indexOf(SHIFT) > -1 && event.shiftKey || inputKey.indexOf(CTRL) > -1 && event.ctrlKey || inputKey.indexOf(ALT) > -1 && event.altKey || inputKey.indexOf(META) > -1 && event.metaKey) {
+    return true;
+  }
+
+  return false;
+};
 
 var EventInput =
 /*#__PURE__*/
@@ -1089,11 +1102,15 @@ function () {
   };
 
   __proto._isTouchEvent = function (event) {
-    return event.type.indexOf("touch") > -1;
+    return event.type && event.type.indexOf("touch") > -1;
   };
 
   __proto._isValidButton = function (button, inputButton) {
     return inputButton.indexOf(button) > -1;
+  };
+
+  __proto._isValidEvent = function (event, inputKey, inputButton) {
+    return (!inputKey || isValidKey(event, inputKey)) && (!inputButton || this._isValidButton(this._getButton(event), inputButton));
   };
 
   __proto._preventMouseButton = function (event, button) {
@@ -1123,10 +1140,10 @@ function (_super) {
 
   var __proto = MouseEventInput.prototype;
 
-  __proto.onEventStart = function (event, inputButton) {
+  __proto.onEventStart = function (event, inputKey, inputButton) {
     var button = this._getButton(event);
 
-    if (inputButton && !this._isValidButton(button, inputButton)) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1135,8 +1152,8 @@ function (_super) {
     return this.extendEvent(event);
   };
 
-  __proto.onEventMove = function (event, inputButton) {
-    if (inputButton && !this._isValidButton(this._getButton(event), inputButton)) {
+  __proto.onEventMove = function (event, inputKey, inputButton) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1203,12 +1220,21 @@ function (_super) {
 
   var __proto = TouchEventInput.prototype;
 
-  __proto.onEventStart = function (event) {
+  __proto.onEventStart = function (event, inputKey) {
     this._baseTouches = event.touches;
+
+    if (!this._isValidEvent(event, inputKey)) {
+      return null;
+    }
+
     return this.extendEvent(event);
   };
 
-  __proto.onEventMove = function (event) {
+  __proto.onEventMove = function (event, inputKey) {
+    if (!this._isValidEvent(event, inputKey)) {
+      return null;
+    }
+
     return this.extendEvent(event);
   };
 
@@ -1280,10 +1306,10 @@ function (_super) {
 
   var __proto = PointerEventInput.prototype;
 
-  __proto.onEventStart = function (event, inputButton) {
+  __proto.onEventStart = function (event, inputKey, inputButton) {
     var button = this._getButton(event);
 
-    if (inputButton && !this._isValidButton(button, inputButton)) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1294,8 +1320,8 @@ function (_super) {
     return this.extendEvent(event);
   };
 
-  __proto.onEventMove = function (event, inputButton) {
-    if (inputButton && !this._isValidButton(this._getButton(event), inputButton)) {
+  __proto.onEventMove = function (event, inputKey, inputButton) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1397,14 +1423,14 @@ function (_super) {
 
   var __proto = TouchMouseEventInput.prototype;
 
-  __proto.onEventStart = function (event, inputButton) {
+  __proto.onEventStart = function (event, inputKey, inputButton) {
     var button = this._getButton(event);
 
     if (this._isTouchEvent(event)) {
       this._baseTouches = event.touches;
     }
 
-    if (inputButton && !this._isValidButton(button, inputButton)) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1413,8 +1439,8 @@ function (_super) {
     return this.extendEvent(event);
   };
 
-  __proto.onEventMove = function (event, inputButton) {
-    if (inputButton && !this._isValidButton(this._getButton(event), inputButton)) {
+  __proto.onEventMove = function (event, inputKey, inputButton) {
+    if (!this._isValidEvent(event, inputKey, inputButton)) {
       return null;
     }
 
@@ -1545,6 +1571,13 @@ var convertInputType = function (inputType) {
 
   return null;
 };
+function getAddEventOptions(eventName) {
+  // The passive default value of the touch event is true.
+  // If not a touch event, return false to support ie11
+  return eventName.indexOf("touch") > -1 ? {
+    passive: false
+  } : false;
+}
 
 var InputObserver =
 /*#__PURE__*/
@@ -1752,7 +1785,7 @@ function () {
         var out = opt.bounce;
         var circular = opt.circular;
 
-        if (circular && (circular[0] || circular[1])) {
+        if (circular[0] && v < min || circular[1] && v > max) {
           return v;
         } else if (v < min) {
           // left
@@ -2762,7 +2795,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.8.1";
+  Axes.VERSION = "3.8.2";
   /* eslint-enable */
 
   /**
@@ -2862,6 +2895,19 @@ var getDirectionByAngle = function (angle, thresholdAngle) {
  * - touch: 터치 입력 장치
  * - mouse: 마우스
  * - pointer: 마우스 및 터치</ko>
+ * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
+ * - any: any key
+ * - shift: shift key
+ * - ctrl: ctrl key and pinch gesture on the trackpad
+ * - alt: alt key
+ * - meta: meta key
+ * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
+ * - any: 아무 키
+ * - shift: shift 키
+ * - ctrl: ctrl 키 및 트랙패드의 pinch 제스쳐
+ * - alt: alt 키
+ * - meta: meta 키
+ * - none: 아무 키도 눌리지 않은 상태 </ko>
  * @param {String[]} [inputButton=["left"]] List of buttons to allow input
  * - left: Left mouse button and normal touch
  * - middle: Mouse wheel press
@@ -2936,6 +2982,7 @@ function () {
     this.element = $(el);
     this.options = __assign({
       inputType: ["touch", "mouse", "pointer"],
+      inputKey: [ANY],
       inputButton: [MOUSE_LEFT],
       scale: [1, 1],
       thresholdAngle: 45,
@@ -3044,9 +3091,11 @@ function () {
   };
 
   __proto._onPanstart = function (event) {
-    var inputButton = this.options.inputButton;
+    var _a = this.options,
+        inputKey = _a.inputKey,
+        inputButton = _a.inputButton;
     var activeEvent = this._activeEvent;
-    var panEvent = activeEvent.onEventStart(event, inputButton);
+    var panEvent = activeEvent.onEventStart(event, inputKey, inputButton);
 
     if (!panEvent || !this._enabled || activeEvent.getTouches(event, inputButton) > 1) {
       return;
@@ -3072,12 +3121,14 @@ function () {
 
     var _a = this.options,
         iOSEdgeSwipeThreshold = _a.iOSEdgeSwipeThreshold,
+        preventClickOnDrag = _a.preventClickOnDrag,
         releaseOnScroll = _a.releaseOnScroll,
+        inputKey = _a.inputKey,
         inputButton = _a.inputButton,
         threshold = _a.threshold,
         thresholdAngle = _a.thresholdAngle;
     var activeEvent = this._activeEvent;
-    var panEvent = activeEvent.onEventMove(event, inputButton);
+    var panEvent = activeEvent.onEventMove(event, inputKey, inputButton);
     var touches = activeEvent.getTouches(event, inputButton);
 
     if (touches === 0 || releaseOnScroll && panEvent && !panEvent.srcEvent.cancelable) {
@@ -3136,7 +3187,7 @@ function () {
     panEvent.preventSystemEvent = prevent;
 
     if (prevent && (this._isOverThreshold || distance >= threshold)) {
-      this._dragged = true;
+      this._dragged = preventClickOnDrag;
       this._isOverThreshold = true;
 
       this._observer.change(this, panEvent, toAxis(this.axes, offset));
@@ -3168,14 +3219,10 @@ function () {
     var _this = this;
 
     activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.move.forEach(function (event) {
-      window.addEventListener(event, _this._onPanmove, {
-        passive: false
-      });
+      window.addEventListener(event, _this._onPanmove, getAddEventOptions(event));
     });
     activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.end.forEach(function (event) {
-      window.addEventListener(event, _this._onPanend, {
-        passive: false
-      });
+      window.addEventListener(event, _this._onPanend, getAddEventOptions(event));
     });
   };
 
@@ -3216,11 +3263,7 @@ function () {
     this._observer = observer;
     this._enabled = true;
     this._activeEvent = activeEvent;
-
-    if (this.options.preventClickOnDrag) {
-      element.addEventListener("click", this._preventClickWhenDragged, true);
-    }
-
+    element.addEventListener("click", this._preventClickWhenDragged, true);
     activeEvent.start.forEach(function (event) {
       element.addEventListener(event, _this._onPanstart);
     }); // adding event listener to element prevents invalid behavior in iOS Safari
@@ -3237,10 +3280,7 @@ function () {
     var element = this.element;
 
     if (element) {
-      if (this.options.preventClickOnDrag) {
-        element.removeEventListener("click", this._preventClickWhenDragged, true);
-      }
-
+      element.removeEventListener("click", this._preventClickWhenDragged, true);
       activeEvent === null || activeEvent === void 0 ? void 0 : activeEvent.start.forEach(function (event) {
         element.removeEventListener(event, _this._onPanstart);
       });
@@ -3305,8 +3345,11 @@ function (_super) {
   };
 
   __proto._onPanstart = function (event) {
+    var _a = this.options,
+        inputKey = _a.inputKey,
+        inputButton = _a.inputButton;
     var activeEvent = this._activeEvent;
-    var panEvent = activeEvent.onEventStart(event, this.options.inputButton);
+    var panEvent = activeEvent.onEventStart(event, inputKey, inputButton);
 
     if (!panEvent || !this.isEnabled()) {
       return;
@@ -3332,8 +3375,11 @@ function (_super) {
   };
 
   __proto._onPanmove = function (event) {
+    var _a = this.options,
+        inputKey = _a.inputKey,
+        inputButton = _a.inputButton;
     var activeEvent = this._activeEvent;
-    var panEvent = activeEvent.onEventMove(event, this.options.inputButton);
+    var panEvent = activeEvent.onEventMove(event, inputKey, inputButton);
 
     if (!panEvent || !this.isEnabled()) {
       return;
@@ -3699,6 +3745,19 @@ function () {
 /**
  * @typedef {Object} WheelInputOption The option object of the eg.Axes.WheelInput module
  * @ko eg.Axes.WheelInput 모듈의 옵션 객체
+ * @param {String[]} [inputKey=["any"]] List of key combinations to allow input
+ * - any: any key
+ * - shift: shift key
+ * - ctrl: ctrl key and pinch gesture on the trackpad
+ * - alt: alt key
+ * - meta: meta key
+ * - none: none of these keys are pressed <ko>입력을 허용할 키 조합 목록
+ * - any: 아무 키
+ * - shift: shift 키
+ * - ctrl: ctrl 키 및 트랙패드의 pinch 제스쳐
+ * - alt: alt 키
+ * - meta: meta 키
+ * - none: 아무 키도 눌리지 않은 상태 </ko>
  * @param {Number} [scale=1] Coordinate scale that a user can move<ko>사용자의 동작으로 이동하는 좌표의 배율</ko>
  * @param {Number} [releaseDelay=300] Millisecond that trigger release event after last input<ko>마지막 입력 이후 release 이벤트가 트리거되기까지의 밀리초</ko>
  * @param {Boolean} [useNormalized=true] Whether to calculate scroll speed the same in all browsers<ko>모든 브라우저에서 스크롤 속도를 동일하게 처리할지 여부</ko>
@@ -3743,6 +3802,7 @@ function () {
     this._timer = null;
     this.element = $(el);
     this.options = __assign({
+      inputKey: [ANY],
       scale: 1,
       releaseDelay: 300,
       useNormalized: true,
@@ -3818,7 +3878,7 @@ function () {
   __proto._onWheel = function (event) {
     var _this = this;
 
-    if (!this._enabled) {
+    if (!this._enabled || !isValidKey(event, this.options.inputKey)) {
       return;
     }
 
