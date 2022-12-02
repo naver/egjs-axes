@@ -25,6 +25,7 @@ import { ActiveEvent, ElementType, InputEventType } from "../types";
 
 import {
   convertInputType,
+  getAddEventOptions,
   InputType,
   InputTypeObserver,
   toAxis,
@@ -373,10 +374,10 @@ export class PanInput implements InputType {
 
   protected _attachWindowEvent(activeEvent: ActiveEvent) {
     activeEvent?.move.forEach((event) => {
-      window.addEventListener(event, this._onPanmove, { passive: false });
+      window.addEventListener(event, this._onPanmove, getAddEventOptions(event));
     });
     activeEvent?.end.forEach((event) => {
-      window.addEventListener(event, this._onPanend, { passive: false });
+      window.addEventListener(event, this._onPanend, getAddEventOptions(event));
     });
   }
 
