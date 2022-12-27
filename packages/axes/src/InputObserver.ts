@@ -118,7 +118,7 @@ export class InputObserver implements InputTypeObserver {
       input,
       event,
     };
-    if (this.options.animateOn === "change" || useAnimation) {
+    if (useAnimation) {
       this._animationManager.changeTo(destPos, offset, changeOption);
     } else {
       const isCanceled = !this._eventManager.triggerChange(

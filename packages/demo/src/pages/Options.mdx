@@ -294,32 +294,6 @@ Rounding unit. For example, 0.1 rounds to 0.1 decimal point(6.1234 => 6.1), 5 ro
 </div>
 
 
-### animateOn
-When to start the animation.
-- "change": When the coordinates change with the "change" event.
-- "release": When the input is finished with the "release" event.
-
-<div className="columns">
-  <div className="column is-6">
-  <div>
-
-  ```js
-  animateOn: "release"
-  ```
-  </div>
-    <AxesBoard options={{ animateOn: "release", minimumDuration: 100 }}/>
-  </div>
-  <div className="column is-6">
-  <div>
-
-  ```js
-  animateOn: "change"
-  ```
-  </div>
-    <AxesBoard options={{ animateOn: "change", minimumDuration: 100 }}/>
-  </div>
-</div>
-
 ### nested
 Whether the event propagates to other instances when the coordinates reach the end of the movable area.
 
