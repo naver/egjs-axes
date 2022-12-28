@@ -84,6 +84,7 @@ describe("Util Functions", () => {
       const cssProps1 = {
         "-webkit-user-select": "none",
         "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "touch-action": "auto",
         "user-select": "none",
         "-webkit-user-drag": "none",
@@ -91,6 +92,7 @@ describe("Util Functions", () => {
       const cssProps2 = {
         "-webkit-user-select": "none",
         "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "touch-action": "none",
         "user-select": "text",
         "-webkit-user-drag": "auto",
@@ -98,11 +100,13 @@ describe("Util Functions", () => {
       const cssProps3 = {
         "-webkit-user-select": "none",
         "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "text-align": "center",
       };
       const cssProps4 = {
         "-webkit-user-select": "none",
         "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "user-select": "none",
         "-webkit-user-drag": "none",
       };
