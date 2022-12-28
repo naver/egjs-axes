@@ -75,6 +75,9 @@ export const TRANSFORM = (() => {
 })();
 
 export const PREVENT_DRAG_CSSPROPS = {
+  "-webkit-user-select": "none", /* Safari */
+  "-ms-user-select": "none", /* IE 10 and IE 11 */
+  "-moz-user-select": "none", /* Firefox 2-68 */
   "user-select": "none",
   "-webkit-user-drag": "none",
 };

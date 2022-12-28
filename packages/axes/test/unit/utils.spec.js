@@ -82,19 +82,31 @@ describe("Util Functions", () => {
     it("should check element's css properties includes properties from PREVENT_DRAG_CSSPROPS", () => {
       // Given
       const cssProps1 = {
+        "-webkit-user-select": "none",
+        "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "touch-action": "auto",
         "user-select": "none",
         "-webkit-user-drag": "none",
       };
       const cssProps2 = {
+        "-webkit-user-select": "none",
+        "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "touch-action": "none",
         "user-select": "text",
         "-webkit-user-drag": "auto",
       };
       const cssProps3 = {
+        "-webkit-user-select": "none",
+        "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "text-align": "center",
       };
       const cssProps4 = {
+        "-webkit-user-select": "none",
+        "-ms-user-select": "none",
+        "-moz-user-select": "none",
         "user-select": "none",
         "-webkit-user-drag": "none",
       };
@@ -110,6 +122,18 @@ describe("Util Functions", () => {
   });
 
   describe("setCssProps", () => {
+    it(`should check css properties are correctly set to element`, () => {
+      // Given
+      setCssProps(el, {}, DIRECTION_ALL);
+
+      // Then
+      expect(el.style["-webkit-user-select"]).to.be.equal("none");
+      expect(el.style["-ms-user-select"]).to.be.equal("none");
+      expect(el.style["user-select"]).to.be.equal("none");
+      expect(el.style["-webkit-user-drag"]).to.be.equal("none");
+      expect(el.style["touch-action"]).to.be.equal("none");
+    });
+
     [
       DIRECTION_NONE,
       DIRECTION_ALL,
