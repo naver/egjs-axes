@@ -111,8 +111,10 @@ export abstract class AnimationManager {
       if (!every(pos, (v, k) => orgPos[k] === v)) {
         this.eventManager.triggerChange(pos, orgPos, option, !!option);
       }
+      if (this._animateParam.triggerAnimationEvent) {
+        this.eventManager.triggerAnimationEnd(!!option?.event);
+      }
       this._removeAnimationParam();
-      this.eventManager.triggerAnimationEnd(!!option?.event);
     }
   }
 
@@ -200,6 +202,7 @@ export abstract class AnimationManager {
         destPos: destPos,
         duration: this.getDuration(destPos, depaPos),
         delta: this.axisManager.getDelta(depaPos, destPos),
+        triggerAnimationEvent: false,
       };
       this._animateLoop(newParam, () => this._removeAnimationParam());
     }
@@ -242,6 +245,7 @@ export abstract class AnimationManager {
           destPos: userWish.destPos,
           duration: userWish.duration,
           delta: this.axisManager.getDelta(depaPos, userWish.destPos),
+          triggerAnimationEvent: true,
           isTrusted: !!inputEvent,
           inputEvent,
           input: option?.input || null,
@@ -313,6 +317,7 @@ export abstract class AnimationManager {
         this._options.maximumDuration
       ),
       delta: this.axisManager.getDelta(depaPos, destPos),
+      triggerAnimationEvent: true,
       inputEvent,
       input: option?.input || null,
       isTrusted: !!inputEvent,

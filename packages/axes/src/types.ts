@@ -47,6 +47,7 @@ export interface AnimationParam {
   destPos: Axis;
   duration: number;
   delta: Axis;
+  triggerAnimationEvent: boolean;
   isTrusted?: boolean;
   stop?: () => void;
   setTo?: (

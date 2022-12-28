@@ -531,6 +531,7 @@ describe("PanInput", () => {
       it(`should apply drag velocity to coordinate change if useAcceleration is true`, (done) => {
         // Given
         const animationStart = sinon.spy();
+        const animationEnd = sinon.spy();
         input = new PanInput(el, {
           inputType: ["touch", "mouse"],
           scale: [10, 10],
@@ -545,6 +546,7 @@ describe("PanInput", () => {
 
         inst.connect(["x"], input);
         inst.on("animationStart", animationStart);
+        inst.on("animationEnd", animationEnd);
 
         // When
         Simulator.gestures.pan(el, {
@@ -565,6 +567,7 @@ describe("PanInput", () => {
           },
           finish: () => {
             expect(animationStart.calledOnce).to.be.equals(true);
+            expect(animationEnd.calledOnce).to.be.equals(true);
             done();
           },
         });

@@ -196,6 +196,7 @@ export class InputObserver implements InputTypeObserver {
       destPos,
       duration,
       delta: this._axisManager.getDelta(depaPos, destPos),
+      triggerAnimationEvent: true,
       inputEvent: event,
       input,
       isTrusted: true,
