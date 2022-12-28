@@ -86,7 +86,10 @@ export class InputObserver implements InputTypeObserver {
     if (nativeEvent.__childrenAxesAlreadyChanged) {
       return;
     }
-    let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
+    let depaPos: Axis =
+      !this._moveDistance || velocity
+        ? this._axisManager.get(input.axes)
+        : this._moveDistance;
     let destPos: Axis;
 
     // for outside logic
@@ -119,7 +122,7 @@ export class InputObserver implements InputTypeObserver {
       event,
     };
     if (useAnimation) {
-      this._animationManager.changeTo(destPos, offset, changeOption);
+      this._animationManager.changeTo(destPos, changeOption);
     } else {
       const isCanceled = !this._eventManager.triggerChange(
         destPos,
@@ -137,8 +140,7 @@ export class InputObserver implements InputTypeObserver {
         destPos = this._atOutside(
           map(destPos, (v, k) => v + (nextOffset[k] || 0))
         );
-        this._animationManager.changeTo(destPos, nextOffset, changeOption);
-        this._moveDistance = null;
+        this._animationManager.changeTo(destPos, changeOption);
       }
     }
   }

@@ -527,6 +527,50 @@ describe("PanInput", () => {
       });
     });
 
+    describe("useAcceleration", () => {
+      it(`should apply drag velocity to coordinate change if useAcceleration is true`, (done) => {
+        // Given
+        const animationStart = sinon.spy();
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          scale: [10, 10],
+          useAcceleration: true,
+        });
+        const result = [];
+        inst = new Axes({
+          x: {
+            range: [0, 3000],
+          },
+        });
+
+        inst.connect(["x"], input);
+        inst.on("animationStart", animationStart);
+
+        // When
+        Simulator.gestures.pan(el, {
+          pos: [0, 0],
+          deltaX: 200,
+          duration: 300,
+          easing: "linear",
+        });
+
+        inst.on({
+          change: (e) => {
+            result.push(e.pos.x);
+          },
+          // Then
+          release: () => {
+            // If animation from drag velocity are played in meanwhile, some value of the coordinate will not be divisible by 10
+            expect(result.every((x) => x % 10 === 0)).to.be.equal(false);
+          },
+          finish: () => {
+            expect(animationStart.calledOnce).to.be.equals(true);
+            done();
+          },
+        });
+      });
+    });
+
     describe("touchAction", () => {
       ["auto", "none", "manipulation", "pan-x", "pan-y"].forEach(
         (touchAction) => {

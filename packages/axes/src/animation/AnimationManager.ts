@@ -187,30 +187,19 @@ export abstract class AnimationManager {
 
   public changeTo(
     destPos: Axis,
-    offset: Axis,
     option: ChangeEventOption
   ): void {
     const depaPos = this.axisManager.get(option.input.axes);
-    const animateParam = this._animateParam;
-    const nextPos = animateParam
-      ? this.axisManager.map(animateParam.destPos, (v, opt, k) => {
-          const pos = v + (offset[k] || 0);
-          return isCircularable(pos, opt.range, opt.circular as boolean[])
-            ? pos
-            : destPos[k];
-        })
-      : destPos;
-
     if (this._raf) {
       cancelAnimationFrame(this._raf);
     }
 
-    if (!equal(nextPos, depaPos)) {
+    if (!equal(destPos, depaPos)) {
       const newParam = {
         depaPos,
-        destPos: nextPos,
-        duration: this.getDuration(nextPos, depaPos),
-        delta: this.axisManager.getDelta(depaPos, nextPos),
+        destPos: destPos,
+        duration: this.getDuration(destPos, depaPos),
+        delta: this.axisManager.getDelta(depaPos, destPos),
       };
       this._animateLoop(newParam, () => this._removeAnimationParam());
     }
