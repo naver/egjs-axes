@@ -1,6 +1,6 @@
 {
   "name": "@egjs/react-axes",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
   "sideEffects": false,
   "main": "dist/axes.cjs.js",
@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "@cfcs/react": "^0.0.4",
-    "@egjs/axes": "~3.8.3"
+    "@egjs/axes": "~3.8.4"
   },
   "devDependencies": {
     "@egjs/build-helper": "^0.1.2",
