@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/naver/egjs-axes/compare/@egjs/react-axes@3.2.3...@egjs/react-axes@3.2.4) (2023-01-12)
+
+
+### :mega: Other
+
+* update packages versions ([3a1217c](https://github.com/naver/egjs-axes/commit/3a1217c5fa49b382e1da3d9cca3542a0c1d7e28c))
+
+
+
 ## [3.2.3](https://github.com/naver/egjs-axes/compare/@egjs/react-axes@3.2.1...@egjs/react-axes@3.2.3) (2022-12-02)
 
 

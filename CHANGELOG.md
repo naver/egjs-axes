@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.4](https://github.com/naver/egjs-axes/compare/3.8.3...3.8.4) (2023-01-12)
+### :sparkles: Packages
+* `@egjs/axes` 3.8.4
+* `@egjs/react-axes` 3.2.4
+* `@egjs/svelte-axes` 3.2.4
+* `@egjs/vue-axes` 3.2.4
+* `@egjs/vue2-axes` 3.2.4
+
+
+### :bug: Bug Fix
+
+* `@egjs/axes`
+    * add userSelect css props for non chrome browsers (#210) ([4c2156d](https://github.com/naver/egjs-axes/commit/4c2156d18e5b15a62d3e626868d2c71638e4f717))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([3a1217c](https://github.com/naver/egjs-axes/commit/3a1217c5fa49b382e1da3d9cca3542a0c1d7e28c))
+
+
+
 ## [3.8.3](https://github.com/naver/egjs-axes/compare/3.8.1...3.8.3) (2022-12-02)
 ### :sparkles: Packages
 * `@egjs/axes` 3.8.3
