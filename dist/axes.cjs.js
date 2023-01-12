@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.8.3
+version: 3.8.4
 */
 'use strict';
 
@@ -132,6 +132,9 @@ var TRANSFORM = function () {
   return "";
 }();
 var PREVENT_DRAG_CSSPROPS = {
+  "-webkit-user-select": "none",
+  "-ms-user-select": "none",
+  "-moz-user-select": "none",
   "user-select": "none",
   "-webkit-user-drag": "none"
 };
@@ -2797,7 +2800,7 @@ function (_super) {
    */
 
 
-  Axes.VERSION = "3.8.3";
+  Axes.VERSION = "3.8.4";
   /* eslint-enable */
 
   /**

@@ -4,7 +4,7 @@ name: @egjs/axes
 license: MIT
 author: NAVER Corp.
 repository: https://github.com/naver/egjs-axes
-version: 3.8.3
+version: 3.8.4
 */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -1076,6 +1076,9 @@ version: 3.8.3
       return "";
     }();
     var PREVENT_DRAG_CSSPROPS = {
+      "-webkit-user-select": "none",
+      "-ms-user-select": "none",
+      "-moz-user-select": "none",
       "user-select": "none",
       "-webkit-user-drag": "none"
     };
@@ -3741,7 +3744,7 @@ version: 3.8.3
        */
 
 
-      Axes.VERSION = "3.8.3";
+      Axes.VERSION = "3.8.4";
       /* eslint-enable */
 
       /**
