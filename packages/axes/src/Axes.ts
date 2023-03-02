@@ -3,7 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import Component from "@egjs/component";
-import { ReactiveSubscribe } from "@cfcs/core";
+import { ReactiveSubscribe, Observe, Computed } from "@cfcs/core";
 
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
@@ -235,6 +235,10 @@ class Axes extends Component<AxesEvents> {
   public interruptManager: InterruptManager;
   public animationManager: AnimationManager;
   public inputObserver: InputObserver;
+	@Computed
+	public get holding() { // docs: add holding to Subscribe to Reactive Properties
+		return this.eventManager.holdingCount > 0;
+	}
   private _inputs: InputType[] = [];
 
   /**
