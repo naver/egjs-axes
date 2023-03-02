@@ -2,8 +2,10 @@ import PanInputInjector from "inject-loader!../../src/inputType/PanInput.ts";
 
 import Axes from "../../src/Axes.ts";
 import { PanInput } from "../../src/inputType/PanInput.ts";
+import { MoveKeyInput, KEY_RIGHT_ARROW } from "../../src/inputType/MoveKeyInput";
 import { PinchInput } from "../../src/inputType/PinchInput.ts";
 import { getDecimalPlace, roundNumber } from "../../src/utils";
+import TestHelper from "./inputType/TestHelper";
 
 describe("Axes", () => {
   let el;
@@ -130,6 +132,82 @@ describe("Axes", () => {
       expect(inst.get().otherX).to.equal(-100);
       expect(changeHandler.called).to.be.false;
     });
+
+    it("should check `holding` property changes whether the input is being held", (done) => {
+      // Given
+      el = sandbox();
+      input = new PanInput(el, {
+        inputType: ["touch"],
+      });
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 100],
+          },
+        }
+      );
+      inst.connect("x", input);
+
+      // When
+      Simulator.gestures.pan(el, {
+        pos: [0, 0],
+        deltaX: 100,
+        duration: 1500,
+        easing: "linear",
+      });
+
+      // Then
+      setTimeout(() => {
+        expect(inst.holding).to.be.true;
+      }, 1000);
+      setTimeout(() => {
+        expect(inst.holding).to.be.false;
+        done();
+      }, 2000);
+    });
+
+    it("should check `holding` property changes whether the input is being held (with mixed input types) ", (done) => {
+      // Given
+      el = sandbox();
+      const moveKeyInput = new MoveKeyInput(el);
+      input = new PanInput(el, {
+        inputType: ["touch"],
+      });
+      inst = new Axes(
+        {
+          x: {
+            range: [0, 100],
+          },
+        }
+      );
+      inst.connect("x", input);
+      inst.connect("x", moveKeyInput);
+
+      // When
+      Simulator.gestures.pan(el, {
+        pos: [0, 0],
+        deltaX: 100,
+        duration: 1500,
+        easing: "linear",
+      });
+      TestHelper.key(el, "keydown", { keyCode: KEY_RIGHT_ARROW });
+      setTimeout(() => {
+        TestHelper.key(el, "keyup", { keyCode: KEY_RIGHT_ARROW });
+      }, 2500);
+
+      // Then
+      setTimeout(() => {
+        expect(inst.holding).to.be.true;
+      }, 1000);
+      setTimeout(() => {
+        expect(inst.holding).to.be.true;
+      }, 2000);
+      setTimeout(() => {
+        expect(inst.holding).to.be.false;
+        done();
+      }, 3000);
+    });
+
     it("should check `setTo/setBy` method", () => {
       // Given
       inst = new Axes(
@@ -600,6 +678,7 @@ describe("Axes", () => {
         });
         input = new MockPanInputInjector.PanInput(el, {
           iOSEdgeSwipeThreshold,
+          inputKey: ["any"],
           inputType: ["touch"],
         });
         inst
