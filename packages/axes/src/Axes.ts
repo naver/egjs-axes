@@ -242,15 +242,14 @@ class Axes extends Component<AxesEvents> {
    *    range: [0, 100],
    *  },
    * });
-	 *
+   *
    * axes.holding
    * ```
    */
-	@Computed
-	public get holding() {
-		return this.eventManager.holdingCount > 0;
-	}
-  private _inputs: InputType[] = [];
+  @Computed
+  public get holding() {
+    return this.eventManager.holdingCount > 0;
+  }
 
   public options: AxesOption;
   public eventManager: EventManager;
@@ -258,6 +257,7 @@ class Axes extends Component<AxesEvents> {
   public interruptManager: InterruptManager;
   public animationManager: AnimationManager;
   public inputObserver: InputObserver;
+  private _inputs: InputType[] = [];
 
   /**
    *

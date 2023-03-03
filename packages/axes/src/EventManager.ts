@@ -18,7 +18,7 @@ export interface ChangeEventOption {
 }
 
 export class EventManager {
-	@Observe holdingCount = 0;
+  @Observe holdingCount = 0;
   public animationManager: AnimationManager;
   public constructor(private _axes: Axes) {}
   /**
