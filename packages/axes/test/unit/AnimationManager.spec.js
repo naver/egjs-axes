@@ -412,7 +412,6 @@ describe("AnimationManager", () => {
       const self = inst;
       const startHandler = sinon.spy();
       const changeHandler = sinon.spy((event) => {
-        // console.log("change handler", self.axisManager.get());
         expect(event.input).to.be.null;
         expect(event.inputEvent).to.be.null;
         expect(self.getEventInfo()).to.be.null;

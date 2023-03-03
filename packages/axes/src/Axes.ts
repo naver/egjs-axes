@@ -236,7 +236,7 @@ class Axes extends Component<AxesEvents> {
   public animationManager: AnimationManager;
   public inputObserver: InputObserver;
 	@Computed
-	public get holding() { // docs: add holding to Subscribe to Reactive Properties
+	public get holding() {
 		return this.eventManager.holdingCount > 0;
 	}
   private _inputs: InputType[] = [];
