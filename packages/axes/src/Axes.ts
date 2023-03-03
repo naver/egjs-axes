@@ -228,6 +228,29 @@ class Axes extends Component<AxesEvents> {
    * @type {Number}
    */
   public static DIRECTION_ALL = DIRECTION_ALL;
+  /**
+   * @name Axes#holding
+   * @desc Returns true if at least one input is in progress.
+   * @ko 입력이 하나 이상 진행 중인지 여부를 반환한다.
+   *
+   * @readonly
+   * @type {boolean}
+   * @example
+   * ```js
+   * const axes = new eg.Axes({
+   *  x: {
+   *    range: [0, 100],
+   *  },
+   * });
+	 *
+   * axes.holding
+   * ```
+   */
+	@Computed
+	public get holding() {
+		return this.eventManager.holdingCount > 0;
+	}
+  private _inputs: InputType[] = [];
 
   public options: AxesOption;
   public eventManager: EventManager;
@@ -235,11 +258,6 @@ class Axes extends Component<AxesEvents> {
   public interruptManager: InterruptManager;
   public animationManager: AnimationManager;
   public inputObserver: InputObserver;
-	@Computed
-	public get holding() {
-		return this.eventManager.holdingCount > 0;
-	}
-  private _inputs: InputType[] = [];
 
   /**
    *
