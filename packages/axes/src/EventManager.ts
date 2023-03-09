@@ -3,7 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import { ComponentEvent } from "@egjs/component";
-import { getObserver } from "@cfcs/core";
+import { getObserver, Observe } from "@cfcs/core";
 
 import { InputType } from "./inputType/InputType";
 import { Axis } from "./AxisManager";
@@ -18,6 +18,7 @@ export interface ChangeEventOption {
 }
 
 export class EventManager {
+  @Observe holdingCount = 0;
   public animationManager: AnimationManager;
   public constructor(private _axes: Axes) {}
   /**
@@ -141,6 +142,7 @@ export class EventManager {
     param.destPos = roundPos;
     param.depaPos = roundDepa;
     param.setTo = this._createUserControll(param.destPos, param.duration);
+
     this._axes.trigger(
       new ComponentEvent("release", {
         ...param,

@@ -30,7 +30,7 @@
     "dist/*"
   ],
   "dependencies": {
-    "@cfcs/svelte": "~0.0.4",
+    "@cfcs/svelte": "^0.1.0",
     "@egjs/axes": "~3.8.4"
   },
   "devDependencies": {

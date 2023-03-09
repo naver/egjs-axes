@@ -3,7 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import Component from "@egjs/component";
-import { ReactiveSubscribe } from "@cfcs/core";
+import { ReactiveSubscribe, Observe, Computed } from "@cfcs/core";
 
 import { EventManager } from "./EventManager";
 import { InterruptManager } from "./InterruptManager";
@@ -228,6 +228,28 @@ class Axes extends Component<AxesEvents> {
    * @type {Number}
    */
   public static DIRECTION_ALL = DIRECTION_ALL;
+  /**
+   * @name Axes#holding
+   * @desc Returns true if at least one input is in progress.
+   * @ko 입력이 하나 이상 진행 중인지 여부를 반환한다.
+   *
+   * @readonly
+   * @type {boolean}
+   * @example
+   * ```js
+   * const axes = new eg.Axes({
+   *  x: {
+   *    range: [0, 100],
+   *  },
+   * });
+   *
+   * axes.holding
+   * ```
+   */
+  @Computed
+  public get holding() {
+    return this.eventManager.holdingCount > 0;
+  }
 
   public options: AxesOption;
   public eventManager: EventManager;

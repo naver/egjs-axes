@@ -61,6 +61,7 @@ export class InputObserver implements InputTypeObserver {
     this._isStopped = false;
     this._interruptManager.setInterrupt(true);
     this._animationManager.stopAnimation(changeOption);
+    ++this._eventManager.holdingCount;
     if (!this._moveDistance) {
       this._eventManager.hold(this._axisManager.get(), changeOption);
     }
@@ -185,8 +186,11 @@ export class InputObserver implements InputTypeObserver {
       input,
       isTrusted: true,
     };
+    --this._eventManager.holdingCount;
     this._eventManager.triggerRelease(param);
-    this._moveDistance = null;
+    if (this._eventManager.holdingCount === 0) {
+      this._moveDistance = null;
+    }
 
     // to contol
     const userWish = this._animationManager.getUserControl(param);

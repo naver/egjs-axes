@@ -35,6 +35,7 @@ export interface AxesEvents {
 }
 
 export interface AxesReactiveState {
+  holding: boolean;
   [key: string]: any;
 }
 

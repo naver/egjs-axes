@@ -19,7 +19,7 @@
     "dist/*"
   ],
   "dependencies": {
-    "@cfcs/vue3": "^0.0.4",
+    "@cfcs/vue3": "^0.1.0",
     "@egjs/axes": "~3.8.4"
   },
   "devDependencies": {
