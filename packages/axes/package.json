@@ -34,7 +34,7 @@
 		"dist/*"
 	],
 	"dependencies": {
-		"@cfcs/core": "^0.0.26",
+		"@cfcs/core": "^0.1.0",
 		"@egjs/agent": "^2.2.1",
 		"@egjs/component": "^3.0.1"
 	},

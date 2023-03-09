@@ -18,7 +18,7 @@
     "dist/*"
   ],
   "dependencies": {
-    "@cfcs/react": "^0.0.26",
+    "@cfcs/react": "^0.1.0",
     "@egjs/axes": "~3.8.4"
   },
   "devDependencies": {
