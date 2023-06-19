@@ -14,6 +14,7 @@ export const DIRECTION_ALL = 2 | 4 | 8 | 16;
 export const MOUSE_LEFT = "left";
 export const MOUSE_RIGHT = "right";
 export const MOUSE_MIDDLE = "middle";
+export const MOUSE_BUTTON_CODE_MAP = { 1: MOUSE_LEFT, 2: MOUSE_MIDDLE, 3: MOUSE_RIGHT };
 
 export const ANY = "any";
 export const NONE = "none";
