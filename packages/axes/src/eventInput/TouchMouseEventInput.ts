@@ -3,6 +3,7 @@
  * egjs projects are licensed under the MIT license
  */
 import { InputEventType, ExtendedEvent } from "../types";
+import { MOUSE_BUTTON_CODE_MAP } from "../const";
 
 import { EventInput } from "./EventInput";
 
@@ -53,8 +54,15 @@ export class TouchMouseEventInput extends EventInput {
     return;
   }
 
-  public getTouches(event: InputEventType): number {
-    return this._isTouchEvent(event) ? event.touches.length : 0;
+  public getTouches(event: InputEventType, inputButton?: string[]): number {
+    if (this._isTouchEvent(event)) {
+      return event.touches.length;
+    } else {
+      return this._isValidButton(MOUSE_BUTTON_CODE_MAP[event.which], inputButton) &&
+        this.end.indexOf(event.type) === -1
+        ? 1
+        : 0;
+		}
   }
 
   protected _getScale(event: MouseEvent | TouchEvent): number {
