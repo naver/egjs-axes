@@ -1,15 +1,16 @@
 {
   "name": "@egjs/svelte-axes",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
   "sideEffects": false,
   "types": "declaration/index.d.ts",
-  "module": "dist/imready.esm.js",
-  "main": "dist/imready.cjs.js",
+  "module": "dist/axes.esm.js",
+  "svelte": "dist/axes.esm.js",
+  "main": "dist/axes.cjs.js",
   "scripts": {
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear",
-    "build": "rollup -c rollup.build.config.js && npm run declaration",
+    "build": "rollup -c && npm run declaration",
     "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json"
   },
   "repository": {
@@ -31,7 +32,7 @@
   ],
   "dependencies": {
     "@cfcs/svelte": "^0.1.0",
-    "@egjs/axes": "~3.8.4"
+    "@egjs/axes": "~3.8.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -55,6 +56,6 @@
     "svelte-preprocess": "^4.6.1",
     "ts-jest": "^26.4.4",
     "tslib": "^1.10.0",
-    "typescript": "^4.1.6"
+    "typescript": "~4.6.2"
   }
 }

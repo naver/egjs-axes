@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/axes",
-	"version": "3.8.4",
+	"version": "3.8.5",
 	"description": "A module used to change the information of user action entered by various input devices such as touch screen or mouse into the logical virtual coordinates. You can easily create a UI that responds to user actions.",
 	"sideEffects": false,
 	"main": "dist/axes.cjs.js",
@@ -85,7 +85,7 @@
 		"string-replace-webpack-plugin": "0.1.3",
 		"sync-exec": "^0.6.2",
 		"ts-loader": "8.0.6",
-		"typescript": "^4.6.2",
+		"typescript": "~4.6.2",
 		"uglifyjs-webpack-plugin": "^1.1.6",
 		"webpack": "^3.10.0",
 		"webpack-dev-server": "^2.10.1",
