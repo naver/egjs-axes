@@ -211,9 +211,6 @@ const Schedule = () => {
           <div id="rotate" style={{ transform: "rotate(210deg)" }}></div>
         </div>
       </div>
-
-      <script src="../../dist/axes.pkgd.js"></script>
-      <script src="js/schedule.js"></script>
     </div>
   );
 };

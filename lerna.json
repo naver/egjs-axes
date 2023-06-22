@@ -15,9 +15,6 @@
       }
     ],
     "beforeReleaseScripts": [
-      "npm run packages:build",
-      "npm run demo:build",
-      "npm run demo:deploy"
     ]
   }
 }

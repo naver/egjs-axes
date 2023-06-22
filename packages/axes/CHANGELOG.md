@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.8.5](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.8.4...@egjs/axes@3.8.5) (2023-06-22)
+
+
+### :rocket: New Features
+
+* add holding as reactive property (#211) ([96ec136](https://github.com/naver/egjs-axes/commit/96ec1366a6c1d7f5b1a3c576436edb2223307d69))
+
+
+### :bug: Bug Fix
+
+* fix wrong getTouches at TouchMouseEventInput (#213) ([99e847d](https://github.com/naver/egjs-axes/commit/99e847ddcee43e94b75cdebc91a3381547022b12))
+
+
+### :mega: Other
+
+* update packages versions ([c27baeb](https://github.com/naver/egjs-axes/commit/c27baeb7d692776e54a6a9d9b0fac334bdda7792))
+
+
+
 ## [3.8.4](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.8.3...@egjs/axes@3.8.4) (2023-01-12)
 
 
