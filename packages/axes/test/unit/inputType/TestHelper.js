@@ -26,6 +26,50 @@ export default class TestHelper {
     target.dispatchEvent(wheelEvent);
   }
 
+  static dispatchDrag(target, from, to, options) {
+    const startRect = target.getBoundingClientRect();
+    const mousedown = new MouseEvent("mousedown", this.getMouseInit(startRect, from));
+    target.dispatchEvent(mousedown);
+
+    const count = Math.floor(options.duration / options.interval);
+    for (let i = 1; i <= count; ++i) {
+      this.dispatchMouseMove(target, this.getMouseInit(startRect, {
+        left: from.left + (to.left - from.left) / count * i,
+        top: from.top + (to.top - from.top) / count * i,
+      }), options.interval * i);
+    }
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const mosueup = new MouseEvent("mouseup", this.getMouseInit(startRect, to));
+
+        target.dispatchEvent(mosueup);
+        resolve();
+      }, options.duration);
+    });
+  }
+
+  static dispatchMouseMove(target, moustInit, time) {
+    setTimeout(() => {
+      const mousemove = new MouseEvent("mousemove", moustInit);
+
+      target.dispatchEvent(mousemove);
+    }, time);
+  }
+
+  static getMouseInit(startRect, offsetRect) {
+    return {
+      buttons: 1,
+      screenX: startRect.left + offsetRect.left,
+      screenY: startRect.top + offsetRect.top,
+      clientX: startRect.left + offsetRect.left,
+      clientY: startRect.top + offsetRect.top,
+      offsetX: offsetRect.left,
+      offsetY: offsetRect.top,
+      bubbles: true,
+      cancelable: true,
+    };
+  }
+
   static key(target, behavior, value, callback) {
     if (target instanceof Element === false) {
       return;
