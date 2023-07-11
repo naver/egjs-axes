@@ -501,6 +501,30 @@ Whether to cancel the click event when the user finishes dragging more than 1 pi
   </div>
 </div>
 
+### preventDefaultOnDrag
+Whether to use the preventDefault when the user starts dragging.
+
+<div className="columns">
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventDefaultOnDrag: false
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventDefaultOnDrag: false }} demoType={"preventDefaultOnDrag"}/>
+  </div>
+  <div className="column is-6">
+  <div>
+
+  ```js
+  preventDefaultOnDrag: true
+  ```
+  </div>
+    <AxesBoard panInputOptions={{ preventDefaultOnDrag: true }} demoType={"preventDefaultOnDrag"}/>
+  </div>
+</div>
+
 ### iOSEdgeSwipeThreshold
 Area (px) that can go to the next page when swiping the right edge in iOS safari.
 
