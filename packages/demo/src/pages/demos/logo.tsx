@@ -103,13 +103,13 @@ export default function Logo() {
         <div id="x" className="item bold" style={{ transform: `translateX(${x.x}px) translateY(${x.y}px)` }}><XIcon /></div>
         <div id="y" className="item" style={{ transform: `translateX(${y.x}px) translateY(${y.y}px)` }}><YIcon /></div>
         <div id="z" className="item bold" style={{ transform: `translateX(${z.x}px) translateY(${z.y}px)` }}><ZIcon /></div>
-        <svg className="line"><line x1={ offsetX1 + square.x } y1={ offsetY + square.y } x2={ offsetX2 + x.x } y2={ offsetY + x.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + square.x } y1={ offsetY + square.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + x.x } y2={ offsetY + x.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + z.x } y2={ offsetY + z.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + circle.x } y1={ offsetY + circle.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } stroke="black" strokeWidth="4"/></svg>
-        <svg className="line"><line x1={ offsetX1 + circle.x } y1={ offsetY + circle.y } x2={ offsetX2 + z.x } y2={ offsetY + z.y } stroke="black" strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + square.x } y1={ offsetY + square.y } x2={ offsetX2 + x.x } y2={ offsetY + x.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + square.x } y1={ offsetY + square.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + x.x } y2={ offsetY + x.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + triangle.x } y1={ offsetY + triangle.y } x2={ offsetX2 + z.x } y2={ offsetY + z.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + circle.x } y1={ offsetY + circle.y } x2={ offsetX2 + y.x } y2={ offsetY + y.y } strokeWidth="4"/></svg>
+        <svg className="line"><line x1={ offsetX1 + circle.x } y1={ offsetY + circle.y } x2={ offsetX2 + z.x } y2={ offsetY + z.y } strokeWidth="4"/></svg>
       </div>
     </div>
   );
