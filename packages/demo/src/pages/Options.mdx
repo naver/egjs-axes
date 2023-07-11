@@ -503,6 +503,9 @@ Whether to cancel the click event when the user finishes dragging more than 1 pi
 
 ### preventDefaultOnDrag
 Whether to use the preventDefault when the user starts dragging.
+:::info
+Hint: These examples only have a x-axis. Try using the input direction similar to y-axis.
+:::
 
 <div className="columns">
   <div className="column is-6">
@@ -512,7 +515,7 @@ Whether to use the preventDefault when the user starts dragging.
   preventDefaultOnDrag: false
   ```
   </div>
-    <AxesBoard panInputOptions={{ preventDefaultOnDrag: false }} demoType={"preventDefaultOnDrag"}/>
+    <AxesBoard panInputOptions={{ thresholdAngle: 45, preventDefaultOnDrag: false }} demoType={"preventDefaultOnDrag"}/>
   </div>
   <div className="column is-6">
   <div>
@@ -521,7 +524,7 @@ Whether to use the preventDefault when the user starts dragging.
   preventDefaultOnDrag: true
   ```
   </div>
-    <AxesBoard panInputOptions={{ preventDefaultOnDrag: true }} demoType={"preventDefaultOnDrag"}/>
+    <AxesBoard panInputOptions={{ thresholdAngle: 45, preventDefaultOnDrag: true }} demoType={"preventDefaultOnDrag"}/>
   </div>
 </div>
 
