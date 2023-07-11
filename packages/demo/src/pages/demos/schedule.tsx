@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Axes, { RotatePanInput } from "../../../../axes/src/index";
+import { useAxes, RotatePanInput } from "@egjs/react-axes";
 import "../../css/demos/schedule.css";
 
 type DurationType = "slow" | "average" | "fast";
@@ -11,53 +11,48 @@ const durationMap: Record<DurationType, number> = {
   slow: 10000,
 };
 
-const axes = new Axes(
-  {
-    angle: {
-      range: [0, 360],
-      circular: true,
-    },
-  },
-  {
-    minimumDuration: 3000,
-    maximumDuration: 3000,
-  }
-);
-
 const Schedule = () => {
   const [animationTime, setAnimationTime] = useState(3000);
   const [durationType, setDurationType] = useState<DurationType>("average");
   const [isRotateEnabled, setIsRotateEnabled] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const { connect, disconnect, setTo, updateAnimation, setOptions, onAnimationStart, onChange, onFinish, angle } = useAxes(
+    {
+      angle: {
+        range: [0, 360],
+        circular: true,
+      },
+    },
+    {
+      minimumDuration: 3000,
+      maximumDuration: 3000,
+    },
+  );
+
+  onAnimationStart(() => {
+    setIsUpdating(true);
+  });
+
+  onChange(() => {
+    const point = document.getElementById("point");
+    point.style.transform = `translateX(${Math.random() * 3}px)`;
+    point.style.transform = `translateY(${Math.random() * 3}px)`;
+  });
+
+  onFinish(() => {
+    setIsUpdating(false);
+  });
 
   useEffect(() => {
-    const point = document.getElementById("point");
-    const rotate = document.getElementById("rotate");
-    let lastTime = 0;
-
-    axes
-      .on("animationStart", (e) => {
-        lastTime = new Date().getTime();
-        setIsUpdating(true);
-      })
-      .on("change", (e) => {
-        rotate.style.transform = `rotate(${e.pos.angle}deg)`;
-        point.style.transform = `translateX(${Math.random() * 3}px)`;
-        point.style.transform = `translateY(${Math.random() * 3}px)`;
-      })
-      .on("finish", (e) => {
-        setIsUpdating(false);
-      });
-
-    axes.setTo({ angle: 210 });
+    setTo({ angle: 210 });
   }, []);
 
   const toggleConnect = (isRotate: boolean) => {
     if (isRotate) {
       const input = new RotatePanInput("#clock");
-      axes.connect("angle", input);
+      connect("angle", input);
     } else {
-      axes.disconnect();
+      disconnect();
     }
   };
 
@@ -67,22 +62,24 @@ const Schedule = () => {
   };
 
   const rotateTo = (pos: number) => {
-    const nextpos = axes.axisManager.get()["angle"] > pos ? pos : pos - 360;
-    axes.setTo({ angle: nextpos }, animationTime);
+    const nextpos = angle > pos ? pos : pos - 360;
+    setTo({ angle: nextpos }, animationTime);
   };
 
   const updateTo = (pos: number) => {
-    const nextpos = axes.axisManager.get()["angle"] > pos ? pos : pos - 360;
-    axes.updateAnimation({ destPos: { angle: nextpos } });
+    const nextpos = angle > pos ? pos : pos - 360;
+    updateAnimation({ destPos: { angle: nextpos } });
   };
 
   const updateDuration = (durationType: DurationType) => {
     const duration = durationMap[durationType];
     setDurationType(durationType);
     setAnimationTime(duration);
-    axes.options.minimumDuration = duration;
-    axes.options.maximumDuration = duration;
-    axes.updateAnimation({ duration: animationTime, restart: true });
+    setOptions({
+      minimumDuration: duration,
+      maximumDuration: duration,
+    });
+    updateAnimation({ duration: animationTime, restart: true });
   };
 
   return (
@@ -208,7 +205,7 @@ const Schedule = () => {
               style={{ width: "50px" }}
             />
           </div>
-          <div id="rotate" style={{ transform: "rotate(210deg)" }}></div>
+          <div id="rotate" style={{ transform: `rotate(${angle}deg)` }}></div>
         </div>
       </div>
     </div>

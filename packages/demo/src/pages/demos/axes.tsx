@@ -5,7 +5,7 @@ import Axes, {
   PinchInput,
   MoveKeyInput,
   WheelInput,
-} from "../../../../axes/src/index";
+} from "@egjs/axes";
 import Icon from "../../../static/img/demos/axes/logo.svg";
 import "../../css/demos/axes.css";
 
