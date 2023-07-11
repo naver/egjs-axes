@@ -141,6 +141,7 @@ export default function AxesBoard({ axis, demoType, options, panInputOptions, pi
     <div className="board" ref={board}>
       <div className="info">x: {x} y: {y}</div>
       <div className="target" ref={target} style={{ transform: `translate3d(${x}px, ${y}px, 0) scale(${zoom / 100})` }} onClick={() => { onClick(); }}>
+        { demoType === "preventDefaultOnDrag" && <a className="link" href="https://www.naver.com/">Clickable Link</a> }
         <img
           draggable={demoType === "preventDefaultOnDrag" ? true : false}
           className="egjsicon"
