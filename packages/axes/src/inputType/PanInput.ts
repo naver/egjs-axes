@@ -263,7 +263,7 @@ export class PanInput implements InputType {
       this._atRightEdge =
         IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
       this._attachWindowEvent(activeEvent);
-      preventDefaultOnDrag && panEvent.srcEvent.preventDefault();
+      (preventDefaultOnDrag && panEvent.srcEvent.type !== "touchstart") && panEvent.srcEvent.preventDefault();
       activeEvent.prevEvent = panEvent;
     }
   }
