@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PinchInput, WheelInput } from "../../../../axes/src/index";
+import Axes, { PinchInput, WheelInput } from "@egjs/axes";
 import "../../css/demos/bubble.css";
 
 const Bubble = () => {

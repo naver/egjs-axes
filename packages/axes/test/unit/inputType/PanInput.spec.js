@@ -391,6 +391,39 @@ describe("PanInput", () => {
       });
     });
 
+    describe("preventDefaultOnDrag", () => {
+      it("should use preventDefault at the start of a drag when preventDefaultOnDrag is true", () => {
+        // Given
+        const mouseDown = new MouseEvent("mousedown", { buttons: 1, cancelable: true });
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventDefaultOnDrag: true,
+        });
+        inst.connect(["x", "y"], input);
+
+        // When
+        el.dispatchEvent(mouseDown);
+        // Then
+        expect(mouseDown.defaultPrevented).to.be.true;
+      });
+
+      it("should apply changes in preventDefaultOnDrag option after connected", () => {
+        // Given
+        const mouseDown = new MouseEvent("mousedown", { buttons: 1, cancelable: true });
+        input = new PanInput(el, {
+          inputType: ["touch", "mouse"],
+          preventDefaultOnDrag: true,
+        });
+        inst.connect(["x", "y"], input);
+        input.options.preventDefaultOnDrag = false;
+
+        // When
+        el.dispatchEvent(mouseDown);
+        // Then
+        expect(mouseDown.defaultPrevented).to.be.false;
+      });
+    });
+
     describe("threshold", () => {
       it("should not trigger change event when moving below threshold", (done) => {
         // Given

@@ -10,7 +10,7 @@
       {
         "basePath": "packages/axes/dist",
         "dists": [
-          "demo/dist"
+          "packages/demo/dist"
         ]
       }
     ],

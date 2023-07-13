@@ -11,8 +11,8 @@
     "docs:build": "rm -rf ./packages/demo/docs/api && jsdoc-to-mdx -c ./jsdoc-to-mdx.json",
     "demo:build": "npm run docs:build && npm run build --prefix packages/demo",
     "demo:build-docusaurus": "npm run build --prefix demo",
-    "demo:deploy": "lerna-helper deploy --base @egjs/axes --remote upstream",
-    "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --remote origin",
+    "demo:deploy": "lerna-helper deploy --base @egjs/axes --src packages/demo/build/ --remote upstream",
+    "demo:deploy-origin": "lerna-helper deploy --base @egjs/axes --src packages/demo/build/ --remote origin",
     "release": "lerna-helper release --base @egjs/axes --remote upstream --branch master",
     "prepush": "npm run lint",
     "commitmsg": "node config/validate-commit-msg.js"

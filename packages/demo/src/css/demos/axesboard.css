@@ -28,3 +28,8 @@
   cursor: pointer;
   margin-top: -15px;
 }
+
+.link {
+  position: absolute;
+  top: -40px;
+}

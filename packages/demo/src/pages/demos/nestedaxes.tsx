@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import Axes, { PanInput, WheelInput } from "../../../../axes/src/index";
+import Axes, { PanInput, WheelInput } from "@egjs/axes";
 import "../../css/demos/nestedaxes.css";
 
 const NestedAxes = () => {
