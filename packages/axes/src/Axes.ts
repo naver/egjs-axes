@@ -504,10 +504,11 @@ class Axes extends Component<AxesEvents> {
    * ```
    */
   public setOptions(options: AxesOption) {
-      this.options = {
+    this.options = {
       ...this.options,
       ...options,
     };
+    this.animationManager.setOptions(options);
     return this;
   }
 

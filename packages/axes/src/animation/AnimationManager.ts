@@ -280,6 +280,13 @@ export abstract class AnimationManager {
     );
   }
 
+  public setOptions(options: AxesOption) {
+    this._options = {
+      ...this._options,
+      ...options,
+    };
+  }
+
   private _createAnimationParam(
     pos: Axis,
     duration: number,

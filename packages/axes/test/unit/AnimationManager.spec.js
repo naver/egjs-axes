@@ -10,7 +10,7 @@ describe("AnimationManager", () => {
   let axis;
   let options;
 
-  describe("method test", () => {
+  describe("Methods", () => {
     beforeEach(() => {
       axis = {
         x: {
@@ -128,6 +128,137 @@ describe("AnimationManager", () => {
     });
   });
 
+  describe("Options", () => {
+    beforeEach(() => {
+      axis = {
+        x: {
+          range: [0, 1000],
+          bounce: [0, 0],
+        },
+      };
+      options = {
+        easing: (x) => { return x },
+        minimumDuration: 500,
+        maximumDuration: 1000,
+      };
+      axes = new Axes(axis, options);
+      const axisManager = new AxisManager(axis, options);
+      const eventManager = new EventManager(axes);
+      inst = new EasingManager({
+        options: options,
+        interruptManager: new InterruptManager(options),
+        eventManager,
+        axisManager,
+      });
+      eventManager.setAnimationManager(inst);
+    });
+    afterEach(() => {
+      axes.off();
+    });
+
+    describe("minimumDuration", () => {
+      it("should play animation longer than the time set in minimumDuration.", (done) => {
+        // Given
+        const startHandler = sinon.spy();
+        const endHandler = sinon.spy();
+        axes.on({
+          animationStart: startHandler,
+          animationEnd: endHandler,
+        });
+
+        // When
+        inst.setTo({ x: 300 }, 100);
+
+        // Then
+        setTimeout(() => {
+          expect(startHandler.calledOnce).to.be.true;
+          expect(endHandler.called).to.be.false;
+        }, 300);
+        setTimeout(() => {
+          expect(endHandler.calledOnce).to.be.true;
+          const result = inst.axisManager.get();
+          expect(result.x).to.be.equal(300);
+          done();
+        }, 600);
+      });
+
+      it("should apply changes in minimumDuration option after connected", (done) => {
+        // Given
+        const startHandler = sinon.spy();
+        const endHandler = sinon.spy();
+        axes.on({
+          animationStart: startHandler,
+          animationEnd: endHandler,
+        });
+
+        // When
+        inst.setOptions({ minimumDuration: 0 });
+        inst.setTo({ x: 300 }, 200);
+
+        // Then
+        setTimeout(() => {
+          expect(startHandler.calledOnce).to.be.true;
+          expect(endHandler.called).to.be.false;
+        }, 100);
+        setTimeout(() => {
+          expect(endHandler.calledOnce).to.be.true;
+          const result = inst.axisManager.get();
+          expect(result.x).to.be.equal(300);
+          done();
+        }, 300);
+      });
+    });
+
+    describe("maximumDuration", () => {
+      it("should play animation shorter than the time set in maximumDuration.", (done) => {
+        // Given
+        const startHandler = sinon.spy();
+        const endHandler = sinon.spy();
+        axes.on({
+          animationStart: startHandler,
+          animationEnd: endHandler,
+        });
+
+        // When
+        inst.setTo({ x: 300 }, 1500);
+
+        // Then
+        setTimeout(() => {
+          expect(endHandler.calledOnce).to.be.true;
+          const result = inst.axisManager.get();
+          expect(result.x).to.be.equal(300);
+          done();
+        }, 1100);
+      });
+
+      it("should apply changes in maximumDuration option after connected", (done) => {
+        // Given
+        const startHandler = sinon.spy();
+        const endHandler = sinon.spy();
+        axes.on({
+          animationStart: startHandler,
+          animationEnd: endHandler,
+        });
+
+        // When
+        inst.setOptions({ maximumDuration: 1500 });
+        inst.setTo({ x: 300 }, 1300);
+
+        // Then
+        setTimeout(() => {
+          expect(startHandler.calledOnce).to.be.true;
+          expect(endHandler.called).to.be.false;
+        }, 1300);
+        setTimeout(() => {
+          expect(endHandler.calledOnce).to.be.true;
+          const result = inst.axisManager.get();
+          expect(result.x).to.be.equal(300);
+          done();
+        }, 1600);
+      });
+    });
+  });
+
   describe("animation test", () => {
     beforeEach(() => {
       axis = {
@@ -170,6 +301,7 @@ describe("AnimationManager", () => {
     afterEach(() => {
       axes.off();
     });
+
     it("should check 'setTo' method(duration: 0)", () => {
       // Given
       const changeHandler = sinon.spy();
@@ -197,6 +329,7 @@ describe("AnimationManager", () => {
         z: -100,
       });
     });
+
     it("should check 'setTo' method (outside)", () => {
       // Given
       const depaPos = inst.axisManager.get();
@@ -224,6 +357,7 @@ describe("AnimationManager", () => {
       expect(changeHandler.getCall(0).args[0].isTrusted).to.be.false;
       expect(self.axisManager.get()).to.be.eql({ x: 100, y: 0, z: 145 });
     });
+
     it("should check 'setTo' method (outside, duration)", (done) => {
       // Given
       const depaPos = inst.axisManager.get();
@@ -400,6 +534,7 @@ describe("AnimationManager", () => {
       // When
       inst.setBy(byPos, 1000);
     });
+
     it("should check 'setBy' method (outside, duration)", (done) => {
       // Given
       const depaPos = inst.axisManager.get();
@@ -432,6 +567,7 @@ describe("AnimationManager", () => {
       // When
       inst.setBy(byPos, 1000);
     });
+
     it("should check 'animateTo' method (inside)", (done) => {
       // Given
       const depaPos = inst.axisManager.get();
@@ -462,6 +598,7 @@ describe("AnimationManager", () => {
       // When
       inst.setTo(destPos, 500);
     });
+
     it("should check 'animateTo' method (outside)", (done) => {
       // Given
       const depaPos = inst.axisManager.get();
@@ -495,6 +632,7 @@ describe("AnimationManager", () => {
       // When
       inst.animateTo(destPos, 1000);
     });
+
     it("should check 'animateTo' with destPos that can cause floating point", (done) => {
       // circular: true,
       // duration: 102
@@ -515,6 +653,7 @@ describe("AnimationManager", () => {
         done();
       }, 200);
     });
+
     it("should check position when animation is running. then, start other animation", (done) => {
       // Given
       const startHandler = sinon.spy();
@@ -555,6 +694,7 @@ describe("AnimationManager", () => {
         done();
       }, 500);
     });
+
     [1, -1].forEach((direction) => {
       it(`should check destPos when range changes dynamically during animateLoop(direction: ${direction}, circular: true)`, (done) => {
         // Given
@@ -584,6 +724,7 @@ describe("AnimationManager", () => {
           }
         );
       });
+
       it(`should check destPos when range changes dynamically during animateLoop and change(direction: ${direction}, circular: true)`, (done) => {
         // Given
         const depaPos = { z: -100 };
@@ -623,6 +764,7 @@ describe("AnimationManager", () => {
         );
       });
     });
+
     it("should check 'updateAnimation' method (update destPos)", (done) => {
       // Given
       const startHandler = sinon.spy();
@@ -653,6 +795,7 @@ describe("AnimationManager", () => {
         done();
       }, 500);
     });
+
     it("should check 'updateAnimation' method (update duration)", (done) => {
       // Given
       const startHandler = sinon.spy();
@@ -685,6 +828,7 @@ describe("AnimationManager", () => {
         done();
       }, 700);
     });
+
     it("should check 'updateAnimation' method (multiple time, update both)", (done) => {
       // Given
       const startHandler = sinon.spy();
@@ -724,6 +868,7 @@ describe("AnimationManager", () => {
         done();
       }, 500);
     });
+
     it("should check 'updateAnimation' method (restart: true)", (done) => {
       // Given
       const startHandler = sinon.spy();
@@ -759,6 +904,7 @@ describe("AnimationManager", () => {
         done();
       }, 700);
     });
+
     it("should check 'stopAnimation' method", (done) => {
       // Given
       const startHandler = sinon.spy();
