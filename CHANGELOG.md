@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.0](https://github.com/naver/egjs-axes/compare/3.8.5...3.9.0) (2023-07-26)
+### :sparkles: Packages
+* `@egjs/axes` 3.9.0
+* `@egjs/react-axes` 3.3.0
+* `@egjs/svelte-axes` 3.3.0
+* `@egjs/vue-axes` 3.3.0
+* `@egjs/vue2-axes` 3.3.0
+
+
+### :rocket: New Features
+
+* `@egjs/axes`
+    * add preventDefaultOnDrag option to PanInput (#214) ([cc115a9](https://github.com/naver/egjs-axes/commit/cc115a95b06c2893844d6de146ce8b7b00573fc3))
+
+
+### :bug: Bug Fix
+
+* `@egjs/axes`
+    * fix setOptions not applying to duration options (#215) ([a0b8621](https://github.com/naver/egjs-axes/commit/a0b8621fe9a06edc534efef640f7d9e09d7faa4b))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([aca7cfb](https://github.com/naver/egjs-axes/commit/aca7cfb41b48d2beb1711df4446968a9e19d8d7e))
+
+
+
 ## [3.8.5](https://github.com/naver/egjs-axes/compare/3.8.4...3.8.5) (2023-06-22)
 ### :sparkles: Packages
 * `@egjs/axes` 3.8.5

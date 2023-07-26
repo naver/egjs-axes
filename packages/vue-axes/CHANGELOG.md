@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.0](https://github.com/naver/egjs-axes/compare/@egjs/vue-axes@3.2.5...@egjs/vue-axes@3.3.0) (2023-07-26)
+
+
+### :mega: Other
+
+* update packages versions ([aca7cfb](https://github.com/naver/egjs-axes/commit/aca7cfb41b48d2beb1711df4446968a9e19d8d7e))
+
+
+
 ## [3.2.5](https://github.com/naver/egjs-axes/compare/@egjs/vue-axes@3.2.4...@egjs/vue-axes@3.2.5) (2023-06-22)
 
 
