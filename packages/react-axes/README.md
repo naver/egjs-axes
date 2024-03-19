@@ -93,6 +93,40 @@ function App() {
 }
 ```
 
+### Using Events with useAxes
+- useAxes provides hooks to define callback functions for each event.
+- If the callback function references any values, please pass them in the dependency array.
+- For a detailed description of the event object passed to the callback functions, please refer to [Events](https://naver.github.io/egjs-axes/docs/api/Axes#events).
+```js
+const {
+    onHold,
+    onChange,
+    onRelease,
+    onAnimationStart,
+    onAnimationEnd,
+    onFinish,
+    ...
+} = useAxes({...});
+
+// `hold` Event Hook
+onHold(callback, dependencies);
+
+// `change` Event Hook
+onChange(callback, dependencies);
+
+// `release` Event Hook
+onRelease(callback, dependencies);
+
+// `animationStart` Event Hook
+onAnimationStart(callback, dependencies);
+
+// `animationEnd` Event Hook
+onAnimationEnd(callback, dependencies);
+
+// `finish` Event Hook
+onFinish(callback, dependencies);
+```
+
 ## 🌐 Supported Browsers
 |<img width="20" src="https://simpleicons.org/icons/internetexplorer.svg" alt="IE" />|<img width="20" src="https://simpleicons.org/icons/googlechrome.svg" alt="Chrome" />|<img width="20" src="https://simpleicons.org/icons/firefoxbrowser.svg" alt="Firefox" />|<img width="20" src="https://simpleicons.org/icons/safari.svg" alt="Safari" />|<img width="20" src="https://simpleicons.org/icons/apple.svg" alt="iOS" />|<img width="20" src="https://simpleicons.org/icons/android.svg" alt="Android" />|
 |:---:|:---:|:---:|:---:|:---:|:---:|
