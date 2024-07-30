@@ -4,7 +4,6 @@
  */
 import { window } from "./browser";
 import { PREVENT_DRAG_CSSPROPS } from "./const";
-import { Axis, AxisOption } from "./AxisManager";
 import { PanInputOption } from "./inputType/PanInput";
 import { PinchInputOption } from "./inputType/PinchInput";
 import { ObjectInterface } from "./types";
@@ -307,6 +306,9 @@ export const setCssProps = (
     };
     Object.keys(newCssProps).forEach((prop) => {
       oldCssProps[prop] = element.style[prop];
+    });
+    // Old style props like user-select can be corrupted if you change the style directly in the logic above.
+    Object.keys(newCssProps).forEach((prop) => {
       element.style[prop] = newCssProps[prop];
     });
   }

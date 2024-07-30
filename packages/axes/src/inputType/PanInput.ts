@@ -173,20 +173,12 @@ export class PanInput implements InputType {
       this._detachWindowEvent(this._activeEvent);
     }
     this._attachElementEvent(observer);
-    this._originalCssProps = setCssProps(
-      this.element,
-      this.options,
-      this._direction
-    );
     return this;
   }
 
   public disconnect() {
     this._detachElementEvent();
     this._detachWindowEvent(this._activeEvent);
-    if (!isCssPropsFromAxes(this._originalCssProps)) {
-      revertCssProps(this.element, this._originalCssProps);
-    }
     this._direction = DIRECTION_NONE;
     return this;
   }
@@ -206,7 +198,14 @@ export class PanInput implements InputType {
    * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public enable() {
-    this._enabled = true;
+    if (!this._enabled) {
+      this._enabled = true;
+      this._originalCssProps = setCssProps(
+        this.element,
+        this.options,
+        this._direction
+      );
+    }
     return this;
   }
 
@@ -216,7 +215,12 @@ export class PanInput implements InputType {
    * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public disable() {
-    this._enabled = false;
+    if (this._enabled) {
+      this._enabled = false;
+      if (!isCssPropsFromAxes(this._originalCssProps)) {
+        revertCssProps(this.element, this._originalCssProps);
+      }
+    }
     return this;
   }
 
@@ -419,7 +423,7 @@ export class PanInput implements InputType {
       throw new Error("Element to connect input does not exist.");
     }
     this._observer = observer;
-    this._enabled = true;
+    this.enable();
     this._activeEvent = activeEvent;
     element.addEventListener("click", this._preventClickWhenDragged, true);
     activeEvent.start.forEach((event) => {
@@ -443,7 +447,7 @@ export class PanInput implements InputType {
         element.removeEventListener(event, this._voidFunction);
       });
     }
-    this._enabled = false;
+    this.disable();
     this._observer = null;
   }
 
