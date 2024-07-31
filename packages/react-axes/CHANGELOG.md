@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/naver/egjs-axes/compare/@egjs/react-axes@3.3.0...@egjs/react-axes@3.3.1) (2024-07-31)
+
+
+### :memo: Documentation
+
+* Add event handler definition to react-axes readme.md (#216) ([d5eee11](https://github.com/naver/egjs-axes/commit/d5eee11808c12b5b7d89eb9f6abf3e4669e46618))
+
+
+### :mega: Other
+
+* update packages versions ([3fc40a2](https://github.com/naver/egjs-axes/commit/3fc40a2458c72982976ac8b8f15708d9451a4b3f))
+
+
+
 ## [3.3.0](https://github.com/naver/egjs-axes/compare/@egjs/react-axes@3.2.5...@egjs/react-axes@3.3.0) (2023-07-26)
 
 

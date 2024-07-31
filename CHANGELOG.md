@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.1](https://github.com/naver/egjs-axes/compare/3.9.0...3.9.1) (2024-07-31)
+### :sparkles: Packages
+* `@egjs/axes` 3.9.1
+* `@egjs/react-axes` 3.3.1
+* `@egjs/svelte-axes` 3.3.1
+* `@egjs/vue-axes` 3.3.1
+* `@egjs/vue2-axes` 3.3.1
+
+
+### :bug: Bug Fix
+
+* `@egjs/axes`
+    * apply and revert styles when enables/disables PanInput (#218) ([0fcfa19](https://github.com/naver/egjs-axes/commit/0fcfa193a0db4bfd81eaee93759f094a14b21609))
+
+
+### :memo: Documentation
+
+* `@egjs/react-axes`
+    * Add event handler definition to react-axes readme.md (#216) ([d5eee11](https://github.com/naver/egjs-axes/commit/d5eee11808c12b5b7d89eb9f6abf3e4669e46618))
+
+
+### :mega: Other
+
+* All
+    * update packages versions ([3fc40a2](https://github.com/naver/egjs-axes/commit/3fc40a2458c72982976ac8b8f15708d9451a4b3f))
+
+
+
 ## [3.9.0](https://github.com/naver/egjs-axes/compare/3.8.5...3.9.0) (2023-07-26)
 ### :sparkles: Packages
 * `@egjs/axes` 3.9.0
