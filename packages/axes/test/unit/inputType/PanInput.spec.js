@@ -593,16 +593,31 @@ describe("PanInput", () => {
     describe("touchAction", () => {
       ["auto", "none", "manipulation", "pan-x", "pan-y"].forEach(
         (touchAction) => {
-          it(`should check whether the style set in touchAction is applied correctly (touchAction: ${touchAction})`, () => {
+          it(`should check whether the style set in touchAction is applied correctly after enabled (touchAction: ${touchAction})`, () => {
             // Given
             input = new PanInput(el, {
               touchAction,
             });
+            el.style.userSelect = "auto";
             inst.connect(["x", "y"], input);
 
             // Then
             expect(el.style.touchAction).to.be.equal(touchAction);
             expect(el.style.userSelect).to.be.equal("none");
+          });
+
+          it(`should check whether the style set in touchAction is removed correctly after disabled (touchAction: ${touchAction})`, () => {
+            // Given
+            input = new PanInput(el, {
+              touchAction,
+            });
+            el.style.userSelect = "auto";
+            inst.connect(["x", "y"], input);
+            input.disable();
+
+            // Then
+            expect(el.style.touchAction).to.be.equal("");
+            expect(el.style.userSelect).to.be.equal("auto");
           });
         }
       );
