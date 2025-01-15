@@ -198,7 +198,11 @@ export class PanInput implements InputType {
    * @return {PanInput} An instance of a module itself <ko>모듈 자신의 인스턴스</ko>
    */
   public enable() {
-    if (!this._enabled) {
+    const activeEvent = convertInputType(this.options.inputType);
+
+    if (!activeEvent) {
+      throw new Error("PanInput cannot be enabled if there is no available input event.");
+    } else if (!this._enabled) {
       this._enabled = true;
       this._originalCssProps = setCssProps(
         this.element,
