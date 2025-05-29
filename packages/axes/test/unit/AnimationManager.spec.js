@@ -302,7 +302,7 @@ describe("AnimationManager", () => {
       axes.off();
     });
 
-    it("should check 'setTo' method(duration: 0)", () => {
+    it("should check 'setTo' method (duration: 0)", () => {
       // Given
       const changeHandler = sinon.spy();
       const finishHandler = sinon.spy();

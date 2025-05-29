@@ -242,6 +242,15 @@ describe("PanInput", () => {
           }
         );
       });
+
+      it("should not enable PanInput if there is no available input event.", () => {
+        // Given
+        input.options.inputType = [];
+
+        // When
+        // Then
+        expect(() => input.enable()).to.throw();
+      });
     });
 
     describe("getDirectionByAngle", () => {
