@@ -6,6 +6,7 @@ import {
   DIRECTION_NONE,
   DIRECTION_VERTICAL,
 } from "../../../src/const";
+import { wait } from "./TestHelper.js";
 
 describe("PanInput", () => {
   let el;
@@ -13,6 +14,64 @@ describe("PanInput", () => {
   let inst;
   let observer;
 
+  describe("Events", () => {
+    afterEach(() => {
+      if (inst) {
+        inst.destroy();
+        inst = null;
+      }
+      cleanup();
+    });
+
+    it.only("should check if direction is maintained even at zero velocity", async () => {
+      // Given
+      const hold = sinon.spy();
+      const change = sinon.spy();
+      const release = sinon.spy();
+      el = sandbox()
+      input = new PanInput(el, {
+        inputType: ["touch", "mouse"],
+      });
+      inst = new Axes({
+        x: {
+          range: [-2000, 2000],
+          circular: true,
+        },
+        y: {
+          range: [-2000, 2000],
+          circular: true,
+        },
+      });
+      inst.connect(["x", "y"], input);
+      inst.on("hold", hold);
+      inst.on("change", change);
+      inst.on("release", release);
+
+      // When
+      Simulator.events.touch.trigger([{ x: 0, y: 0 }], el, "start");
+      await wait(10);
+      // + +
+      Simulator.events.touch.trigger([{ x: -10, y: -10 }], el, "move");
+      await wait(10);
+      Simulator.events.touch.trigger([{ x: -20, y: -20 }], el, "move");
+      await wait(10);
+      // + + (멈처있지만 방향은 유지)
+      Simulator.events.touch.trigger([{ x: -20, y: -20 }], el, "move");
+      await wait(10);
+      Simulator.events.touch.trigger([{ x: -20, y: -20 }], el, "end");
+      await wait();
+
+
+      // Then
+      const releaseEvent = release.args[0][0];
+      expect(hold.called).to.be.equals(true);
+      expect(change.called).to.be.equals(true);
+      expect(release.called).to.be.equals(true);
+      // 음수 방향 <= Right To Left
+      expect(releaseEvent.destPos.x - releaseEvent.depaPos.x).to.be.below(0)
+      expect(releaseEvent.destPos.y - releaseEvent.depaPos.y).to.be.below(0)
+    });
+  })
   describe("Methods", () => {
     beforeEach(() => {
       inst = new PanInput(sandbox());

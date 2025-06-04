@@ -124,6 +124,8 @@ export interface ExtendedEvent {
   srcEvent: InputEventType;
   angle: number;
   scale: number;
+  directionX: number;
+  directionY: number;
   center: {
     x: number;
     y: number;

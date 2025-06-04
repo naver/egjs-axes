@@ -368,8 +368,8 @@ export class PanInput implements InputType {
     const prevEvent = activeEvent.prevEvent;
     const velocity = this._isOverThreshold ? this._getOffset(
       [
-        Math.abs(prevEvent.velocityX) * (prevEvent.offsetX < 0 ? -1 : 1),
-        Math.abs(prevEvent.velocityY) * (prevEvent.offsetY < 0 ? -1 : 1),
+        Math.abs(prevEvent.velocityX) * prevEvent.directionX,
+        Math.abs(prevEvent.velocityY) * prevEvent.directionY,
       ],
       [
         useDirection(DIRECTION_HORIZONTAL, this._direction),
