@@ -1,0 +1,21 @@
+name: Run tests
+on: [push, pull_request]
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 16.16.0
+      - name: install
+        run: yarn
+        working-directory: ./packages/axes
+      - name: test
+        run: npm run coverage
+        working-directory: ./packages/axes
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          path-to-lcov: ./packages/axes/coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}

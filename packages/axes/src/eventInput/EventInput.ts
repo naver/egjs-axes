@@ -98,6 +98,21 @@ export abstract class EventInput {
     const deltaTime = latestInterval ? timeStamp - latestInterval.timestamp : 0;
     let velocityX = prevEvent ? prevEvent.velocityX : 0;
     let velocityY = prevEvent ? prevEvent.velocityY : 0;
+    let directionX = prevEvent ? prevEvent.directionX : 1;
+    let directionY = prevEvent ? prevEvent.directionY : 1;
+
+
+    // If offset is 0, it inherits the direction of the previous event.
+    if (offsetX > 0) {
+      directionX = 1;
+    } else if (offsetX < 0) {
+      directionX = -1;
+    }
+    if (offsetY > 0) {
+      directionY = 1;
+    } else if (offsetY < 0) {
+      directionY = -1;
+    }
     if (!latestInterval || deltaTime >= VELOCITY_INTERVAL) {
       if (latestInterval) {
         [velocityX, velocityY] = [
@@ -120,6 +135,8 @@ export abstract class EventInput {
       deltaY,
       offsetX,
       offsetY,
+      directionX,
+      directionY,
       velocityX,
       velocityY,
       preventSystemEvent: true,

@@ -7,7 +7,7 @@
   <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img src="https://img.shields.io/npm/v/@egjs/react-axes.svg?style=flat-square&color=007acc&label=version&logo=NPM" alt="version" /></a>
   <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm weekly downloads" src="https://img.shields.io/npm/dw/@egjs/react-axes?logo=npm&style=flat-square&color=007acc" /></a>
   <a href="https://www.npmjs.com/package/@egjs/react-axes" target="_blank"><img alt="npm bundle size (scoped)" src="https://img.shields.io/bundlephobia/minzip/@egjs/react-axes.svg?style=flat-square&label=%F0%9F%92%BE%20gzipped&color=007acc" /></a>
-  <a href="https://travis-ci.org/naver/egjs-axes" target="_blank"><img alt="Build Status" src="https://api.travis-ci.org/naver/egjs-axes.svg?branch=master" /></a>
+  <a href="https://github.com/naver/egjs-axes/actions/workflows/run-unit.yml" target="_blank"><img alt="Run tests" src="https://github.com/naver/egjs-axes/actions/workflows/run-unit.yml/badge.svg" /></a>
   <a href="https://coveralls.io/github/naver/egjs-axes?branch=master&style=flat-square" target="_blank"><img alt="Coveralls github" src="https://img.shields.io/coveralls/github/naver/egjs-axes.svg?style=flat-square&label=%E2%9C%85%20coverage" /></a>
   <a href="https://github.com/naver/egjs-axes/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/static/v1?style=flat-square&label=%F0%9F%93%9C%20license&message=MIT&color=08CE5D" /></a>
   <img src="https://img.shields.io/static/v1.svg?label=&message=TypeScript&color=294E80&style=flat-square&logo=typescript" />
