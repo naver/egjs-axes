@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.9.1...@egjs/axes@3.9.2) (2025-06-05)
+
+
+### :bug: Bug Fix
+
+* do not enable PanInput when there is no inputType (#219) ([b75a5dc](https://github.com/naver/egjs-axes/commit/b75a5dc755d5a343c6718c3b02bd7b870a025041))
+* fix offset zero direction (#220) ([01ffe99](https://github.com/naver/egjs-axes/commit/01ffe99beda7f38028bd12251cd9b9dca9844701))
+
+
+
 ## [3.9.1](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.9.0...@egjs/axes@3.9.1) (2024-07-31)
 
 

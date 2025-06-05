@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/naver/egjs-axes/compare/3.9.1...3.9.2) (2025-06-05)
+### :sparkles: Packages
+* `@egjs/axes` 3.9.2
+* `@egjs/react-axes` 3.3.2
+* `@egjs/svelte-axes` 3.3.2
+* `@egjs/vue-axes` 3.3.2
+* `@egjs/vue2-axes` 3.3.2
+
+
+### :bug: Bug Fix
+
+* All
+    * fix offset zero direction (#220) ([01ffe99](https://github.com/naver/egjs-axes/commit/01ffe99beda7f38028bd12251cd9b9dca9844701))
+* `@egjs/axes`
+    * do not enable PanInput when there is no inputType (#219) ([b75a5dc](https://github.com/naver/egjs-axes/commit/b75a5dc755d5a343c6718c3b02bd7b870a025041))
+
+
+
 ## [3.9.1](https://github.com/naver/egjs-axes/compare/3.9.0...3.9.1) (2024-07-31)
 ### :sparkles: Packages
 * `@egjs/axes` 3.9.1

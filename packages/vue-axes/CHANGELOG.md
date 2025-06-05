@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/naver/egjs-axes/compare/@egjs/vue-axes@3.3.1...@egjs/vue-axes@3.3.2) (2025-06-05)
+
+
+### :bug: Bug Fix
+
+* fix offset zero direction (#220) ([01ffe99](https://github.com/naver/egjs-axes/commit/01ffe99beda7f38028bd12251cd9b9dca9844701))
+
+
+
 ## [3.3.1](https://github.com/naver/egjs-axes/compare/@egjs/vue-axes@3.3.0...@egjs/vue-axes@3.3.1) (2024-07-31)
 
 
