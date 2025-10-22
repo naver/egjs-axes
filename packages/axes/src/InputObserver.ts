@@ -7,6 +7,7 @@ import { InputType, InputTypeObserver, toAxis } from "./inputType/InputType";
 import { EventManager, ChangeEventOption } from "./EventManager";
 import { AxisManager, Axis } from "./AxisManager";
 import { AxesOption } from "./Axes";
+import { DIRECTION_HORIZONTAL, DIRECTION_VERTICAL } from "./const";
 import {
   isOutside,
   getInsidePosition,
@@ -54,6 +55,7 @@ export class InputObserver implements InputTypeObserver {
     if (this._interruptManager.isInterrupted() || !input.axes.length) {
       return;
     }
+
     const changeOption: ChangeEventOption = {
       input,
       event,
@@ -70,17 +72,25 @@ export class InputObserver implements InputTypeObserver {
   }
 
   public change(input: InputType, event, offset: Axis, useAnimation?: boolean) {
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;   
+
+    /** 
+     * 아래 early return 판단 조건 중, 최초 동작 축(방향)과 동일한 축인지 확인하는 조건 추가
+     * TODO(@gyutato): 비직관적인 변수명이므로 가능하다면 변경
+     */
+    const isCrossInput = nativeEvent.__axesPrimaryDirection && !this._isSameAxisWithPrimary(nativeEvent, input)
+  
+    /* early return condition */
     if (
       this._isStopped ||
       !this._interruptManager.isInterrupting() ||
-      this._axisManager.every(offset, (v) => v === 0)
+      this._axisManager.every(offset, (v) => v === 0) ||
+      nativeEvent.__childrenAxesAlreadyChanged ||
+      isCrossInput
     ) {
       return;
     }
-    const nativeEvent = event.srcEvent ? event.srcEvent : event;
-    if (nativeEvent.__childrenAxesAlreadyChanged) {
-      return;
-    }
+
     let depaPos: Axis = this._moveDistance || this._axisManager.get(input.axes);
     let destPos: Axis;
 
@@ -102,10 +112,14 @@ export class InputObserver implements InputTypeObserver {
     ) {
       this._isOutside = false;
     }
+
     depaPos = this._atOutside(depaPos);
     destPos = this._atOutside(destPos);
 
-    if (!this.options.nested || !this._isEndofAxis(offset, depaPos, destPos)) {
+    if (
+      !this.options.nested ||
+      !this._isEndofAxis(offset, depaPos, destPos)
+    ) {
       nativeEvent.__childrenAxesAlreadyChanged = true;
     }
 
@@ -137,6 +151,7 @@ export class InputObserver implements InputTypeObserver {
     velocity: number[],
     inputDuration?: number
   ) {
+    const nativeEvent = event.srcEvent ? event.srcEvent : event;
     if (
       this._isStopped ||
       !this._interruptManager.isInterrupting() ||
@@ -144,7 +159,6 @@ export class InputObserver implements InputTypeObserver {
     ) {
       return;
     }
-    const nativeEvent = event.srcEvent ? event.srcEvent : event;
     if (nativeEvent.__childrenAxesAlreadyReleased) {
       velocity = velocity.map(() => 0);
     }
@@ -269,5 +283,22 @@ export class InputObserver implements InputTypeObserver {
             option.circular as boolean[]
           ))
     );
+  }
+
+  /* 최초 동작 축(방향)과 동일한 축인지 확인 */
+  private _isSameAxisWithPrimary(nativeEvent: any, input: InputType): boolean {
+    const primary = nativeEvent.__axesPrimaryDirection;
+
+    if (!primary) {
+      return false;
+    }
+    const hasX = !!input.axes[0];
+    const hasY = !!input.axes[1];
+    if (primary === DIRECTION_HORIZONTAL) {
+      return hasX && !hasY;
+    } else if (primary === DIRECTION_VERTICAL) {
+      return hasY && !hasX;
+    }
+    return false;
   }
 }
