@@ -23,7 +23,7 @@ describe("PanInput", () => {
       cleanup();
     });
 
-    it.only("should check if direction is maintained even at zero velocity", async () => {
+    it("should check if direction is maintained even at zero velocity", async () => {
       // Given
       const hold = sinon.spy();
       const change = sinon.spy();
@@ -70,6 +70,38 @@ describe("PanInput", () => {
       // 음수 방향 <= Right To Left
       expect(releaseEvent.destPos.x - releaseEvent.depaPos.x).to.be.below(0)
       expect(releaseEvent.destPos.y - releaseEvent.depaPos.y).to.be.below(0)
+    });
+
+    it("should release input when the target of the first event is removed from the element during dragging", async () => {
+      // Given
+      const hold = sinon.spy();
+      const release = sinon.spy();
+      el = sandbox();
+      const child = document.createElement("div");
+      el.appendChild(child);
+      input = new PanInput(el, {
+        inputType: ["touch", "mouse"],
+      });
+      inst = new Axes({
+        x: { range: [0, 100] },
+        y: { range: [0, 100] },
+      });
+      inst.connect(["x", "y"], input);
+      inst.on("hold", hold);
+      inst.on("release", release);
+
+      // When
+      Simulator.events.touch.trigger([{ x: 0, y: 0 }], child, "start");
+      await wait(10);
+      expect(hold.called).to.be.equals(true);
+      expect(release.called).to.be.equals(false);
+      el.removeChild(child);
+      // the browser releases the implicit pointer capture of the removed touch target and fires it at the document
+      document.dispatchEvent(new PointerEvent("lostpointercapture", { bubbles: true, pointerType: "touch" }));
+      await wait(50);
+
+      // Then
+      expect(release.called).to.be.equals(true);
     });
   })
   describe("Methods", () => {
