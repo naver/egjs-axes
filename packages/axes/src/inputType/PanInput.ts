@@ -137,7 +137,7 @@ export class PanInput implements InputType {
   private _rightEdgeTimer = 0;
   private _dragged = false;
   private _isOverThreshold = false;
-  private _startTarget: Node = null;
+  private _startTarget: Node | null = null;
 
   /**
    *
@@ -396,8 +396,10 @@ export class PanInput implements InputType {
     // while mouse/pointer events keep being delivered to window.
     // The browser releases the implicit pointer capture of the touch and fires "lostpointercapture" at the document,
     // so listen to it to release the input instead of being stuck in the hold state.
+
     if (startEvent?.type === "touchstart") {
       this._startTarget = startEvent.target as Node;
+
       window.addEventListener("lostpointercapture", this._onLostPointerCapture, true);
     }
   }
