@@ -62,7 +62,7 @@ export class RotatePanInput extends PanInput {
     const rect = this.element.getBoundingClientRect();
 
     this._observer.hold(this, panEvent);
-    this._attachWindowEvent(activeEvent);
+    this._attachWindowEvent(activeEvent, event);
     // TODO: how to do if element is ellipse not circle.
     this._coefficientForDistanceToAngle = 360 / (rect.width * Math.PI); // from 2*pi*r * x / 360
     // TODO: provide a way to set origin like https://developer.mozilla.org/en-US/docs/Web/CSS/transform-origin

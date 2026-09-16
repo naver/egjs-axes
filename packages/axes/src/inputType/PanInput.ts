@@ -137,6 +137,7 @@ export class PanInput implements InputType {
   private _rightEdgeTimer = 0;
   private _dragged = false;
   private _isOverThreshold = false;
+  private _startTarget: Node | null = null;
 
   /**
    *
@@ -270,7 +271,7 @@ export class PanInput implements InputType {
       this._observer.hold(this, panEvent);
       this._atRightEdge =
         IS_IOS_SAFARI && panEvent.center.x > window.innerWidth - edgeThreshold;
-      this._attachWindowEvent(activeEvent);
+      this._attachWindowEvent(activeEvent, event);
       (preventDefaultOnDrag && panEvent.srcEvent.type !== "touchstart") && panEvent.srcEvent.preventDefault();
       activeEvent.prevEvent = panEvent;
     }
@@ -384,13 +385,23 @@ export class PanInput implements InputType {
     this._observer.release(this, prevEvent, velocity);
   }
 
-  protected _attachWindowEvent(activeEvent: ActiveEvent) {
+  protected _attachWindowEvent(activeEvent: ActiveEvent, startEvent?: InputEventType) {
     activeEvent?.move.forEach((event) => {
       window.addEventListener(event, this._onPanmove, getAddEventOptions(event));
     });
     activeEvent?.end.forEach((event) => {
       window.addEventListener(event, this._onPanend, getAddEventOptions(event));
     });
+    // Touch events are no longer fired when the target of the touchstart is removed from the DOM,
+    // while mouse/pointer events keep being delivered to window.
+    // The browser releases the implicit pointer capture of the touch and fires "lostpointercapture" at the document,
+    // so listen to it to release the input instead of being stuck in the hold state.
+
+    if (startEvent?.type === "touchstart") {
+      this._startTarget = startEvent.target as Node;
+
+      window.addEventListener("lostpointercapture", this._onLostPointerCapture, true);
+    }
   }
 
   protected _detachWindowEvent(activeEvent: ActiveEvent) {
@@ -400,6 +411,8 @@ export class PanInput implements InputType {
     activeEvent?.end.forEach((event) => {
       window.removeEventListener(event, this._onPanend);
     });
+    window.removeEventListener("lostpointercapture", this._onLostPointerCapture, true);
+    this._startTarget = null;
   }
 
   protected _getOffset(properties: number[], direction: boolean[]): number[] {
@@ -454,6 +467,14 @@ export class PanInput implements InputType {
     this.disable();
     this._observer = null;
   }
+
+  // "lostpointercapture" is also fired on a normal pointerup, so release only when the target is actually detached.
+  private _onLostPointerCapture = () => {
+    const target = this._startTarget;
+    if (target && !target.isConnected) {
+      this.release();
+    }
+  };
 
   private _preventClickWhenDragged = (e: PointerEvent | MouseEvent) => {
     if (this._dragged) {
