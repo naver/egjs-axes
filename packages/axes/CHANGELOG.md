@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.3](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.9.2...@egjs/axes@3.9.3) (2026-09-16)
+
+
+### :bug: Bug Fix
+
+* lostpointercapture 이벤트를 통한 element 삭제 감지 (#223) ([aedc2a8](https://github.com/naver/egjs-axes/commit/aedc2a8f3ae16d4de55dbf4b8a59931582183501))
+
+
+
 ## [3.9.2](https://github.com/naver/egjs-axes/compare/@egjs/axes@3.9.1...@egjs/axes@3.9.2) (2025-06-05)
 
 
