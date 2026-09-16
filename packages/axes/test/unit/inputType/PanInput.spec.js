@@ -206,7 +206,7 @@ describe("PanInput", () => {
           easing: "linear",
         });
         setTimeout(() => {
-          input.release();
+          input && input.release();
         }, 1000);
 
         // Then
