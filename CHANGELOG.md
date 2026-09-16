@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+
+**Note:** Version bump only for package axes-root
+
+
+
+
+
 ## [3.9.3](https://github.com/naver/egjs-axes/compare/3.9.2...3.9.3) (2026-09-16)
 ### :sparkles: Packages
 * `@egjs/axes` 3.9.3
